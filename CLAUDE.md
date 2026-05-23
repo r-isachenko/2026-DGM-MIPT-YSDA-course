@@ -187,7 +187,7 @@ shipped to students.
   should be minimal.
 - Don't add explanatory comments inside `.tex` files unless the construction is
   genuinely non-obvious (e.g. a custom counter trick).
-- New macros go to `newcommands.tex`; new shared environments / packages go to
+- New math macros go to `newcommands.tex`; new shared environments / packages go to
   `preamble.tex`. Don't redefine commands locally inside a single lecture.
 - When citing arXiv papers, use the canonical `https://arxiv.org/abs/<id>` URL
   and the short `Author A. Title, Year` format already used across the course

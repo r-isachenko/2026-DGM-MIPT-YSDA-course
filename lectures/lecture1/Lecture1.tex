@@ -10,15 +10,169 @@
 	\resetonslide
 \end{frame}
 %=======
-\begin{frame}{Generative Models Taxonomy}
-	\renderTaxonomy{}
-\end{frame}
-%=======
 \begin{frame}{Outline}
 	\tableofcontents
 \end{frame}
 %=======
+\section{Introduction and Logistics}
+%=======
+\begin{frame}{Generative vs Discriminative Models}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{figs/gen_vs_discrim}
+    \end{figure}
+    \eqpause
+    \begin{itemize}
+        \item \textbf{Discriminative model:} learns a decision boundary $p(\by | \bx)$.
+        \item \textbf{Generative model:} learns the data distribution $\pd(\bx)$ (optionally $\pd(\bx, \by)$) and can \emph{sample} from it.
+    \end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Course Team}
+    \begin{minipage}[t]{0.32\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \clip (0,0) circle (1.3cm);
+            \node at (0,0) {\includegraphics[width=2.9cm]{figs/roman}};
+        \end{tikzpicture}\\[0.5em]
+        {\footnotesize
+        \textbf{Roman Isachenko}\\[0.15em]
+        \emph{lecturer}\\[0.4em]
+        PhD in Phys.\,\&\,Math.\\[0.4em]
+        CV Engineer\\at Yandex\\[0.4em]
+        \texttt{@roman\_isachenko}}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \clip (0,0) circle (1.3cm);
+            \node at (0,0) {\includegraphics[width=2.9cm]{figs/matvey}};
+        \end{tikzpicture}\\[0.5em]
+        {\footnotesize
+        \textbf{Matvey Morozov}\\[0.15em]
+        \emph{seminarist}\\[0.4em]
+        MIPT alumnus (2020)\\[0.4em]
+        Senior CV Engineer\\at Gradient\,\&\,Persona\\[0.4em]
+        \texttt{@morozov\_ma}}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \clip (0,0) circle (1.3cm);
+            \node at (0,0) {\includegraphics[width=2.9cm]{figs/grigory}};
+        \end{tikzpicture}\\[0.5em]
+        {\footnotesize
+        \textbf{Grigory Ksenofontov}\\[0.15em]
+        \emph{teaching assistant}\\[0.4em]
+        MIPT alumnus (2023)\\[0.4em]
+        PhD student\\at Skoltech\\[0.4em]
+        \texttt{@gregkseno}}
+    \end{minipage}
+\end{frame}
+%=======
+\begin{frame}{About the Course}
+    Theoretical foundations \,\&\, practical applications of \textbf{Deep Generative Models}. Primary focus: Computer Vision, but the principles are universal across modern AI.
+    \eqpause
+    \begin{block}{Six major pillars}
+        \begin{itemize}
+            \setlength{\itemsep}{0.1em}
+            \item \textbf{Likelihood-based:} Autoregressive, Normalizing Flows.
+            \item \textbf{Latent Variable:} VAE, VQ-VAE.
+            \item \textbf{Adversarial:} GAN, WGAN, likelihood-free evaluation.
+            \item \textbf{Score-based \& Diffusion:} score matching, NCSN, DDPM, guidance.
+            \item \textbf{Continuous-Time:} CNF, SDE/ODE, Flow Matching.
+            \item \textbf{Discrete Diffusion:} absorbing, masked diffusion LMs.
+        \end{itemize}
+    \end{block}
+\end{frame}
+%=======
+\begin{frame}{Course Structure and Grading}
+    \begin{block}{Structure}
+        \begin{itemize}
+            \item \textbf{14} lectures \,+\, \textbf{14} seminars (one per week)
+            \item \textbf{6} homework assignments
+            \item oral cozy exam
+        \end{itemize}
+    \end{block}
+    \eqpause
+    \begin{block}{Game rules}
+        \centering
+        \begin{tabular}{lr}
+            Homeworks \;($6 \times 15$ pts) & \textbf{90} pts  \\
+            Oral exam                       & \textbf{30} pts  \\
+            \midrule
+            \textbf{Maximum}                & \textbf{120} pts \\
+        \end{tabular}
+    \end{block}
+    \eqpause
+    \vspace{-0.1cm}
+    \begin{block}{Final grade}
+        \vspace{-0.4cm}
+        $$
+            \boxed{\;\text{grade} \;=\; \min\!\left(\left\lfloor \tfrac{\#\text{points}}{10} \right\rfloor,\, 10\right)\;}
+        $$
+    \end{block}
+\end{frame}
+%=======
+\begin{frame}{Lecture Schedule}
+    \footnotesize
+    \begin{minipage}[t]{0.49\linewidth}
+    \begin{enumerate}
+        \setlength{\itemsep}{0.25em}
+        \item Intro \& Logistics; AR models (ImageGPT)
+        \item Normalizing Flows (NF); LVM intro
+        \item ELBO, Reparametrization Trick, VAE
+        \item ELBO Surgery; Discrete VAE; VQ-VAE; Likelihood-free Learning
+        \item GAN; Wasserstein Distance; WGAN; Model Evaluation
+        \item Langevin Dynamics; Score Matching; NCSN
+        \item Gaussian Diffusion; Diffusion ELBO
+    \end{enumerate}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.49\linewidth}
+    \begin{enumerate}\setcounter{enumi}{7}
+        \setlength{\itemsep}{0.25em}
+        \item DDPM; Classifier(-Free) Guidance
+        \item Continuous-Time NF; Continuity Equation; SDE basics
+        \item Probability Flow ODE; Reverse SDE; Flow Matching
+        \item Conditional Flow Matching (CFM)
+        \item Two-Sided Conditioning; FM\,$\leftrightarrow$\,Score link; Discrete Diffusion
+        \item Discrete Diffusion: Reverse Process; Absorbing Diffusion
+        \item Course Overview and Recap
+    \end{enumerate}
+    \end{minipage}
+\end{frame}
+%=======
+\begin{frame}{Prerequisites}
+    \begin{block}{What you should know}
+        \begin{itemize}
+            \setlength{\itemsep}{0.1em}
+            \item \textbf{Math:} probability theory, statistics, multivariate calculus.
+            \item \textbf{ML:} fundamentals of machine learning and deep learning.
+            \item \textbf{Tools:} PyTorch / basic GPU workflow is a plus.
+            \item \textbf{Optional:} information theory basics (entropy, KL divergence).
+            \item \textbf{Optional:} familiarity with numerical ODE concepts at a ``black-box usage'' level.
+        \end{itemize}
+    \end{block}
+    \eqpause
+    \begin{block}{Key points}
+        \begin{itemize}
+            \setlength{\itemsep}{0.1em}
+            \item The course is \textbf{mathematically heavy}.
+            \item The course is \textbf{constantly evolving}.
+            \item Any feedback --- especially \emph{negative} --- is very welcome!
+        \end{itemize}
+    \end{block}
+    \eqpause
+    \begin{center}
+        \textbf{Repository:}\;\; \href{https://github.com/r-isachenko/2026-DGM-MIPT-YSDA-course}{\texttt{github.com/r-isachenko/2026-DGM-MIPT-YSDA-course}}
+    \end{center}
+\end{frame}
+%=======
 \section{Generative Models Overview}
+%=======
+\begin{frame}{Generative Models Taxonomy}
+	\renderTaxonomy{}
+\end{frame}
 %=======
 \begin{frame}{VAE -- The First Scalable Approach for Image Generation}
 \myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
