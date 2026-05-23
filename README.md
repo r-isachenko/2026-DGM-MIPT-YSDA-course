@@ -3,17 +3,19 @@
 ## Description
 This course provides a deep dive into the theoretical foundations and practical applications of Deep Generative Models (DGM). While the primary focus is on Computer Vision, the principles covered are universal across modern AI.
 
-We bridge the gap between rigorous mathematical theory and state-of-the-art implementation. The curriculum is organized into five major pillars:
+We bridge the gap between rigorous mathematical theory and state-of-the-art implementation. The curriculum is organized into six major pillars:
 
-- Likelihood-based Models: Autoregressive models and Normalizing Flows.
+- Likelihood-based Models: Autoregressive models (ImageGPT) and Normalizing Flows (Linear NF, Gaussian Autoregressive NF, RealNVP).
 
-- Latent Variable Models: Variational Autoencoders (VAE) and their hierarchical/discrete extensions.
+- Latent Variable Models: Variational Autoencoders (VAE) via the ELBO, amortized inference, and discrete extensions (VQ-VAE).
 
-- Adversarial Learning: Generative Adversarial Networks (GAN) and Wasserstein geometry.
+- Adversarial Learning: Generative Adversarial Networks (GAN), Wasserstein geometry (WGAN), and likelihood-free evaluation protocols (FID, Precision-Recall, CLIP Score).
 
-- Diffusion & Score-based Models: From DDPM to continuous-time SDEs and ODEs.
+- Score-based and Diffusion Models: from Langevin dynamics, score matching, and NCSN to DDPM and classifier / classifier-free guidance.
 
-- Flow Matching: The latest frontier in generative modeling and Optimal Transport.
+- Continuous-Time Formulations: Continuous-Time Normalizing Flows, SDE/ODE perspectives on diffusion (VP-SDE / VE-SDE), probability flow ODE, reverse SDE, and Flow Matching (conditional, one-sided, and two-sided).
+
+- Discrete Diffusion: forward and reverse discrete processes, absorbing diffusion, and continuous-time masked diffusion language models.
 
 Special attention is given to the key properties of different generative model families, the connections between them, their theoretical foundations, and standard evaluation protocols.
 
