@@ -24,3 +24,6 @@
 seminars/seminar?/seminar?_utils.py
 
 site/
+
+# claude
+settings.json

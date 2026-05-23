@@ -32,7 +32,8 @@ The course is supported by seminars and hands-on assignments that help build int
 
 | # | Date | Description | Slides |
 |---|---|---|---|
-| 1 | January, 29 | <b>Lecture 1:</b><ul><li>Introduction and Logistics</li><li>Generative Models Overview</li><li>Course Tricks</li><li>Problem Statement</li><li>Divergence Minimization Framework</li><li>Autoregressive Models (ImageGPT)</li></ul> | [slides](lectures/lecture1/Lecture1.pdf) |
+<!---
+| 1 | January, 29 | <b>Lecture 1:</b><ul><li>Introduction and Logistics</li><li>Generative Models Overview</li><li>Generative Modeling Framework<ul><li>Course Tricks</li><li>Problem Statement</li><li>Divergence Minimization Framework</li></ul></li><li>Autoregressive Models (ImageGPT)</li></ul> | [slides](lectures/lecture1/Lecture1.pdf) |
 |  |  | <b>Seminar 1:</b> Introduction. Maximum likelihood estimation. Histograms. Bayes theorem. PixelCNN. VAR. | [slides](seminars/seminar1/) <a href="https://colab.research.google.com/github/r-isachenko/2024-DGM-MIPT-YSDA-course/blob/main/seminars/seminar1/PixelCNN.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
 | 2 | February, 5 | <b>Lecture 2:</b><ul><li>Normalizing Flows (NF)</li><li>NF Examples<ul><li>Linear NF</li><li>Gaussian Autoregressive NF</li><li>Coupling Layer (RealNVP)</li></ul></li><li>Latent Variable Models (LVM)</li></ul> | [slides](lectures/lecture2/Lecture2.pdf) |
 |  |  | <b>Seminar 2:</b> Planar and Radial Flows. Forward vs Reverse KL. | [slides](seminars/seminar2/) |
@@ -46,7 +47,7 @@ The course is supported by seminars and hands-on assignments that help build int
 |  |  | <b>Seminar 6:</b> Progressive Growing GAN. StyleGAN | [slides](seminars/seminar6/) |
 | 7 | March, 19 | <b>Lecture 7:</b><ul><li>Forward Gaussian Diffusion Process</li><li>Reverse Gaussian Diffusion Process</li><li>Gaussian Diffusion Model as VAE</li><li>Diffusion ELBO Derivation</li></ul> | [slides](lectures/lecture7/Lecture7.pdf) |
 |  |  | <b>Seminar 7:</b> Noise Conditioned Score Network (NCSN). Heuristic diffusion model. | [slides](seminars/seminar7/) |
-| 8 | March, 26 | <b>Lecture 8:</b><ul><li>Diffusion ELBO Derivation (continued)</li><li>Gaussian Diffusion Reparametrization</li><li>Denoising Diffusion Probabilistic Model (DDPM)</li><li>DDPM as a Score-Based Generative Model</li><li>Model Guidance<ul><li>Classifier Guidance</li><li>Classifier-Free Guidance</li></ul></li></ul> | [slides](lectures/lecture8/Lecture8.pdf) |
+| 8 | March, 26 | <b>Lecture 8:</b><ul><li>Diffusion ELBO Derivation (continued)</li><li>Gaussian Diffusion Reparametrization</li><li>Denoising Diffusion Probabilistic Model (DDPM)</li><li>Model Guidance<ul><li>Classifier Guidance</li><li>Classifier-Free Guidance</li></ul></li></ul> | [slides](lectures/lecture8/Lecture8.pdf) |
 |  |  | <b>Seminar 8:</b> Guidance. CLIP, GLIDE, DALL-E 2, Imagen. | [slides](seminars/seminar8/) |
 | 9 | April, 2 | <b>Lecture 9:</b><ul><li>Continuous-Time Normalizing Flows (CNF)</li><li>Continuity Equation for CNF Log-Likelihood</li><li>SDE Basics</li><li>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</li></ul> | [slides](lectures/lecture9/Lecture9.pdf) |
 |  |  | <b>Seminar 9:</b> Latent Diffusion Model. Stable Diffusion. | [slides](seminars/seminar9/) <a href="https://colab.research.google.com/github/r-isachenko/2026-DGM-AIMasters-course/blob/main/seminars/seminar9/seminar9_SD.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
@@ -62,7 +63,6 @@ The course is supported by seminars and hands-on assignments that help build int
 |  |  | <b>Seminar 14:</b> – |  |
 | 14 | December, 23 | <b>Lecture 14:</b>  | [slides](lectures/lecture14/Lecture14.pdf) |
 |  |  | <b>Seminar 14:</b> The Final Recap| [slides](seminars/seminar14/seminar14.ipynb) |
-<!---
 -->
 
 ## Homeworks
