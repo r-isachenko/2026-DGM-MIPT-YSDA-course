@@ -1,0 +1,491 @@
+\documentclass{beamer}
+\input{../utils/preamble}
+\createdgmtitle{1}
+
+%--------------------------------------------------------------------------------
+\begin{document}
+%--------------------------------------------------------------------------------
+\begin{frame}[noframenumbering,plain]
+	\titlepage
+	\resetonslide
+\end{frame}
+%=======
+\begin{frame}{Generative Models Taxonomy}
+	\renderTaxonomy{}
+\end{frame}
+%=======
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\section{Generative Models Overview}
+%=======
+\begin{frame}{VAE -- The First Scalable Approach for Image Generation}
+\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\linewidth]{figs/vae.png}
+    \end{figure}
+\end{frame}
+%=======
+\begin{frame}{DCGAN -- The First Convolutional GAN for Image Generation}
+\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.0\linewidth]{figs/dcgan.png}
+    \end{figure}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN -- High-Quality Face Generation}
+	\vspace{-0.2cm}
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/gan_evolution}
+	\end{figure}
+	\vspace{-0.5cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.75\linewidth]{figs/stylegan}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Language Modeling at Scale}
+	\myfootnotewithlink{https://blog.biocomm.ai/2023/05/14/open-source-proliferation-llm-evolutionary-tree/}{Image credit: https://blog.biocomm.ai/2023/05/14/open-source-proliferation-llm-evolutionary-tree/}
+	\begin{figure}
+		\includegraphics[width=0.85\linewidth]{figs/LLM-Evolutionary-Tree}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Denoising Diffusion Probabilistic Model}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/diffusion_models}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Midjourney -- Impressive Text-to-Image Results}
+	\myfootnotewithlink{https://www.midjourney.com/explore}{Image credit: https://www.midjourney.com/explore}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/midjourney}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Sora -- Video Generation}
+	\myfootnotewithlink{https://openai.com/index/sora}{Image credit: https://openai.com/index/sora}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/sora}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Nano Banana Pro}
+	\myfootnotewithlink{https://blog.google/technology/ai/nano-banana-pro/}{Image credit: https://blog.google/technology/ai/nano-banana-pro/}
+	\textbf{Prompt:} Create a storyboard for this scene
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/nano_banana}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Generative Models Timeline}
+	\myfootnotewithlink{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025.}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/timeline}
+	\end{figure}
+	\begin{description}
+		\item[\textbf{EBM}] -- Energy-based Model.
+		\item[\textbf{VAE}] -- Variational Autoencoder.
+		\item[\textbf{NF}] -- Normalizing Flow.
+		\item[\textbf{DPM}] -- Diffusion Probabilistic Model.
+		\item[\textbf{NODE}] -- Neural ODE.
+		\item[\textbf{NCSN}] -- Noise Conditional Score Network.
+		\item[\textbf{DDPM}] -- Denoising Diffusion Probabilistic Model.
+		\item[\textbf{Score SDE}] -- Score-based Stochastic Differential Equation.
+		\item[\textbf{FM}] -- Flow Matching.
+	\end{description}
+\end{frame}
+%=======
+\begin{frame}{Open Problems in Generative Models}
+	\myfootnotewithlink{https://arxiv.org/abs/2501.09038}{Motamed S. et al. Do generative video models understand physical principles?, 2025}
+	\begin{itemize}
+		\item Video generation
+		\item 3D scene generation
+		\item Understanding of physical processes
+		\item Multimodal end-to-end models
+	\end{itemize}	
+	\begin{figure}
+		\includegraphics[width=0.55\linewidth]{figs/physics_understand}
+	\end{figure}
+\end{frame}
+%=======
+\section{Course Tricks}
+%=======
+\begin{frame}{Course Tricks I}
+	\begin{block}{Log-Derivative Trick}
+		Given a differentiable function $p: \bbR^m \to \bbR$ (usually density function),
+		$$
+			\nabla \log p(\bx) = \frac{1}{p(\bx)} \cdot \nabla p(\bx).
+		$$
+		\vspace{-0.5cm}
+	\end{block}
+    \eqpause
+	\begin{block}{Jensen's Inequality}
+		If $\bx \in \bbR^m$ is a continuous random variable with density $p(\bx)$ and $f: \bbR^m \to \bbR$ is convex, then
+		$$
+			\bbE[f(\bx)] \geq f(\bbE[\bx]).
+		$$
+		\vspace{-0.7cm}
+	\end{block}
+    \eqpause
+	\begin{block}{Monte Carlo Estimation}
+		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and $\bff: \bbR^m \to \bbR^d$ be any vector-valued function. Then,
+		$$
+			\bbE_{p(\bx)} \bff(\bx) = \int p(\bx) \bff(\bx) d \bx \approx \frac{1}{n} \sum_{i=1}^n \bff(\bx_i), \quad 
+			\text{where } \bx_i \sim p(\bx).
+		$$
+		\vspace{-0.4cm}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Course Tricks II}
+	\begin{block}{Change of Variables Theorem (CoV)}
+		Let $\bx\in \bbR^m$ be a random vector with density $p(\bx)$, and let $\bff: \bbR^m \rightarrow \bbR^m$ be a $C^1$-diffeomorphism ($\bff$ and $\bff^{-1}$ are continuously differentiable mappings). 
+		If $\bz = \bff(\bx)$, then
+		\begin{align*}
+			p(\bx) &= p(\bz) |\det(\bJ_{\bff})| = p(\bz) \left|\det \left( \frac{\partial \bz}{\partial \bx} \right) \right| 
+			\nextonslide{= p(\bff(\bx)) \left|\det \left(  \frac{\partial \bff(\bx)}{\partial \bx} \right) \right|} \\
+			\nextonslide{p(\bz) &= p(\bx) |\det(\bJ_{\bff^{-1}})| = p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \bz} \right) \right| 
+			= p(\bff^{-1}(\bz)) \left|\det \left(  \frac{\partial \bff^{-1}(\bz)}{\partial \bz} \right) \right| }
+		\end{align*}
+		\vspace{-0.5cm}
+	\end{block}
+    \eqpause
+	\begin{block}{Law of the Unconscious Statistician (LOTUS)}
+		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and let $\bff: \bbR^m \to \bbR^m$ be measurable. If $\by = \bff(\bx)$, then
+		$$
+			\bbE_{p(\by)} \bg(\by) = \int p(\by) \bg(\by) d\by \nextonslide{= \int p(\bx) \bg(\bff(\bx)) d\bx = \bbE_{p(\bx)} \bg(\bff(\bx))}.
+		$$
+		\vspace{-0.4cm}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Course Tricks III}
+	\begin{block}{Optimal MSE Prediction}
+		Let $(\bx, \by)$ be jointly distributed with density $p(\bx, \by)$. The optimal predictor under mean squared error is the conditional expectation:
+		$$
+			\bff^*(\bx) = \argmin_{\bff} \bbE_{p(\bx, \by)} \| \by - \bff(\bx) \|^2
+			\nextonslide{= \bbE_{p(\by | \bx)} [\by]}.
+		$$
+		\vspace{-0.4cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Dirac Delta Function}
+		Any deterministic variable $\bx_0$ can be interpreted as a random variable with density $p(\bx) = \delta(\bx - \bx_0)$. 
+		\vspace{-0.3cm}
+		$$
+			\delta(\bx) = 
+			\begin{cases}
+				+\infty, & \bx = 0 \\
+				0, & \bx \neq 0
+			\end{cases} \qquad 
+			\int \delta(\bx) d\bx = 1
+		$$
+        \eqpause
+		$$
+			\bbE_{p(\bx)}\bff(\bx) = \int \delta (\bx - \bx_0) \bff(\bx) d\bx = \bff(\bx_0)
+		$$
+	\end{block}
+\end{frame}
+%=======
+\section{Problem Statement}
+%=======
+\begin{frame}{Problem Statement}
+	We're given \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pd(\bx)$.
+	\eqpause
+	\begin{block}{Objective}
+		Our aim is to estimate a distribution $\pd(\bx)$ that allows us to: 
+		\begin{itemize}
+		    \item Generate new samples from $\pd(\bx)$ (sample $\bx \sim \pd(\bx)$) --- \textbf{generation}.		    
+			\eqpause
+		    \item Evaluate $\pd(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
+		\end{itemize}
+	\end{block}
+	\eqpause
+	\begin{block}{Challenge}
+		The data is high-dimensional and complex. For example, image datasets live in $\bbR^{\text{width} \times \text{height} \times \text{channels}}$. The curse of dimensionality makes accurately estimating $\pd(\bx)$ infeasible.
+	\end{block}
+	\eqpause
+	\textbf{Note:} here we use a strong assumption that our data is continuous (thus avoiding the domain of texts).
+\end{frame}
+%=======
+\begin{frame}{Histogram as a Generative Model}
+	
+	\begin{minipage}[t]{0.6\columnwidth}
+	    Assume $x \sim \Cat(\bpi)$. The histogram model is fully characterized by
+		$$
+		    \hat{\pi}_k = \hat{\pi}(x = k) = \frac{\sum_{i=1}^n [x_i = k]}{n}.
+		$$
+		\textbf{Curse of dimensionality:} The number of bins rises exponentially. \\
+	\end{minipage}%
+	\begin{minipage}[t]{0.4\columnwidth}
+		\vspace{-0.5cm}
+	    \begin{figure}[h]
+	        \centering
+	        \includegraphics[width=\linewidth]{figs/histogram.png}
+	    \end{figure}
+	\end{minipage}
+    \eqpause
+	\textbf{MNIST example}: $28 \times 28$ grayscale images, with each image $\bx = (x_1, \dots, x_{784})$, $x_i \in \{0, 1\}$:
+	$$
+	    \pd(\bx) = p(x_1) \cdot p(x_2 | x_1) \cdot \dots \cdot p(x_m | x_{m-1}, \dots, x_1).
+	$$
+    \eqpause
+	A complete histogram would require $2^{28 \times 28} - 1$ parameters for~$\pd(\bx)$.\\
+    \eqpause
+	\textbf{Question:} How many parameters are required in these cases?
+	\begin{align*}
+	    \pd(\bx) &= p(x_1) \cdot p(x_2)\cdot \dots \cdot p(x_m); \\
+	    \pd(\bx) &= p(x_1) \cdot p(x_2 | x_1) \cdot \dots \cdot p(x_m | x_{m-1}).
+	\end{align*}
+\end{frame}
+%=======
+\begin{frame}{ Conditional Models}
+	In practice, we're typically interested in learning conditional models (sampling from conditional distribution~$\pd(\bx | \by)$). 
+	\eqpause
+	\begin{itemize}
+		\item $\by = \emptyset$, $\bx$ = image $\quad\Rightarrow\quad$ unconditional image model
+		\item $\by$ = class label, $\bx$ = image $\quad\Rightarrow\quad$ class-conditional image model
+		\item $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow\quad$ text-to-image model
+		\item $\by$ = image, $\bx$ = image $\quad\Rightarrow\quad$ image-to-image model
+		\item $\by$ = image, $\bx$ = text $\quad\Rightarrow\quad$ image-to-text (image captioning) model
+		\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation) model
+		\item $\by$ = sound, $\bx$ = text $\quad\Rightarrow\quad$ speech-to-text (automatic speech recognition) model
+		\item $\by$ = text, $\bx$ = sound $\quad\Rightarrow\quad$ text-to-speech model
+	\end{itemize}
+\end{frame}
+%=======
+\section{Divergence Minimization Framework}
+%=======
+\begin{frame}{Divergences}
+	\begin{itemize}
+	\item Let us fix a probabilistic model $\pt(\bx)$ from a parametric family of distributions $\{p(\bx | \btheta) \, | \, \btheta \in \bTheta\}$.\\
+        \eqpause
+	\item Instead of searching among all possible distributions for the true $\pd(\bx)$, we seek a functional approximation $\pt(\bx) \approx \pd(\bx)$.
+	\end{itemize}
+    \eqpause
+	\begin{block}{What is a Divergence?}
+		Let $\cP$ be the set of all probability distributions. A mapping $D: \cP \times \cP \to \bbR$ is called a \textbf{divergence} if 
+		\begin{itemize}
+			\item $D(\pi \| p) \geq 0$ for all $\pi, p \in \cP$
+			\item $D(\pi \| p) = 0$ if and only if $\pi \equiv p$
+		\end{itemize}
+	\end{block}
+    \eqpause
+	\begin{block}{Divergence Minimization Problem}
+		\vspace{-0.3cm}
+		$$
+		\min_{\btheta} D(\pd \| \pt)
+		$$
+		where $\pd(\bx)$ is the true data distribution and $\pt(\bx)$ is the model distribution.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Forward KL vs Reverse KL (Kullback-Leibler Divergence)}
+	\begin{block}{Forward KL}
+		\vspace{-0.2cm}
+		\[
+			\KL(\pd \| \pt) = \int \pd(\bx) \log \frac{\pd(\bx)}{\pt(\bx)} d \bx \rightarrow \min_{\btheta}
+		\]
+	\end{block}
+    \eqpause
+	\begin{block}{Reverse KL}
+		\vspace{-0.2cm}
+		\[
+			\KL(\pt \| \pd) = \int \pt(\bx) \log \frac{\pt(\bx)}{\pd(\bx)} d \bx \rightarrow \min_{\btheta}
+		\]
+	\end{block}
+    \eqpause
+	What's the practical distinction between these two objectives?
+    \eqpause
+	\begin{block}{Maximum Likelihood Estimation (MLE)}
+	Let $\{\bx_i\}_{i=1}^n$ be i.i.d.\ observed samples.
+		\vspace{-0.3cm}
+		\[
+			\btheta^* = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i).
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Forward KL vs Reverse KL: MLE as Forward KL}
+	\begin{block}{Forward KL}
+		\vspace{-0.5cm}
+		\begin{align*}
+			\KL(\pd \| \pt) &= \int \pd(\bx) \log \frac{\pd(\bx)}{\pt(\bx)} d\bx \\
+			\nextonslide{&= {\color{violet}\int \pd(\bx) \log \pd(\bx) d \bx} - {\color{teal}\int \pd(\bx) \log \pt(\bx) d \bx}} \\
+			\nextonslide{&= -{\color{teal}\bbE_{\pd(\bx)} [\log \pt(\bx)]} + {\color{violet}\text{const}}} \\
+			\nextonslide{& \approx - \frac{1}{n} \sum_{i=1}^n \log \pt(\bx_i) + \text{const} \rightarrow \min_{\btheta}.}
+		\end{align*}
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	Maximum likelihood estimation is thus equivalent to minimizing a Monte Carlo estimate of the forward KL divergence.
+    \eqpause
+	\begin{block}{Reverse KL}
+		\vspace{-0.5cm}
+		\begin{align*}
+			\KL(\pt \| \pd) &= \int \pt(\bx) \log \frac{\pt(\bx)}{\pd(\bx)} d \bx \\
+			\nextonslide{&= \bbE_{\pt(\bx)} \left[\log \pt(\bx) - \log \pd(\bx)\right] \rightarrow \min_{\btheta}}
+		\end{align*}
+		\vspace{-0.7cm}
+	\end{block}
+\end{frame}
+%=======
+\section{Autoregressive Modeling}
+%=======
+\begin{frame}{Generative Models Taxonomy}
+	\renderTaxonomy{ar}
+\end{frame}
+%=======
+\begin{frame}{Autoregressive Modeling}
+    \begin{block}{MLE Problem}
+	    \vspace{-0.4cm}
+	    $$
+	        \btheta^* = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i)
+	    $$
+	    \vspace{-0.5cm}
+    \end{block}
+    \eqpause
+    \begin{itemize}
+        \item This maximization is typically solved via gradient-based optimization.
+        \item Thus, efficient computation of both $\log \pt(\bx)$ and its gradient $\frac{\partial \log \pt(\bx)}{\partial \btheta}$ is crucial.
+    \end{itemize}
+    \eqpause
+    \begin{block}{Likelihood as a Product of Conditionals}
+    For $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$,
+    $$
+        \pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j - 1});\quad
+        \log \pt(\bx) = {\color{violet}\sum_{j=1}^m \log \pt(x_j | \bx_{1:j - 1})}
+    $$
+    \end{block}
+    \eqpause
+    \vspace{-0.5cm}
+	 $$
+	     \btheta^* =  \argmax_{\btheta} \sum_{i=1}^n \Big[{\color{violet} \sum_{j=1}^m \log \pt(x_{ij} | \bx_{i, 1:j - 1})}\Big]
+	 $$
+\end{frame}
+%=======
+\begin{frame}{Autoregressive Models}
+    \[
+    	\log \pt(\bx) = \sum_{j=1}^m \log \pt(x_j | \bx_{1:j - 1})
+    \]
+    \eqpause
+    \begin{itemize}
+	    \item Sampling is performed sequentially:
+	    \begin{itemize}
+    		\item Sample $\hat{x}_1 \sim \pt(x_1)$;
+    		\item Sample $\hat{x}_2 \sim \pt(x_2 | \hat{x}_1)$;
+    		\item $\ldots$
+    		\item Sample $\hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})$;
+    		\item The generated sample is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \ldots, \hat{x}_m)$.
+    	\end{itemize}
+        \eqpause
+        \item Each conditional $\pt(x_j | \bx_{1:j - 1})$ can be modeled using a neural network.
+        \eqpause
+        \item Modeling all conditionals separately isn't feasible. To address this, we share parameters across all conditionals.
+    \end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Autoregressive Models: MLP}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
+	For large $j$, the conditional $\pt(x_j | \bx_{1:j - 1})$ becomes intractable as the history $\bx_{1:j-1}$ grows variable-length.
+    \eqpause
+	\begin{block}{Markov Assumption}
+		\vspace{-0.3cm}
+		$$
+			\pt(x_j | \bx_{1:j - 1}) = \pt(x_j | \bx_{j - d:j - 1}),\quad d\;\text{is a fixed parameter}.
+		$$
+	\end{block}
+    \eqpause
+	\vspace{-0.5cm}
+	\begin{block}{Example}
+		\begin{minipage}[t]{0.39\columnwidth}
+			{\small
+			\begin{itemize}
+				\item $d = 2$
+				\item $x_j \in \{0, 255\}$
+				\item $\bh_j = \MLP_{\btheta}(x_{j - 1}, x_{j - 2})$
+				\item $\pt(x_j | x_{j - 1}, x_{j - 2}) = \Cat(\bpi_j)$
+			\end{itemize}
+			}
+		\end{minipage}%
+		\begin{minipage}[t]{0.61\columnwidth}
+			 \begin{figure}
+			   \centering
+			   \includegraphics[width=1.0\linewidth]{figs/sequential_MLP}
+			 \end{figure}
+			 \eqpause
+			 Can we also model continuous-valued data, not just the discrete case?
+		\end{minipage}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Autoregressive Models: LLM}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/20/20\_llms.html}{Image credit: https://jmtomczak.github.io/blog/20/20\_llms.html}
+	\[
+		\pt(x_j | \bx_{1:j - 1}) = \pt(x_j | \bx_{j - d:j - 1}),\quad d\ \text{is the context window}.
+	\]
+	 \begin{figure}
+		   \centering
+		   \includegraphics[width=1.0\linewidth]{figs/llm_modeling}
+	 \end{figure}
+\end{frame}
+%=======
+\begin{frame}{Autoregressive Models for Images}
+	\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel Recurrent Neural Networks, 2016}
+	How do we model the distribution $\pd(\bx)$ of natural images?
+	$$
+  		\pt(\bx) = \prod_{j=1}^{\text{width} \times \text{height}} \pt(x_j | \bx_{1:j-1})
+	$$
+    \eqpause
+	\begin{minipage}[t]{0.5\columnwidth}
+		\vspace{0.5cm}
+		\begin{itemize}
+			\item A pixel ordering must be selected; the raster scan is a standard choice.
+			\vfill
+		    \item RGB channel dependencies can be modeled explicitly as well.
+		\end{itemize}
+	\end{minipage}%
+	\begin{minipage}[t]{0.5\columnwidth}
+		\begin{figure}
+			\centering
+   			\includegraphics[width=0.9\linewidth]{figs/pixelcnn1.png}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+%=======
+\begin{frame}{Autoregressive Models: ImageGPT}
+	\myfootnotewithlink{https://cdn.openai.com/papers/Generative_Pretraining_from_Pixels_V2.pdf}{Chen M. et al. Generative Pretraining from Pixels, 2020}
+	\begin{figure}
+		\centering
+  			\includegraphics[width=0.65\linewidth]{figs/imagegpt.png}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Summary}
+    \begin{itemize}
+    	\item Our target is to approximate the data distribution both for density estimation and for generation.
+    	\vfill
+    	\item The divergence minimization framework offers a principled way to learn distributions that match the data.
+    	\vfill
+    	\item Minimizing the forward KL divergence is equivalent to maximum likelihood estimation.
+    	\vfill
+    	\item Autoregressive models decompose the joint distribution as a product of conditionals.
+    	\vfill
+        \item Autoregressive sampling is simple, but inherently sequential.
+        \vfill
+        \item Joint density evaluation multiplies all conditional probabilities $\pt(x_j | \bx_{1:j - 1})$.
+        \vfill
+     	\item ImageGPT applies a transformer architecture to sequences of raster-ordered image pixels.
+    \end{itemize}
+\end{frame}
+
+\end{document}

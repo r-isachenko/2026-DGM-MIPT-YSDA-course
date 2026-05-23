@@ -1,0 +1,155 @@
+% =============================================================================
+% ENCODING
+% =============================================================================
+\usepackage[utf8]{inputenc}  % UTF-8 encoding support
+
+% =============================================================================
+% GRAPHICS
+% =============================================================================
+\usepackage{graphicx}  % For \includegraphics (401 uses across lectures)
+
+% =============================================================================
+% MATH PACKAGES
+% =============================================================================
+\usepackage{amsmath}    % For align, multline, equation environments (heavily used)
+\usepackage{amsfonts}   % For \mathbb (e.g., \bbR, \bbE)
+\usepackage{amssymb}    % For additional math symbols
+
+% =============================================================================
+% TABLES
+% =============================================================================
+\usepackage{booktabs}   % For \toprule, \midrule, \bottomrule (used in lecture13, lecture14)
+
+% =============================================================================
+% LISTS
+% =============================================================================
+\usepackage{enumerate}  % Enhanced enumerate environment (76 uses across lectures)
+
+% =============================================================================
+% TIKZ (DIAGRAMS)
+% =============================================================================
+\usepackage{tikz}       % For taxonomy diagram and footnotes positioning
+
+% =============================================================================
+% UTILITY PACKAGES
+% =============================================================================
+\usepackage{multido}    % For \multido command used in \eqpause
+\usepackage{etoolbox}   % For \AtEndEnvironment, \ifbool, \newbool (used in preamble and taxonomy)
+\usepackage{xspace}     % For smart spacing after custom commands (\ODESolve, \SDESolve)
+
+% =============================================================================
+% BEAMER THEME SETTINGS
+% =============================================================================
+\usetheme{default}
+\usecolortheme{default}
+
+\setbeamerfont{title}{size=\Huge}
+\setbeamertemplate{footline}[frame number]{}
+\setbeamertemplate{section in toc}[sections numbered]
+
+\makeatletter
+\newcommand\HUGE{\@setfontsize\Huge{35}{40}}
+\makeatother    
+
+\setbeamerfont{title}{size=\HUGE}
+\beamertemplatenavigationsymbolsempty
+
+% =============================================================================
+% TIKZ LIBRARIES
+% =============================================================================
+% Used for taxonomy diagram: arrows, positioning, shapes
+\usetikzlibrary{arrows.meta,calc,shapes,positioning,shadows,trees}
+
+% =============================================================================
+% CUSTOM FOOTNOTE COMMANDS
+% =============================================================================
+% \myfootnote{text} - creates a footnote at the bottom of the slide
+\newcommand\myfootnote[1]{%
+  \vspace{-0.5cm}%
+  \tikz[remember picture,overlay]
+  \draw (current page.south west) +(1in + \oddsidemargin,0.5em)
+  node[anchor=south west,inner sep=0pt]{\parbox{\textwidth}{%
+      \rlap{\rule{10em}{0.4pt}}\raggedright\scriptsize \textit{#1}}};}
+
+% \myfootnotewithlink{url}{text} - creates a clickable footnote (623 uses across lectures)
+\newcommand\myfootnotewithlink[2]{%
+  \vspace{-0.5cm}%
+  \tikz[remember picture,overlay]
+  \draw (current page.south west) +(1in + \oddsidemargin,0.5em)
+  node[anchor=south west,inner sep=0pt]{\parbox{\textwidth}{%
+      \rlap{\rule{10em}{0.4pt}}\raggedright\scriptsize\href{#1}{\textit{#2}}}};}
+
+% =============================================================================
+% SECTION/SUBSECTION OUTLINE AUTOMATION
+% =============================================================================
+% Automatically show outline at the beginning of each section
+\AtBeginSection[]
+      {
+      	\begin{frame}{Outline}
+      		\tableofcontents[currentsection]
+      	\end{frame}
+      }
+      \AtBeginSubsection[]{
+      	\begin{frame}{Outline}
+      		\tableofcontents[currentsection,currentsubsection]
+      	\end{frame}
+}
+
+% =============================================================================
+% CUSTOM SLIDE ANIMATION COMMANDS
+% =============================================================================
+% These commands enable step-by-step reveal of equations and content
+% Used heavily across all lectures (1130+ uses of \nextonslide and \eqpause)
+
+\newcounter{noscounter}   % Counter for \nextonslide (resets on each new slide)
+\newcounter{pcounter}     % Counter for pause commands (resets after \eqpause)
+\newcounter{diffcounter}  % Counts pauses after equations
+
+% \nextonslide{content} - reveals content on the next overlay
+\newcommand{\nextonslide}[1]{%
+  \stepcounter{noscounter}%
+  \stepcounter{pcounter}%
+  \stepcounter{diffcounter}%
+  \onslide<\value{noscounter}->{#1}%
+}
+
+% \resetonslide - resets all animation counters (called at each frame)
+\newcommand{\resetonslide}{%
+    \setcounter{noscounter}{1}%
+    \setcounter{pcounter}{1}%
+    \setcounter{diffcounter}{0}%
+}
+
+% \eqpause - pause after equation that syncs with \nextonslide
+\newcommand{\eqpause}{%
+  \multido{\i=1+1}{\value{pcounter}}{\pause}%
+  \stepcounter{noscounter}%
+  \setcounter{pcounter}{1}%
+}
+
+% \eqpausediff - helper command, runs automatically after math environments
+\newcommand{\eqpausediff}{%
+  \multido{\i=1+1}{\value{diffcounter}}{\pause}%
+  \addtocounter{pcounter}{-\value{diffcounter}}%
+  \setcounter{diffcounter}{0}%
+}
+
+% Apply \eqpausediff after math environments
+\newcommand\AtEndBoth[2]{%
+  \AtEndEnvironment{#1}{#2}%
+  \AtEndEnvironment{#1*}{#2}%
+}
+
+\AtEndBoth{align}{\eqpausediff}
+\AtEndBoth{equation}{\eqpausediff}
+\AtEndBoth{multline}{\eqpausediff}
+
+% Reset counters at the beginning of each frame
+\addtobeamertemplate{frametitle}{\resetonslide}{}
+
+% =============================================================================
+% INCLUDE OTHER CONFIGURATION FILES
+% =============================================================================
+\input{../utils/newcommands}  % Math shorthand commands (\bx, \bbE, \KL, etc.)
+\input{../utils/title}        % Title page template
+\input{../utils/taxonomy}     % Generative models taxonomy diagram

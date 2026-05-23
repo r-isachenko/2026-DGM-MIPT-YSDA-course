@@ -1,0 +1,171 @@
+% ==============================================================================
+% Custom LaTeX Commands for Deep Generative Models Course
+% ==============================================================================
+
+% ==============================================================================
+% BOLD LETTERS (mathbf / boldsymbol)
+% ==============================================================================
+
+% ------------------------------------------------------------------------------
+% Latin Bold Lowercase
+% Usage: \bx for x in bold, commonly used for vectors
+% ------------------------------------------------------------------------------
+\newcommand{\ba}{\mathbf{a}}
+\newcommand{\bc}{\mathbf{c}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\bff}{\mathbf{f}}  % Note: \bf is reserved for bold font switching
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bp}{\mathbf{p}}
+\newcommand{\bq}{\mathbf{q}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bz}{\mathbf{z}}
+
+% ------------------------------------------------------------------------------
+% Latin Bold Uppercase
+% Usage: \bX for X in bold, commonly used for matrices or random vectors
+% ------------------------------------------------------------------------------
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bG}{\mathbf{G}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bJ}{\mathbf{J}}
+\newcommand{\bL}{\mathbf{L}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bP}{\mathbf{P}}
+\newcommand{\bQ}{\mathbf{Q}}
+\newcommand{\bR}{\mathbf{R}}
+\newcommand{\bT}{\mathbf{T}}
+\newcommand{\bU}{\mathbf{U}}
+\newcommand{\bV}{\mathbf{V}}
+\newcommand{\bW}{\mathbf{W}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bZ}{\mathbf{Z}}
+
+% ------------------------------------------------------------------------------
+% Greek Bold Lowercase
+% Usage: \btheta for θ in bold, commonly used for parameter vectors
+% ------------------------------------------------------------------------------
+\newcommand{\bepsilon}{\boldsymbol{\epsilon}}
+\newcommand{\blambda}{\boldsymbol{\lambda}}
+\newcommand{\bmu}{\boldsymbol{\mu}}
+\newcommand{\bphi}{\boldsymbol{\phi}}
+\newcommand{\bpi}{\boldsymbol{\pi}}
+\newcommand{\bpsi}{\boldsymbol{\psi}}
+\newcommand{\bsigma}{\boldsymbol{\sigma}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+
+% ------------------------------------------------------------------------------
+% Greek Bold Uppercase
+% Usage: \bSigma for Σ in bold, commonly used for covariance matrices
+% ------------------------------------------------------------------------------
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+\newcommand{\bTheta}{\boldsymbol{\Theta}}
+
+% ==============================================================================
+% CALLIGRAPHIC LETTERS (mathcal)
+% Usage: \cX for calligraphic X, commonly used for sets and spaces
+% ==============================================================================
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cZ}{\mathcal{Z}}
+
+% ==============================================================================
+% BLACKBOARD BOLD LETTERS (mathbb)
+% Usage: \bbR for ℝ, commonly used for number sets and expectations
+% ==============================================================================
+\newcommand{\bbE}{\mathbb{E}}  % Expectation
+\newcommand{\bbI}{\mathbb{I}}  % Indicator function
+\newcommand{\bbP}{\mathbb{P}}  % Probability measure
+\newcommand{\bbR}{\mathbb{R}}  % Real numbers
+
+% ==============================================================================
+% MATH OPERATORS
+% ==============================================================================
+
+% ------------------------------------------------------------------------------
+% Optimization Operators
+% Usage: \argmin_{x} f(x) for proper spacing and limits placement
+% ------------------------------------------------------------------------------
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% ------------------------------------------------------------------------------
+% Statistical Operators
+% Usage: \cov(X, Y) for covariance
+% ------------------------------------------------------------------------------
+\DeclareMathOperator{\cov}{cov}
+
+% ------------------------------------------------------------------------------
+% Linear Algebra Operators
+% Usage: \tr(\bA) for trace of matrix A
+% ------------------------------------------------------------------------------
+\DeclareMathOperator{\tr}{tr}
+
+% ------------------------------------------------------------------------------
+% Other Mathematical Operators
+% ------------------------------------------------------------------------------
+\DeclareMathOperator{\diver}{div}      % Divergence (vector calculus)
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\supp}{supp}      % Support of a distribution
+
+% ==============================================================================
+% PROBABILITY DISTRIBUTIONS
+% Usage: X \sim \cN(0, 1), Y \sim \Bern(p)
+% ==============================================================================
+\DeclareMathOperator{\Bern}{Bern}      % Bernoulli distribution
+\DeclareMathOperator{\Cat}{Cat}        % Categorical distribution
+\DeclareMathOperator{\Gumbel}{Gumbel}  % Gumbel distribution
+\DeclareMathOperator{\Uniform}{Uniform}
+
+% ==============================================================================
+% METRICS AND DIVERGENCES
+% Usage: \KL(p \| q), \JSD(p, q)
+% ==============================================================================
+\newcommand{\Ent}{\mathrm{H}}          % Entropy
+\newcommand{\FID}{\mathrm{FID}}        % Fréchet Inception Distance
+\newcommand{\JSD}{D_\mathrm{JS}}        % Jensen-Shannon Divergence
+\newcommand{\KL}{D_\mathrm{KL}}        % Kullback-Leibler Divergence
+\DeclareMathOperator{\MMD}{MMD}        % Maximum Mean Discrepancy
+\DeclareMathOperator{\SNR}{SNR}        % Signal-to-Noise Ratio
+
+% ==============================================================================
+% NEURAL NETWORK NOTATION
+% ==============================================================================
+
+% ------------------------------------------------------------------------------
+% Network Architectures (upright font for abbreviations)
+% Usage: f_{\btheta} = \NN_{\btheta}(\bx)
+% ------------------------------------------------------------------------------
+\newcommand{\MLP}{\mathrm{MLP}}        % Multi-Layer Perceptron
+\newcommand{\NN}{\mathrm{NN}}          % Neural Network
+\newcommand{\RNN}{\mathrm{RNN}}        % Recurrent Neural Network
+
+% ------------------------------------------------------------------------------
+% Numerical Solvers (monospace font)
+% Usage: \bx_T = \ODESolve(v, \bx_0, T)
+% ------------------------------------------------------------------------------
+\newcommand{\ODESolve}{\texttt{ODESolve}\xspace}
+\newcommand{\SDESolve}{\texttt{SDESolve}\xspace}
+
+% ==============================================================================
+% COMMON SHORTCUTS
+% Usage: Frequently used subscripted or parameterized expressions
+% ==============================================================================
+\newcommand{\pd}{p_{\text{data}}}              % Data distribution
+\newcommand{\pt}{p_{\boldsymbol{\theta}}}      % Parameterized distribution
+\newcommand{\qagg}{q_{\text{agg}}}             % Aggregated posterior
+\newcommand{\lambdamax}{\lambda_{\text{max}}}  % Maximum eigenvalue

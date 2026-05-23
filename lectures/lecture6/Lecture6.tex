@@ -1,0 +1,700 @@
+\documentclass{beamer}
+\input{../utils/preamble}
+\createdgmtitle{6}
+%--------------------------------------------------------------------------------
+\begin{document}
+%--------------------------------------------------------------------------------
+\begin{frame}[noframenumbering,plain]
+	\titlepage
+	\resetonslide
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
+	\begin{block}{GAN Optimality Theorem}
+		The minimax game
+		\[
+		\min_{G} \max_D \Bigl[ \underbrace{\bbE_{\pd(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(\bG(\bz)))}_{V(G, D)} \Bigr]
+		\]
+		has a global optimum at $\pd(\bx) = \pt(\bx)$, and then $D^*(\bx) = 0.5$.
+	\end{block}
+	\vspace{-0.3cm}
+	\[
+		\min_{G} V(G, D^*) = \min_{G} \left[ 2 \JSD(\pi \| p) - \log 4 \right] = -\log 4, \quad \pd(\bx) = \pt(\bx).
+	\]
+	If the generator can be \textbf{any} function and the discriminator is \textbf{optimal} at each step, then the generator is \textbf{guaranteed to converge} to the data distribution.  
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
+	\begin{itemize}
+		\item The generator is updated in the parameter space; the discriminator isn't optimal at every iteration.
+		\item Both generator and discriminator loss typically oscillate during GAN training.
+	\end{itemize}
+	\begin{block}{Objective}
+		\vspace{-0.5cm}
+		\[
+		\min_{\btheta} \max_{\bphi} \left[ \bbE_{\pd(\bx)} \log D_{\bphi}(\bx) + \bbE_{p(\bz)} \log (1 - D_{\bphi}(\bG_{\btheta}(\bz))) \right]
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/gan_1}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
+		\href{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}}
+	\begin{block}{Main Issues With Standard GANs}
+		\begin{itemize}
+			\item Vanishing gradients (solution: non-saturating GAN).
+			\item Mode collapse (arises from Jensen-Shannon divergence).
+		\end{itemize}
+	\end{block}
+	\begin{block}{Standard GAN}
+		\vspace{-0.2cm}
+		\[
+		\min_{\btheta} \max_{\bphi} \left[ \bbE_{\pd(\bx)} \log D_{\bphi}(\bx) + \bbE_{p(\bz)} \log (1 - D_{\bphi}(\bG_{\btheta}(\bz))) \right]
+		\]
+		\vspace{-0.4cm}
+	\end{block}
+	\vspace{-0.1cm}
+	\begin{block}{Informal Theoretical Results}
+		Both the data distribution $\pd(\bx)$ and the generative distribution $\pt(\bx)$ are low-dimensional with disjoint supports. In such cases,
+		\[
+			\KL(\pd \| \pt) = \KL(\pt \| \pd) = \infty, \quad \JSD(\pd \| \pt) = \log 2.
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/discrete_wasserstein}
+	\end{figure}
+	\vspace{-0.3cm}
+	\begin{block}{Wasserstein Distance}
+		\vspace{-0.7cm}
+		{\small
+		\[
+		W(\pi \| p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx_1, \bx_2) \sim \gamma} \| \bx_1 - \bx_2 \| =  \inf_{\gamma \in \Gamma(\pi, p)} \int \| \bx_1 - \bx_2 \| \gamma (\bx_1, \bx_2) d \bx_1 d \bx_2
+		\]
+		}
+		\vspace{-0.5cm}
+		\begin{itemize}
+			\item $\gamma(\bx_1, \bx_2)$ -- transportation plan (amount of "dirt" to transport from $\bx_1$ to $\bx_2$).
+			\item $\Gamma(\pi, p)$ -- set of all joint distributions $\gamma (\bx_1, \bx_2)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx_1, \bx_2) d \bx_1 = p(\bx_2)$, $\int \gamma(\bx_1, \bx_2) d \bx_2 = \pi(\bx_1)$).
+			\item $\gamma(\bx_1, \bx_2)$ -- the amount; $\|\bx_1 - \bx_2 \|$ -- the distance.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+	\begin{block}{Theorem (Kantorovich-Rubinstein Duality)}
+		\vspace{-0.2cm}
+		\[
+		W(\pd \| \pt) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\pd(\bx)} f(\bx)  - \bbE_{\pt(\bx)} f(\bx)\right],
+		\]
+		where $\| f \|_L \leq K$ denotes $K$-Lipschitz continuous functions.
+	\end{block}
+	\begin{block}{WGAN Objective}
+		\vspace{-0.5cm}
+		\[
+		\min_{\btheta} {\color{violet}W(\pd \| \pt)} = \min_{\btheta} {\color{violet}\max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bz)} f_{\bphi}(\bG_{\btheta}(\bz))\right]}.
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{itemize}
+		\item The function $f$ in WGAN is called the \textit{critic}.
+		\item If parameters $\bphi$ lie in a compact set $\boldsymbol{\Phi} \in [-c, c]^d$, then $f(\bx, \bphi)$ is $K$-Lipschitz continuous. 
+	\end{itemize}
+	\begin{multline*}
+		K \cdot W(\pd \| \pt) = \max_{\| f \|_L \leq K} \left[ \bbE_{\pd(\bx)} f(\bx) - \bbE_{\pt(\bx)} f(\bx)\right] \geq 
+		\\ \geq \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{\pt(\bx)} f_{\bphi}(\bx)\right]
+	\end{multline*}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
+	\vspace{-0.3cm}
+	\begin{block}{Frechet Inception Distance (FID)}
+		For normal distributions $\pd(\bx_1) = \cN(\bmu_{\text{data}}, \bSigma_{\text{data}})$, $p(\bx_2) = \cN(\bmu_{\boldsymbol{\theta}}, \bSigma_{\boldsymbol{\theta}})$:
+		\vspace{-0.3cm}
+		\begin{multline*}
+			\FID (\pd, \pt) =  W_2^2(\pd, \pt) = \inf_{\gamma \in \Gamma(\pd, \pt)} \bbE_{(\bx_1, \bx_2) \sim \gamma} \| \bx_1 - \bx_2 \|^2 \\
+			= \| \bmu_{\text{data}} - \bmu_{\boldsymbol{\theta}}\|^2 + \tr \left[ \bSigma_{\text{data}} + \bSigma_{\boldsymbol{\theta}} - 2 \left(\bSigma_{\text{data}}^{1/2} \bSigma_{\boldsymbol{\theta}} \bSigma_{\text{data}}^{1/2} \right)^{1/2} \right]
+		\end{multline*}
+		\vspace{-0.4cm}
+	\end{block}
+	\begin{itemize}
+		\item Requires a large sample size for evaluation
+		\item FID computation is relatively slow
+		\item Results are highly dependent on the chosen pretrained classifier
+		\item Relies on the normality assumption
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item $\cS_{\text{data}} = \{\bx_i\}_{i=1}^{n} \sim \pd(\bx)$: real samples
+		\item $\cS_{\btheta} = \{\bx_i\}_{i=1}^{n} \sim \pt(\bx)$: generated samples
+	\end{itemize}
+	Define a binary indicator function:
+	\vspace{-0.2cm}
+	\[
+		\bbI(\bx, \cS) = 
+		\begin{cases}
+			1, & \text{if}~ \exists~ \bx' \in \cS: \| \bx  - \bx'\|_2 \leq \| \bx' - \NN_k(\bx', \cS)\|_2; \\
+			0, & \text{otherwise}
+		\end{cases}
+	\]
+	\vspace{-0.3cm}
+	\[
+		\text{Pr} (\cS_{\text{data}}, \cS_{\btheta}) = \frac{1}{n} \sum_{\bx \in \cS_{\btheta}} \bbI(\bx, \cS_{\text{data}}); \quad \text{Rec} (\cS_{\text{data}}, \cS_{\btheta}) = \frac{1}{n} \sum_{\bx \in \cS_{\text{data}}} \bbI(\bx, \cS_{\btheta}).
+	\]
+	\vspace{-0.5cm}
+	\begin{figure}
+		\includegraphics[width=0.75\linewidth]{figs/pr_k_nearest}
+	\end{figure}
+	\vspace{-0.3cm}
+	The samples are embedded using a pretrained network, as in FID evaluation.
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://arxiv.org/abs/2103.00020}{Radford A. et al. Learning transferable visual models from natural language supervision, 2021} 
+	\vspace{-0.2cm}
+	\begin{minipage}{0.5\linewidth}
+		\begin{block}{Unconditional Model}
+			\begin{figure}
+				\includegraphics[width=0.95\linewidth]{figs/uncond_model}
+			\end{figure}
+		\end{block}
+	\end{minipage}%
+	\begin{minipage}{0.5\linewidth}
+		\vspace{0.2cm}
+		\begin{block}{Conditional Model}
+			\begin{figure}
+				\includegraphics[width=0.95\linewidth]{figs/cond_model}
+			\end{figure}
+		\end{block}
+	\end{minipage}
+	We require metrics that evaluate not only the quality of generated images, but also their relevance to the prompt.
+	\begin{block}{CLIP Score}
+		\begin{figure}
+			\includegraphics[width=0.5\linewidth]{figs/clip}
+		\end{figure}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://ya.ru/ai/art}{YandexART 2.5, 2025} 
+	\begin{itemize}
+		\item No perfect automatic evaluation metric exists
+		\item The most reliable assessment is via human evaluation
+		\item It's important to evaluate a variety of model aspects
+	\end{itemize}
+	\begin{block}{Human Evaluation}
+		\begin{figure}
+			\includegraphics[width=1.0\linewidth]{figs/yaart_2.5}
+		\end{figure}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\section{Langevin Dynamics}
+%=======
+\begin{frame}{Energy-Based Models}
+	\begin{block}{Unnormalized Density}
+		\vspace{-0.2cm}
+		\[
+			\pt(\bx) = \frac{\hat{p}_{\btheta}(\bx)}{Z_{\btheta}}, \quad \text{where } Z_{\btheta} = \int \hat{p}_{\btheta}(\bx) d \bx
+		\]
+		\vspace{-0.3cm}
+		\begin{itemize}
+			\item $\hat{p}_{\btheta}(\bx)$ can be any non-negative function. \\
+			\item If we reparameterize as $\hat{p}_{\btheta}(\bx) = \exp(-f_{\btheta}(\bx))$, we eliminate the non-negativity constraint.
+		\end{itemize}
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{block}{Unnormalized Density}
+		The gradient of the normalized log-density equals that of the unnormalized log-density:
+		\[
+			\nabla_{\bx} \log \pt(\bx) = \nabla_{\bx} \log \hat{p}_{\btheta}(\bx) - \nabla_{\bx} \log Z_{\btheta} = \nabla_{\bx} \log \hat{p}_{\btheta}(\bx)
+		\]
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item Suppose we already have this density (normalized or not) $\pt(\bx)$.
+		\item How can we sample from the model?
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Langevin Dynamics}
+	\myfootnotewithlink{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025.}
+	\vspace{-0.4cm}
+	\begin{block}{Theorem (Informal)}
+		Let $\bx_0$ be a random vector. Under mild regularity conditions, samples from the following dynamics will eventually follow $\pt(\bx)$ (for sufficiently small $\eta$ and large $l$):
+		\vspace{-0.3cm}
+		\[
+			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \nabla_{\bx_l} \log \pt(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\begin{minipage}{0.55\linewidth}
+		\begin{itemize}
+			\item What if $\bepsilon_l = \boldsymbol{0}$?
+			\item The density $\pt(\bx)$ is the \textbf{stationary} distribution of the Markov chain.
+			\item The gradient is taken with respect to $\bx$, not $\btheta$.
+			\item $\nabla_{\bx} \log \pt(\bx)$ defines a vector field.
+		\end{itemize}
+	\end{minipage}%
+	\begin{minipage}{0.45\linewidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figs/langevin_dynamic}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+%=======
+\section{Score Matching}
+%=======
+\begin{frame}{Generative Models Taxonomy}
+	\renderTaxonomy{sm}
+\end{frame}
+%=======
+\begin{frame}{Score Function}
+	\myfootnotewithlink{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025.}
+	\vspace{-0.3cm}
+	\[
+		\bs_{\btheta}(\bx) = \nabla_{\bx}\log \pt(\bx)
+	\]
+	\vspace{-0.5cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/score_function}
+	\end{figure}
+	\vspace{-0.3cm}
+	\eqpause
+	\begin{block}{Langevin Dynamics}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \nabla_{\bx_l} \log \pd(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l \\
+			= \bx_l + \frac{\eta}{2} \cdot {\color{violet}\nabla_{\bx_l} \log \pt(\bx_l)} + \sqrt{\eta} \cdot \bepsilon_l 
+			= \bx_l + \frac{\eta}{2} \cdot {\color{violet}\bs_{\btheta}(\bx_l)} + \sqrt{\eta} \cdot \bepsilon_l.
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Score Matching}
+	\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	\vspace{-0.5cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/smld}
+	\end{figure}
+	\vspace{-0.3cm}
+	\eqpause
+	\begin{block}{Fisher Divergence}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pi}\big\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 =\\
+			= \frac{1}{2}\bbE_{\pi}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\textbf{Problem:} We don't know $\nabla_\bx \log \pd(\bx)$.
+\end{frame}
+%=======
+\begin{frame}{Why Score Function is Better than Density?}
+	\myfootnotewithlink{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025.}
+	\begin{block}{Freedom from Normalization Constants}
+		Many distributions are defined only up to an unnormalized density $\hat{p}(\bx)$:
+		\vspace{-0.3cm}
+		\[
+			\nabla_{\bx} \log p(\bx) = \nabla_{\bx} \log \hat{p}(\bx) - \underbrace{\nabla_{\bx} \log Z}_{=0} = \nabla_{\bx} \log \hat{p}(\bx)
+		\]
+		\vspace{-0.3cm} \\
+		The score function bypasses the intractable constant $Z$ entirely!
+	\end{block}
+	\eqpause
+	\begin{block}{A Complete Representation}
+		The score function fully characterizes the underlying distribution (up to a constant):
+		\vspace{-0.2cm}
+		\[
+			\log p(\bx) = \log p(\bx_0) + \int_0^1 \bs(\bx_0 + t(\bx - \bx_0))^\top (\bx - \bx_0) dt
+		\]
+		\vspace{-0.5cm} \\
+		Modeling the score is as expressive as modeling $p(\bx)$ itself, while often more tractable for generative modeling.
+	\end{block}
+\end{frame}
+%=======
+\subsection{Denoising Score Matching}
+%=======
+\begin{frame}{Denoising Score Matching}
+	\myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+
+	Let us perturb the original data $\bx \sim \pd(\bx)$ with Gaussian noise:
+	\vspace{-0.3cm}
+	\[
+		\bx_{\sigma} = \bx + \sigma \cdot \bepsilon, \quad \bepsilon \sim \cN(0, \bI), \quad q(\bx_{\sigma} | \bx) = \cN(\bx, \sigma^2 \cdot \bI)
+	\]
+	\eqpause
+	\vspace{-0.4cm}
+	\[
+		q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx.
+	\]
+	\eqpause
+	\vspace{-0.5cm}
+	\begin{block}{Assumption}
+		The solution to
+		\[
+			\frac{1}{2} \bbE_{q(\bx_{\sigma})}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \big\|^2_2 \rightarrow \min_{\btheta}
+		\]
+		\vspace{-0.3cm} \\
+		satisfies $\bs_{\btheta, \sigma}(\bx_{\sigma}) \approx \bs_{\btheta, 0}(\bx_0) = \bs_{\btheta}(\bx)$ if $\sigma$ is sufficiently small.
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item The score function of the noised data nearly matches the score function of the original data.
+		\item The score function $\bs_{\btheta, \sigma}(\bx_{\sigma})$ is parameterized by $\sigma$.
+		\item \textbf{Note:} We don't know $q(\bx_{\sigma})$, just as we don't know $\pd(\bx)$.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Denoising Score Matching}
+	\myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+	\begin{block}{Theorem}
+		Under mild regularity conditions, the following holds:
+		\vspace{-0.3cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \big\|^2_2 = \\
+		= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \big\|^2_2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Gradient of the Noise Kernel}
+		\vspace{-0.3cm}
+		\[
+			\bx_{\sigma} = \bx + \sigma \cdot \bepsilon, \quad q(\bx_{\sigma} | \bx) = \cN(\bx, \sigma^2 \cdot \bI)
+		\]
+		\eqpause
+		\vspace{-0.3cm}
+		\[
+			\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) = - \frac{\bx_{\sigma} - \bx}{\sigma^2}  = - \frac{\bepsilon}{\sigma}
+		\]
+		\eqpause
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{itemize}
+		\item The right-hand side doesn't require computing $\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})$ or even $\nabla_{\bx_{\sigma}} \log \pd(\bx_{\sigma})$.
+		\item $\bs_{\btheta, \sigma}(\bx_{\sigma})$ is trained to \textbf{denoise} the noised samples $\bx_{\sigma}$.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Denoising Score Matching}
+	\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	Initial objective:
+	\vspace{-0.2cm}
+	\[
+		\bbE_{\pd(\bx)}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
+	\]
+	\eqpause
+	\vspace{-0.5cm} \\
+	Noised objective:
+	\vspace{-0.2cm}
+	\[
+		\bbE_{q(\bx_{\sigma})}\big\| \bs_{\btheta, \sigma}(\bx_\sigma) - \nabla_\bx \log q(\bx_{\sigma}) \big\|^2_2 \rightarrow \min_{\btheta}
+	\]
+	\eqpause
+	\vspace{-0.5cm} \\
+	This is equivalent to a denoising task:
+	\vspace{-0.2cm}
+	\[
+		\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \big\|^2_2 \rightarrow \min_{\btheta}
+	\]
+	\eqpause
+	\vspace{-0.3cm}
+	\[
+		\bbE_{\pd(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \cdot \bepsilon) + \frac{\bepsilon}{\sigma} \right\|^2_2 \rightarrow \min_{\btheta}
+	\]
+	\vspace{-0.5cm}
+	\begin{block}{Langevin Dynamics}
+		\vspace{-0.3cm}
+		\[
+			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \bs_{\btheta, \sigma}(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI).
+		\]
+		\vspace{-0.7cm}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Denoising Score Matching}
+    \myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+	\begin{block}{Theorem}
+	\vspace{-0.5cm}
+	\begin{multline*}
+		\bbE_{q(\bx_{\sigma})}\underbrace{\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2}_{h(\bx_{\sigma})} = \\
+		= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+	\end{multline*}
+	\vspace{-0.5cm}
+	\end{block}
+    \eqpause
+	\begin{block}{Proof}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma}) = \int {\color{violet}q(\bx_{\sigma})} h(\bx_{\sigma}) d\bx_{\sigma} 
+			\nextonslide{= \\ = \int \left({\color{violet}\int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx}\right) h(\bx_{\sigma}) d\bx_{\sigma} =  \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})}
+		\end{multline*}
+        \eqpause
+		\vspace{-0.7cm}
+		{\small
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\ 
+			\nextonslide{= \bbE_{q(\bx_{\sigma})} \Bigl[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 + \underbrace{\| \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \|_2^2}_{\text{const}(\btheta)} - 2 {\color{teal}\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \Bigr]}
+		\end{multline*}
+		}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Denoising Score Matching}
+    \myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+	\begin{block}{Theorem}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\
+			= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Proof (Continued)}
+		\vspace{-0.7cm}
+		{\small
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})} \left[{\color{teal}\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \right] 
+			\nextonslide{= \int q(\bx_{\sigma}) \left[\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) \frac{\nabla_{\bx_{\sigma}} {\color{violet}q(\bx_{\sigma})}}{q(\bx_{\sigma})} \right] d\bx_{\sigma}}
+			\nextonslide{= \\ = \int \left[\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) \nabla_{\bx_{\sigma}}\left({\color{violet}\int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx}\right) \right] d\bx_{\sigma}}
+			\nextonslide{ = \\ =  \int \int \pd(\bx) \left[\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}}q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
+			\nextonslide{ = \\ = \int \int \pd(\bx) {\color{olive} q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
+			\nextonslide{ = \\ = \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[{\color{teal}\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right]}
+		\end{multline*}
+		}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Denoising Score Matching}
+    \myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+	\vspace{-0.3cm}
+	\begin{block}{Theorem}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\underbrace{\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2}_{h(\bx_{\sigma})} = \\
+			= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.9cm}
+	\end{block}
+	\begin{block}{Proof (Continued)}
+		\vspace{-0.3cm}
+		\[
+			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma})=  \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})
+		\]
+        \eqpause
+		{\small
+		\[
+			\bbE_{q(\bx_{\sigma})} \left[\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right] = \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^\top(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right]
+		\]
+        \eqpause
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\ 
+			= {\color{olive}\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}}\left[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 - 2 \bs_{\btheta, \sigma}^\top(\bx_{\sigma}) {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] + \text{const}(\btheta)
+			\nextonslide{= \\ = {\color{olive}\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}} \left\|\bs_{\btheta, \sigma}(\bx_{\sigma}) - {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right\|_2^2 + \text{const}(\btheta)}
+		\end{multline*}
+		}
+		\vspace{-0.8cm}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Denoising Score Matching}
+	\myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+	\begin{block}{Denoising Score Matching Objective}
+		\vspace{-0.3cm}
+		\[
+			\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	The optimal MSE predictor is the posterior mean of the regression target:
+	\[
+		\bs_{\btheta^*, \sigma}(\bx_\sigma) = \bbE_{q(\bx | \bx_\sigma)} \left[\nabla_{\bx_\sigma} \log q(\bx_\sigma | \bx) \right]
+	\]
+	\eqpause
+	\vspace{-0.5cm}
+	\begin{block}{Marginal Score via Conditional Scores}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\nabla_{\bx_\sigma} \log q(\bx_\sigma) = \frac{\nabla_{\bx_\sigma} {\color{violet}\int q(\bx_\sigma | \bx) \pd(\bx) d\bx}}{q(\bx_\sigma)}
+			\nextonslide{= \\ = \int \nabla_{\bx_\sigma} \log q(\bx_\sigma | \bx) \cdot {\color{olive}\frac{q(\bx_\sigma | \bx) \pd(\bx)}{q(\bx_\sigma)}} d\bx}
+			\nextonslide{= \bbE_{\color{olive}q(\bx | \bx_\sigma)} \left[\nabla_{\bx_\sigma} \log q(\bx_\sigma | \bx) \right]}
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\textbf{Therefore:} $\bs_{\btheta^*, \sigma}(\bx_\sigma) = \nabla_{\bx_\sigma} \log q(\bx_\sigma)$ -- the optimal model learns the true \textbf{marginal} score!
+\end{frame}
+%=======
+\begin{frame}{Denoising Score Matching}
+    \myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	Original objective:
+	\vspace{-0.2cm}
+	\[
+		\bbE_{\pd(\bx)}\left\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
+	\]
+    \eqpause
+	\vspace{-0.5cm} \\
+	Noisy objective:
+	\vspace{-0.2cm}
+	\[
+		\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_\sigma) - \nabla_\bx \log q(\bx_{\sigma}) \right\|_2^2 \rightarrow \min_{\btheta}
+	\]
+    \eqpause
+	\vspace{-0.5cm} \\
+	This is equivalent to a denoising task:
+	\vspace{-0.2cm}
+	\[
+		\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
+	\]
+    \eqpause
+	\vspace{-0.3cm}
+	\[
+		\bbE_{\pd(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \bepsilon) + \frac{\bepsilon}{\sigma} \right\|_2^2 \rightarrow \min_{\btheta}
+	\]
+    \eqpause
+	\vspace{-0.5cm}
+	\begin{block}{Langevin Dynamics}
+		\vspace{-0.3cm}
+		\[
+			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \bs_{\btheta, \sigma}(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI)
+		\]
+		\vspace{-0.7cm}
+	\end{block}
+\end{frame}
+%=======
+\subsection{Noise-Conditioned Score Network}
+%=======
+\begin{frame}{Denoising Score Matching}
+    \myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	\vspace{-0.5cm}
+	\[
+		\bbE_{\pd(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \bepsilon) + \frac{\bepsilon}{\sigma} \right\|_2^2 \rightarrow \min_{\btheta}
+	\]
+	\begin{minipage}{0.5\linewidth}
+		\[
+			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \bs_{\btheta, \sigma}(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l
+		\]
+		\vspace{-0.3cm}
+		\begin{itemize}
+			\item For \textbf{small} $\sigma$, $\bs_{\btheta, \sigma}(\bx)$ becomes inaccurate and Langevin dynamics fails to traverse modes
+			\item For \textbf{large} $\sigma$, robustness in low-density regions is achieved, but the model learns a distribution that is overly corrupted
+		\end{itemize}
+	\end{minipage}%
+	\begin{minipage}{0.5\linewidth}
+		\begin{figure}
+			\includegraphics[width=\linewidth]{figs/pitfalls}
+		\end{figure}
+		\vspace{-0.3cm}
+		\begin{figure}
+			\includegraphics[width=\linewidth]{figs/single_noise}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+%=======
+\begin{frame}{Noise-Conditioned Score Network (NCSN)}
+    \myfootnotewithlink{https://arxiv.org/abs/1907.05600}{Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019}
+	\begin{itemize}
+		\item Specify a sequence of noise levels: $\sigma_1 < \sigma_2 < \dots < \sigma_T$
+		\item Perturb each data point with different noise levels: $\bx_t = \bx + \sigma_t \bepsilon$, so $\bx_t \sim q(\bx_t)$
+		\item Choose $\sigma_1, \sigma_T$ such that:
+		\[
+			q(\bx_1) \approx \pd(\bx), \;\; q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
+		\]
+	\end{itemize}
+    \eqpause
+	\vspace{-0.3cm}
+	\begin{figure}
+		\includegraphics[width=0.6\linewidth]{figs/multi_scale}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/duoduo}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Noise-Conditioned Score Network (NCSN)}
+    \myfootnotewithlink{https://arxiv.org/abs/1907.05600}{Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019}
+	Train the denoising score function $\bs_{\btheta, \sigma_t}(\bx_t)$ for each noise level $\sigma_t$ using a unified weighted objective:
+	\vspace{-0.2cm}
+	\[
+		\sum_{t=1}^T {\color{violet}\sigma_t^2} \bbE_{\pd(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
+	\]
+    \eqpause
+	Here, $\nabla_{\bx_t} \log q(\bx_t | \bx) = - \frac{\bx_t - \bx}{\sigma_t^2} = - \frac{\bepsilon}{\sigma_t}$
+    \eqpause
+	\begin{block}{Training}
+		\begin{enumerate}
+			\item Sample $\bx_0 \sim \pd(\bx)$
+			\item Sample $t \sim U\{1, T\}$ and $\bepsilon \sim \cN(0, \bI)$
+			\item Construct noisy image $\bx_t = \bx_0 + \sigma_t \bepsilon$
+			\item Evaluate loss $ \cL = \sigma_t^2 \left\| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \right\|^2 $
+		\end{enumerate}
+		\vspace{-0.3cm}
+	\end{block}
+    \eqpause
+	How do we sample from such a model?
+\end{frame}
+%=======
+\begin{frame}{Noise-Conditioned Score Network (NCSN)}
+    \myfootnotewithlink{https://arxiv.org/abs/2006.09011}{Song Y. et al. Improved Techniques for Training Score-Based Generative Models, 2020}
+	\begin{block}{Sampling (Annealed Langevin Dynamics)}
+		\begin{itemize}
+			\item Sample initial point $\bx_0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$
+			\item At each noise level, apply $L$ steps of Langevin dynamics:
+			\vspace{-0.2cm}
+			\[
+				\bx_l = \bx_{l-1} + \frac{\eta_t}{2} \bs_{\btheta, \sigma_t}(\bx_{l-1}) + \sqrt{\eta_t} \bepsilon_l,
+			\] 
+			\vspace{-0.5cm}
+			\item Update $\bx_0 := \bx_L$ and reduce to the next lower $\sigma_t$
+		\end{itemize}
+	\end{block}
+    \eqpause
+	\begin{figure}
+		\includegraphics[width=0.9\linewidth]{figs/ald}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item Langevin dynamics enable sampling from generative models using gradients of the log-likelihood.
+		\vfill
+		\item Score matching proposes minimizing Fisher divergence to estimate the score function.
+		\vfill
+		\item Denoising score matching minimizes the Fisher divergence on corrupted samples, making the divergence estimable via sampling.
+		\vfill 
+		\item The Noise-Conditioned Score Network leverages a range of noise levels and annealed Langevin dynamics to learn the score function and enable sampling	
+	\end{itemize}
+\end{frame}
+\end{document}

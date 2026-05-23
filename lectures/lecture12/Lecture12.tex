@@ -1,0 +1,748 @@
+\documentclass{beamer}
+\input{../utils/preamble}
+\createdgmtitle{12}
+
+%--------------------------------------------------------------------------------
+\begin{document}
+%--------------------------------------------------------------------------------
+\begin{frame}[noframenumbering,plain]
+\titlepage
+	\resetonslide
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2302.00482}{Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023}
+	\[
+		\bbE_{t \sim U[0, 1]} \bbE_{\bx \sim p_t(\bx)}\left\| \bv(\bx, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
+	\]
+	\vspace{-0.5cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/multiple_dynamics}
+	\end{figure}
+	\textbf{Problem:} The true vector field $\bv(\bx, t)$ is \textbf{unknown}.
+	\[
+		p_t(\bx) = \int p_t(\bx | \bz) p(\bz) d \bz 
+	\]
+	\vspace{-0.5cm}
+	\[
+		\frac{\partial p_t(\bx | \bz)}{\partial t} = - \diver\left(\bv(\bx, \bz, t) p_t(\bx | \bz)\right).
+	\]
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2302.00482}{Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023}
+	\begin{block}{Conditional Flow Matching (CFM)}
+		\vspace{-0.3cm}
+		\[
+			\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
+		\]
+		If $\supp(p_t(\bx)) = \bbR^m$, then the optimal value of the FM objective equals the optimum for CFM.
+		\vspace{-0.3cm}	
+	\end{block}
+	\begin{block}{Training}
+		\begin{enumerate}
+			\item Sample a time $t \sim U[0, 1]$, $\bz \sim p(\bz)$, $\bx_t \sim p_t(\bx | \bz)$.
+			\item Compute the loss $ \cL = \left\| \bv(\bx_t, \bz, t) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
+		\end{enumerate}
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{Sampling}
+		\begin{enumerate}
+			\item Sample $\bx_0 \sim \cN(0, \bI)$.
+			\item Solve the ODE to obtain $\bx_1$:
+			\[
+				\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
+			\]
+		\end{enumerate}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lectures}
+	\begin{block}{Theorem}
+		The following vector field generates the probability path $p_t(\bx)$:
+		\vspace{-0.2cm}
+		\[
+			\bv(\bx, t) = \bbE_{p_t(\bz | \bx)} \bv(\bx, \bz, t)  = {\color{teal}\int \bv(\bx, \bz, t)} \frac{\color{teal}p_t(\bx | \bz) p(\bz)}{p_t(\bx)} {\color{teal}d \bz}
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Flow Matching (FM)}
+		\vspace{-0.5cm}
+		\[
+			\bbE_{t \sim U[0, 1]} \bbE_{\bx \sim p_t(\bx)}\left\| \bv(\bx, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Conditional Flow Matching (CFM)}
+		\vspace{-0.5cm}
+		\[
+			\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
+		\]
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Theorem}
+		If $\supp(p_t(\bx)) = \bbR^m$, then the optimal value of the FM objective equals the optimum for CFM.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/cfm_uncond_to_cond}
+	\end{figure}
+	\vspace{-0.3cm}
+	\begin{block}{Constraints}
+		\vspace{-0.3cm}
+		\[
+			\bbE_{p(\bz)} p_0(\bx | \bz) = \cN(0, \bI); \quad \bbE_{p(\bz)} p_1(\bx | \bz)= \pd(\bx).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{itemize}
+		\item[Q1] How should we choose the convenient conditioning latent variable $\bz$?
+		\item[Q2] How can we parametrize $p_t(\bx | \bz)$ to enforce the constraints?
+	\end{itemize}
+	\begin{block}{Gaussian Probability Path and Flow}
+		\vspace{-0.5cm}
+		\[
+			p_t(\bx | \bz) = \cN\left(\bmu_t(\bz), \bsigma_t^2(\bz)\right) \quad
+			\bx_t = \bpsi_t(\bx_0, \bz) = \bmu_t(\bz) + \bsigma_t(\bz) \odot \bepsilon
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\begin{block}{Gaussian Conditional Probability Path}
+		\vspace{-0.5cm}
+		\[
+			p_t(\bx | \bz) = \cN\left(\bmu_t(\bz), \bsigma_t^2(\bz)\right); \quad \bx_t = \bpsi_t(\bx_0, \bz) = \bmu_t(\bz) + \bsigma_t(\bz) \odot \bepsilon
+		\]
+		\vspace{-0.5cm}
+		\[
+			\bv(\bx_t, \bz, t) = \bpsi_t'\left(\bpsi_t(\bx_t, \bz)^{-1}, \bz\right) =  \bmu_t'(\bz) + \frac{\bsigma_t'(\bz)}{\bsigma_t(\bz)} \odot (\bx_t - \bmu_t(\bz))
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{Conditioning Latent Variable}
+		Let’s choose $\bz = \bx_1$. Then $p(\bz) = p_1(\bx_1)$.
+		\[
+			p_t(\bx) = \int p_t(\bx | \bx_1) p_1(\bx_1) d \bx_1
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	We must ensure the boundary constraints:
+	\[
+		\begin{cases}
+			\bbE_{p(\bz)} p_0(\bx | \bz) = \cN(0, \bI) \\
+			\bbE_{p(\bz)} p_1(\bx | \bz) = \pd(\bx)
+		\end{cases}
+		\quad \Rightarrow \quad 
+		\begin{cases}
+			p_0(\bx | \bx_1) = \cN(0, \bI); \\
+			p_1(\bx | \bx_1) = \delta(\bx - \bx_1).
+		\end{cases}
+	\]
+	\vspace{-0.3cm}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
+	\[
+		p_0(\bx | \bx_1) = \cN(0, \bI); \quad p_1(\bx | \bx_1) = \delta(\bx - \bx_1).
+	\]
+	
+	\begin{block}{Gaussian Conditional Probability Path}
+		\vspace{-0.5cm}
+		\[
+			p_t(\bx | \bx_1) = \cN\left(\bmu_t(\bx_1), \bsigma_t^2(\bx_1)\right); \quad \bx_t = \bmu_t(\bx_1) +  \bsigma_t(\bx_1) \odot \bx_0.
+		\]
+		\vspace{-0.6cm}
+	\end{block}
+	Let’s consider straight conditional paths:	
+	\[
+		\begin{cases}
+			\bmu_t(\bx_1) = t \bx_1; \\
+			\bsigma_t(\bx_1) = 1 - t.
+		\end{cases}
+		\quad \Rightarrow \quad 
+		\begin{cases}
+			p_t(\bx | \bx_1) = \cN\left(t \bx_1, (1-t)^2 \bI\right); \\
+		 	\bx_t = t \bx_1 + (1 - t) \bx_0. 
+	 \end{cases}
+	\]
+	\vspace{-0.3cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/conical_paths}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://mlg.eng.cam.ac.uk/blog/2024/01/20/flow-matching.html}{image credit: https://mlg.eng.cam.ac.uk/blog/2024/01/20/flow-matching.html}
+	\[
+		p_t(\bx | \bx_1) = \cN\left(t \bx_1, (1-t)^2 \bI\right); \quad {\color{teal}\bx_t = t \bx_1 + (1 - t) \bx_0}
+	\]
+	\vspace{-0.3cm}
+	\[
+		\bv(\bx_t, \bx_1, t) = \frac{\bx_1 - \bx_t}{1-t} = \bx_1 - \bx_0
+	\]
+	\vspace{-0.7cm}
+	\begin{multline*}
+		\bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2
+		 = \\ = \bbE_{\bx_1 \sim \pd(\bx)} \bbE_{\bx_0 \sim \cN(0, \bI)}\left\| (\bx_1 - \bx_0) - \bv_{\btheta}\left(t \bx_1 + (1 - t) \bx_0, t\right) \right\|^2
+	\end{multline*}
+	\vspace{-0.7cm}
+	\begin{itemize}
+		\item $\bv(\bx_t, \bx_1, t)$ defines straight lines between $\pd(\bx)$ and $\cN(0, \bI)$.
+		\item The \textbf{marginal} path $p_t(\bx)$ does not give straight lines.
+	\end{itemize}
+	\vspace{-0.5cm}
+	\begin{minipage}[t]{0.5\columnwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figs/g2g-vector-field-samples-cond}
+			\end{figure}
+		\end{minipage}%
+		\begin{minipage}[t]{0.5\columnwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figs/g2g-forward_samples}
+			\end{figure}
+	\end{minipage}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\vspace{-0.3cm}
+	\[
+	 \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pd(\bx)} \bbE_{\bx_0 \sim \cN(0, \bI)}\left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2  \rightarrow \min_{\btheta}
+	\]
+	\begin{block}{Training}
+		\begin{enumerate}
+			\item Sample $\bx_1 \sim \pd(\bx)$.
+			\item Sample time $t \sim U[0, 1]$ and $\bx_0 \sim \cN(0, \bI)$.
+			\item Obtain the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
+			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
+		\end{enumerate}
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{Sampling}
+		\begin{enumerate}
+			\item Sample $\bx_0 \sim \cN(0, \bI)$.
+			\item Solve the ODE to obtain $\bx_1$:
+			\[
+				\bx_1 = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1)
+			\]
+		\end{enumerate}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\section{Two-Sided Conditioning}
+%=======
+\begin{frame}{Pair Conditioning}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\begin{block}{Conditional Flow Matching}
+		\vspace{-0.3cm}
+		\[
+			\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{Conditioning Latent Variable [Q1]}
+		Let us choose $\bz = (\bx_0, \bx_1)$. Then $p(\bz) = p (\bx_0, \bx_1) = p_0(\bx_0) p_1(\bx_1)$.
+		\[
+			p_t(\bx) = \int p_t(\bx | \bx_0, \bx_1) p_0(\bx_0) p_1(\bx_1) d \bx_0 d \bx_1
+		\]
+	\end{block}
+	\eqpause
+	We must enforce boundary constraints:
+	\[
+		\begin{cases}
+			p_0(\bx) = \bbE_{p(\bz)} p_0(\bx | \bz); \\
+			p_1(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz)
+		\end{cases}
+		\, 
+		\nextonslide{
+			\Rightarrow \, 
+			\begin{cases}
+				p_0(\bx | \bx_0, \bx_1) = \delta(\bx - \bx_0) \\
+				p_1(\bx | \bx_0, \bx_1) = \delta(\bx - \bx_1)
+			\end{cases}
+		}
+	\]
+	\vspace{-0.3cm}
+\end{frame}
+%=======
+\begin{frame}{Two-Sided Conditioning}
+	\myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
+	\[
+		p_0(\bx | \bx_0, \bx_1) = \delta(\bx - \bx_0); \quad p_1(\bx | \bx_0, \bx_1) = \delta(\bx - \bx_1)
+	\]
+
+	\begin{block}{Gaussian Conditional Probability Path}
+		\vspace{-0.5cm}
+		{\small
+		\[
+			p_t(\bx | \bx_0, \bx_1) = \cN\left(\bmu_t(\bx_0, \bx_1), \bsigma_t^2(\bx_0, \bx_1)\right); \quad \bx_t = \bmu_t(\bx_0, \bx_1) +  \bsigma_t(\bx_0, \bx_1) \odot \bepsilon
+		\]
+		}
+		\vspace{-0.6cm}
+	\end{block}
+	\eqpause
+	Let's consider straight conditional paths:	
+	\[
+		\begin{cases}
+			\bmu_t(\bx_0, \bx_1) = t \bx_1 + (1 - t) \bx_0 \\
+			\bsigma_t(\bx_0, \bx_1) = \epsilon
+		\end{cases}
+		\quad 
+		\nextonslide{
+			\Rightarrow \quad 
+			\begin{cases}
+				p_0(\bx | \bx_0, \bx_1) = \delta(\bx - \bx_0) \\
+				p_1(\bx | \bx_0, \bx_1) = \delta(\bx - \bx_1)
+			\end{cases}
+		}
+	\]
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/linear_paths}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Flow Matching: One-Sided vs. Two-Sided Conditioning}
+	\myfootnotewithlink{https://arxiv.org/abs/2302.00482}{Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023}
+	\begin{minipage}[t]{0.5\columnwidth}
+		\begin{align*}
+			\bz & = \bx_1 \\
+			p_t(\bx | \bx_1) &= \cN\left(t \bx_1, (1-t)^2 \bI\right) \\
+			\bx_t &= t \bx_1 + (1 - t) \bx_0 
+		\end{align*}
+	\end{minipage}%
+	\begin{minipage}[t]{0.5\columnwidth}
+		\begin{align*}
+			\bz & = (\bx_0, \bx_1) \\
+			p_t(\bx | \bx_0, \bx_1) &= \cN\left(t \bx_1 + (1 - t) \bx_0, \epsilon^2 \bI\right) \\
+			\bx_t &= t \bx_1 + (1 - t) \bx_0
+		\end{align*}
+	\end{minipage}
+	\eqpause
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/compare_conditionings}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{Two-Sided Conditioning: Vector Field and Objective}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\vspace{-0.3cm}
+	\[
+		p_t(\bx | \bx_0, \bx_1) = \cN\left(t \bx_1 + (1 - t) \bx_0, \epsilon^2 \bI\right); \quad {\color{teal}\bx_t = t \bx_1 + (1 - t) \bx_0}
+	\]
+	\vspace{-0.5cm}
+	\begin{block}{Conditional Vector Field}
+		\vspace{-0.5cm}
+		\[
+			 \frac{d\bx_t}{dt} = \bv(\bx_t, \bx_0, \bx_1, t) =  \bmu_t'(\bx_0, \bx_1) + \frac{\bsigma_t'(\bx_0, \bx_1)}{\bsigma_t(\bx_0, \bx_1)} \odot (\bx_t - \bmu_t(\bx_0, \bx_1))
+		\]
+		\eqpause
+		\vspace{-0.5cm}
+		\[
+			\bv(\bx_t, \bx_0, \bx_1, t) = \bx_1 - \bx_0
+		\]
+		\vspace{-0.7cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Conditional Flow Matching}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2 = \\
+		 \bbE_{t \sim U[0, 1]} \bbE_{(\bx_0, \bx_1) \sim p(\bx_0, \bx_1)} \bbE_{\bx \sim p_t(\bx | \bx_0, \bx_1)} \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx, t) \right\|^2
+		\end{multline*}
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item This yields the same procedure as for one-sided conditioning!
+		\item Now, we do not require that $p_0(\bx)$ is necessarily $\cN(0, \bI)$.
+	\end{itemize} 
+\end{frame}
+%=======
+\begin{frame}{CFM with Two-Sided Conditioning: Training and Sampling}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\begin{itemize}
+		\item This conditioning allows us to transport any distribution $p_0(\bx)$ to any distribution $p_1(\bx)$.
+		\item It's possible to apply this approach to paired tasks, e.g., style transfer.
+	\end{itemize}
+	\eqpause
+	\begin{block}{Training Procedure}
+		\begin{enumerate}
+			\item Sample $(\bx_0, \bx_1) \sim p(\bx_0, \bx_1)$.
+			\item Sample time $t \sim U[0, 1]$.
+			\item Compute the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
+			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
+		\end{enumerate}
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{block}{Sampling}
+		\begin{enumerate}
+			\item Sample $\bx_0 \sim p_0(\bx)$.
+							\item Solve the ODE to obtain $\bx_1$:
+			\[
+				\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1)
+			\]
+		\end{enumerate}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Stable Diffusion 3: Scalable Flow Matching}
+	\myfootnotewithlink{https://arxiv.org/abs/2403.03206}{Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/sd3}
+	\end{figure}
+\end{frame}
+%=======
+\section{Link between Flow Matching and Score-Based Models}
+%=======
+\begin{frame}{Score-Based Generative Models through SDEs}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\vspace{-0.3cm}
+	\begin{block}{Training}
+		\vspace{-0.7cm}
+		\[
+			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Variance Exploding SDE (NCSN)}
+		\vspace{-0.3cm}
+		\[
+			q(\bx(t) | \bx(0)) = \cN\left(\bx(0), \left[\sigma^2(t) - \sigma^2(0)\right] \cdot \bI\right), \quad \sigma(0) =0
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Variance Preserving SDE (DDPM)}
+		\vspace{-0.5cm}
+		\[
+			q(\bx(t) | \bx(0)) = \cN\left(\bx(0) \alpha(t), \left(1 - \alpha(t)^2\right) \cdot \bI\right); \quad \alpha(t) = e^{-\frac{1}{2} \int_0^t \beta(s) ds}
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	Flow matching uses reverse time direction:
+	\[
+		p_t(\bx| \bx_1) = q_{1-t}(\bx| \bx_0=\bx_1)
+	\]
+\end{frame}
+%=======
+\begin{frame}{Score-Based Generative Models through SDEs}
+	\[
+		p_t(\bx| \bx_1) = q_{1-t}(\bx| \bx_0=\bx_1)
+	\]
+	\[
+		\textbf{VE (NCSN): } p_t(\bx | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t} \cdot \bI\right)
+	\]
+	\vspace{-0.5cm}
+	\[
+		\textbf{VP (DDPM): } p_t(\bx | \bx_1) = \cN\left(\alpha_{1-t} \bx_1, \left(1 - \alpha_{1-t}^2\right) \cdot \bI\right)
+	\]
+	\vspace{-0.5cm}
+	\eqpause
+	\begin{block}{Flow Matching Probability Path}
+		\vspace{-0.3cm}
+		\[
+			p_t(\bx | \bx_1) = \cN\left(t \bx_1, (1-t)^2 \bI\right); \quad \bv(\bx_t, \bx_1, t) = \frac{\bx_1  - \bx_t}{1-t}
+		\]
+		\vspace{-0.3cm}
+		\[
+	 		\frac{d\bx_t}{dt} = \bv(\bx_t, \bx_1, t) =  \bmu_t'(\bx_1) + \frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)} \odot (\bx_t - \bmu_t(\bx_1))
+		\]
+	\end{block}
+	\eqpause
+	Let's derive the conditional vector fields for VE (NCSN) and VP (DDPM).
+\end{frame}
+%=======
+\begin{frame}{Flow Matching vs Score-Based SDE Models}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\[
+		\frac{d\bx_t}{dt} = \bv(\bx_t, \bx_1, t) =  \bmu_t'(\bx_1) + \frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)} \odot (\bx_t - \bmu_t(\bx_1))
+	\]
+	\eqpause
+	\begin{block}{Variance Exploding SDE Probability Path}
+		\vspace{-0.5cm}
+		\[
+				p_t(\bx | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t}  \bI\right) \quad \Rightarrow \quad 
+				\bv(\bx_t, \bx_1, t) = - \frac{\sigma'_{1-t}}{\sigma_{1-t}} (\bx_t - \bx_1)
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Variance Preserving SDE Probability Path}
+		\vspace{-0.5cm}
+		{\small
+		\[
+			p_t(\bx | \bx_1) = \cN\left(\alpha_{1-t}  \bx_1, (1 - \alpha^2_{1-t})  \bI \right)  \, \Rightarrow \, 
+		\bv(\bx_t, \bx_1, t) = \frac{\alpha'_{1-t}}{1 - \alpha^2_{1-t}}\cdot \left(\alpha_{1-t}  \bx_t - \bx_1\right)
+		\]
+		}
+	\end{block}
+	Thus, VE/VP SDE models correspond to particular choices of the Gaussian probability path within the flow matching framework.
+\end{frame}
+%=======
+\begin{frame}{Flow Matching vs Score-Based SDE Models}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\begin{block}{Trajectories}
+		\vspace{-0.3cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\linewidth]{figs/trajectories}
+		\end{figure}
+		\vspace{-0.3cm}
+	\end{block}
+	\eqpause
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/2d-generation}
+	\end{figure}
+\end{frame}
+%=======
+\section{Discrete Diffusion Models}
+%=======
+\begin{frame}{Discrete or Continuous Diffusion Models?}
+	\textbf{Reminder:} Diffusion models define a forward corruption process and a reverse denoising process.
+	Previously, we studied diffusion models with continuous states $\bx(t) \in \mathbb{R}^m$.
+	\begin{block}{Continuous state space}
+		\begin{itemize}
+			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$ $\;\Rightarrow\;$ \textbf{DDPM / NCSN}.
+			\item \textbf{Continuous time} $t \in [0,1]$ $\;\Rightarrow\;$ \textbf{Score-based SDE models}.
+		\end{itemize}
+	\end{block}
+	\eqpause
+	Now we turn to diffusion over discrete-value states $\bx(t) \in \{1, \dots, K\}^m$.
+	\begin{block}{Discrete state space}
+		\begin{itemize}
+			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$.
+			\item \textbf{Continuous time} $t \in [0,1]$.
+		\end{itemize}
+	\end{block}
+	Let's discuss why we need discrete diffusion models.
+\end{frame}
+%=======
+\begin{frame}{Why Discrete Diffusion Models?}
+	\myfootnotewithlink{https://aaronlou.com/blog/2024/discrete-diffusion/}{https://aaronlou.com/blog/2024/discrete-diffusion/}
+	While autoregressive (AR) models dominate discrete-data domains (e.g., text or sequences), they have fundamental limitations.
+	\eqpause
+	\begin{block}{Key advantages of discrete diffusion}
+		\begin{itemize}
+			\item \textbf{Parallel generation:} diffusion enables sampling all tokens simultaneously, unlike AR’s strictly left-to-right process. 
+			\eqpause
+			\item \textbf{Flexible infilling:}. diffusion can mask arbitrary parts of a sequence and reconstruct them, rather than generating only from prefix to suffix.
+			\eqpause 
+			\item \textbf{Robustness:} diffusion avoids the "exposure bias" caused by teacher forcing in AR training.
+			\eqpause
+			\item \textbf{Unified framework:} diffusion generalizes naturally to discrete domains that do not suit continuous Gaussian noise.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{2025 – Big Bang of Discrete Diffusion Models}
+	\myfootnotewithlink{https://arxiv.org/abs/2506.17298}{Khanna S. et al. Mercury: Ultra-fast language models based on diffusion, 2025.}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/mercury}
+	\end{figure}
+\end{frame}
+%=======
+\section{Forward Discrete Process}
+%=======
+\begin{frame}{Forward Discrete Process}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{Continuous Diffusion Markov Chain}
+		In continuous diffusion, the forward Markov chain is defined by progressively corrupting data with Gaussian noise:
+		\[
+			q(\bx_t|\bx_{t-1}) = \mathcal{N}(\sqrt{1-\beta_t}\bx_{t-1}, \beta_t \bI).
+		\]
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{block}{Discrete Diffusion Markov Chain}
+		For discrete data, we instead define a Markov chain over categorical states:
+		\[
+			q(\bx_t|\bx_{t-1}) = \Cat(\bQ_t\bx_{t-1}),
+		\]
+	\end{block}
+	\vspace{-0.3cm}
+	\eqpause
+	\begin{itemize}
+		\item Each $\bx_t \in \{0,1\}^K$ is a \textbf{one-hot vector} encoding the categorical state (it is just one token).
+		\item What is the transition matrix $\bQ_t$?
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Forward Process over Time}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{Transition Matrix}
+		$\bQ_t \in [0,1]^{K \times K}$ is a \textbf{transition matrix} where each column gives transition probabilities from one state to all others, and columns sum to 1:
+		\vspace{-0.5cm}
+		\[
+			[\bQ_t]_{ij} = q(x_t = i | x_{t-1} = j),
+			\qquad
+			\sum_{i=1}^K [\bQ_t]_{ij} = 1.
+		\]
+		\vspace{-0.7cm}
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item The forward diffusion gradually destroys information through repeated random transitions.
+		\eqpause
+		\item Applying the transition $t$ times yields the marginal distribution:
+			\[
+				q(\bx_t|\bx_0) = \Cat(\bQ_{1:t}\bx_0),
+				\qquad
+				\bQ_{1:t} = \bQ_t \bQ_{t-1}\cdots\bQ_1.
+			\]
+		\eqpause
+		\vspace{-0.7cm}
+		\item As $t \to T$, the process drives the data toward a stationary distribution.
+		\eqpause
+		\item We design the transition matrices $\bQ_t$ to achieve this behavior.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Transition Matrix}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{itemize}
+		\item The choice of $\bQ_t$ determines how information is erased and what the stationary distribution becomes.
+		\eqpause
+		\item $\bQ_t$ and $\bQ_{1:t}$ should be easy to compute for each $t$.
+	\end{itemize}
+	\eqpause
+	\begin{block}{Common choices}
+		\begin{itemize}
+			\item \textbf{Uniform diffusion}
+			\[
+				\bQ_t = (1 - \beta_t) \bI + \beta_t \bU,
+				\qquad
+				\mathbf{U}_{ij} = \tfrac{1}{K}.
+			\]
+			Each token is replaced by a uniformly random symbol with probability $\beta_t$.
+			The stationary distribution is uniform noise.
+			\eqpause
+			\item \textbf{Absorbing diffusion}
+			\[
+				\bQ_t = (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top.
+			\]
+			Tokens are gradually replaced by a special mask $m$;
+			the stationary distribution is fully masked.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Transition Matrix}
+	\[
+		q(\bx_t|\bx_0) = \Cat(\bQ_{1:t}\bx_0),
+		\qquad
+		\bQ_{1:t} = \bQ_t \bQ_{t-1} \cdots \bQ_1.
+	\]
+	\eqpause
+	\begin{block}{Uniform Diffusion}
+		\[
+			\bQ_t = (1-\beta_t)\bI + \beta_t \mathbf{U},
+			\qquad
+			\mathbf{U}_{ij} = \tfrac{1}{K}.
+		\]
+		\[
+			\bQ_{1:t} = \bar\alpha_t\bI + (1 - \bar\alpha_t) \mathbf{U},
+			\quad
+			\bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
+		\]
+		\eqpause
+		\begin{itemize}
+			\item Each token retains its original value with prob.~$\bar\alpha_t$.
+			\item It becomes uniformly random with prob.~$(1 - \bar\alpha_t)$.
+			\item As $t \to T$, the process converges to the stationary uniform distribution.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Transition Matrix}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+
+	\begin{block}{Absorbing Diffusion}
+		\[
+			\bQ_t = (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top,
+		\]
+		\[
+			\bQ_{1:t} = \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\mathbf{e}_m \mathbf{1}^\top,
+			\qquad
+			\bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
+		\]
+		\eqpause
+		\begin{itemize}
+			\item Each token retains its original value with prob.~$\bar\alpha_t$.
+			\item It becomes $\mathbf{e}_m$ with prob.~$(1 - \bar\alpha_t)$.
+			\item As $t \to T$, all tokens converge to the mask state: $q(\bx_T) \approx \Cat(\mathbf{e}_m)$.
+			\item This makes the process analogous to \textbf{masked language modeling}.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Uniform vs. Absorbing Transition Matrix}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{table}[h!]
+		\centering
+		\small
+		\begin{tabular}{lcc}
+			\toprule
+			\textbf{Aspect} & \textbf{Uniform Diffusion} & \textbf{Absorbing Diffusion} \\
+			\midrule
+			$\bQ_t$
+				& $(1-\beta_t)\bI + \beta_t \mathbf{U}$ 
+				& $(1-\beta_t)\bI + \beta_t \mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+			$\bQ_{1:t}$
+				& $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{U}$
+				& $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+			$\bQ_{1:\infty}$
+				& $\mathbf{U}$
+				& $\Cat(\mathbf{e}_m)$ \\[4pt]
+			Interpretation
+				& Random replacement
+				& Gradual masking of tokens \\[4pt]
+			Application
+				& Image diffusion
+				& Text diffusion $\approx$ Masked LM \\[4pt]
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	\eqpause
+	\begin{block}{Observation}
+		Both schemes gradually destroy information, but differ in their stationary limit.
+		Absorbing diffusion bridges diffusion and masked-language-model objectives.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item Two-sided conditioning uses pair conditioning $\bz = (\bx_0, \bx_1)$ and yields the same procedure, but is more general (suitable for paired tasks).
+		\vfill
+		\item Diffusion and score-based models are special cases of the flow matching approach, but use curved trajectories.
+		\vfill
+		\item Diffusion approach has several key advantages over autoregressive approach.
+		\vfill
+		\item Forward discrete diffusion process defines Markov chain with discrete states.
+		\vfill
+		\item There are several ways to make it tractable (uniform / absorbing transitions).
+	\end{itemize}
+\end{frame}
+\end{document}

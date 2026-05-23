@@ -1,0 +1,124 @@
+% For each possible node, we create a boolean
+\newbool{hl@root}
+\newbool{hl@explicit}
+\newbool{hl@implicit}
+\newbool{hl@exact}
+\newbool{hl@approx}
+\newbool{hl@gan}
+\newbool{hl@ar}
+\newbool{hl@nf}
+\newbool{hl@vae}
+\newbool{hl@score}
+\newbool{hl@cont}
+\newbool{hl@ddpm}
+\newbool{hl@sm}
+\newbool{hl@ode}
+\newbool{hl@sde}
+\newbool{hl@fm}
+
+% Command to reset all bools
+\newcommand{\resetAllHighlights}{%
+    \boolfalse{hl@root}%
+    \boolfalse{hl@explicit}%
+    \boolfalse{hl@implicit}%
+    \boolfalse{hl@exact}%
+    \boolfalse{hl@approx}%
+    \boolfalse{hl@gan}%
+    \boolfalse{hl@ar}%
+    \boolfalse{hl@nf}%
+    \boolfalse{hl@vae}%
+    \boolfalse{hl@score}%
+    \boolfalse{hl@cont}%
+    \boolfalse{hl@ddpm}%
+    \boolfalse{hl@sm}%
+    \boolfalse{hl@ode}%
+    \boolfalse{hl@sde}%
+    \boolfalse{hl@fm}%
+}
+
+% Command to set a single highlight
+\newcommand{\setHighlight}[1]{%
+    \booltrue{hl@#1}%
+}
+
+% Command to set highlights from comma-separated list
+\newcommand{\setHighlights}[1]{%
+    \resetAllHighlights%
+    \forcsvlist{\setHighlight}{#1}%
+}
+
+% Highlighted style definition
+\tikzset{
+    hl/.style={line width=1.2pt, draw=black, font=\scriptsize\bfseries},
+    box/.style={
+        rectangle, 
+        draw=gray!50, 
+        rounded corners=2pt, 
+        minimum width=1.9cm, 
+        minimum height=0.5cm, 
+        align=center, 
+        font=\scriptsize, 
+        line width=0.4pt
+    },
+    rootnode/.style={box, fill=violet!20},
+    category/.style={box, fill=teal!20},
+    model/.style={box, fill=yellow!30},
+    arrow/.style={-Stealth, draw=gray!80, line width=0.4pt}
+}
+
+% Draw taxonomy with pre-set highlights
+\newcommand{\drawTaxonomy}{%
+    \begin{tikzpicture}[scale=0.9, transform shape, node distance=0.6cm and 0.3cm]
+        % --- CENTRAL ROOT ---
+        \ifbool{hl@root}{\node[rootnode, hl] (root) {Generative Models};}{\node[rootnode] (root) {Generative Models};}
+
+        % --- UPPER BRANCHES ---
+        \ifbool{hl@explicit}{\node[category, hl, above left=0.6cm and 0.5cm of root] (explicit) {Explicit density};}{\node[category, above left=0.6cm and 0.5cm of root] (explicit) {Explicit density};}
+        \ifbool{hl@implicit}{\node[category, hl, above right=0.6cm and 0.5cm of root] (implicit) {Implicit density};}{\node[category, above right=0.6cm and 0.5cm of root] (implicit) {Implicit density};}
+
+        \ifbool{hl@exact}{\node[category, hl, above left=0.6cm and -0.6cm of explicit] (exact) {Exact likelihood};}{\node[category, above left=0.6cm and -0.6cm of explicit] (exact) {Exact likelihood};}
+        \ifbool{hl@approx}{\node[category, hl, above right=0.6cm and -0.6cm of explicit] (approx) {Approximate likelihood};}{\node[category, above right=0.6cm and -0.6cm of explicit] (approx) {Approximate likelihood};}
+
+        \ifbool{hl@gan}{\node[model, hl, above=0.6cm of implicit] (gans) {GANs};}{\node[model, above=0.6cm of implicit] (gans) {GANs};}
+
+        \ifbool{hl@ar}{\node[model, hl, above left=0.6cm and -0.9cm of exact] (ar) {Autoregressive \\ models};}{\node[model, above left=0.6cm and -0.9cm of exact] (ar) {Autoregressive \\ models};}
+        \ifbool{hl@nf}{\node[model, hl, above right=0.6cm and -0.9cm of exact] (nf) {Normalizing \\ Flows};}{\node[model, above right=0.6cm and -0.9cm of exact] (nf) {Normalizing \\ Flows};}
+        \ifbool{hl@vae}{\node[model, hl, above=0.6cm of approx] (vae) {Variational \\ Autoencoders};}{\node[model, above=0.6cm of approx] (vae) {Variational \\ Autoencoders};}
+
+        % --- LOWER BRANCHES ---
+        \ifbool{hl@score}{\node[category, hl, below left=0.6cm and 0.5cm of root] (score) {Score-based};}{\node[category, below left=0.6cm and 0.5cm of root] (score) {Score-based};}
+        \ifbool{hl@cont}{\node[category, hl, below right=0.6cm and 0.5cm of root] (cont) {Continuous \\ dynamics};}{\node[category, below right=0.6cm and 0.5cm of root] (cont) {Continuous \\ dynamics};}
+
+        \ifbool{hl@sm}{\node[model, hl, below left=0.6cm and -0.8cm of score] (sm) {Score Matching};}{\node[model, below left=0.6cm and -0.8cm of score] (sm) {Score Matching};}
+        \ifbool{hl@ddpm}{\node[model, hl, below right=0.6cm and -0.8cm of score] (ddpm) {Denoising Diffusion};}{\node[model, below right=0.6cm and -0.8cm of score] (ddpm) {Denoising Diffusion};}
+
+        \ifbool{hl@ode}{\node[model, hl, below left=0.6cm and -0.8cm of cont] (ode) {Neural ODEs};}{\node[model, below left=0.6cm and -0.8cm of cont] (ode) {Neural ODEs};}
+        \ifbool{hl@sde}{\node[model, hl, below right=0.6cm and -0.8cm of cont] (sde) {SDE-based \\ Diffusion};}{\node[model, below right=0.6cm and -0.8cm of cont] (sde) {SDE-based \\ Diffusion};}
+
+        \ifbool{hl@fm}{\node[model, hl, below=0.6cm of ode] (fm) {Flow Matching};}{\node[model, below=0.6cm of ode] (fm) {Flow Matching};}
+
+        % --- CONNECTIONS ---
+        \draw[arrow] (root.north) -- ++(0,0.3) -| (explicit.south);
+        \draw[arrow] (root.north) -- ++(0,0.3) -| (implicit.south);
+        \draw[arrow] (root.south) -- ++(0,-0.3) -| (score.north);
+        \draw[arrow] (root.south) -- ++(0,-0.3) -| (cont.north);
+        \draw[arrow] (explicit.north) -- ++(0,0.3) -| (exact.south);
+        \draw[arrow] (explicit.north) -- ++(0,0.3) -| (approx.south);
+        \draw[arrow] (exact.north) -- ++(0,0.3) -| (ar.south);
+        \draw[arrow] (exact.north) -- ++(0,0.3) -| (nf.south);
+        \draw[arrow] (approx.north) -- (vae.south);
+        \draw[arrow] (implicit.north) -- (gans.south);
+        \draw[arrow] (score.south) -- ++(0,-0.3) -| (sm.north);
+        \draw[arrow] (score.south) -- ++(0,-0.3) -| (ddpm.north);
+        \draw[arrow] (cont.south) -- ++(0,-0.3) -| (ode.north);
+        \draw[arrow] (cont.south) -- ++(0,-0.3) -| (sde.north);
+        \draw[arrow] (ode.south) -- (fm.north);
+    \end{tikzpicture}
+}
+
+% The main taxonomy rendering command
+\newcommand{\renderTaxonomy}[1]{%
+    \setHighlights{#1}%
+    \centering
+    \drawTaxonomy%
+}

@@ -1,0 +1,26 @@
+*.DS_Store
+*.ipynb_checkpoints
+*.idea
+
+#Tex
+*.out
+*.log
+*.aux
+*.bbl
+*.blg
+*.synctex.gz
+*.gz(busy)
+*.toc
+*.nav
+*.snm
+*eps-converted-to.pdf
+*.fdb_latexmk
+*.fls
+
+#additions by PMokrov
+*__pycache__*
+
+#Hide helper code for seminars
+seminars/seminar?/seminar?_utils.py
+
+site/

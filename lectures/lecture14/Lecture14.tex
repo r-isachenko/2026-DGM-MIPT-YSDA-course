@@ -1,0 +1,85 @@
+\documentclass{beamer}
+\input{../utils/preamble}
+\createdgmtitle{14}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+%--------------------------------------------------------------------------------
+\begin{document}
+%--------------------------------------------------------------------------------
+\begin{frame}[noframenumbering,plain]
+\titlepage
+	\resetonslide
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\begin{block}{ELBO}
+		\vspace{-0.7cm}
+		\begin{multline*}
+            \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
+            - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}}
+        \end{multline*}
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Discrete conditioned reverse distribution}
+		\[
+			q(\bx_{t-1} | \bx_t, \bx_0)
+			= \Cat\left(\frac{\bQ_t \bx_t \odot \bQ_{1:t-1} \bx_0}{\bx_t^{\top}\bQ_{1:t}\bx_0}\right).
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{itemize}
+		\item Both $q(\bx_{t-1} | \bx_t, \bx_0)$ and $q(\bx_t | \bx_0)$ are known analytically from the forward process.
+		\item The reverse process $\pt(\bx_{t-1} | \bx_t)$ is a learned categorical distribution:
+		\vspace{-0.3cm}
+        \[
+			\pt(\bx_{t-1} | \bx_t) = \Cat\bigl( \bpi_{\btheta}(\bx_t, t) \bigr).
+		\]
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+
+	\begin{block}{ELBO term}
+		\vspace{-0.3cm}
+		\[
+			\cL_t
+			= \bbE_{q(\bx_t | \bx_0)}
+			\KL\bigl(q(\bx_{t-1} | \bx_t, \bx_0) \,\|\, \pt(\bx_{t-1} | \bx_t)\bigr).
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{Categorical KL}
+		\vspace{-0.3cm}
+		\[
+			\KL\bigl(\Cat(\bq) \,\|\, \Cat(\bp)\bigr)
+			= \sum_{k=1}^K q_k \log \frac{q_k}{p_k}
+			= \Ent(\bq,\bp) - \Ent(\bq),
+		\]
+		\begin{itemize}
+			\item $\Ent\bigl(q(\bx_{t-1} | \bx_t, \bx_0)\bigr)$ is a constant w.r.t.~$\btheta$.
+			\item $\Ent(\bq,\bp) = -\sum_k q_k \log p_k$ is a \textbf{cross-entropy loss}.
+		\end{itemize}
+	\end{block}
+	Therefore, minimizing $\cL_t$ w.r.t.~$\btheta$ is equivalent to minimizing
+	\[
+		\bbE_{q(\bx_t | \bx_0)}
+		\Ent\Bigl(q(\bx_{t-1} | \bx_t, \bx_0),\, \pt(\bx_{t-1} | \bx_t)\Bigr).
+	\]
+\end{frame}
+%=======
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item No generative model dominates all axes of the trilemma --- each family trades off likelihood, sample quality, mode coverage and sampling speed.
+		\item Modern frontier (flow matching, discrete diffusion, distilled diffusion) tries to push the Pareto frontier of this trilemma.
+		\item Key takeaway: pick a method by the dominant constraint of your application --- likelihood vs.\ sample quality vs.\ latency vs.\ data modality.
+	\end{itemize}
+\end{frame}
+%=======
+\end{document}
