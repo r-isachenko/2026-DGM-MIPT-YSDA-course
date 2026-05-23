@@ -32,37 +32,37 @@ The course is supported by seminars and hands-on assignments that help build int
 
 | # | Date | Description | Slides |
 |---|---|---|---|
-<!---
-| 1 | January, 29 | <b>Lecture 1:</b> Introduction and Logistics. Generative models overview. Course tricks. Problem statement. Divergence minimization framework. Autoregressive models (ImageGPT). | [slides](lectures/lecture1/Lecture1.pdf) |
+| 1 | January, 29 | <b>Lecture 1:</b><ul><li>Introduction and Logistics</li><li>Generative Models Overview</li><li>Course Tricks</li><li>Problem Statement</li><li>Divergence Minimization Framework</li><li>Autoregressive Models (ImageGPT)</li></ul> | [slides](lectures/lecture1/Lecture1.pdf) |
 |  |  | <b>Seminar 1:</b> Introduction. Maximum likelihood estimation. Histograms. Bayes theorem. PixelCNN. VAR. | [slides](seminars/seminar1/) <a href="https://colab.research.google.com/github/r-isachenko/2024-DGM-MIPT-YSDA-course/blob/main/seminars/seminar1/PixelCNN.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
-| 2 | February, 5 | <b>Lecture 2:</b> Normalizing Flows (NF). Linear NF. Gaussian autoregressive NF. Coupling layer (RealNVP). Latent Variable Models (LVM). Forward vs Reverse KL. RealNVP. | [slides](lectures/lecture2/Lecture2.pdf) |
+| 2 | February, 5 | <b>Lecture 2:</b><ul><li>Normalizing Flows (NF)</li><li>NF Examples<ul><li>Linear NF</li><li>Gaussian Autoregressive NF</li><li>Coupling Layer (RealNVP)</li></ul></li><li>Latent Variable Models (LVM)</li></ul> | [slides](lectures/lecture2/Lecture2.pdf) |
 |  |  | <b>Seminar 2:</b> Planar and Radial Flows. Forward vs Reverse KL. | [slides](seminars/seminar2/) |
-| 3 | February, 12 | <b>Lecture 3:</b> Latent variable models (LVM). Variational lower bound (ELBO). Аmortized inference. ELBO gradients, reparametrization trick. Variational Autoencoder (VAE). | [slides](lectures/lecture3/Lecture3.pdf) |
+| 3 | February, 12 | <b>Lecture 3:</b><ul><li>Latent Variable Models (LVM) (continued)</li><li>Variational Evidence Lower Bound (ELBO)</li><li>Amortized Inference</li><li>ELBO Gradients, Reparametrization Trick</li><li>Variational Autoencoder (VAE)</li></ul> | [slides](lectures/lecture3/Lecture3.pdf) |
 |  |  | <b>Seminar 3:</b> Gaussian Mixture Model (GMM). GMM and MLE. ELBO and EM-algorithm. GMM via EM-algorithm. Variational EM algorithm for GMM. | [slides](seminars/seminar3/) |
-| 4 | February, 19 | <b>Lecture 4:</b> ELBO surgery and optimal VAE prior. Discrete VAE latent representations. Vector quantization, straight-through gradient estimation (VQ-VAE). Likelihood-free learning. | [slides](lectures/lecture4/Lecture4.pdf) |
+| 4 | February, 19 | <b>Lecture 4:</b><ul><li>ELBO Surgery and Optimal VAE Prior</li><li>Discrete VAE Latent Representations</li><li>Vector Quantized VAE (VQ-VAE)</li><li>Likelihood-Free Learning</li></ul> | [slides](lectures/lecture4/Lecture4.pdf) |
 |  |  | <b>Seminar 4:</b>  VAE: Implementation hints. Vanilla 2D VAE coding. VAE on Binarized MNIST visualization. Posterior collapse. Beta VAE on MNIST. | [slides](seminars/seminar4/) |
-| 5 | March, 5 | <b>Lecture 5:</b> Generative Adversarial Networks (GAN). Wasserstein distance. Wasserstein GAN (WGAN). Evaluation of generative models (FID, Precision-Recall, CLIP score, human eval). | [slides](lectures/lecture5/Lecture5.pdf) |
+| 5 | March, 5 | <b>Lecture 5:</b><ul><li>Generative Adversarial Networks (GAN)</li><li>Wasserstein Distance</li><li>Wasserstein GAN (WGAN)</li><li>Evaluation of Likelihood-Free Models<ul><li>Frechet Inception Distance (FID)</li><li>Precision-Recall</li><li>CLIP Score</li><li>Human Eval</li></ul></li></ul> | [slides](lectures/lecture5/Lecture5.pdf) |
 |  |  | <b>Seminar 5:</b> Vanilla GAN in 1D coding. Mode collapse and vanishing gradients. Non-saturating GAN. Wasserstein GAN (WGAN) and WGAN-GP | [slides](lectures/lecture6/Lecture6.pdf) |
-| 6 | March, 12 | <b>Lecture 6:</b> Langevin dynamic. Score matching. Denoising score matching. Noise conditioned score network (NCSN). | [slides](lectures/lecture6/Lecture6.pdf) |
+| 6 | March, 12 | <b>Lecture 6:</b><ul><li>Langevin Dynamics</li><li>Score Matching<ul><li>Denoising Score Matching</li><li>Noise-Conditioned Score Network (NCSN)</li></ul></li></ul> | [slides](lectures/lecture6/Lecture6.pdf) |
 |  |  | <b>Seminar 6:</b> Progressive Growing GAN. StyleGAN | [slides](seminars/seminar6/) |
-| 7 | March, 19 | <b>Lecture 7:</b> Forward gaussian diffusion process. Reverse Gaussian diffusion process. Gaussian diffusion model as VAE. ELBO for Gaussian diffusion model. | [slides](lectures/lecture7/Lecture7.pdf) |
+| 7 | March, 19 | <b>Lecture 7:</b><ul><li>Forward Gaussian Diffusion Process</li><li>Reverse Gaussian Diffusion Process</li><li>Gaussian Diffusion Model as VAE</li><li>Diffusion ELBO Derivation</li></ul> | [slides](lectures/lecture7/Lecture7.pdf) |
 |  |  | <b>Seminar 7:</b> Noise Conditioned Score Network (NCSN). Heuristic diffusion model. | [slides](seminars/seminar7/) |
-| 8 | March, 26 | <b>Lecture 8:</b> ELBO for Gaussian diffusion model (continued). Reparametrization and overview of DDPM. Denoising diffusion as score-based generative model. Model guidance: classifier guidance, classfier-free guidance. | [slides](lectures/lecture8/Lecture8.pdf) |
+| 8 | March, 26 | <b>Lecture 8:</b><ul><li>Diffusion ELBO Derivation (continued)</li><li>Gaussian Diffusion Reparametrization</li><li>Denoising Diffusion Probabilistic Model (DDPM)</li><li>DDPM as a Score-Based Generative Model</li><li>Model Guidance<ul><li>Classifier Guidance</li><li>Classifier-Free Guidance</li></ul></li></ul> | [slides](lectures/lecture8/Lecture8.pdf) |
 |  |  | <b>Seminar 8:</b> Guidance. CLIP, GLIDE, DALL-E 2, Imagen. | [slides](seminars/seminar8/) |
-| 9 | April, 2 | <b>Lecture 9:</b> Continuous-in-time NF and neural ODE. Continuity equation for NF log-likelihood. SDE basics. Kolmogorov-Fokker-Planck equation. Variance Preserving and Variance Exploding SDEs. | [slides](lectures/lecture9/Lecture9.pdf) |
+| 9 | April, 2 | <b>Lecture 9:</b><ul><li>Continuous-Time Normalizing Flows (CNF)</li><li>Continuity Equation for CNF Log-Likelihood</li><li>SDE Basics</li><li>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</li></ul> | [slides](lectures/lecture9/Lecture9.pdf) |
 |  |  | <b>Seminar 9:</b> Latent Diffusion Model. Stable Diffusion. | [slides](seminars/seminar9/) <a href="https://colab.research.google.com/github/r-isachenko/2026-DGM-AIMasters-course/blob/main/seminars/seminar9/seminar9_SD.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
 | 10 | April, 9 | <i>Lecture rescheduled — no lecture this week.</i> |  |
 |  |  | <b>Seminar 10:</b>  Latent Diffusion Models Control Methods: ControlNet, IP-Adapter, Dreambooth, LoRA| [slides](seminars/seminar10/seminar_10_adapters.ipynb)<a href="https://colab.research.google.com/github/r-isachenko/2026-DGM-AIMasters-course/blob/main/seminars/seminar10/seminar_10_adapters.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
-| 11 | April, 16 | <b>Lecture 10:</b> Probability flow ODE. Reverse SDE. Score-based generative models through SDE. Flow matching. | [slides](lectures/lecture10/Lecture10.pdf) |
+| 11 | April, 16 | <b>Lecture 10:</b><ul><li>Probability Flow ODE</li><li>Reverse SDE</li><li>Score-Based Generative Models Through SDEs</li><li>Flow Matching (FM)</li></ul> | [slides](lectures/lecture10/Lecture10.pdf) |
 |  |  | <b>Seminar 11:</b> Evolution of Stable Diffusion: SD1.5 → SDXL → SD3.5 → FLUX → FluxKontext → NanoBanana | [slides](seminars/seminar11/seminar11.ipynb) <a href="https://colab.research.google.com/github/r-isachenko/2026-DGM-AIMasters-course/blob/main/seminars/seminar11/seminar11.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
-| 12 | April, 23 | <b>Lecture 11:</b> Conditional flow matching. One-sided conditioning. | [slides](lectures/lecture11/Lecture11.pdf) |
+| 12 | April, 23 | <b>Lecture 11:</b><ul><li>Conditional Flow Matching (CFM)</li><li>One-Sided Conditioning</li></ul> | [slides](lectures/lecture11/Lecture11.pdf) |
 |  |  | <b>Seminar 12:</b> Video Diffusion: from 3D U-Net and temporal attention to DiT-based models (Sora, CogVideoX, HunyuanVideo, Wan, LTX) and autoregressive video | [slides](seminars/seminar12/seminar12.ipynb) <a href="https://colab.research.google.com/github/r-isachenko/2026-DGM-AIMasters-course/blob/main/seminars/seminar12/seminar12.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
-| 12 | April, 30 | <b>Lecture 12:</b> Two-sided conditioning. Link with diffusion and score matching. Discrete diffusion motivation. Forward discrete process. | [slides](lectures/lecture12/Lecture12.pdf) |
+| 12 | April, 30 | <b>Lecture 12:</b><ul><li>Two-Sided Conditioning</li><li>Link between Flow Matching and Score-Based Models</li><li>Discrete Diffusion Models</li><li>Forward Discrete Process</li></ul> | [slides](lectures/lecture12/Lecture12.pdf) |
 |  |  | <b>Seminar 13:</b> – | |
-| 13 | December, 16 | <b>Lecture 13:</b> Reverse discrete process. Discrete ELBO objective. Discrete diffusion for sequence. Absorbing diffusion. Continuous-time masked diffusion language model. Course overview. | [slides](lectures/lecture13/Lecture13.pdf) |
+| 13 | December, 16 | <b>Lecture 13:</b><ul><li>Discrete Diffusion<ul><li>Reverse Diffusion Process</li><li>From Token To Sequence</li><li>Absorbing Diffusion</li><li>Continuous Time Formulation</li></ul></li><li>Course Overview</li></ul> | [slides](lectures/lecture13/Lecture13.pdf) |
 |  |  | <b>Seminar 14:</b> – |  |
 | 14 | December, 23 | <b>Lecture 14:</b>  | [slides](lectures/lecture14/Lecture14.pdf) |
 |  |  | <b>Seminar 14:</b> The Final Recap| [slides](seminars/seminar14/seminar14.ipynb) |
+<!---
 -->
 
 ## Homeworks
