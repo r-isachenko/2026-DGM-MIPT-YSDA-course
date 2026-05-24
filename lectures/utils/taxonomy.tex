@@ -15,6 +15,8 @@
 \newbool{hl@ode}
 \newbool{hl@sde}
 \newbool{hl@fm}
+\newbool{hl@dd}
+\newbool{hl@absorb}
 
 % Command to reset all bools
 \newcommand{\resetAllHighlights}{%
@@ -34,6 +36,8 @@
     \boolfalse{hl@ode}%
     \boolfalse{hl@sde}%
     \boolfalse{hl@fm}%
+    \boolfalse{hl@dd}%
+    \boolfalse{hl@absorb}%
 }
 
 % Command to set a single highlight
@@ -51,13 +55,13 @@
 \tikzset{
     hl/.style={line width=1.2pt, draw=black, font=\scriptsize\bfseries},
     box/.style={
-        rectangle, 
-        draw=gray!50, 
-        rounded corners=2pt, 
-        minimum width=1.9cm, 
-        minimum height=0.5cm, 
-        align=center, 
-        font=\scriptsize, 
+        rectangle,
+        draw=gray!50,
+        rounded corners=2pt,
+        minimum width=1.9cm,
+        minimum height=0.5cm,
+        align=center,
+        font=\scriptsize,
         line width=0.4pt
     },
     rootnode/.style={box, fill=violet!20},
@@ -79,29 +83,37 @@
         \ifbool{hl@exact}{\node[category, hl, above left=0.6cm and -0.6cm of explicit] (exact) {Exact likelihood};}{\node[category, above left=0.6cm and -0.6cm of explicit] (exact) {Exact likelihood};}
         \ifbool{hl@approx}{\node[category, hl, above right=0.6cm and -0.6cm of explicit] (approx) {Approximate likelihood};}{\node[category, above right=0.6cm and -0.6cm of explicit] (approx) {Approximate likelihood};}
 
-        \ifbool{hl@gan}{\node[model, hl, above=0.6cm of implicit] (gans) {GANs};}{\node[model, above=0.6cm of implicit] (gans) {GANs};}
+        \ifbool{hl@gan}{\node[model, hl, above=0.6cm of implicit] (gans) {Generative \\ Adversarial Networks};}{\node[model, above=0.6cm of implicit] (gans) {Generative \\ Adversarial Networks};}
 
         \ifbool{hl@ar}{\node[model, hl, above left=0.6cm and -0.9cm of exact] (ar) {Autoregressive \\ models};}{\node[model, above left=0.6cm and -0.9cm of exact] (ar) {Autoregressive \\ models};}
         \ifbool{hl@nf}{\node[model, hl, above right=0.6cm and -0.9cm of exact] (nf) {Normalizing \\ Flows};}{\node[model, above right=0.6cm and -0.9cm of exact] (nf) {Normalizing \\ Flows};}
         \ifbool{hl@vae}{\node[model, hl, above=0.6cm of approx] (vae) {Variational \\ Autoencoders};}{\node[model, above=0.6cm of approx] (vae) {Variational \\ Autoencoders};}
 
-        % --- LOWER BRANCHES ---
-        \ifbool{hl@score}{\node[category, hl, below left=0.6cm and 0.5cm of root] (score) {Score-based};}{\node[category, below left=0.6cm and 0.5cm of root] (score) {Score-based};}
-        \ifbool{hl@cont}{\node[category, hl, below right=0.6cm and 0.5cm of root] (cont) {Continuous \\ dynamics};}{\node[category, below right=0.6cm and 0.5cm of root] (cont) {Continuous \\ dynamics};}
+        % --- LOWER BRANCHES (3 sisters: Score-based / Continuous dynamics / Discrete Diffusion) ---
+        \ifbool{hl@score}{\node[category, hl, below left=0.6cm and 2.5cm of root] (score) {Score-based};}{\node[category, below left=0.6cm and 2.5cm of root] (score) {Score-based};}
+        \ifbool{hl@cont}{\node[category, hl, below=0.6cm of root] (cont) {Continuous \\ dynamics};}{\node[category, below=0.6cm of root] (cont) {Continuous \\ dynamics};}
+        \ifbool{hl@dd}{\node[category, hl, below right=0.6cm and 2.5cm of root] (dd) {Discrete \\ Diffusion};}{\node[category, below right=0.6cm and 2.5cm of root] (dd) {Discrete \\ Diffusion};}
 
+        % Score-based children
         \ifbool{hl@sm}{\node[model, hl, below left=0.6cm and -0.8cm of score] (sm) {Score Matching};}{\node[model, below left=0.6cm and -0.8cm of score] (sm) {Score Matching};}
         \ifbool{hl@ddpm}{\node[model, hl, below right=0.6cm and -0.8cm of score] (ddpm) {Denoising Diffusion};}{\node[model, below right=0.6cm and -0.8cm of score] (ddpm) {Denoising Diffusion};}
 
-        \ifbool{hl@ode}{\node[model, hl, below left=0.6cm and -0.8cm of cont] (ode) {Neural ODEs};}{\node[model, below left=0.6cm and -0.8cm of cont] (ode) {Neural ODEs};}
-        \ifbool{hl@sde}{\node[model, hl, below right=0.6cm and -0.8cm of cont] (sde) {SDE-based \\ Diffusion};}{\node[model, below right=0.6cm and -0.8cm of cont] (sde) {SDE-based \\ Diffusion};}
+        % Continuous-dynamics children: CNF, SDE, FM are all three siblings on a single
+        % row, dropped one row below the score-/dd-children row so the wider CNF box
+        % (2-line "Continuous Normalizing Flows") doesn't collide with DDPM/Absorbing.
+        \ifbool{hl@ode}{\node[model, hl, below left=2.4cm and 2.0cm of cont] (ode) {Continuous \\ Normalizing Flows};}{\node[model, below left=2.4cm and 2.0cm of cont] (ode) {Continuous \\ Normalizing Flows};}
+        \ifbool{hl@sde}{\node[model, hl, below=2.4cm of cont] (sde) {SDE-based \\ Diffusion};}{\node[model, below=2.4cm of cont] (sde) {SDE-based \\ Diffusion};}
+        \ifbool{hl@fm}{\node[model, hl, below right=2.4cm and 2.0cm of cont] (fm) {Flow Matching};}{\node[model, below right=2.4cm and 2.0cm of cont] (fm) {Flow Matching};}
 
-        \ifbool{hl@fm}{\node[model, hl, below=0.6cm of ode] (fm) {Flow Matching};}{\node[model, below=0.6cm of ode] (fm) {Flow Matching};}
+        % Discrete-Diffusion child
+        \ifbool{hl@absorb}{\node[model, hl, below=0.6cm of dd] (absorb) {Absorbing \\ Diffusion};}{\node[model, below=0.6cm of dd] (absorb) {Absorbing \\ Diffusion};}
 
         % --- CONNECTIONS ---
         \draw[arrow] (root.north) -- ++(0,0.3) -| (explicit.south);
         \draw[arrow] (root.north) -- ++(0,0.3) -| (implicit.south);
         \draw[arrow] (root.south) -- ++(0,-0.3) -| (score.north);
-        \draw[arrow] (root.south) -- ++(0,-0.3) -| (cont.north);
+        \draw[arrow] (root.south) -- (cont.north);
+        \draw[arrow] (root.south) -- ++(0,-0.3) -| (dd.north);
         \draw[arrow] (explicit.north) -- ++(0,0.3) -| (exact.south);
         \draw[arrow] (explicit.north) -- ++(0,0.3) -| (approx.south);
         \draw[arrow] (exact.north) -- ++(0,0.3) -| (ar.south);
@@ -110,9 +122,10 @@
         \draw[arrow] (implicit.north) -- (gans.south);
         \draw[arrow] (score.south) -- ++(0,-0.3) -| (sm.north);
         \draw[arrow] (score.south) -- ++(0,-0.3) -| (ddpm.north);
-        \draw[arrow] (cont.south) -- ++(0,-0.3) -| (ode.north);
-        \draw[arrow] (cont.south) -- ++(0,-0.3) -| (sde.north);
-        \draw[arrow] (ode.south) -- (fm.north);
+        \draw[arrow] (cont.south) -- ++(0,-1.5) -| (ode.north);
+        \draw[arrow] (cont.south) -- (sde.north);
+        \draw[arrow] (cont.south) -- ++(0,-1.5) -| (fm.north);
+        \draw[arrow] (dd.south) -- (absorb.north);
     \end{tikzpicture}
 }
 
