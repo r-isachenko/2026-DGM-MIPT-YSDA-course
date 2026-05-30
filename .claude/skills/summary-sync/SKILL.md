@@ -1,13 +1,13 @@
 ---
 name: summary-sync
-description: Check that the final \begin{frame}{Summary} of each lecture still reflects what the lecture currently teaches — i.e. each \section{...} contributes at least one bullet to Summary, and Summary doesn't reference topics that were removed. Use after substantive edits (add/remove section, change a key formula, rework a derivation) per CLAUDE.md §8.
+description: Check that the final \begin{frame}{Summary} of each lecture still reflects what the lecture currently teaches — each \section{...} contributes at least one bullet, Summary doesn't reference removed topics, and total bullet count stays within 5–7 (fewer is better). Use after substantive edits (add/remove section, change a key formula, rework a derivation) per CLAUDE.md §8.
 ---
 
 # summary-sync
 
-Every lecture ends with `\begin{frame}{Summary}` — a one-slide takeaway for students. When the body changes substantively, the Summary should still match. See [CLAUDE.md](../../../CLAUDE.md) §8.
+Every lecture ends with `\begin{frame}{Summary}` — a one-slide takeaway for students. When the body changes substantively, the Summary should still match, AND it must stay short enough to actually fit on one slide. See [CLAUDE.md](../../../CLAUDE.md) §8.
 
-This is a lighter check than `recap-sync`: the Summary is not a verbatim mirror, it's a paraphrase. We only verify topic coverage, not exact wording.
+This is a lighter check than `recap-sync`: the Summary is not a verbatim mirror, it's a paraphrase. We verify topic coverage, bullet count, and that updates are holistic (not append-only).
 
 ## Inputs
 
@@ -31,7 +31,17 @@ grep -n '^\\section\{' lectures/lectureN/LectureN.tex
 
 Capture title and line number for each `\section`.
 
-### Step 3 — coverage check
+### Step 3 — bullet count check
+
+Count Summary bullets (`\item` entries inside the `itemize`).
+
+- **5–7 bullets:** OK.
+- **≤ 4 bullets:** flag as possibly under-covered, but a short Summary is acceptable if every section is represented.
+- **≥ 8 bullets:** flag as **too long** — the Summary frame is meant to fit one slide and be absorbable in one read. Propose consolidation: identify two related bullets that can merge, or a secondary point that can be dropped.
+
+Do **not** propose adding a bullet for an uncovered section without first checking whether an existing bullet can be rewritten to cover it. The default move when a lecture grows a new topic is to **revise**, not to **append**.
+
+### Step 4 — coverage check
 
 For each section title, scan the Summary bullets for a matching topic. Matching is *semantic*, not exact:
 
@@ -46,29 +56,34 @@ For each section, classify:
 - **uncovered** — no Summary bullet matches; suggests Summary was not updated after adding/expanding this section
 - **possibly-stale** — a Summary bullet references a topic that has no matching `\section` (suggests the section was renamed or removed but Summary wasn't refreshed)
 
-### Step 4 — report
+### Step 5 — report
 
 ```
 summary-sync: lectures/lecture10/Lecture10.tex
 
-Summary frame: line 752 (8 bullets)
+Summary frame: line 804 (8 bullets)  ⚠ too long — target is 5–7
 Sections: 4
 
-  ✓ Probability Flow ODE              — covered by bullet 1, 2
-  ✓ Reverse SDE                       — covered by bullet 3
-  ✓ Score-Based Generative Models …   — covered by bullet 4, 5, 6
-  ✗ Flow Matching (FM)                — uncovered
-    → Section spans lines 674–751 but Summary doesn't mention vector-field
-      fitting or the v(x,t) parametrization. Consider adding a bullet.
+  ✓ Probability Flow ODE              — covered by bullet 1, 2, 3
+  ✓ Reverse SDE                       — covered by bullet 4
+  ✓ Score-Based Generative Models …   — covered by bullet 5, 6
+  ✓ Flow Matching (FM)                — covered by bullet 8
 
-  ⚠ bullet 7 "PDE-based sampling"     — possibly-stale; no matching \section
+  ℹ bullet 7 spans two sections (reverse SDE + PF-ODE discretization)
+    → candidate for consolidation with bullet 4 or 1
+
+Suggested consolidation to reach 6 bullets:
+  merge 1+3 (PF-ODE existence + its properties)
+  merge 5+6 (continuous-time score matching + Gaussian transition kernel)
 ```
 
-End with: "Want me to draft replacement bullets for the uncovered sections?" — wait for confirmation before editing the Summary frame.
+End with: "Want me to draft a revised Summary frame?" — wait for confirmation before editing.
 
 ## Important rules
 
 - **Don't rewrite Summary unilaterally.** Coverage is a judgment call; the user is the best author of their own takeaways. Always propose, never silently edit.
-- **Minor edits don't require Summary updates** (CLAUDE.md §8: "Minor edits (typos, rewording, tightening one slide) do not require touching Summary."). If `git diff` shows only whitespace or single-word fixes, say "no Summary update needed" and stop.
+- **Holistic revision, not append.** When a section is uncovered, the default response is to **rewrite an existing bullet** to cover it (or merge two adjacent ones to free a slot), not to add a new bullet. Adding bullets is how Summary frames creep past 7.
+- **5–7 bullets, fewer is better.** Treat 8 as a hard signal to consolidate. A 4-section lecture can often be summarized in 5 bullets — one per section plus one synthesis bullet — without losing anything.
+- **Minor edits don't require Summary updates** (CLAUDE.md §8). If `git diff` shows only whitespace or single-word fixes, say "no Summary update needed" and stop.
 - **Style:** Summary bullets are full sentences, conceptual takeaways — not section titles. If you draft bullets, match the existing voice (look at neighboring lectures' Summary frames for tone).
 - **Animations:** Summary frames typically don't use `\nextonslide` / `\eqpause` — they're static. Don't add animation machinery when proposing bullet edits.

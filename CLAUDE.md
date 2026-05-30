@@ -145,6 +145,9 @@ formula or definition), update the Summary slide so it still reflects what the
 lecture actually teaches. Minor edits (typos, rewording, tightening one slide)
 do not require touching Summary.
 
+**Target length: 5–7 bullets, fewer is better.** 
+Summary update as a **holistic revision**, not a simple addition: re-read all existing bullets and consider consolidating two related ones, dropping a secondary point, or replacing an old bullet rather than tacking a new one onto the end.
+
 ### Recap frames (start of the next lecture)
 
 Every lecture except Lecture 1 opens with several `\begin{frame}{Recap of
