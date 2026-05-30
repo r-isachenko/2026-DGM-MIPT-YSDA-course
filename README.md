@@ -61,7 +61,7 @@ The course is supported by seminars and hands-on assignments that help build int
 |  |  | <b>Seminar 13:</b> – | |
 | 13 | December, 16 | <b>Lecture 13:</b><ul><li>Discrete Diffusion<ul><li>Reverse Diffusion Process</li><li>From Token To Sequence</li><li>Absorbing Diffusion</li><li>Continuous Time Formulation</li></ul></li><li>Course Overview</li></ul> | [slides](lectures/lecture13/Lecture13.pdf) |
 |  |  | <b>Seminar 14:</b> – |  |
-| 14 | December, 23 | <b>Lecture 14:</b>  | [slides](lectures/lecture14/Lecture14.pdf) |
+| 14 | December, 23 | <b>Lecture 14:</b><ul><li>Diffusion Model Acceleration</li><li>Consistency Models (CM, LCM)</li><li>Distribution Matching Distillation (DMD, DMD2)</li></ul> | [slides](lectures/lecture14/Lecture14.pdf) |
 |  |  | <b>Seminar 14:</b> The Final Recap| [slides](seminars/seminar14/seminar14.ipynb) |
 -->
 

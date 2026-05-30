@@ -70,15 +70,262 @@
 	\]
 \end{frame}
 %=======
+\begin{frame}{Setup: from PF-ODE to few-step samplers}
+	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
+	\begin{block}{Recall: probability flow ODE}
+		\vspace{-0.3cm}
+		\[
+			d\bx = \left[\bff(\bx, t) - \tfrac{1}{2} g^2(t)\, \bs(\bx, t)\right] dt, \quad \bs(\bx, t) = \nabla_{\bx} \log p_t(\bx).
+		\]
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item Plugging $\bs_{\btheta}$ into the PF-ODE and using a high-order \ODESolve (Heun, RK) reduces the number of steps from $100$--$1000$ down to $20$--$50$.
+		\nextonslide{\item Can we go further --- to $\mathbf{1}$--$\mathbf{4}$ steps?}
+		\nextonslide{\item Idea: \textbf{learn a shortcut network} that compresses many ODE-solver steps into one.}
+	\end{itemize}
+	\eqpause
+	\begin{block}{Two approaches in this lecture}
+		\begin{itemize}
+			\item \textbf{Consistency Models} --- enforce self-consistency along PF-ODE trajectories.
+			\item \textbf{Distribution Matching Distillation} --- match generator and data distributions via score differences.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
 \begin{frame}{Outline}
 	\tableofcontents
 \end{frame}
 %=======
+\section{Consistency Models}
+%=======
+\begin{frame}{Consistency function}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	\begin{block}{Definition}
+		A consistency function $f_{\btheta}: (\bx_t, t) \mapsto \bx_{\epsilon}$ maps any point on a PF-ODE trajectory to its origin (data side).
+	\end{block}
+	\eqpause
+	\begin{block}{Self-consistency property}
+		\vspace{-0.3cm}
+		\[
+			f_{\btheta}(\bx_t, t) = f_{\btheta}(\bx_{t'}, t'), \quad \forall t, t' \in [\epsilon, T],
+		\]
+		whenever $\bx_t$ and $\bx_{t'}$ lie on the same PF-ODE trajectory.
+	\end{block}
+	\eqpause
+	This is the \emph{defining} property --- the entire framework is built by enforcing it.
+\end{frame}
+%=======
+\begin{frame}{Boundary condition and parameterization}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	\begin{block}{Boundary condition}
+		\vspace{-0.3cm}
+		\[
+			f_{\btheta}(\bx_{\epsilon}, \epsilon) = \bx_{\epsilon}.
+		\]
+	\end{block}
+	\eqpause
+	\begin{block}{Skip-connection parameterization}
+		\vspace{-0.3cm}
+		\[
+			f_{\btheta}(\bx, t) = c_{\text{skip}}(t)\, \bx + c_{\text{out}}(t)\, F_{\btheta}(\bx, t),
+		\]
+		with $c_{\text{skip}}(\epsilon) = 1$ and $c_{\text{out}}(\epsilon) = 0$.
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item The boundary condition is enforced \emph{structurally}, not by the loss.
+		\item Optimization only needs to learn self-consistency.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Consistency Distillation (CD)}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	Assume a pretrained teacher score $\bs_{\bphi}$. Discretize $[\epsilon, T]$ into $\{t_1, \dots, t_N\}$.
+	\eqpause
+	\begin{block}{One ODE-solver step (using teacher)}
+		\vspace{-0.3cm}
+		\[
+			\hat\bx_{t_n} = \bx_{t_{n+1}} + (t_n - t_{n+1})\, \Phi(\bx_{t_{n+1}}, t_{n+1};\, \bphi).
+		\]
+	\end{block}
+	\eqpause
+	\begin{block}{CD loss}
+		\vspace{-0.4cm}
+		\[
+			\cL_{\text{CD}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}, t_n)\bigr)\right],
+		\]
+		where $\btheta^-$ is the EMA of $\btheta$ (stop-gradient target).
+	\end{block}
+	\eqpause
+	The EMA target prevents trivial collapse to a constant function.
+\end{frame}
+%=======
+\begin{frame}{Consistency Training (CT)}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	Replace the teacher's ODE step with the noise-injection identity from denoising score matching.
+	\eqpause
+	\begin{block}{Pair construction (teacher-free)}
+		\vspace{-0.3cm}
+		\[
+			\bx_{t_{n+1}} = \bx_0 + t_{n+1}\, \bepsilon, \quad \hat\bx_{t_n} = \bx_0 + t_n\, \bepsilon, \quad \bepsilon \sim \cN(0, \bI).
+		\]
+		Same $\bx_0$ and same $\bepsilon$ for both points.
+	\end{block}
+	\eqpause
+	\begin{block}{CT loss}
+		\vspace{-0.4cm}
+		\[
+			\cL_{\text{CT}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}, t_n)\bigr)\right].
+		\]
+	\end{block}
+	\eqpause
+	Claim: $\nabla_{\btheta}\, \cL_{\text{CT}} = \nabla_{\btheta}\, \cL_{\text{CD}} + o(\Delta t)$ as $N \to \infty$.
+\end{frame}
+%=======
+\begin{frame}{Sampling from a consistency model}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	\begin{block}{Single-step sampling}
+		\vspace{-0.3cm}
+		\[
+			\bx_T \sim \cN(0, T^2 \bI), \quad \bx_0 \approx f_{\btheta}(\bx_T, T).
+		\]
+	\end{block}
+	\eqpause
+	\begin{block}{Multi-step refinement}
+		Alternate (for $\tau_1 > \tau_2 > \dots > \tau_M$):
+		\begin{enumerate}
+			\item Denoise: $\bx_0 \leftarrow f_{\btheta}(\bx_{\tau_i}, \tau_i)$.
+			\item Re-noise: $\bx_{\tau_{i+1}} \leftarrow \bx_0 + \tau_{i+1}\, \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
+		\end{enumerate}
+	\end{block}
+	\eqpause
+	Interpretation: iterative projection onto the consistency manifold trades a few extra NFEs for higher quality.
+\end{frame}
+%=======
+\begin{frame}{Latent Consistency Models (LCM)}
+	\myfootnotewithlink{https://arxiv.org/abs/2310.04378}{Luo S. et al. Latent Consistency Models, 2023}
+	Apply Consistency Distillation to a latent diffusion model (Stable Diffusion).
+	\eqpause
+	\begin{block}{Guided consistency distillation}
+		Absorb classifier-free guidance into $f_{\btheta}$: an augmented function $f_{\btheta}(\bx_t, t, \omega, \bc)$ takes the guidance scale $\omega$ as input. The teacher uses CFG:
+		\vspace{-0.2cm}
+		\[
+			\tilde\bs_{\bphi}(\bx_t, t, \omega, \bc) = (1 + \omega)\, \bs_{\bphi}(\bx_t, t, \bc) - \omega\, \bs_{\bphi}(\bx_t, t, \varnothing).
+		\]
+	\end{block}
+	\eqpause
+	\begin{block}{Skipping-step}
+		Enforce consistency over $k$ steps instead of $1$:
+		\vspace{-0.2cm}
+		\[
+			f_{\btheta}(\bx_{t_{n+k}}, t_{n+k}) \approx f_{\btheta^-}(\hat\bx_{t_n}, t_n).
+		\]
+		Larger SNR gap $\Rightarrow$ stronger training signal.
+	\end{block}
+\end{frame}
+%=======
+\section{Distribution Matching Distillation}
+%=======
+\begin{frame}{One-step generator}
+	\myfootnotewithlink{https://arxiv.org/abs/2311.18828}{Yin T. et al. One-step Diffusion with Distribution Matching Distillation, 2023}
+	\begin{block}{Setup}
+		Train a generator $G_{\btheta}: \bz \mapsto \bx$, $\bz \sim \cN(0, \bI)$.
+	\end{block}
+	\eqpause
+	\begin{block}{Objective}
+		\vspace{-0.3cm}
+		\[
+			G_{\btheta} \# p(\bz) \approx \pd(\bx).
+		\]
+		\textbf{Distribution} matching, not per-sample matching.
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item CM ties each $\bz$ to a specific PF-ODE endpoint.
+		\item DMD lets $G_{\btheta}$ re-organize the noise-to-image map --- $\bz$ and $G_{\btheta}(\bz)$ need not lie on a teacher trajectory.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{KL gradient via score difference}
+	\myfootnotewithlink{https://arxiv.org/abs/2311.18828}{Yin T. et al. One-step Diffusion with Distribution Matching Distillation, 2023}
+	Diffuse the generator output: $\bx_t = G_{\btheta}(\bz) + \sigma_t\, \bepsilon$. Let $p_{\text{fake}, t}$ and $p_{\text{real}, t}$ be the corresponding marginals.
+	\eqpause
+	\begin{block}{Variational score-distillation identity}
+		\vspace{-0.6cm}
+		\begin{multline*}
+			\nabla_{\btheta}\, \KL\bigl(p_{\text{fake}, t} \,\|\, p_{\text{real}, t}\bigr) = \\
+			= -\, \bbE \left[\bigl(\bs_{\text{real}, t}(\bx_t) - \bs_{\text{fake}, t}(\bx_t)\bigr) \cdot \nabla_{\btheta} G_{\btheta}(\bz) \right].
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item Likelihood-free: only score \emph{differences} matter.
+		\item Integrate over $t$ with weighting $w(t)$ $\Rightarrow$ tractable training signal.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Two score networks}
+	\myfootnotewithlink{https://arxiv.org/abs/2311.18828}{Yin T. et al. One-step Diffusion with Distribution Matching Distillation, 2023}
+	\begin{block}{Real score (frozen)}
+		$\bs_{\text{real}, t} = \bs_{\bphi}(\bx_t, t)$: the pretrained teacher.
+	\end{block}
+	\eqpause
+	\begin{block}{Fake score (online)}
+		$\bs_{\text{fake}, t} = \bs_{\bpsi}(\bx_t, t)$: a \emph{second} score network trained online with denoising score matching on samples from the current $G_{\btheta}$.
+		\\
+		Tracks $p_{\text{fake}}$ as the generator evolves.
+	\end{block}
+	\eqpause
+	\begin{block}{Alternating optimization}
+		\begin{enumerate}
+			\item Update $\bs_{\bpsi}$ on a batch from $G_{\btheta}$ (score matching).
+			\item Update $G_{\btheta}$ with the score-difference gradient.
+		\end{enumerate}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{DMD1: total loss}
+	\myfootnotewithlink{https://arxiv.org/abs/2311.18828}{Yin T. et al. One-step Diffusion with Distribution Matching Distillation, 2023}
+	\begin{block}{Total objective}
+		\vspace{-0.3cm}
+		\[
+			\cL_{\text{DMD}}(\btheta) = \cL_{\text{KL-grad}}(\btheta) + \lambda_{\text{reg}}\, \cL_{\text{reg}}(\btheta).
+		\]
+	\end{block}
+	\eqpause
+	\begin{block}{Regression term}
+		\vspace{-0.3cm}
+		\[
+			\cL_{\text{reg}}(\btheta) = \bbE_{(\bz, \bx^\star)} \| G_{\btheta}(\bz) - \bx^\star \|^2,
+		\]
+		on a few hundred precomputed $(\bz, \bx^\star)$ pairs ($\bx^\star$ = teacher's PF-ODE output for $\bz$).
+	\end{block}
+	\eqpause
+	Interpretation: regression anchors $G_{\btheta}$ near the teacher's deterministic map; the KL-gradient term then re-shapes the \emph{distribution} of outputs.
+\end{frame}
+%=======
+\begin{frame}{DMD2: improvements}
+	\myfootnotewithlink{https://arxiv.org/abs/2405.14867}{Yin T. et al. Improved Distribution Matching Distillation for Fast Image Synthesis, 2024}
+	Three changes over DMD1:
+	\eqpause
+	\begin{itemize}
+		\item \textbf{GAN loss}: a discriminator on real images corrects the bias from an imperfect $\bs_{\bpsi}$.
+		\nextonslide{\item \textbf{No regression}: removes the need for precomputed $(\bz, \bx^\star)$ pairs; simpler pipeline.}
+		\nextonslide{\item \textbf{Multi-step generator}: $G_{\btheta}$ becomes a $4$-step network, recovering quality lost at the strict $1$-step setting.}
+	\end{itemize}
+	\eqpause
+	Closes most of the quality gap between distilled and full-step diffusion.
+\end{frame}
+%=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item No generative model dominates all axes of the trilemma --- each family trades off likelihood, sample quality, mode coverage and sampling speed.
-		\item Modern frontier (flow matching, discrete diffusion, distilled diffusion) tries to push the Pareto frontier of this trilemma.
-		\item Key takeaway: pick a method by the dominant constraint of your application --- likelihood vs.\ sample quality vs.\ latency vs.\ data modality.
+		\item PF-ODE solvers (Heun, RK) floor at ${\sim}20$ steps; further acceleration requires \textbf{learning a shortcut network}.
+		\item \textbf{Consistency Models}: enforce \emph{self-consistency} along PF-ODE trajectories; the boundary condition makes one-step sampling fall out of the parameterization.
+		\item LCM extends CD to latent SD with guided distillation and skipping-step.
+		\item \textbf{DMD}: match generator and data \emph{distributions} via the score-difference gradient; two score networks (frozen real, online fake) in alternating optimization. DMD2 adds GAN, drops regression, adds multi-step.
+		\item Tradeoffs: CM is more principled, DMD currently delivers the best $1$-step quality.
 	\end{itemize}
 \end{frame}
 %=======
