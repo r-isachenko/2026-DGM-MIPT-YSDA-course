@@ -290,19 +290,74 @@
 	\end{figure}
 \end{frame}
 %=======
-\begin{frame}{Why do we need to convert SDEs to PF-ODEs?}
+\begin{frame}{Why convert SDEs to PF-ODEs? (1) Efficient Sampling}
+	\myfootnotewithlink{https://arxiv.org/abs/2206.00364}{Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022}
 	\begin{itemize}
-		\item We could use \SDESolve to discretize the SDE.
-		\item However, this is not efficient (trajectories are not smooth).
+		\item Brownian increments scale as $d\bw \sim \sqrt{dt}$ — SDE trajectories are nowhere differentiable.
+		\item \SDESolve (Euler–Maruyama): local error $\cO(\sqrt{\Delta t})$.
+		\item Higher-order SDE schemes need Lévy areas $\Rightarrow$ impractical in high dimensions.
 	\end{itemize}
 	\eqpause
-	\begin{block}{Efficient Solvers}
+	\begin{block}{PF-ODE drift $\bv(\bx, t) = \bff(\bx, t) - \frac{1}{2} g^2(t) \bs(\bx, t)$ is smooth}
 		\begin{itemize}
-			\item Converting SDEs to PF-ODEs yields more efficient inference.
-			\item We can apply any \ODESolve procedure to reduce the number of inference steps.
-			\item For example, we can use Heun's / Runge-Kutta methods to solve the PF-ODE instead of Euler's method.
-			\item In practice, this reduces the number of steps from $100$--$1000$ to $20$--$50$.
+			\item Euler: $\cO(\Delta t)$, \quad Heun: $\cO(\Delta t^2)$, \quad RK4: $\cO(\Delta t^4)$.
+			\item Adaptive step-size control is standard for \ODESolve.
 		\end{itemize}
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item In practice: $100$--$1000$ \SDESolve steps $\to$ $20$--$50$ \ODESolve steps.
+		\item Caveat: SDE sampling can still win at high NFE — injected noise corrects accumulated error.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Why convert SDEs to PF-ODEs? (2) Deterministic Generation}
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q., et al. Neural Ordinary Differential Equations, 2018}
+	\begin{itemize}
+		\item The PF-ODE defines a deterministic, invertible map $\bx(0) \leftrightarrow \bx(T)$.
+		\item Each terminal $\bx(T)$ produces a unique trajectory back to data space.
+	\end{itemize}
+	\eqpause
+	\begin{block}{Exact log-likelihood (instantaneous change of variables)}
+		\vspace{-0.3cm}
+		\[
+			\log p_0(\bx(0)) = \log p_T(\bx(T)) + \int_0^T \tr\left(\frac{\partial \bv(\bx(t), t)}{\partial \bx(t)}\right) dt
+		\]
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item Connects PF-ODE to continuous normalizing flows.
+		\item Invertibility enables image $\to$ latent $\to$ edited image workflows.
+		\item Smooth interpolation in latent space between two samples.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Sampling: Reverse SDE vs PF-ODE}
+	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
+	Same trained score $\bs_{\btheta}(\bx, t)$; only the discretization changes (reverse SDE derived in the next section).
+	\eqpause
+	\begin{block}{Reverse SDE Sampling (\SDESolve, Euler--Maruyama)}
+		\begin{enumerate}
+			\item Sample $\bx_T \sim \cN(0, \bI)$; choose step $\Delta t = T / K$.
+			\item Denoise:
+			\vspace{-0.2cm}
+			\[
+				\bx_{t - \Delta t} = \bx_t - \Bigl[\bff(\bx_t, t) - {\color{violet}g^2(t)}\, \bs_{\btheta}(\bx_t, t)\Bigr] \Delta t \, {\color{violet}+ \, g(t)\sqrt{\Delta t} \cdot \bepsilon}, \;\; \bepsilon \sim \cN(0, \bI)
+			\]
+			\vspace{-0.5cm}
+		\end{enumerate}
+	\end{block}
+	\eqpause
+	\begin{block}{PF-ODE Sampling (\ODESolve: Euler / Heun / RK4)}
+		\begin{enumerate}
+			\item Sample $\bx_T \sim \cN(0, \bI)$; choose step $\Delta t = T / K$ \,(with $K \ll$ SDE case).
+			\item Denoise:
+			\vspace{-0.2cm}
+			\[
+				\bx_{t - \Delta t} = \bx_t - \Bigl[\bff(\bx_t, t) - {\color{teal}\tfrac{1}{2}\, g^2(t)}\, \bs_{\btheta}(\bx_t, t)\Bigr] \Delta t \;\; {\color{teal}(\text{no noise injection})}
+			\]
+			\vspace{-0.5cm}
+		\end{enumerate}
 	\end{block}
 \end{frame}
 %=======
@@ -777,19 +832,15 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Every SDE admits a corresponding probability flow ODE that follows the same probability path $p_t(\bx)$.
+		\item Every SDE admits a corresponding probability flow ODE that follows the same probability path $p_t(\bx)$, yielding deterministic invertible sampling and exact log-likelihoods via the instantaneous change of variables.
 		\vfill
-		\item Converting SDEs to PF-ODEs enables efficient numerical solvers, reducing the number of inference steps from $100$--$1000$ to $20$--$50$.
+		\item Converting SDEs to PF-ODEs enables efficient high-order numerical solvers, reducing the number of inference steps from $100$--$1000$ to $20$--$50$.
 		\vfill
-		\item SDEs can be reversed in time using the score function $\nabla_{\bx} \log p_t(\bx)$.
+		\item SDEs can be reversed in time using the score function $\nabla_{\bx} \log p_t(\bx)$; discretizing the reverse SDE gives ancestral sampling, while discretizing the PF-ODE gives deterministic sampling.
 		\vfill
-		\item The continuous-time score matching objective generalizes DDPM and NCSN to continuous time.
+		\item The continuous-time score matching objective generalizes DDPM and NCSN; for affine-drift SDEs the transition kernel $q(\bx(t) | \bx(0))$ is Gaussian, making the training objective tractable.
 		\vfill
-		\item For affine-drift SDEs, the transition kernel $q(\bx(t) | \bx(0))$ is Gaussian, making the training objective tractable.
-		\vfill
-		\item Discretizing the reverse SDE yields ancestral sampling, while discretizing the PF-ODE yields deterministic sampling.
-		\vfill
-		\item Flow matching approach suggests fitting the vector field $\bv(\bx, t)$ directly. 
+		\item Flow matching fits the vector field $\bv(\bx, t)$ directly, an alternative parametrization of the same continuous-time generative dynamics.
 	\end{itemize}
 \end{frame}
 \end{document}
