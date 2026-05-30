@@ -795,8 +795,8 @@
 	\vspace{-0.3cm}
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample a time $t \sim U[0, 1]$ and $\bx \sim p_t(\bx)$.
-			\item Compute the loss $ \cL = \left\| \bv(\bx_t, t) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
+			\item Sample $t \sim U[0, 1]$, $\bx_t \sim p_t(\bx)$.
+			\item Compute loss $ \cL = \left\| \bv(\bx_t, t) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\eqpause
@@ -804,6 +804,7 @@
 		\begin{enumerate}
 			\item Sample $\bx_0 \sim \cN(0, \bI)$.
 			\item Solve the ODE to obtain $\bx_1$:
+			\vspace{-0.3cm}
 			\[
 				\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
 			\]

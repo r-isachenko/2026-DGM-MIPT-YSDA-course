@@ -283,9 +283,8 @@
 	\vspace{-0.3cm}
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample a time $t \sim U[0, 1]$ and $\bz \sim p(\bz)$.
-			\item Draw $\bx_t \sim p_t(\bx | \bz)$.
-			\item Compute the loss $ \cL = \left\| \bv(\bx_t, \bz, t) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
+			\item Sample $t \sim U[0, 1]$, $\bz \sim p(\bz)$, $\bx_t \sim p_t(\bx | \bz)$.
+			\item Compute loss $ \cL = \left\| \bv(\bx_t, \bz, t) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\eqpause
@@ -293,6 +292,7 @@
 		\begin{enumerate}
 			\item Sample $\bx_0 \sim \cN(0, \bI)$.
 			\item Solve the ODE to obtain $\bx_1$:
+			\vspace{-0.3cm}
 			\[
 				\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
 			\]
@@ -590,10 +590,9 @@
 	\]
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx_1 \sim \pd(\bx)$.
-			\item Sample time $t \sim U[0, 1]$ and $\bx_0 \sim \cN(0, \bI)$.
-			\item Obtain the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
-			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
+			\item Sample $\bx_1 \sim \pd(\bx)$, $\bx_0 \sim \cN(0, \bI)$, $t \sim U[0, 1]$.
+			\item Compute noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
+			\item Compute loss $ \cL = \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\eqpause
@@ -602,8 +601,9 @@
 		\begin{enumerate}
 			\item Sample $\bx_0 \sim \cN(0, \bI)$.
 			\item Solve the ODE to obtain $\bx_1$:
+			\vspace{-0.3cm}
 			\[
-				\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1)
+				\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
 			\]
 		\end{enumerate}
 	\end{block}

@@ -138,25 +138,23 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Training}
-		\begin{itemize}
-			\item Pick a batch of samples \{$\bx_i\}_{i=1}^B$ (here we use Monte Carlo technique).
-			\item Compute the objective for each sample (apply the reparametrization trick):
+		\begin{enumerate}
+			\item Sample $\bx \sim \pd(\bx)$ and $\bepsilon \sim p(\bepsilon)$.
+			\item Reparametrize $\bz = \bg_{\bphi}(\bx, \bepsilon)$.
+			\item Compute the ELBO:
 			\vspace{-0.3cm}
 			\[
-				\bepsilon^* \sim p(\bepsilon); \quad \bz^* = \bg_{\bphi}(\bx, \bepsilon^*);
-			\]
-			\[
-				\cL_{\bphi, \btheta}(\bx) \approx  \log \pt(\bx | \bz^*) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)).
+				\cL_{\bphi, \btheta}(\bx) \approx \log \pt(\bx | \bz) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)).
 			\]
 			\vspace{-0.5cm}
-			\item Update parameters via stochastic gradient steps with respect to $\bphi$ and $\btheta$.
-		\end{itemize}
+			\item Update $\bphi$, $\btheta$ via stochastic gradient ascent.
+		\end{enumerate}
 	\end{block}
-	\begin{block}{Inference}
-		\begin{itemize}
-			\item Sample $\bz^*$ from the prior $p(\bz)$ ($\cN(0, \bI)$);
-			\item Generate data from the decoder $\pt(\bx | \bz^*)$.
-		\end{itemize}
+	\begin{block}{Sampling}
+		\begin{enumerate}
+			\item Sample $\bz \sim p(\bz) = \cN(0, \bI)$.
+			\item Generate $\bx \sim \pt(\bx | \bz)$.
+		\end{enumerate}
 	\end{block}
 	\textbf{Note:} The encoder $q_{\bphi}(\bz| \bx)$ isn't needed during generation.
 \end{frame}
@@ -517,35 +515,36 @@
 %=======
 \begin{frame}{Vector Quantized VAE (VQ-VAE): Final algorithm}
 	\begin{block}{Training}
-		\begin{itemize}
+		\begin{enumerate}
+			\item Sample $\bx \sim \pd(\bx)$ and encode $\bz_e = \NN_{e,\bphi}(\bx)$.
 			\item Vector-quantize (per spatial location if applicable):
 			\vspace{-0.3cm}
 			\[
-				k^* = \argmin_k \|\bz_e - \be_k\|_2, \quad \bz_q = \be_{k^*}, \quad \bz_e = \NN_{e,\bphi}(\bx).
+				k^* = \argmin_k \|\bz_e - \be_k\|_2, \quad \bz_q = \be_{k^*}.
 			\]
 			\vspace{-0.5cm}
-			\item Compute ELBO objective:
+			\item Compute the ELBO:
 			\vspace{-0.3cm}
 			\[
 				\cL_{\bphi, \btheta}(\bx) = \log \pt(\bx | \bz_q) - \log K.
 			\]
 			\vspace{-0.5cm}
-			\item Compute total loss with codebook and commitment losses (with stop-gradient $\text{sg}[\cdot]$):
+			\item Compute total loss with codebook and commitment terms:
 			\vspace{-0.3cm}
 			\[
-				\cL = - \cL_{\bphi, \btheta}(\bx) + \big\|\text{sg}[\bz_e] - \be_{k^*}\big\|_2^2 + \beta \big\|\bz_e - \text{sg}[\be_{k^*}]\big\|_2^2
+				\cL = - \cL_{\bphi, \btheta}(\bx) + \big\|\text{sg}[\bz_e] - \be_{k^*}\big\|_2^2 + \beta \big\|\bz_e - \texttt{stop\_grad}[\be_{k^*}]\big\|_2^2.
 			\]
 			\vspace{-0.5cm}
-			\item Use straight-through gradient estimation for encoder.
-		\end{itemize}
+			\item Update $\bphi$, $\btheta$ (straight-through estimator for the encoder).
+		\end{enumerate}
 	\end{block}
 	\eqpause
 	\vspace{-0.3cm}
 	\begin{block}{Sampling}
-		\begin{itemize}
+		\begin{enumerate}
 			\item Sample $c \sim p(c) = \Uniform\{1, \dots, K\}$.
 			\item Generate $\bx \sim \pt(\bx | \be_c)$.
-		\end{itemize}
+		\end{enumerate}
 	\end{block}
 \end{frame}
 %=======

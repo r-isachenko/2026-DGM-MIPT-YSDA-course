@@ -519,29 +519,24 @@
 %=======
 \begin{frame}{Variational Autoencoder (VAE)}
 	\begin{block}{Training}
-		\begin{itemize}
-			\item Pick a batch of samples \{$\bx_i\}_{i=1}^B$ (here we use Monte Carlo technique).
-			\eqpause
-			\item Compute the objective for each sample (apply the reparametrization trick):
+		\begin{enumerate}
+			\item Sample $\bx \sim \pd(\bx)$ and $\bepsilon \sim p(\bepsilon)$.
+			\item Reparametrize $\bz = \bg_{\bphi}(\bx, \bepsilon)$.
+			\item Compute the ELBO:
 			\vspace{-0.3cm}
 			\[
-				\bepsilon^* \sim p(\bepsilon); \quad \bz^* = \bg_{\bphi}(\bx, \bepsilon^*);
+				\cL_{\bphi, \btheta}(\bx) \approx \log \pt(\bx | \bz) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)).
 			\]
-			\[
-				\cL_{\bphi, \btheta}(\bx) \approx  \log \pt(\bx | \bz^*) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)).
-			\]
-			\eqpause
 			\vspace{-0.5cm}
-			\item Update parameters via stochastic gradient steps with respect to $\bphi$ and $\btheta$.
-		\end{itemize}
+			\item Update $\bphi$, $\btheta$ via stochastic gradient ascent.
+		\end{enumerate}
 	\end{block}
 	\eqpause
-	\begin{block}{Inference}
-		\begin{itemize}
-			\item Sample $\bz^*$ from the prior $p(\bz)$ ($\cN(0, \bI)$);
-			\eqpause
-			\item Generate data from the decoder $\pt(\bx | \bz^*)$.
-		\end{itemize}
+	\begin{block}{Sampling}
+		\begin{enumerate}
+			\item Sample $\bz \sim p(\bz) = \cN(0, \bI)$.
+			\item Generate $\bx \sim \pt(\bx | \bz)$.
+		\end{enumerate}
 	\end{block}
 	\eqpause
 	\textbf{Note:} The encoder $q_{\bphi}(\bz| \bx)$ isn't needed during generation.

@@ -655,10 +655,10 @@
     \eqpause
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx_0 \sim \pd(\bx)$
-			\item Sample $t \sim U\{1, T\}$ and $\bepsilon \sim \cN(0, \bI)$
-			\item Construct noisy image $\bx_t = \bx_0 + \sigma_t \bepsilon$
-			\item Evaluate loss $ \cL = \sigma_t^2 \left\| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \right\|^2 $
+			\item Sample $\bx_0 \sim \pd(\bx)$.
+			\item Sample $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
+			\item Compute noisy image $\bx_t = \bx_0 + \sigma_t \bepsilon$.
+			\item Compute loss $ \cL = \sigma_t^2 \left\| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \right\|^2 $.
 		\end{enumerate}
 		\vspace{-0.3cm}
 	\end{block}
@@ -669,16 +669,16 @@
 \begin{frame}{Noise-Conditioned Score Network (NCSN)}
     \myfootnotewithlink{https://arxiv.org/abs/2006.09011}{Song Y. et al. Improved Techniques for Training Score-Based Generative Models, 2020}
 	\begin{block}{Sampling (Annealed Langevin Dynamics)}
-		\begin{itemize}
-			\item Sample initial point $\bx_0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$
+		\begin{enumerate}
+			\item Sample $\bx_0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$.
 			\item At each noise level, apply $L$ steps of Langevin dynamics:
 			\vspace{-0.2cm}
 			\[
-				\bx_l = \bx_{l-1} + \frac{\eta_t}{2} \bs_{\btheta, \sigma_t}(\bx_{l-1}) + \sqrt{\eta_t} \bepsilon_l,
-			\] 
+				\bx_l = \bx_{l-1} + \frac{\eta_t}{2} \bs_{\btheta, \sigma_t}(\bx_{l-1}) + \sqrt{\eta_t} \bepsilon_l.
+			\]
 			\vspace{-0.5cm}
-			\item Update $\bx_0 := \bx_L$ and reduce to the next lower $\sigma_t$
-		\end{itemize}
+			\item Update $\bx_0 := \bx_L$ and reduce to the next lower $\sigma_t$.
+		\end{enumerate}
 	\end{block}
     \eqpause
 	\begin{figure}

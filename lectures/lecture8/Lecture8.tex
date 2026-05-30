@@ -182,13 +182,13 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \begin{block}{Training}
         \begin{enumerate}
-            \item Obtain a sample $\bx_0 \sim \pd(\bx)$.
-            \item Generate a noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$, with $\bepsilon \sim \cN(0, \bI)$.
-            \item Compute the ELBO
+            \item Sample $\bx_0 \sim \pd(\bx)$, $\bepsilon \sim \cN(0, \bI)$.
+            \item Compute noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$.
+            \item Compute the ELBO:
             \vspace{-0.3cm}
             \begin{multline*}
                 \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-                - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \left[\frac{1}{2\tilde{\beta}_t} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]}_{\cL_t}}
+                - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \left[\frac{1}{2\tilde{\beta}_t} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]}_{\cL_t}}.
             \end{multline*}
             \vspace{-0.7cm}
         \end{enumerate}
@@ -197,7 +197,7 @@
     \begin{block}{Sampling}
         \begin{enumerate}
             \item Sample $\bx_T \sim \cN(0, \bI)$.
-            \item Denoise: $\bx_{t - 1} = \bmu_{\btheta, t}(\bx_t) +  \sqrt{\tilde{\beta}_t} \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
+            \item Denoise $\bx_{t - 1} = \bmu_{\btheta, t}(\bx_t) +  \sqrt{\tilde{\beta}_t} \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
         \end{enumerate}
     \end{block}
 \end{frame}
@@ -318,22 +318,23 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \begin{block}{Training}
         \begin{enumerate}
-            \item Obtain a sample $\bx_0 \sim \pd(\bx)$.
-            \item Sample time index $t \sim U\{1, T\}$ and noise $\bepsilon \sim \cN(0, \bI)$.
-            \item Generate noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$.
-            \item Compute the loss $ \cL_{\text{simple}} = \| \bepsilon - \bepsilon_{\btheta, t}(\bx_t) \|^2 $.
+            \item Sample $\bx_0 \sim \pd(\bx)$.
+            \item Sample $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
+            \item Compute noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$.
+            \item Compute loss $ \cL_{\text{simple}} = \| \bepsilon - \bepsilon_{\btheta, t}(\bx_t) \|^2 $.
         \end{enumerate}
     \end{block}
     \eqpause
-    \begin{block}{Sampling (Ancestral Sampling)}
+    \begin{block}{Sampling (Ancestral)}
         \begin{enumerate}
             \item Sample $\bx_T \sim \cN(0, \bI)$.
             \item Compute the mean of $\pt(\bx_{t-1} | \bx_t) = \cN(\bmu_{\btheta, t}(\bx_t), \tilde{\beta}_t \cdot \bI)$:
-            \[
-                \bmu_{\btheta, t}(\bx_t) = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}(\bx_t)
-            \]
             \vspace{-0.3cm}
-            \item Denoise: $\bx_{t - 1} = \bmu_{\btheta, t}(\bx_t) +  \sqrt{\tilde{\beta}_t} \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
+            \[
+                \bmu_{\btheta, t}(\bx_t) = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}(\bx_t).
+            \]
+            \vspace{-0.5cm}
+            \item Denoise $\bx_{t - 1} = \bmu_{\btheta, t}(\bx_t) +  \sqrt{\tilde{\beta}_t} \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
         \end{enumerate}
     \end{block}
 \end{frame}
@@ -660,19 +661,20 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 
 	\begin{block}{Training}
-		\begin{itemize}
+		\begin{enumerate}
 			\item Train the DDPM as before.
-			\item Train an additional classifier $p(\by | \bx_t)$ on noisy data (note that it is dependent on time $t$).
-		\end{itemize}
+			\item Train an additional classifier $p(\by | \bx_t)$ on noisy data (time-dependent).
+		\end{enumerate}
 		\vspace{-0.2cm}
 	\end{block}
 	\eqpause
-	\begin{block}{Guided DDPM Sampling}
+	\begin{block}{Sampling (Guided)}
 		\begin{enumerate}
 			\item Sample $\bx_T \sim \cN(0, \bI)$.
-			\item Generate the denoised image (using scaled guided score function):
+			\item Denoise with the scaled guided score function:
+			\vspace{-0.3cm}
 			\[
-				\bx_{t-1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
+				\bx_{t-1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon.
 			\]
 		\end{enumerate}
 	\end{block}
@@ -753,23 +755,20 @@
 		\bs^{\gamma}_{\btheta, t}(\bx_t, \by) = (1 - \gamma) \cdot \bs_{\btheta, t}(\bx_t) +  \gamma \cdot \bs_{\btheta, t}(\bx_t, \by)
 	\]
 	\vspace{-0.5cm}
-	\begin{block}{CFG algorithm}
-		\begin{itemize}
-			\item Introduce "the absence of conditioning" label $\by = \varnothing$.		
-			\eqpause
-			\item Use it to get unguided score function $\bs_{\btheta, t}(\bx_t) = \bs_{\btheta, t}(\bx_t, \varnothing)$.		
-			\eqpause
-			\item Train a single model $\bs_{\btheta, t}(\bx_t, \by)$ using \textbf{supervised} data, but artificially drop the labels $\by$ with some fixed probability (simulating the case of $\by = \varnothing$).		
-			\eqpause
-			\item Apply the model twice during inference to get $\bs_{\btheta, t}(\bx_t, \varnothing)$ and $\bs_{\btheta, t}(\bx_t, \by)$.
-		\end{itemize}
+	\begin{block}{CFG}
+		\begin{enumerate}
+			\item Introduce the ``absence of conditioning'' label $\by = \varnothing$.
+			\item Identify the unguided score function $\bs_{\btheta, t}(\bx_t) = \bs_{\btheta, t}(\bx_t, \varnothing)$.
+			\item Train a single model $\bs_{\btheta, t}(\bx_t, \by)$ on \textbf{supervised} data, dropping the label $\by$ with some fixed probability (simulating $\by = \varnothing$).
+			\item At inference, evaluate the model twice to obtain $\bs_{\btheta, t}(\bx_t, \varnothing)$ and $\bs_{\btheta, t}(\bx_t, \by)$.
+		\end{enumerate}
 	\end{block}
 	\vspace{-0.3cm}
 	\eqpause
-	\begin{block}{Guided Sampling}
+	\begin{block}{Sampling (Guided)}
 		\vspace{-0.3cm}
 		\[
-			\bx_{t-1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
+			\bx_{t-1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon.
 		\]
 		\vspace{-0.3cm}
 	\end{block}

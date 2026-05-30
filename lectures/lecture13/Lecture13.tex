@@ -69,21 +69,21 @@
 		\item This conditioning allows us to transport any distribution $p_0(\bx)$ to any distribution $p_1(\bx)$.
 		\item It's possible to apply this approach to paired tasks, e.g., style transfer.
 	\end{itemize}
-	\begin{block}{Training Procedure}
+	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $(\bx_0, \bx_1) \sim p(\bx_0, \bx_1)$.
-			\item Sample time $t \sim U[0, 1]$.
-			\item Compute the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
-			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
+			\item Sample $(\bx_0, \bx_1) \sim p(\bx_0, \bx_1)$, $t \sim U[0, 1]$.
+			\item Compute noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
+			\item Compute loss $ \cL = \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\vspace{-0.3cm}
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Sample $\bx_0 \sim p_0(\bx)$.
-							\item Solve the ODE to obtain $\bx_1$:
+			\item Solve the ODE to obtain $\bx_1$:
+			\vspace{-0.3cm}
 			\[
-				\bx_1 = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1)
+				\bx_1 = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
 			\]
 		\end{enumerate}
 	\end{block}
@@ -373,8 +373,8 @@
 %=======
 \begin{frame}{Reverse Model for Sequence}
     \[
-        p_\theta(\bX_{t-1}|\bX_t) =
-		\prod_{i=1}^m p_\theta(\bx_{t-1}^i | {\color{violet}\bX_t}).
+        \pt(\bX_{t-1}|\bX_t) =
+		\prod_{i=1}^m \pt(\bx_{t-1}^i | {\color{violet}\bX_t}).
     \]
     \vspace{-0.3cm}
     \begin{itemize}
@@ -386,7 +386,7 @@
     \begin{block}{Objective: $\cL_t$ term}
         \vspace{-0.7cm}
         \begin{multline*}
-			\KL\left(q(\bX_{t-1}| \bX_t, \bX_0)\,\|\,p_\theta(\bX_{t-1}| \bX_t)\right) \\
+			\KL\left(q(\bX_{t-1}| \bX_t, \bX_0)\,\|\,\pt(\bX_{t-1}| \bX_t)\right) \\
 			= \sum_{i=1}^m \KL\left(q(\bx_{t-1}^i|\bx_t^i, \bx_0^i) || \pt(\bx_{t-1}^i|\bX_t)\right).
         \end{multline*}
         \vspace{-0.5cm}
@@ -509,9 +509,9 @@
 	\end{figure}
     \eqpause
 	\[
-		p_\theta(\bX_{t-1}| \bX_t)
+		\pt(\bX_{t-1}| \bX_t)
 		=
-		\prod_{i=1}^m p_\theta(\bx_{t-1}^i | \bX_t).
+		\prod_{i=1}^m \pt(\bx_{t-1}^i | \bX_t).
 	\]
 	\vspace{-0.3cm}
     \eqpause
@@ -533,8 +533,9 @@
 
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bX_0 \sim \pd(\bX)$ and $t \sim U\{1, \ldots, T\}$.
+			\item Sample $\bX_0 \sim \pd(\bX)$, $t \sim U\{1, \ldots, T\}$.
 			\item Corrupt the sequence by independent masking:
+			\vspace{-0.3cm}
 			\[
 				\bx_t^i =
 				\begin{cases}
@@ -543,18 +544,19 @@
 				\end{cases}
 				\qquad i=1,\dots,m.
 			\]
+			\vspace{-0.5cm}
 			\item Predict token distributions in parallel:
 			\vspace{-0.3cm}
 			\[
-				p_\theta(\bX_0 | \bX_t)
+				\pt(\bX_0 | \bX_t)
 				=
-				\prod_{i=1}^m p_\theta(\bx_0^i | \bX_t).
+				\prod_{i=1}^m \pt(\bx_0^i | \bX_t).
 			\]
 			\vspace{-0.5cm}
-			\item Compute the masked-CE loss:
+			\item Compute masked-CE loss:
 			\vspace{-0.3cm}
 			\[
-				\cL(\theta)
+				\cL(\btheta)
 				=
 				\rho_t \sum_{i=1}^m [\bx_t^i=\mathbf e_m]\,
 				\big[-\log \pt(\bx_0^i | \bX_t)\big].
@@ -569,15 +571,17 @@
 			\item Initialize $\bX_T \leftarrow \mathbf e_m \mathbf 1^\top$ (fully masked).
 			\item For $t = T, T-1, \ldots, 1$:
 			\begin{enumerate}
-				\item Predict $p_\theta(\bx_0^i | \bX_t)$ for all positions.
+				\item Predict $\pt(\bx_0^i | \bX_t)$ for all positions.
 				\item For each masked position ($\bx_t^i = \mathbf e_m$):
+				\vspace{-0.3cm}
 				\[
 					\bx_{t-1}^i =
 					\begin{cases}
-						\hat\bx_0^i \sim p_\theta(\bx_0^i | \bX_t), & \text{with prob. } \rho_t,\\
+						\hat\bx_0^i \sim \pt(\bx_0^i | \bX_t), & \text{with prob. } \rho_t,\\
 						\mathbf e_m, & \text{with prob. } 1-\rho_t.
 					\end{cases}
 				\]
+				\vspace{-0.5cm}
 				\item For each unmasked position: $\bx_{t-1}^i = \bx_t^i$.
 			\end{enumerate}
 			\item Return the final sequence $\bX_0$ (fully unmasked).
@@ -659,8 +663,9 @@
 
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bX_0 \sim \pd(\bX)$ and ${\color{violet}\lambda \sim U[0, 1]}$.
+			\item Sample $\bX_0 \sim \pd(\bX)$, ${\color{violet}\lambda \sim U[0, 1]}$.
 			\item Corrupt the sequence by independent masking:
+			\vspace{-0.3cm}
 			\[
 				\bx_{\color{violet}\lambda}^i =
 				\begin{cases}
@@ -669,18 +674,19 @@
 				\end{cases}
 				\qquad i=1,\dots,m.
 			\]
+			\vspace{-0.5cm}
 			\item Predict token distributions in parallel:
 			\vspace{-0.3cm}
 			\[
-				p_\theta(\bX_0 | \bX_{\color{violet}\lambda})
+				\pt(\bX_0 | \bX_{\color{violet}\lambda})
 				=
-				\prod_{i=1}^m p_\theta(\bx_0^i | \bX_{\color{violet}\lambda}).
+				\prod_{i=1}^m \pt(\bx_0^i | \bX_{\color{violet}\lambda}).
 			\]
 			\vspace{-0.5cm}
-			\item Compute the masked-CE loss:
+			\item Compute masked-CE loss:
 			\vspace{-0.3cm}
 			\[
-				\cL(\theta)
+				\cL(\btheta)
 				=
 				{\color{violet}w(\lambda)} \sum_{i=1}^m [\bx_{\color{violet}\lambda}^i=\mathbf e_m]\,
 				\big[-\log \pt(\bx_0^i | \bX_{\color{violet}\lambda})\big].
@@ -696,15 +702,17 @@
 			\item Initialize $\bX_{{\color{violet}\lambda_1}} \leftarrow \mathbf e_m \mathbf 1^\top$ (fully masked).
 			\item For a decreasing schedule ${\color{violet}1 = \lambda_1 > \lambda_2 > \cdots > \lambda_L = 0}$, $\ell = 1, \ldots, L-1$:
 			\begin{enumerate}
-				\item Predict $p_\theta(\bx_0^i | \bX_{{\color{violet}\lambda_\ell}})$ for all positions.
+				\item Predict $\pt(\bx_0^i | \bX_{{\color{violet}\lambda_\ell}})$ for all positions.
 				\item For each masked position ($\bx_{{\color{violet}\lambda_\ell}}^i = \mathbf e_m$):
+				\vspace{-0.3cm}
 				\[
 					\bx_{{\color{violet}\lambda_{\ell+1}}}^i =
 					\begin{cases}
-						\hat\bx_0^i \sim p_\theta(\bx_0^i | \bX_{{\color{violet}\lambda_\ell}}), & \text{with prob. } {\color{violet}1 - \tfrac{\lambda_{\ell+1}}{\lambda_\ell}},\\
+						\hat\bx_0^i \sim \pt(\bx_0^i | \bX_{{\color{violet}\lambda_\ell}}), & \text{with prob. } {\color{violet}1 - \tfrac{\lambda_{\ell+1}}{\lambda_\ell}},\\
 						\mathbf e_m, & \text{with prob. } {\color{violet}\tfrac{\lambda_{\ell+1}}{\lambda_\ell}}.
 					\end{cases}
 				\]
+				\vspace{-0.5cm}
 				\item For each unmasked position: $\bx_{{\color{violet}\lambda_{\ell+1}}}^i = \bx_{{\color{violet}\lambda_\ell}}^i$.
 			\end{enumerate}
 			\item Return the final sequence $\bX_{{\color{violet}\lambda_L}}$ (fully unmasked).
