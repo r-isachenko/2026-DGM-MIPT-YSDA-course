@@ -70,7 +70,7 @@
 	\]
 \end{frame}
 %=======
-\begin{frame}{Setup: from PF-ODE to few-step samplers}
+\begin{frame}{Setup: where PF-ODE solvers floor}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 	\begin{block}{Recall: probability flow ODE}
 		\vspace{-0.3cm}
@@ -80,17 +80,27 @@
 	\end{block}
 	\eqpause
 	\begin{itemize}
-		\item Plugging $\bs_{\btheta}$ into the PF-ODE and using a high-order \ODESolve (Heun, RK) reduces the number of steps from $100$--$1000$ down to $20$--$50$.
+		\item Plugging $\bs_{\btheta}$ into the PF-ODE and using a high-order \ODESolve (Heun, RK) brings the number of steps from $100$--$1000$ down to $20$--$50$.
+		\nextonslide{\item Each step still costs one network call --- truncation error compounds along the trajectory.}
 		\nextonslide{\item Can we go further --- to $\mathbf{1}$--$\mathbf{4}$ steps?}
-		\nextonslide{\item Idea: \textbf{learn a shortcut network} that compresses many ODE-solver steps into one.}
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Setup: shortcut networks}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	\begin{itemize}
+		\item Idea: \textbf{learn a shortcut network} that compresses many ODE-solver steps into one.
+		\item It maps any $(\bx_t, t)$ directly to the data-side endpoint of the same PF-ODE trajectory --- one network call instead of many.
 	\end{itemize}
 	\eqpause
 	\begin{block}{Two approaches in this lecture}
 		\begin{itemize}
-			\item \textbf{Consistency Models} --- enforce self-consistency along PF-ODE trajectories.
-			\item \textbf{Distribution Matching Distillation} --- match generator and data distributions via score differences.
+			\item \textbf{Consistency Models} --- enforce \emph{self-consistency} along PF-ODE trajectories (per-sample mapping).
+			\item \textbf{Distribution Matching Distillation} --- match the \emph{distributions} of generator and data via score differences (population-level).
 		\end{itemize}
 	\end{block}
+	\eqpause
+	Both reuse a pretrained score $\bs_{\bphi}$ as a teacher.
 \end{frame}
 %=======
 \begin{frame}{Outline}
@@ -99,111 +109,105 @@
 %=======
 \section{Consistency Models}
 %=======
-\begin{frame}{Consistency function}
+\begin{frame}{Consistency function: an ODE perspective}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	\begin{block}{Definition}
-		A \emph{consistency function} $f_{\btheta}: (\bx_t, t) \mapsto \bx_{\epsilon}$ is a neural network that maps any noisy point on a PF-ODE trajectory back to its data-side endpoint $\bx_{\epsilon}$.
+	\begin{block}{Goal}
+		Learn a one-step generator $f_{\btheta}: (\bx_t, t) \mapsto \bx_{\epsilon}$ that pulls any noisy $\bx_t$ on a PF-ODE trajectory back to its data endpoint $\bx_{\epsilon}$, $t \in [\epsilon, T]$.
+	\end{block}
+	{\color{gray}$\epsilon > 0$ is a small numerical cutoff --- the score $\bs(\bx, t)$ blows up as $t \to 0$, so we stop one $\epsilon$-step short and treat $\bx_{\epsilon} \approx \bx_0$ as the data sample.}
+	\eqpause
+	\begin{block}{Specification: ODE problem along the trajectory}
+		\vspace{-0.3cm}
+		\[
+			\underbrace{\frac{d}{dt}\, f_{\btheta}(\bx_t, t) = 0}_{\text{differential form: constant along PF-ODE}}, \qquad
+			\underbrace{f_{\btheta}(\bx_{\epsilon}, \epsilon) = \bx_{\epsilon}}_{\text{boundary: value pinned at $t = \epsilon$}}.
+		\]
+		\vspace{-0.3cm}
 	\end{block}
 	\eqpause
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.85\linewidth]{figs/pfode-fig1}
-	\end{figure}
-	\eqpause
-	Domain $t \in [\epsilon, T]$: $\epsilon > 0$ (e.g.\ $0.002$) avoids the singularity at $t = 0$; $T$ is the noise level (e.g.\ $80$). Time scaling follows EDM: $\bx_t = \bx_0 + t \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
+	Together the two conditions pin $f_{\btheta}$ uniquely: a function that is constant on each trajectory and equals $\bx_{\epsilon}$ at the data-side end must equal $\bx_{\epsilon}$ \emph{everywhere} on that trajectory.
 \end{frame}
 %=======
-\begin{frame}{Self-consistency property}
+\begin{frame}{Consistency function: an ODE perspective}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	\begin{block}{Defining property}
+	\[
+		f_{\btheta}(\bx_{t}, t) = \bx_{\epsilon}, \quad t \in [\epsilon, T]
+	\]
+	\vspace{-0.3cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/pfode-fig1}
+	\end{figure}
+	\eqpause
+	\begin{itemize}
+		\item To optimize the differential condition $\tfrac{d}{dt} f_{\btheta}(\bx_t, t) = 0$ we need a derivative through the network. 
+		\item Integrate it between two times $t, t'$ on the \emph{same} PF-ODE trajectory.
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Self-consistency: the integrated form}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	Idea is to replace $df_{\btheta}/dt = 0$ by a finite difference between two adjacent points.
+	\begin{block}{Self-consistency property}
 		\vspace{-0.3cm}
 		\[
 			f_{\btheta}(\bx_t, t) = f_{\btheta}(\bx_{t'}, t'), \quad \forall t, t' \in [\epsilon, T],
 		\]
-		whenever $\bx_t$ and $\bx_{t'}$ lie on the same PF-ODE trajectory.
+		whenever $\bx_t$ and $\bx_{t'}$ lie \textbf{on the same PF-ODE trajectory.}
 	\end{block}
 	\eqpause
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.8\linewidth]{figs/cm-fig2}
+		\includegraphics[width=0.7\linewidth]{figs/cm-fig2}
 	\end{figure}
-	\eqpause
-	The entire framework is built by enforcing this property along sampled trajectories.
 \end{frame}
 %=======
-\begin{frame}{Boundary condition and parameterization}
+\begin{frame}{Skip-connection parameterization}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	\begin{block}{Boundary condition}
-		\vspace{-0.3cm}
-		\[
-			f_{\btheta}(\bx_{\epsilon}, \epsilon) = \bx_{\epsilon}.
-		\]
-	\end{block}
-	\eqpause
-	\begin{block}{Skip-connection parameterization}
-		\vspace{-0.3cm}
+	\begin{block}{Parameterization}
+		We parametrize the consistency model to guarantee the boundary condition $f_{\btheta}(\bx_{\epsilon}, \epsilon) = \bx_{\epsilon}$
 		\[
 			f_{\btheta}(\bx, t) = c_{\text{skip}}(t)\, \bx + c_{\text{out}}(t)\, F_{\btheta}(\bx, t).
-		\]
+		\]		
+		\vspace{-0.3cm}
 		\begin{itemize}
-			\item $F_{\btheta}(\bx, t)$ --- free-form neural network (e.g.\ U-Net), the trainable predictor.
+			\item $F_{\btheta}(\bx, t)$ --- free-form neural network.
 			\item $c_{\text{skip}}(t),\, c_{\text{out}}(t)$ --- differentiable scalar weights with $c_{\text{skip}}(\epsilon) = 1$ and $c_{\text{out}}(\epsilon) = 0$.
 		\end{itemize}
 	\end{block}
 	\eqpause
-	The boundary condition holds \emph{structurally} (by construction); the loss only has to enforce self-consistency.
+	At $t = \epsilon$ the skip term passes $\bx$ through and the network term is killed: $f_{\btheta}(\bx_{\epsilon}, \epsilon) = \bx_{\epsilon}$ holds \emph{structurally}, for any $\btheta$. 
 \end{frame}
 %=======
 \begin{frame}{Consistency Distillation (CD)}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	Assume a pretrained teacher score $\bs_{\bphi}(\bx, t)$. Discretize $[\epsilon, T]$ as $\epsilon = t_1 < t_2 < \dots < t_N = T$.
+	Enforce $df_{\btheta}/dt = 0$ as a \emph{finite difference} on adjacent points of the teacher's PF-ODE trajectory. Discretize $[\epsilon, T]$ as $\epsilon = t_1 < \dots < t_N = T$; $\bs_{\bphi}(\bx, t)$ --- pretrained teacher score.
 	\eqpause
 	\begin{block}{One ODE-solver step on the empirical PF-ODE}
 		\vspace{-0.3cm}
 		\[
-			\hat\bx_{t_n}^{\bphi} = \bx_{t_{n+1}} + (t_n - t_{n+1})\, \Phi(\bx_{t_{n+1}}, t_{n+1};\, \bphi).
+			\hat\bx_{t_n}^{\bphi} = \bx_{t_{n+1}} + (t_n - t_{n+1})\, \Phi(\bx_{t_{n+1}}, t_{n+1};\, \bphi),
 		\]
-		$\Phi(\bx, t; \bphi)$ --- update of a one-step \ODESolve\ for the empirical PF-ODE $d\bx/dt = -t \cdot \bs_{\bphi}(\bx, t)$ (e.g.\ Euler: $\Phi = -t\, \bs_{\bphi}$; Heun: average of two stage estimates).
+		one step of \ODESolve\ for $d\bx/dt = -t \cdot \bs_{\bphi}(\bx, t)$ (Euler: $\Phi = -t\, \bs_{\bphi}$; Heun: average of two stages). The RHS follows from the VE-SDE PF-ODE with $\sigma(t) = t$ ($\bx_t = \bx_0 + t\,\bepsilon$): then $\bff \equiv 0$, $g^2(t) = 2t$, so $\tfrac{1}{2} g^2(t) = t$.
 	\end{block}
 	\eqpause
 	\begin{block}{CD loss}
 		\vspace{-0.4cm}
 		\[
-			\cL_{\text{CD}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}^{\bphi}, t_n)\bigr)\right],
+			\cL_{\text{CD}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}^{\bphi}, t_n)\bigr)\right].
 		\]
-		with weighting $\lambda(t_n) > 0$; distance $d(\bu, \bv) \in \{\|\bu - \bv\|_2^2,\, \|\bu - \bv\|_1,\, \text{LPIPS}\}$; $\btheta^-$ --- EMA of $\btheta$ (stop-gradient target, prevents collapse to a constant).
+		$\lambda(t_n) > 0$ --- weighting; $d(\bu, \bv) \in \{\|\bu - \bv\|_2^2, \|\bu - \bv\|_1, \text{LPIPS}\}$; $\btheta^-$ --- EMA of $\btheta$ (stop-gradient target, prevents collapse).
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Consistency Training (CT)}
-	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	Replace the teacher's ODE step with the noise-injection identity from DSM --- no pretrained score needed.
-	\eqpause
-	\begin{block}{Pair construction (teacher-free)}
-		\vspace{-0.3cm}
-		\[
-			\bx_{t_{n+1}} = \bx_0 + t_{n+1}\, \bepsilon, \quad \bx_{t_n} = \bx_0 + t_n\, \bepsilon, \quad \bepsilon \sim \cN(0, \bI).
-		\]
-		The \emph{same} $\bx_0$ and the \emph{same} $\bepsilon$ for both points.
-	\end{block}
-	\eqpause
-	\begin{block}{CT loss}
-		\vspace{-0.4cm}
-		\[
-			\cL_{\text{CT}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\bx_{t_n}, t_n)\bigr)\right].
-		\]
-	\end{block}
-	\eqpause
-	Claim: $\nabla_{\btheta}\, \cL_{\text{CT}} = \nabla_{\btheta}\, \cL_{\text{CD}} + o(\Delta t)$ as $N \to \infty$.
-\end{frame}
-%=======
-\begin{frame}{Pseudocode (Consistency Training)}
+\begin{frame}{Pseudocode (Consistency Distillation)}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
 	\begin{block}{Training}
 		\begin{enumerate}
 			\item Sample $\bx_0 \sim \pd(\bx)$, $n \sim U\{1, N{-}1\}$, $\bepsilon \sim \cN(0, \bI)$.
-			\item Compute paired noisy samples $\bx_{t_{n+1}} = \bx_0 + t_{n+1}\, \bepsilon$, $\bx_{t_n} = \bx_0 + t_n\, \bepsilon$.
-			\item Compute loss $\cL = \lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\bx_{t_n}, t_n)\bigr)$.
+			\item Compute $\bx_{t_{n+1}} = \bx_0 + t_{n+1}\, \bepsilon$.
+			\item Solve one teacher ODE step $\hat\bx_{t_n}^{\bphi} = \bx_{t_{n+1}} + (t_n - t_{n+1})\, \Phi(\bx_{t_{n+1}}, t_{n+1}; \bphi)$.
+			\item Compute loss $\cL = \lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}^{\bphi}, t_n)\bigr)$.
 			\item Update EMA target $\btheta^- \leftarrow \mu\, \btheta^- + (1 - \mu)\, \btheta$.
 		\end{enumerate}
 	\end{block}
@@ -338,7 +342,7 @@
 \begin{frame}{Summary}
 	\begin{itemize}
 		\item PF-ODE solvers (Heun, RK) floor at ${\sim}20$ steps; further acceleration requires \textbf{learning a shortcut network}.
-		\item \textbf{Consistency Models}: enforce \emph{self-consistency} along PF-ODE trajectories; the boundary condition makes one-step sampling fall out of the parameterization.
+		\item \textbf{Consistency Models}: a neural network $f_{\btheta}$ specified by $df_{\btheta}/dt = 0$ along PF-ODE $+$ boundary $f_{\btheta}(\bx_{\epsilon}, \epsilon) = \bx_{\epsilon}$; CD enforces the differential condition as a finite-difference loss on a teacher's trajectory.
 		\item LCM extends CD to latent SD with guided distillation and skipping-step.
 		\item \textbf{DMD}: match generator and data \emph{distributions} via the score-difference gradient; two score networks (frozen real, online fake) in alternating optimization. DMD2 adds GAN, drops regression, adds multi-step.
 		\item Tradeoffs: CM is more principled, DMD currently delivers the best $1$-step quality.
