@@ -102,10 +102,20 @@
 \begin{frame}{Consistency function}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
 	\begin{block}{Definition}
-		A consistency function $f_{\btheta}: (\bx_t, t) \mapsto \bx_{\epsilon}$ maps any point on a PF-ODE trajectory to its origin (data side).
+		A \emph{consistency function} $f_{\btheta}: (\bx_t, t) \mapsto \bx_{\epsilon}$ is a neural network that maps any noisy point on a PF-ODE trajectory back to its data-side endpoint $\bx_{\epsilon}$.
 	\end{block}
 	\eqpause
-	\begin{block}{Self-consistency property}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/pfode-fig1}
+	\end{figure}
+	\eqpause
+	Domain $t \in [\epsilon, T]$: $\epsilon > 0$ (e.g.\ $0.002$) avoids the singularity at $t = 0$; $T$ is the noise level (e.g.\ $80$). Time scaling follows EDM: $\bx_t = \bx_0 + t \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
+\end{frame}
+%=======
+\begin{frame}{Self-consistency property}
+	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
+	\begin{block}{Defining property}
 		\vspace{-0.3cm}
 		\[
 			f_{\btheta}(\bx_t, t) = f_{\btheta}(\bx_{t'}, t'), \quad \forall t, t' \in [\epsilon, T],
@@ -113,7 +123,12 @@
 		whenever $\bx_t$ and $\bx_{t'}$ lie on the same PF-ODE trajectory.
 	\end{block}
 	\eqpause
-	This is the \emph{defining} property --- the entire framework is built by enforcing it.
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/cm-fig2}
+	\end{figure}
+	\eqpause
+	The entire framework is built by enforcing this property along sampled trajectories.
 \end{frame}
 %=======
 \begin{frame}{Boundary condition and parameterization}
@@ -128,79 +143,80 @@
 	\begin{block}{Skip-connection parameterization}
 		\vspace{-0.3cm}
 		\[
-			f_{\btheta}(\bx, t) = c_{\text{skip}}(t)\, \bx + c_{\text{out}}(t)\, F_{\btheta}(\bx, t),
+			f_{\btheta}(\bx, t) = c_{\text{skip}}(t)\, \bx + c_{\text{out}}(t)\, F_{\btheta}(\bx, t).
 		\]
-		with $c_{\text{skip}}(\epsilon) = 1$ and $c_{\text{out}}(\epsilon) = 0$.
+		\begin{itemize}
+			\item $F_{\btheta}(\bx, t)$ --- free-form neural network (e.g.\ U-Net), the trainable predictor.
+			\item $c_{\text{skip}}(t),\, c_{\text{out}}(t)$ --- differentiable scalar weights with $c_{\text{skip}}(\epsilon) = 1$ and $c_{\text{out}}(\epsilon) = 0$.
+		\end{itemize}
 	\end{block}
 	\eqpause
-	\begin{itemize}
-		\item The boundary condition is enforced \emph{structurally}, not by the loss.
-		\item Optimization only needs to learn self-consistency.
-	\end{itemize}
+	The boundary condition holds \emph{structurally} (by construction); the loss only has to enforce self-consistency.
 \end{frame}
 %=======
 \begin{frame}{Consistency Distillation (CD)}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	Assume a pretrained teacher score $\bs_{\bphi}$. Discretize $[\epsilon, T]$ into $\{t_1, \dots, t_N\}$.
+	Assume a pretrained teacher score $\bs_{\bphi}(\bx, t)$. Discretize $[\epsilon, T]$ as $\epsilon = t_1 < t_2 < \dots < t_N = T$.
 	\eqpause
-	\begin{block}{One ODE-solver step (using teacher)}
+	\begin{block}{One ODE-solver step on the empirical PF-ODE}
 		\vspace{-0.3cm}
 		\[
-			\hat\bx_{t_n} = \bx_{t_{n+1}} + (t_n - t_{n+1})\, \Phi(\bx_{t_{n+1}}, t_{n+1};\, \bphi).
+			\hat\bx_{t_n}^{\bphi} = \bx_{t_{n+1}} + (t_n - t_{n+1})\, \Phi(\bx_{t_{n+1}}, t_{n+1};\, \bphi).
 		\]
+		$\Phi(\bx, t; \bphi)$ --- update of a one-step \ODESolve\ for the empirical PF-ODE $d\bx/dt = -t \cdot \bs_{\bphi}(\bx, t)$ (e.g.\ Euler: $\Phi = -t\, \bs_{\bphi}$; Heun: average of two stage estimates).
 	\end{block}
 	\eqpause
 	\begin{block}{CD loss}
 		\vspace{-0.4cm}
 		\[
-			\cL_{\text{CD}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}, t_n)\bigr)\right],
+			\cL_{\text{CD}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}^{\bphi}, t_n)\bigr)\right],
 		\]
-		where $\btheta^-$ is the EMA of $\btheta$ (stop-gradient target).
+		with weighting $\lambda(t_n) > 0$; distance $d(\bu, \bv) \in \{\|\bu - \bv\|_2^2,\, \|\bu - \bv\|_1,\, \text{LPIPS}\}$; $\btheta^-$ --- EMA of $\btheta$ (stop-gradient target, prevents collapse to a constant).
 	\end{block}
-	\eqpause
-	The EMA target prevents trivial collapse to a constant function.
 \end{frame}
 %=======
 \begin{frame}{Consistency Training (CT)}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	Replace the teacher's ODE step with the noise-injection identity from denoising score matching.
+	Replace the teacher's ODE step with the noise-injection identity from DSM --- no pretrained score needed.
 	\eqpause
 	\begin{block}{Pair construction (teacher-free)}
 		\vspace{-0.3cm}
 		\[
-			\bx_{t_{n+1}} = \bx_0 + t_{n+1}\, \bepsilon, \quad \hat\bx_{t_n} = \bx_0 + t_n\, \bepsilon, \quad \bepsilon \sim \cN(0, \bI).
+			\bx_{t_{n+1}} = \bx_0 + t_{n+1}\, \bepsilon, \quad \bx_{t_n} = \bx_0 + t_n\, \bepsilon, \quad \bepsilon \sim \cN(0, \bI).
 		\]
-		Same $\bx_0$ and same $\bepsilon$ for both points.
+		The \emph{same} $\bx_0$ and the \emph{same} $\bepsilon$ for both points.
 	\end{block}
 	\eqpause
 	\begin{block}{CT loss}
 		\vspace{-0.4cm}
 		\[
-			\cL_{\text{CT}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\hat\bx_{t_n}, t_n)\bigr)\right].
+			\cL_{\text{CT}}(\btheta) = \bbE \left[\lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\bx_{t_n}, t_n)\bigr)\right].
 		\]
 	\end{block}
 	\eqpause
 	Claim: $\nabla_{\btheta}\, \cL_{\text{CT}} = \nabla_{\btheta}\, \cL_{\text{CD}} + o(\Delta t)$ as $N \to \infty$.
 \end{frame}
 %=======
-\begin{frame}{Sampling from a consistency model}
+\begin{frame}{Pseudocode (Consistency Training)}
 	\myfootnotewithlink{https://arxiv.org/abs/2303.01469}{Song Y. et al. Consistency Models, 2023}
-	\begin{block}{Single-step sampling}
-		\vspace{-0.3cm}
-		\[
-			\bx_T \sim \cN(0, T^2 \bI), \quad \bx_0 \approx f_{\btheta}(\bx_T, T).
-		\]
-	\end{block}
-	\eqpause
-	\begin{block}{Multi-step refinement}
-		Alternate (for $\tau_1 > \tau_2 > \dots > \tau_M$):
+	\begin{block}{Training}
 		\begin{enumerate}
-			\item Denoise: $\bx_0 \leftarrow f_{\btheta}(\bx_{\tau_i}, \tau_i)$.
-			\item Re-noise: $\bx_{\tau_{i+1}} \leftarrow \bx_0 + \tau_{i+1}\, \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
+			\item Sample $\bx_0 \sim \pd(\bx)$, $n \sim U\{1, N{-}1\}$, $\bepsilon \sim \cN(0, \bI)$.
+			\item Compute paired noisy samples $\bx_{t_{n+1}} = \bx_0 + t_{n+1}\, \bepsilon$, $\bx_{t_n} = \bx_0 + t_n\, \bepsilon$.
+			\item Compute loss $\cL = \lambda(t_n)\, d\bigl(f_{\btheta}(\bx_{t_{n+1}}, t_{n+1}),\; f_{\btheta^-}(\bx_{t_n}, t_n)\bigr)$.
+			\item Update EMA target $\btheta^- \leftarrow \mu\, \btheta^- + (1 - \mu)\, \btheta$.
 		\end{enumerate}
 	\end{block}
 	\eqpause
-	Interpretation: iterative projection onto the consistency manifold trades a few extra NFEs for higher quality.
+	\begin{block}{Sampling (Multi-step)}
+		\begin{enumerate}
+			\item Sample $\bx_T \sim \cN(0, T^2 \bI)$; denoise $\bx_0 \leftarrow f_{\btheta}(\bx_T, T)$.
+			\item For $i = 1, \dots, M{-}1$: sample $\bepsilon \sim \cN(0, \bI)$, compute $\bx_{\tau_i} = \bx_0 + \tau_i\, \bepsilon$, denoise $\bx_0 \leftarrow f_{\btheta}(\bx_{\tau_i}, \tau_i)$.
+			\item Return $\bx_0$.
+		\end{enumerate}
+	\end{block}
+	\eqpause
+	Multi-step trades a few extra NFEs ($M = 2$--$4$) for higher quality; $M = 1$ recovers single-step sampling.
 \end{frame}
 %=======
 \begin{frame}{Latent Consistency Models (LCM)}
