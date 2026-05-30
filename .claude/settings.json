@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(latexmk *)",
+      "Bash(pdflatex *)",
+      "Bash(pdftotext *)",
+      "Bash(gs *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(find *)",
+      "Bash(awk *)",
+      "Bash(sed *)",
+      "Bash(which *)",
+      "Bash(echo *)",
+      "Bash(pwd)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(rm -f *)",
+      "Bash(python3 *)",
+      "Bash(brew *)",
+      "Bash(mdls *)",
+      "Bash(git diff*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git blame*)",
+      "WebFetch(domain:arxiv.org)",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
+    ]
+  }
+}
