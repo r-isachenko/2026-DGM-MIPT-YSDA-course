@@ -88,7 +88,38 @@ to raw beamer commands.
 - Do **not** sprinkle raw `\pause` inside math environments — it desynchronises
   the `pcounter` / `noscounter` counters that `\nextonslide` depends on.
 
-## 5. Files you must not edit
+## 5. Training / Sampling pseudocode blocks
+
+Every model has a `Training` block followed by a `Sampling` block. Students
+compare these side-by-side across lectures, so keep them uniform.
+
+- **Title.** Always `\begin{block}{Training}` / `\begin{block}{Sampling}` —
+  never `Inference`, `Training Procedure`, `Training DDPM`. Name the
+  *algorithm* (not the model) with a parenthetical: `Sampling (Ancestral)`,
+  `Sampling (Annealed Langevin Dynamics)`, `Sampling (Guided)`,
+  `Training (Score matching)`. "Procedure" / "algorithm" are not names — drop.
+- **List.** `\begin{enumerate}` (ordered steps), even for two-item blocks.
+  Itemize is only for unordered remarks near the block, not for the steps.
+- **Phrasing.** Each step: imperative verb + period. Canonical verbs:
+  **Sample, Compute, Solve, Update, Denoise, Reparametrize, Predict,
+  Initialize, Return**. Separate independent samples with a comma, not "and"
+  or extra `\item`s (`Sample $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.`).
+  Avoid "Obtain / Draw / Pick / Generate" variants.
+- **Animation.** `\eqpause` *between* the Training and Sampling blocks (and
+  adjacent equations), never between `\item`s — the block reveals all at once.
+- **Displayed equations inside a step.** Standard tight spacing:
+  `\vspace{-0.3cm}` before, `\vspace{-0.5cm}` after; terminate with a period
+  if it ends the sentence.
+- **Loss / distribution notation.** `\cL` for the per-batch loss
+  (`Compute loss $\cL = \ldots$`); keep `\cL_{\bphi, \btheta}(\bx)` for the
+  full ELBO and `\cL_{\text{simple}}` for DDPM simple loss. Parameterize with
+  `\btheta` (or `\bphi, \btheta`), never bare `\theta`. Use `\pt(\cdot)`, not
+  hand-written `p_\theta(\cdot)`.
+- **Recap mirror.** Per §9, the next lecture's recap mirrors this block
+  verbatim — grep the next lecture for the same `\begin{block}` title and
+  propagate any change.
+
+## 6. Files you must not edit
 
 Build artifacts produced by latexmk / pdflatex — never edit by hand, and don't
 commit fixes to them:
@@ -99,7 +130,7 @@ commit fixes to them:
 
 If a `.pdf` looks wrong, fix the `.tex` and rebuild — don't try to patch the PDF.
 
-## 6. Building a lecture
+## 7. Building a lecture
 
 From inside the lecture directory:
 
@@ -114,7 +145,7 @@ The merged all-lectures PDF is assembled by
 [lectures/merged/merge_lectures.py](lectures/merged/merge_lectures.py); rerun it
 after changing any lecture if the merged build needs to stay in sync.
 
-## 7. README as the schedule source of truth
+## 8. README as the schedule source of truth
 
 [README.md](README.md) holds the canonical course schedule, lecture titles, and
 homework table. The bullets in the `Materials` table mirror the `\section{...}`
@@ -131,7 +162,7 @@ Update `README.md` together with the `.tex` whenever you:
 
 These two files must never disagree about what a lecture covers.
 
-## 8. Cross-lecture coherence: Summary and Recap frames
+## 9. Cross-lecture coherence: Summary and Recap frames
 
 Each lecture has two "interface" frames whose content depends on the rest of the
 course, not just the local lecture body. They are easy to miss when editing.
@@ -178,13 +209,13 @@ Rules for recap edits:
   separators. Recap frames typically use `\begin{block}{...}` boxes more
   heavily than body frames — keep this style.
 
-## 9. Language
+## 10. Language
 
 Lecture sources are written in English. Russian is fine for chat with the user
 and for repository-internal notes, but should not appear in `.tex` content
 shipped to students.
 
-## 9. Style preferences for edits
+## 11. Style preferences for edits
 
 - Don't reflow whitespace or reformat blocks you weren't asked to touch — diffs
   should be minimal.
