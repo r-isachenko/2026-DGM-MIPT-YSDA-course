@@ -11,6 +11,31 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
+	\[
+		d\bx = \bff(\bx, t) dt + g(t) d \bw
+	\]
+	\vspace{-0.5cm}
+	\begin{block}{Variance Exploding SDE (NCSN)}
+		\vspace{-0.5cm}
+		\[
+			d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw, \quad \bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} 
+		\]
+		The variance grows since $\sigma(t)$ is a monotonically increasing function.
+	\end{block}
+	\begin{block}{Variance Preserving SDE (DDPM)}
+		\vspace{-0.3cm}
+		\[
+			d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw
+		\]
+		\[
+			\bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t) , \quad g(t) = \sqrt{\beta(t)} 
+		\]
+		The variance is preserved if $\bx(0)$ has unit variance.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 	\vspace{-0.3cm}
 	\[
 		d\bx = \bff(\bx, t) dt + g(t) d \bw \qquad \text{(SDE with the probability path $p_t(\bx)$)}

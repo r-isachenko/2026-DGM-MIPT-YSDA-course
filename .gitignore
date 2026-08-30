@@ -24,3 +24,5 @@
 seminars/seminar?/seminar?_utils.py
 
 site/
+#Generated merged build
+lectures/merged/merged.pdf

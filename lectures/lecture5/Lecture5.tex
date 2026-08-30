@@ -10,6 +10,29 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\begin{block}{Training}
+		\begin{enumerate}
+			\item Sample $\bx \sim \pd(\bx)$ and $\bepsilon \sim p(\bepsilon)$.
+			\item Reparametrize $\bz = \bg_{\bphi}(\bx, \bepsilon)$.
+			\item Compute the ELBO:
+			\vspace{-0.3cm}
+			\[
+				\cL_{\bphi, \btheta}(\bx) \approx \log \pt(\bx | \bz) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)).
+			\]
+			\vspace{-0.5cm}
+			\item Update $\bphi$, $\btheta$ via stochastic gradient ascent.
+		\end{enumerate}
+	\end{block}
+	\begin{block}{Sampling}
+		\begin{enumerate}
+			\item Sample $\bz \sim p(\bz) = \cN(0, \bI)$.
+			\item Generate $\bx \sim \pt(\bx | \bz)$.
+		\end{enumerate}
+	\end{block}
+	\textbf{Note:} The encoder $q_{\bphi}(\bz| \bx)$ isn't needed during generation.
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 	\vspace{-0.3cm}
 	\begin{block}{Theorem}

@@ -145,20 +145,91 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Recap of Previous Lecture}
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\section{Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)}
+%=======
+\begin{frame}{Score Matching SDE}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
+	\vspace{-0.3cm}
+	\begin{block}{Denoising Score Matching}
+		\vspace{-0.7cm}
+		\begin{align*}
+			\bx_t &= \bx + \sigma_t \cdot \bepsilon_t, & q(\bx_t | \bx) &= \cN(\bx, \sigma_t^2 \cdot \bI) \\
+			\bx_{t-1} &= \bx + \sigma_{t-1} \cdot \bepsilon_{t-1}, & q(\bx_{t-1} | \bx) &= \cN(\bx, \sigma_{t-1}^2 \cdot \bI)
+		\end{align*}
+	\end{block}
+	\eqpause
+	\vspace{-1.0cm}
+	\[
+		\bx_t = \bx_{t - 1} + \sqrt{\sigma^2_t - \sigma^2_{t-1}} \cdot \bepsilon, \quad q(\bx_{t} | \bx_{t-1}) = \cN(\bx_{t-1}, (\sigma_t^2 - \sigma_{t-1}^2) \cdot \bI)
+	\]
+	\eqpause
+	Let's transform this Markov chain into the continuous stochastic process~$\bx(t)$ by letting $T \rightarrow \infty$:
+	\vspace{-0.3cm}
+	\begin{align*}
+		\bx(t) &= \bx(t - dt) + \sqrt{\sigma^2(t) - \sigma^2(t - dt)} \cdot {\color{violet}\bepsilon}
+		\nextonslide{\\ &= \bx(t - dt) + \sqrt{\frac{\sigma^2(t) - \sigma^2(t - dt)}{dt} {\color{violet}dt}} \cdot {\color{violet}\bepsilon}}
+		 \nextonslide{\\ &= \bx(t - dt) + \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot {\color{violet}d \bw}}
+	\end{align*}
+	\vspace{-0.5cm}
+\end{frame}
+%=======
+\begin{frame}{Score Matching SDE}
+	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
+	\vspace{-0.3cm}
+	\[
+		\bx(t) = \bx(t - dt) + \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw
+	\]
+	\[
+		d\bx = \bx(t) - \bx(t - dt)
+	\]
+    \eqpause
+	\vspace{-0.5cm}
+	\begin{block}{Variance Exploding SDE}
+		\vspace{-0.3cm}
+		\[
+			d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw
+		\]
+		$\sigma(t)$ is a monotonically increasing function.
+	\end{block}
+    \eqpause
+	\vspace{-0.3cm}
 	\[
 		d\bx = \bff(\bx, t) dt + g(t) d \bw
 	\]
-	\vspace{-0.5cm}
-	\begin{block}{Variance Exploding SDE (NCSN)}
+	\[
+		\bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} 
+	\]
+\end{frame}
+%=======
+\begin{frame}{Diffusion SDE}
+    \myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
+	\begin{block}{Denoising Diffusion}
 		\vspace{-0.5cm}
 		\[
-			d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw, \quad \bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} 
+			\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon, \quad q(\bx_t | \bx_{t-1}) = \cN(\sqrt{1 - \beta_t} \cdot \bx_{t-1}, \beta_t \cdot \bI)
 		\]
-		The variance grows since $\sigma(t)$ is a monotonically increasing function.
+		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Variance Preserving SDE (DDPM)}
+    \eqpause
+	Let's turn this Markov chain into a continuous stochastic process by letting $T \rightarrow \infty$ and setting $\beta_t = \beta(\frac{t}{T}) \cdot \frac{1}{T}$ (where $dt = \frac{1}{T}$):
+	\begin{multline*}
+		{\color{teal}\bx(t)} = \sqrt{1 - \beta(t) dt} \cdot \bx(t - dt) + \sqrt{\beta(t)dt} \cdot \bepsilon 
+		\nextonslide{\approx \\ \approx \left(1 - \frac{1}{2} \beta(t) dt\right) \cdot \bx(t - dt) + \sqrt{\beta(t){\color{violet}dt}} \cdot {\color{violet}\bepsilon}}
+		\nextonslide{= \\ = {\color{teal}\bx(t - dt)} - \frac{1}{2} \beta(t) \bx(t - dt) dt  + \sqrt{\beta(t)} \cdot {\color{violet}d \bw}}
+	\end{multline*}
+\end{frame}
+%=======
+\begin{frame}{Diffusion SDE}
+	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
+	\[
+		\bx(t) = \bx(t - dt) - \frac{1}{2} \beta(t) \bx(t - dt) dt  + \sqrt{\beta(t)} \cdot {\color{violet}d \bw}
+	\]
+	\eqpause
+	\begin{block}{Variance Preserving SDE}
 		\vspace{-0.3cm}
 		\[
 			d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw
@@ -166,12 +237,32 @@
 		\[
 			\bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t) , \quad g(t) = \sqrt{\beta(t)} 
 		\]
-		The variance is preserved if $\bx(0)$ has unit variance.
 	\end{block}
+	Variance is preserved as long as $\bx(0)$ has unit variance.
 \end{frame}
 %=======
-\begin{frame}{Outline}
-	\tableofcontents
+\begin{frame}{Diffusion SDE}
+	\myfootnotewithlink{https://arxiv.org/abs/2206.00927}{Lu C. et al. Dpm-solver: A fast ode solver for diffusion probabilistic model sampling in around 10 steps, 2022}
+	\vspace{-0.3cm}
+	\[
+		d\bx = {\color{teal}\bff(\bx, t)} dt + {\color{violet}g(t)} d \bw
+	\]
+    \eqpause
+	\vspace{-0.3cm}
+	\begin{block}{Variance Exploding SDE (NCSN)}
+		\vspace{-0.3cm}
+		\[
+			d \bx = {\color{violet}\sqrt{\frac{ d [\sigma^2(t)]}{dt}}} \cdot d \bw
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{Variance Preserving SDE (DDPM)}
+		\vspace{-0.3cm}
+		\[
+			d \bx = {\color{teal}- \frac{1}{2} \beta(t) \bx(t)} dt + {\color{violet}\sqrt{\beta(t)}} \cdot d \bw
+		\]
+	\end{block}
+	We treat the discrete-time methods (NCSN, DDPM) as a special case of the continuous-time methods (VE-SDE, VP-SDE).
 \end{frame}
 %=======
 \section{Probability Flow ODE}
@@ -833,6 +924,8 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
+		\item Score matching (NCSN) and diffusion models (DDPM) are discretizations of SDEs (variance exploding and variance preserving).
+		\vfill
 		\item Every SDE admits a corresponding probability flow ODE that follows the same probability path $p_t(\bx)$, yielding deterministic invertible sampling and exact log-likelihoods via the instantaneous change of variables.
 		\vfill
 		\item Converting SDEs to PF-ODEs enables efficient high-order numerical solvers, reducing the number of inference steps from $100$--$1000$ to $20$--$50$.

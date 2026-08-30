@@ -136,7 +136,17 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Recap of Previous Lecture}
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\section{Variational Autoencoder (VAE)}
+%=======
+\begin{frame}{Generative Models Taxonomy}
+	\renderTaxonomy{vae}
+\end{frame}
+%=======
+\begin{frame}{Variational Autoencoder (VAE)}
 	\begin{block}{Training}
 		\begin{enumerate}
 			\item Sample $\bx \sim \pd(\bx)$ and $\bepsilon \sim p(\bepsilon)$.
@@ -150,22 +160,24 @@
 			\item Update $\bphi$, $\btheta$ via stochastic gradient ascent.
 		\end{enumerate}
 	\end{block}
+	\eqpause
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Sample $\bz \sim p(\bz) = \cN(0, \bI)$.
 			\item Generate $\bx \sim \pt(\bx | \bz)$.
 		\end{enumerate}
 	\end{block}
+	\eqpause
 	\textbf{Note:} The encoder $q_{\bphi}(\bz| \bx)$ isn't needed during generation.
 \end{frame}
 %=======
-\begin{frame}{Recap of Previous Lecture}
-	\myfootnote{\href{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html} \\ \href{https://arxiv.org/abs/1906.02691}{Kingma D. P., Welling M. An Introduction to Variational Autoencoders, 2019}}
+\begin{frame}{Variational Autoencoder}
+	\myfootnote{\href{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html} \\ \href{https://arxiv.org/abs/1906.02691}{Kingma D. P., Welling M., An Introduction to Variational Autoencoders, 2019}}
 	\vspace{-0.3cm}
 	\[
-	 	\cL_{q, \btheta}(\bx) = \bbE_{q} \log \pt(\bx | \bz) - \KL (q_{\bphi}(\bz| \bx) \| p(\bz))
+	 	\cL_{\bphi, \btheta}(\bx) = \bbE_{q} \log \pt(\bx | \bz) - \KL (q_{\bphi}(\bz| \bx) \| p(\bz))
 	\]
-	\vspace{-0.5cm}
+	\vspace{-0.7cm}
 	\begin{minipage}[t]{0.6\columnwidth}
 		\begin{figure}[h]
 			\centering
@@ -178,10 +190,52 @@
 			\includegraphics[width=\linewidth]{figs/vae_scheme}
 		\end{figure}
 	\end{minipage}
+	\eqpause
+	VAEs are widely used as a preliminary stage of projecting data onto low-dimensional space.
 \end{frame}
 %=======
-\begin{frame}{Outline}
-	\tableofcontents
+\begin{frame}{Variational Autoencoder}
+	\myfootnotewithlink{https://arxiv.org/abs/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
+	\begin{itemize}
+		\item The encoder $q_{\bphi}(\bz| \bx) = \NN_{e, \bphi}(\bx)$ outputs $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$.
+		\item The decoder $\pt(\bx | \bz) = \NN_{d, \btheta}(\bz)$ outputs parameters of the observed data distribution.
+	\end{itemize}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/vae-encoder}
+	\end{figure}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/vae-decoder}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{VAE vs Normalizing Flows}
+	\myfootnotewithlink{https://arxiv.org/abs/2007.02731}{Nielsen D., et al., SurVAE Flows: Surjections to Bridge the Gap Between VAEs and Flows, 2020}
+	\begin{table}[]
+		\begin{tabular}{l|c|c}
+			& \textbf{VAE} & \textbf{NF} \\ \hline
+			\textbf{Objective} & ELBO $\cL$ & Forward KL/MLE \\ \hline
+			\textbf{Encoder} & 
+			\shortstack{stochastic \\ $\bz \sim q_{\bphi}(\bz| \bx)$} &  
+			\shortstack{\\ deterministic \\ $\bz = \bff_{\btheta}(\bx)$ \\ 
+			$q_{\btheta}(\bz| \bx) = \delta(\bz - \bff_{\btheta}(\bx))$}  \\ \hline
+			\textbf{Decoder} & 
+			\shortstack{stochastic \\ $\bx \sim \pt(\bx| \bz)$} & 
+			\shortstack{\\ deterministic \\ $\bx = \bff^{-1}_{\btheta}(\bz)$ \\ 
+			$ \pt(\bx | \bz) = \delta(\bx - \bff^{-1}_{\btheta}(\bz))$} \\ \hline
+			\textbf{Parameters}  & $\bphi, \btheta$ & $\btheta \equiv \bphi$\\ 
+		\end{tabular}
+	\end{table}
+	\vspace{-0.3cm}
+	\eqpause
+	\begin{block}{Theorem}
+		MLE for a normalizing flow is equivalent to maximizing the ELBO for a VAE where:
+		\[
+			\pt(\bx | \bz) = \delta (\bx - \bff^{-1}_{\btheta}(\bz)); \quad 
+			q_{\btheta}(\bz| \bx) = \delta (\bz - \bff_{\btheta}(\bx)).
+		\]
+	\end{block}
 \end{frame}
 %=======
 \section{ELBO Surgery and Optimal VAE Prior}
@@ -658,7 +712,9 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item ELBO surgery gives insights into the prior's influence in VAEs; the optimal prior is the aggregated variational posterior. 
+		\item The VAE model is a latent variable model parameterized by two neural networks: a stochastic encoder $q_{\bphi}(\bz| \bx)$ and a stochastic decoder $\pt(\bx | \bz)$.
+		\vfill
+		\item ELBO surgery gives insights into the prior's influence in VAEs; the optimal prior is the aggregated variational posterior.
 		\vfill
 		\item The mismatch between $p(\bz)$ and $q_{\text{agg}, \bphi}(\bz)$ is widely regarded as the principal reason for VAE-generated image blurriness.		
 		\vfill
@@ -666,9 +722,7 @@
 		\vfill
 		\item The straight-through gradient estimator allows gradients to pass as if quantization were an identity operation during backpropagation.			
 		\vfill
-		\item Likelihood is not always a suitable metric for evaluating generative models
-		\vfill
-		\item Likelihood-free learning motivates the use of discriminative models to match distributions.
+		\item Likelihood is not always a suitable metric for evaluating generative models; likelihood-free learning motivates the use of discriminative models to match distributions.
 	\end{itemize}
 \end{frame}
 %=======

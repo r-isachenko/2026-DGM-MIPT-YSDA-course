@@ -40,56 +40,6 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/2302.00482}{Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023}
-	\begin{minipage}[t]{0.5\columnwidth}
-		\textbf{Endpoint conditioning}
-		\begin{align*}
-			\bz & = \bx_1 \\
-			p_t(\bx | \bx_1) &= \cN\left(t \bx_1, (1-t)^2 \bI\right) \\
-			\bx_t &= t \bx_1 + (1 - t) \bx_0 
-		\end{align*}
-	\end{minipage}%
-	\begin{minipage}[t]{0.5\columnwidth}
-		\textbf{Pair conditioning}
-		\begin{align*}
-			\bz & = (\bx_0, \bx_1) \\
-			p_t(\bx | \bx_0, \bx_1) &= \cN\left(t \bx_1 + (1 - t) \bx_0, \epsilon^2 \bI\right) \\
-			\bx_t &= t \bx_1 + (1 - t) \bx_0
-		\end{align*}
-	\end{minipage}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/compare_conditionings}
-	\end{figure}
-\end{frame}
-%=======
-\begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
-	\begin{itemize}
-		\item This conditioning allows us to transport any distribution $p_0(\bx)$ to any distribution $p_1(\bx)$.
-		\item It's possible to apply this approach to paired tasks, e.g., style transfer.
-	\end{itemize}
-	\begin{block}{Training}
-		\begin{enumerate}
-			\item Sample $(\bx_0, \bx_1) \sim p(\bx_0, \bx_1)$, $t \sim U[0, 1]$.
-			\item Compute noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
-			\item Compute loss $ \cL = \left\| (\bx_1 - \bx_0) - \bv_{\btheta}(\bx_t, t) \right\|^2 $.
-		\end{enumerate}
-	\end{block}
-	\vspace{-0.3cm}
-	\begin{block}{Sampling}
-		\begin{enumerate}
-			\item Sample $\bx_0 \sim p_0(\bx)$.
-			\item Solve the ODE to obtain $\bx_1$:
-			\vspace{-0.3cm}
-			\[
-				\bx_1 = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
-			\]
-		\end{enumerate}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 	\[
 		\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
@@ -209,42 +159,7 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Outline}
-	\tableofcontents
-\end{frame}
-%=======
-\section{Discrete Diffusion}
-%=======
-\subsection{Reverse Diffusion Process}
-%=======
-\begin{frame}{Posterior of the Forward Process}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
-	\begin{block}{ELBO}
-		\vspace{-0.7cm}
-		\begin{multline*}
-            \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-            - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}}
-        \end{multline*}
-		\vspace{-0.7cm}
-	\end{block}
-	\eqpause
-	\begin{itemize}
-		\item Conditioned reverse distribution $q(\bx_{t-1} | \bx_t, \bx_0)$ played crucial role in the continuous-state diffusion model.
-		\item It shows the probability of a previous state given the noisy state $\bx_t$ and the original clean data $\bx_0$.
-	\end{itemize}
-	\eqpause
-	\begin{block}{Discrete conditioned reverse distribution}
-		\vspace{-0.7cm}
-		\begin{align*}
-			q(\bx_{t-1} | \bx_t, \bx_0)
-			&= \frac{q(\bx_t | \bx_{t-1}, \bx_0)\, q(\bx_{t-1} | \bx_0)}
-			        {q(\bx_t | \bx_0)} \\
-			&= \frac{\Cat(\bQ_t) \cdot \Cat(\bQ_{1:t-1})}{\Cat(\bQ_{1:t})}.
-		\end{align*}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Posterior of the Forward Process}
+\begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{block}{Discrete conditioned reverse distribution}
 		\[
@@ -253,28 +168,6 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	\eqpause
-	Recall the ELBO term
-	\[
-		\cL_t
-		= \bbE_{q(\bx_t | \bx_0)}
-		\KL\bigl(q(\bx_{t-1} | \bx_t, \bx_0) \,\|\, \pt(\bx_{t-1} | \bx_t)\bigr),
-	\]
-	\eqpause
-	\vspace{-0.5cm}
-	\begin{itemize}
-		\item Both $q(\bx_{t-1} | \bx_t, \bx_0)$ and $q(\bx_t | \bx_0)$ are known analytically from the forward process.
-		\item The reverse process $\pt(\bx_{t-1} | \bx_t)$ is a learned categorical distribution:
-		\[
-			\pt(\bx_{t-1} | \bx_t) = \Cat\bigl( \bpi_{\btheta}(\bx_t, t) \bigr),
-		\]
-		where $\bpi_{\btheta}$ is a neural network.
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Discrete-time ELBO for Discrete Diffusion}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
-
 	\begin{block}{ELBO term}
 		\vspace{-0.3cm}
 		\[
@@ -284,124 +177,50 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	\eqpause
-	\begin{block}{Categorical KL}
+	\begin{itemize}
+		\item The reverse process $\pt(\bx_{t-1} | \bx_t) = \Cat\bigl( \bpi_{\btheta}(\bx_t, t) \bigr)$ is a learned categorical distribution.
+		\item Minimizing $\cL_t$ w.r.t.~$\btheta$ is equivalent to minimizing the cross-entropy
+		\[
+			\bbE_{q(\bx_t | \bx_0)}
+			\Ent\Bigl(q(\bx_{t-1} | \bx_t, \bx_0),\, \pt(\bx_{t-1} | \bx_t)\Bigr).
+		\]
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
+	\begin{block}{Independent Token-wise Forward Process}
 		\vspace{-0.3cm}
 		\[
-			\KL\bigl(\Cat(\bq) \,\|\, \Cat(\bp)\bigr)
-			= \sum_{k=1}^K q_k \log \frac{q_k}{p_k}
-			= \Ent(\bq,\bp) - \Ent(\bq),
+			q(\bX_t |\bX_{t-1}) =
+			\prod_{i=1}^m q(\bx_t^i |\bx_{t-1}^i) = \Cat(\bQ_t \bX_{t-1})
 		\]
-		\eqpause
-		\begin{itemize}
-			\item $\Ent\bigl(q(\bx_{t-1} | \bx_t, \bx_0)\bigr)$ is a constant w.r.t.~$\btheta$.
-			\item $\Ent(\bq,\bp) = -\sum_k q_k \log p_k$ is a \textbf{cross-entropy loss}.
-		\end{itemize}
+		\vspace{-0.3cm}
 	\end{block}
-	\eqpause
-	Therefore, minimizing $\cL_t$ w.r.t.~$\btheta$ is equivalent to minimizing
 	\[
-		\bbE_{q(\bx_t | \bx_0)}
-		\Ent\Bigl(q(\bx_{t-1} | \bx_t, \bx_0),\, \pt(\bx_{t-1} | \bx_t)\Bigr).
-	\]
-\end{frame}
-%=======
-\subsection{From Token To Sequence}
-%=======
-\begin{frame}{From Token to Sequence}
-    \begin{block}{One-hot sequence representation}
-        \vspace{-0.3cm}
-        \[
-            \bx_t \in \{0,1\}^K
-            \quad\Leftrightarrow\quad
-            \bX_t \in \{0,1\}^{K \times m}
-        \]
-        \vspace{-0.2cm}
-        Here $\bX_t$ is a one-hot representation of a sequence of tokens.
-    \end{block}
-    \eqpause
-    \begin{block}{Independent Token-wise Forward Process}
-        \vspace{-0.3cm}
-        \[
-            q(\bX_t |\bX_{t-1}) =
-            \prod_{i=1}^m q(\bx_t^i |\bx_{t-1}^i) = \Cat(\bQ_t \bX_{t-1})
-        \]
-        \vspace{-0.3cm}
-        \begin{itemize}
-            \item Each position $i$ evolves according to its own Markov chain.
-            \item Often the same transition matrix $\bQ_t$ is shared across~$i$.
-        \end{itemize}
-    \end{block}
-    \eqpause
-    \begin{block}{Continuous Diffusion Analogy}
-        \begin{itemize}
-            \item In Gaussian DDPMs with diagonal covariance, noise is independent per pixel.
-            \item Structure is not in the noise; it is learned by the reverse model.
-        \end{itemize}
-    \end{block}
-\end{frame}
-%=======
-\begin{frame}{From Token to Sequence}
-    \[
-        q(\bX_t |\bX_{t-1}) =
-		\prod_{i=1}^m q(\bx_t^i |\bx_{t-1}^i) = \Cat(\bQ_t \bX_{t-1})
-    \]
-    \eqpause
-    \[
-        q(\bX_t |\bX_0) = \Cat(\bQ_{1:t} \bX_0)
-    \]
-    \vspace{-0.3cm}
-    \eqpause
-    \begin{block}{Conditioned Reverse Distribution}
-        \[
-            q(\bx_{t-1} | \bx_t, \bx_0)
-			= \Cat\left(\frac{\bQ_t \bx_t \odot \bQ_{1:t-1} \bx_0}{\bx_t^{\top}\bQ_{1:t}\bx_0}\right).
-        \]
-        \vspace{-0.3cm}
-        \[
-            q(\bX_{t-1} | \bX_t, \bX_0) =
-            \prod_{i=1}^m q(\bx_{t-1}^i |\bx_t^i, \bx_0^i).
-        \]
-        \vspace{-0.3cm}
-    \end{block}
-    \eqpause
-    \begin{itemize}
-        \item All distributions defined by the forward process are factorized.
-        \item Dependence appears in the learned reverse model.
-    \end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Reverse Model for Sequence}
-    \[
-        \pt(\bX_{t-1}|\bX_t) =
+		\pt(\bX_{t-1}|\bX_t) =
 		\prod_{i=1}^m \pt(\bx_{t-1}^i | {\color{violet}\bX_t}).
-    \]
-    \vspace{-0.3cm}
-    \begin{itemize}
-        \item The output factorizes (parallel prediction across positions).
-        \item Each factor conditions on the entire noisy sequence ${\color{violet}\bX_t}$.
-        \item This is exactly the \textbf{masked language modeling} pattern.
-    \end{itemize}
-    \eqpause
-    \begin{block}{Objective: $\cL_t$ term}
-        \vspace{-0.7cm}
-        \begin{multline*}
-			\KL\left(q(\bX_{t-1}| \bX_t, \bX_0)\,\|\,\pt(\bX_{t-1}| \bX_t)\right) \\
-			= \sum_{i=1}^m \KL\left(q(\bx_{t-1}^i|\bx_t^i, \bx_0^i) || \pt(\bx_{t-1}^i|\bX_t)\right).
-        \end{multline*}
-        \vspace{-0.5cm}
-    \end{block}
-    \eqpause
-    \begin{block}{Final objective: masked LM}
-        \vspace{-0.3cm}
-        \[
-            \cL =
-            \sum_{t=1}^T \sum_{i=1}^m
-            \bbE_{q(\bX_t|\bX_0)}
-            \Big[-\log \pt(\bx_0^i |\bX_t)\Big].
-        \]
-    \end{block}
+	\]
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item All distributions defined by the forward process are factorized.
+		\item Each factor conditions on the entire noisy sequence ${\color{violet}\bX_t}$ --- this is exactly the \textbf{masked language modeling} pattern.
+	\end{itemize}
+	\begin{block}{Final objective: masked LM}
+		\vspace{-0.3cm}
+		\[
+			\cL =
+			\sum_{t=1}^T \sum_{i=1}^m
+			\bbE_{q(\bX_t|\bX_0)}
+			\Big[-\log \pt(\bx_0^i |\bX_t)\Big].
+		\]
+	\end{block}
 \end{frame}
+%=======
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\section{Discrete Diffusion}
 %=======
 \subsection{Absorbing Diffusion}
 %=======
@@ -835,7 +654,7 @@
 			\frac{d}{dt}\log p_t(\bx(t)) = -\tr\!\left(\frac{\partial \bv_{\btheta}}{\partial \bx}\right)
 		\]
 	\end{block}
-	\begin{block}{Forward SDE (L9)}
+	\begin{block}{Forward SDE (L9--L10)}
 		\vspace{-0.3cm}
 		\[
 			d\bx = \bff(\bx,t)\,dt + g(t)\,d\bw
@@ -888,7 +707,7 @@
 			\item \textbf{Absorbing}: $\bQ_t = (1-\beta_t)\bI + \beta_t\,\be_m \mathbf{1}^{\top}$ (mask token)
 		\end{itemize}
 	\end{block}
-	\begin{block}{Reverse process \& Discrete ELBO (L13)}
+	\begin{block}{Reverse process \& Discrete ELBO (L12)}
 		\vspace{-0.3cm}
 		\[
 			q(\bx_{t-1}|\bx_t,\bx_0)=\Cat\!\left(\frac{\bQ_t \bx_t \odot \bQ_{1:t-1}\bx_0}{\bx_t^{\top}\bQ_{1:t}\bx_0}\right),
@@ -923,8 +742,6 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Reverse discrete diffusion process uses the variational approach to invert forward process; the discrete-state ELBO is a cross-entropy loss.
-		\vfill
 		\item In the absorbing case only masked tokens contribute to the ELBO, which reduces to a continuous mixture of MLM losses over the mask rate $\lambda\in[0,1]$.
 		\vfill
 		\item MDLM sampling performs iterative parallel refinement from fully masked to fully unmasked sequences.
