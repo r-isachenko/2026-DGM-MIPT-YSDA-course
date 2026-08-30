@@ -91,7 +91,7 @@
         \begin{itemize}
             \item \textbf{14} lectures \,+\, \textbf{14} seminars (one per week)
             \item \textbf{6} homework assignments
-            \item oral cozy exam
+            \item cozy oral exam
         \end{itemize}
     \end{block}
     \eqpause
@@ -241,7 +241,7 @@
 \end{frame}
 %=======
 \begin{frame}{Generative Models Timeline}
-	\myfootnotewithlink{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025.}
+	\myfootnotewithlink{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/timeline}
 	\end{figure}
@@ -316,7 +316,7 @@
 	\end{block}
     \eqpause
 	\begin{block}{Law of the Unconscious Statistician (LOTUS)}
-		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and let $\bff: \bbR^m \to \bbR^m$ be measurable. If $\by = \bff(\bx)$, then
+		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, let $\bff: \bbR^m \to \bbR^m$ be measurable, and let $\bg: \bbR^m \to \bbR^m$ be an arbitrary function. If $\by = \bff(\bx)$, then
 		$$
 			\bbE_{p(\by)} \bg(\by) = \int p(\by) \bg(\by) d\by \nextonslide{= \int p(\bx) \bg(\bff(\bx)) d\bx = \bbE_{p(\bx)} \bg(\bff(\bx))}.
 		$$
@@ -355,14 +355,14 @@
 \subsection{Problem Statement}
 %=======
 \begin{frame}{Problem Statement}
-	We're given \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pd(\bx)$.
+	We're given a \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pd(\bx)$.
 	\eqpause
 	\begin{block}{Objective}
 		Our aim is to estimate a distribution $\pd(\bx)$ that allows us to: 
 		\begin{itemize}
-		    \item Generate new samples from $\pd(\bx)$ (sample $\bx \sim \pd(\bx)$) --- \textbf{generation}.		    
+		    \item Generate new samples from $\pd(\bx)$ (sample $\bx \sim \pd(\bx)$) --- \textbf{generation};		    
 			\eqpause
-		    \item Evaluate $\pd(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
+		    \item Evaluate $\pd(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}. 
 		\end{itemize}
 	\end{block}
 	\eqpause
@@ -404,7 +404,7 @@
 	\end{align*}
 \end{frame}
 %=======
-\begin{frame}{ Conditional Models}
+\begin{frame}{Conditional Models}
 	In practice, we're typically interested in learning conditional models (sampling from conditional distribution~$\pd(\bx | \by)$). 
 	\eqpause
 	\begin{itemize}
@@ -413,7 +413,7 @@
 		\item $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow\quad$ text-to-image model
 		\item $\by$ = image, $\bx$ = image $\quad\Rightarrow\quad$ image-to-image model
 		\item $\by$ = image, $\bx$ = text $\quad\Rightarrow\quad$ image-to-text (image captioning) model
-		\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation) model
+		\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation)
 		\item $\by$ = sound, $\bx$ = text $\quad\Rightarrow\quad$ speech-to-text (automatic speech recognition) model
 		\item $\by$ = text, $\bx$ = sound $\quad\Rightarrow\quad$ text-to-speech model
 	\end{itemize}
@@ -567,7 +567,7 @@
 			{\small
 			\begin{itemize}
 				\item $d = 2$
-				\item $x_j \in \{0, 255\}$
+				\item $x_j \in \{0, \ldots, 255\}$
 				\item $\bh_j = \MLP_{\btheta}(x_{j - 1}, x_{j - 2})$
 				\item $\pt(x_j | x_{j - 1}, x_{j - 2}) = \Cat(\bpi_j)$
 			\end{itemize}

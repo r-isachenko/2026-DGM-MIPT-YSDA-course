@@ -364,7 +364,7 @@
 	\myfootnotewithlink{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}
 	Also known as the \textbf{Earth Mover's Distance}.
 	\begin{block}{Optimal Transport Formulation}
-		The minimum cost of moving and transforming a pile of "dirt" shaped like one probability distribution to match another.
+		The minimum cost of moving and transforming a pile of ``dirt'' shaped like one probability distribution to match another.
 	\end{block}
 	\begin{figure}
 		\centering
@@ -535,7 +535,7 @@
 	\eqpause
 	\begin{itemize}
 		\item The discriminator $D$ is replaced by function $f$: in WGAN, it is known as the \textbf{critic}, which is \emph{not} a classifier.
-		\item \textit{"Weight clipping is a clearly terrible way to enforce a Lipschitz constraint."}
+		\item \textit{``Weight clipping is a clearly terrible way to enforce a Lipschitz constraint.''}
 		\begin{itemize}
 			\item If $c$ is large, optimizing the critic is hard.
 			\item If $c$ is small, gradients may vanish.
@@ -798,9 +798,9 @@
 	\begin{itemize}
 		\item GANs, in theory, optimize the Jensen-Shannon divergence.
 		\vfill
-		\item Wasserstein distance works in the case of disjoint data and model distributions (despite of KL and JS divergences).
+		\item Wasserstein distance works in the case of disjoint data and model distributions (unlike the KL and JS divergences).
 		\vfill
-		\item Wasserstein GAN uses Kantorovich-Rubinstein duality to make Monte Carlo estimation of the Wasserstein distance. It enforces the Lipschitz condition on the critic through weight clipping.
+		\item Wasserstein GAN uses Kantorovich-Rubinstein duality to enable Monte Carlo estimation of the Wasserstein distance. It enforces the Lipschitz condition on the critic through weight clipping.
 		\vfill
 		\item FID is the most popular metric for evaluating implicit generative models.
 		\vfill

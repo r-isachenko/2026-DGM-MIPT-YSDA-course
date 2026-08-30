@@ -367,7 +367,7 @@
 		\eqpause
 		\item But the reverse is not true: any divergence-free vector field $\diver(\tilde{\bv}(\bx, t)p_t(\bx)) = 0$ can generate a valid probability path.
 		\eqpause
-		\item Moreover, not  every given path $p_t(\bx)$ can actually arise from particles moving under
+		\item Moreover, not every given path $p_t(\bx)$ can actually arise from particles moving under
 		some velocity field $\bv(\bx, t)$.
 	\end{itemize}
 \end{frame}
@@ -426,7 +426,7 @@
 		p_t(\bx | \bz) = \cN\left(\bmu_t(\bz), \bsigma_t^2(\bz) \right)
 	\]
 	\eqpause
-	The concrete $\bmu_t(\bz)$, $\bsigma_t(\bz)$ (which satisfies the boundary constraints) will be fixed once we choose $\bz$ [Q1].
+	The concrete $\bmu_t(\bz)$, $\bsigma_t(\bz)$ (which satisfy the boundary constraints) will be fixed once we choose $\bz$ [Q1].
 	\begin{block}{Gaussian flow}
 		\begin{itemize}
 			\item Let's derive the vector field for \textbf{any} Gaussian path $p_t(\bx | \bz)$.
@@ -479,7 +479,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	Let define our latent variable $\bz$.
+	Let's define our latent variable $\bz$.
 	\eqpause
 	\begin{block}{Conditioning Latent Variable [Q1]}
 		Let us choose $\bz = \bx_1$. Then $p(\bz) = p_1(\bx_1)$.
@@ -588,7 +588,7 @@
 	\eqpause
 	\vspace{-0.5cm}
 	\begin{itemize}
-		\item We fit straight lines between the noise distribution $p(\bx)$ and the data distribution $\pd(\bx)$.
+		\item We fit straight lines between the noise distribution $p_0(\bx)$ and the data distribution $\pd(\bx)$.
 		\item The \textbf{marginal} path $p_t(\bx)$ does not give straight lines.
 	\end{itemize}
 	\eqpause
@@ -642,7 +642,7 @@
 	\end{figure}
 	\eqpause
 	\begin{itemize}
-		\item One-sided conditioning gives us the way to construct generative model.
+		\item One-sided conditioning gives us the way to construct a generative model.
 		\item Now we extend it to image-to-image formulation (mapping between two distinct $p_{\text{data}_1}(\bx)$ and $p_{\text{data}_2}(\bx)$).
 	\end{itemize}
 \end{frame}

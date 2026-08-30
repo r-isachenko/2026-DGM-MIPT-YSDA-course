@@ -15,7 +15,7 @@
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-			- \sum_{t=2}^\top  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
+			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
 		\end{multline*}
 		\vspace{-1.0cm}
 	\end{block}
@@ -35,7 +35,7 @@
 		\cL_t = \bbE_{\color{violet}q(\bx_t | \bx_0)} \left[ {\color{olive}\frac{1}{2\tilde{\beta}_t}} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]
 	\]
 	\vspace{-0.3cm}
-	\begin{block}{Reparameterization}
+	\begin{block}{Reparametrization}
 		\vspace{-0.7cm}
 		\begin{align*}
 			\tilde{\bmu}_t(\bx_t, \bx_0) &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon \\
@@ -227,7 +227,7 @@
 	\vspace{-0.3cm}
 	\eqpause
 	\begin{block}{Residual Flows}
-		Let's condider the flow $\bff_{\btheta}(\bx, t) = \bx + \bv_{\btheta}(\bx, t)$:
+		Let's consider the flow $\bff_{\btheta}(\bx, t) = \bx + \bv_{\btheta}(\bx, t)$:
 		\[
 			\bx_{t+1} = \bff_{\btheta}(\bx_t, t) = \bx_t + \bv_{\btheta}(\bx_t, t)
 		\]
@@ -575,7 +575,7 @@
 	\end{itemize}
 	\eqpause
 	\begin{block}{Special Case: constant density $p_t(\bx)$}
-		Let find the SDE for which $p_t(\bx) = \text{const}$ (i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.).
+		Let's find the SDE for which $p_t(\bx) = \text{const}$ (i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.).
 		\eqpause
 		\[
 			\frac{\partial p_t(\bx)}{\partial t} = 0 \quad \Leftrightarrow \quad \tr\left( - \frac{\partial}{\partial \bx} \bigl[ \bff(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2}\right) = 0
@@ -608,7 +608,7 @@
 \end{frame}
 %=======
 \begin{frame}{Langevin SDE (Special Case)}
-	Let find the SDE for which $p_t(\bx) = \text{const}$ (i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.).
+	Let's find the SDE for which $p_t(\bx) = \text{const}$ (i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.).
 	\[
 		d \bx = {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx) d t} + {\color{olive}1} \cdot d \bw
 	\]

@@ -74,7 +74,7 @@
             \begin{enumerate}
                 \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$;
                 \item $\bx_{t - 1} = \bsigma_{\btheta, t}(\bx_t) \cdot \bepsilon + \bmu_{\btheta, t}(\bx_t)$;
-                \item $\bx_0 = \bx \sim \pd(\bx)$;
+                \item $\bx_0 = \bx \sim \pd(\bx)$.
             \end{enumerate}
         \end{block}
     \end{minipage}
@@ -113,7 +113,7 @@
 		\vspace{-0.2cm}
 		\[
 			\pt(\bx | \bz) = \pt(\bx_0 | \bx_1); \quad 
-			\pt(\bz) = \prod_{t=2}^\top \pt(\bx_{t - 1} | \bx_t) \cdot p(\bx_T)
+			\pt(\bz) = \prod_{t=2}^T \pt(\bx_{t - 1} | \bx_t) \cdot p(\bx_T)
 		\]
 	\end{itemize}
 	\vspace{-0.2cm}
@@ -125,7 +125,7 @@
 		\vspace{-0.5cm}
 		\begin{multline*}
 			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-			- \sum_{t=2}^\top  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
+			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
 		\end{multline*}
 	\end{block}
 \end{frame}
@@ -308,7 +308,7 @@
             \begin{enumerate}
                 \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$;
                 \item $\bx_{t - 1} = \bsigma_{\btheta, t}(\bx_t) \cdot \bepsilon + \bmu_{\btheta, t}(\bx_t)$;
-                \item $\bx_0 = \bx \sim \pd(\bx)$;
+                \item $\bx_0 = \bx \sim \pd(\bx)$.
             \end{enumerate}
         \end{block}
     \end{minipage}
@@ -457,7 +457,7 @@
 \begin{frame}{Guidance}
 	\begin{itemize}
 	\item Up to now, we have focused on \textbf{unconditional} generative models $\pt(\bx)$.
-	\item In practice, most generative models are \textbf{conditional} (in diffusion era it is called guided): $\pt(\bx | \by)$.
+	\item In practice, most generative models are \textbf{conditional} (in the diffusion era it is called guided): $\pt(\bx | \by)$.
 	\item Here, $\by$ might denote a class label or \textbf{text} (as in text-to-image tasks).
 	\end{itemize}
 	\vspace{-0.3cm}
@@ -481,7 +481,7 @@
 		\item $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow\quad$ text-to-image model
 		\item $\by$ = image, $\bx$ = image $\quad\Rightarrow\quad$ image-to-image model
 		\item $\by$ = image, $\bx$ = text $\quad\Rightarrow\quad$ image-to-text (image captioning) model
-		\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation) model
+		\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation)
 		\item $\by$ = sound, $\bx$ = text $\quad\Rightarrow\quad$ speech-to-text (automatic speech recognition) model
 		\item $\by$ = text, $\bx$ = sound $\quad\Rightarrow\quad$ text-to-speech model
 	\end{itemize}
@@ -505,7 +505,7 @@
 \end{frame}
 %=======
 \begin{frame}{Guidance in Generative Models}
-	\begin{block}{How to make guided model?}
+	\begin{block}{How to make a guided model?}
 		Instead of sampling from $\pt(\bx)$, we sample from $\pt(\bx | \by)$.
 	\end{block}
 	\eqpause
@@ -651,7 +651,7 @@
 		\vspace{-0.3cm}
 	\end{block}
 	\eqpause
-	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$, making it more contrast
+	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$, increasing contrast
 	\[
 		\hat{p}(\by | \bx_t) \propto p(\by | \bx_t)^{\gamma}.
 	\]

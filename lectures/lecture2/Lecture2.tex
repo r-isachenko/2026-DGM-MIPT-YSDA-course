@@ -11,12 +11,12 @@
 \end{frame}
 %======
 \begin{frame}{Recap of Previous Lecture}
-	We're given \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pd(\bx)$.
+	We're given a \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pd(\bx)$.
 	\begin{block}{Objective}
 		Our aim is to estimate a distribution $\pd(\bx)$ that allows us to: 
 		\begin{itemize}
-		    \item Generate new samples from $\pd(\bx)$ (sample $\bx \sim \pd(\bx)$) --- \textbf{generation}.		    
-		    \item Evaluate $\pd(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
+		    \item Generate new samples from $\pd(\bx)$ (sample $\bx \sim \pd(\bx)$) --- \textbf{generation};		    
+		    \item Evaluate $\pd(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}. 
 		\end{itemize}
 	\end{block}
 
@@ -304,7 +304,7 @@
 \begin{frame}{Linear Normalizing Flows}
 	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019} 
 	\[
-		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW^\top
+		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW
 	\]
 	In general, matrix inversion has computational complexity $O(m^3)$.
     \eqpause
@@ -312,7 +312,7 @@
 		\begin{itemize}
 			\item Diagonal matrix: $O(m)$.
 			\item Triangular matrix: $O(m^2)$.
-			\item Directly parameterizing all invertible matrices in a continuous way is infeasible \\ (there is not surjective function from $\bbR^{m^2}$ to the set of all invertible matrices of size $m \times m$).
+			\item Directly parameterizing all invertible matrices in a continuous way is infeasible \\ (there is no surjective function from $\bbR^{m^2}$ to the set of all invertible matrices of size $m \times m$).
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -323,7 +323,7 @@
 	}
 	\vspace{-0.3cm}
 	\[
-		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW^\top
+		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW
 	\]
 	\vspace{-0.7cm}
 	\eqpause
@@ -382,7 +382,7 @@
 	\end{block}
 	\eqpause
 	\begin{itemize}
-		\item This gives an \textbf{$C^1$-diffeomorphism} from $p(\bz)$ to $\pt(\bx)$ (assume that $\sigma_j \neq 0$).
+		\item This gives a \textbf{$C^1$-diffeomorphism} from $p(\bz)$ to $\pt(\bx)$ (assume that $\sigma_j \neq 0$).
 		    \eqpause
 		\item This model is called an autoregressive (AR) NF with base distribution $p(\bz) = \cN(0, \bI)$.
 		    \eqpause
@@ -416,7 +416,7 @@
 			\vspace{-0.5cm}
 			\begin{align*}
 				\bx &= \bff^{-1}_{\btheta}(\bz) \\
-				{\color{violet} x_j} &= \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}) \\
+				{\color{violet} x_j} &= \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}})
 			\end{align*}
 			\vspace{-0.3cm}
 		\end{block}
@@ -589,8 +589,8 @@
     \eqpause
 	\vspace{-0.3cm}
 	\begin{itemize}
-		\item $p(\bz)$ is prior distribution over the latent variable.
-		\item $\pt(\bx | \bz)$ is \textbf{decoder} distribution.
+		\item $p(\bz)$ is the prior distribution over the latent variable.
+		\item $\pt(\bx | \bz)$ is the \textbf{decoder} distribution.
 		\item Both $\pt(\bx | \bz)$ and $p(\bz)$ are usually much simpler than $\pt(\bx)$.
 	\end{itemize}
 \end{frame}

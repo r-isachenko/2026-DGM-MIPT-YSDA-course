@@ -310,8 +310,8 @@
 	\begin{block}{Fisher Divergence}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pi}\big\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 =\\
-			= \frac{1}{2}\bbE_{\pi}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
+			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pd}\big\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 =\\
+			= \frac{1}{2}\bbE_{\pd}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
 		\end{multline*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -608,8 +608,8 @@
 		\]
 		\vspace{-0.3cm}
 		\begin{itemize}
-			\item For \textbf{small} $\sigma$, $\bs_{\btheta, \sigma}(\bx)$ becomes inaccurate and Langevin dynamics fails to traverse modes
-			\item For \textbf{large} $\sigma$, robustness in low-density regions is achieved, but the model learns a distribution that is overly corrupted
+			\item For \textbf{small} $\sigma$, $\bs_{\btheta, \sigma}(\bx)$ becomes inaccurate and Langevin dynamics fails to traverse modes.
+			\item For \textbf{large} $\sigma$, robustness in low-density regions is achieved, but the model learns a distribution that is overly corrupted.
 		\end{itemize}
 	\end{minipage}%
 	\begin{minipage}{0.5\linewidth}
@@ -626,8 +626,8 @@
 \begin{frame}{Noise-Conditioned Score Network (NCSN)}
     \myfootnotewithlink{https://arxiv.org/abs/1907.05600}{Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019}
 	\begin{itemize}
-		\item Specify a sequence of noise levels: $\sigma_1 < \sigma_2 < \dots < \sigma_T$
-		\item Perturb each data point with different noise levels: $\bx_t = \bx + \sigma_t \bepsilon$, so $\bx_t \sim q(\bx_t)$
+		\item Specify a sequence of noise levels: $\sigma_1 < \sigma_2 < \dots < \sigma_T$.
+		\item Perturb each data point with different noise levels: $\bx_t = \bx + \sigma_t \bepsilon$, so $\bx_t \sim q(\bx_t)$.
 		\item Choose $\sigma_1, \sigma_T$ such that:
 		\[
 			q(\bx_1) \approx \pd(\bx), \;\; q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
