@@ -48,7 +48,7 @@ If you need a symbol that isn't there, **add it to `newcommands.tex`** rather th
 inlining `\mathbf{...}` ad hoc in one lecture. Keep the file's section comments
 (`BOLD LETTERS`, `CALLIGRAPHIC LETTERS`, ...) intact when adding entries.
 
-Notation must stay consistent across lectures 1–13 — the same object should have
+Notation must stay consistent across all lectures — the same object should have
 the same symbol everywhere. Before introducing a new symbol, grep prior lectures
 to see if it already has a name.
 

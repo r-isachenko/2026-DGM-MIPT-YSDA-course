@@ -1,11 +1,11 @@
 ---
 name: summary-sync
-description: Check that the final \begin{frame}{Summary} of each lecture still reflects what the lecture currently teaches — each \section{...} contributes at least one bullet, Summary doesn't reference removed topics, and total bullet count stays within 5–7 (fewer is better). Use after substantive edits (add/remove section, change a key formula, rework a derivation) per CLAUDE.md §8.
+description: Check that the final \begin{frame}{Summary} of each lecture still reflects what the lecture currently teaches — each \section{...} contributes at least one bullet, Summary doesn't reference removed topics, and total bullet count stays within 5–7 (fewer is better). Use after substantive edits (add/remove section, change a key formula, rework a derivation) per CLAUDE.md ("Cross-lecture coherence").
 ---
 
 # summary-sync
 
-Every lecture ends with `\begin{frame}{Summary}` — a one-slide takeaway for students. When the body changes substantively, the Summary should still match, AND it must stay short enough to actually fit on one slide. See [CLAUDE.md](../../../CLAUDE.md) §8.
+Every lecture ends with `\begin{frame}{Summary}` — a one-slide takeaway for students. When the body changes substantively, the Summary should still match, AND it must stay short enough to actually fit on one slide. See [CLAUDE.md](../../../CLAUDE.md), section *Cross-lecture coherence: Summary and Recap frames*.
 
 This is a lighter check than `recap-sync`: the Summary is not a verbatim mirror, it's a paraphrase. We verify topic coverage, bullet count, and that updates are holistic (not append-only).
 
@@ -58,24 +58,7 @@ For each section, classify:
 
 ### Step 5 — report
 
-```
-summary-sync: lectures/lecture10/Lecture10.tex
-
-Summary frame: line 804 (8 bullets)  ⚠ too long — target is 5–7
-Sections: 4
-
-  ✓ Probability Flow ODE              — covered by bullet 1, 2, 3
-  ✓ Reverse SDE                       — covered by bullet 4
-  ✓ Score-Based Generative Models …   — covered by bullet 5, 6
-  ✓ Flow Matching (FM)                — covered by bullet 8
-
-  ℹ bullet 7 spans two sections (reverse SDE + PF-ODE discretization)
-    → candidate for consolidation with bullet 4 or 1
-
-Suggested consolidation to reach 6 bullets:
-  merge 1+3 (PF-ODE existence + its properties)
-  merge 5+6 (continuous-time score matching + Gaussian transition kernel)
-```
+Report the Summary frame location (clickable `path:line`) and bullet count (with a ⚠ if outside 5–7), then per-section coverage (covered / uncovered / possibly-stale, naming the matching bullets), and — if the count is too high or a section is uncovered — concrete consolidation suggestions (which bullets to merge or rewrite).
 
 End with: "Want me to draft a revised Summary frame?" — wait for confirmation before editing.
 
