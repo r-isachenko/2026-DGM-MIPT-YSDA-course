@@ -226,7 +226,7 @@
 	\end{block}
 	\eqpause
 	\vspace{-0.3cm}
-	\begin{block}{Unnormalized Density}
+	\begin{block}{Log-Density Gradient}
 		The gradient of the normalized log-density equals that of the unnormalized log-density:
 		\[
 			\nabla_{\bx} \log \pt(\bx) = \nabla_{\bx} \log \hat{p}_{\btheta}(\bx) - \nabla_{\bx} \log Z_{\btheta} = \nabla_{\bx} \log \hat{p}_{\btheta}(\bx)
@@ -319,7 +319,7 @@
 	\textbf{Problem:} We don't know $\nabla_\bx \log \pd(\bx)$.
 \end{frame}
 %=======
-\begin{frame}{Why Score Function is Better than Density?}
+\begin{frame}{Why Is the Score Function Better than the Density?}
 	\myfootnotewithlink{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025.}
 	\begin{block}{Freedom from Normalization Constants}
 		Many distributions are defined only up to an unnormalized density $\hat{p}(\bx)$:
@@ -697,4 +697,5 @@
 		\item The Noise-Conditioned Score Network leverages a range of noise levels and annealed Langevin dynamics to learn the score function and enable sampling	
 	\end{itemize}
 \end{frame}
+%=======
 \end{document}
