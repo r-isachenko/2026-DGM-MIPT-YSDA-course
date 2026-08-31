@@ -150,7 +150,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx \sim \pd(\bx)$ and $\bepsilon \sim p(\bepsilon)$.
+			\item Sample $\bx \sim \pd(\bx)$, $\bepsilon \sim p(\bepsilon)$.
 			\item Reparametrize $\bz = \bg_{\bphi}(\bx, \bepsilon)$.
 			\item Compute the ELBO:
 			\vspace{-0.3cm}
@@ -165,7 +165,7 @@
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Sample $\bz \sim p(\bz) = \cN(0, \bI)$.
-			\item Generate $\bx \sim \pt(\bx | \bz)$.
+			\item Sample $\bx \sim \pt(\bx | \bz)$.
 		\end{enumerate}
 	\end{block}
 	\eqpause
@@ -572,8 +572,9 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017}
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx \sim \pd(\bx)$ and encode $\bz_e = \NN_{e,\bphi}(\bx)$.
-			\item Vector-quantize (per spatial location if applicable):
+			\item Sample $\bx \sim \pd(\bx)$.
+			\item Compute the encoding $\bz_e = \NN_{e,\bphi}(\bx)$.
+			\item Compute the quantized representation (per spatial location if applicable):
 			\vspace{-0.3cm}
 			\[
 				k^* = \argmin_k \|\bz_e - \be_k\|_2, \quad \bz_q = \be_{k^*}.
@@ -599,7 +600,7 @@
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Sample $c \sim p(c) = \Uniform\{1, \dots, K\}$.
-			\item Generate $\bx \sim \pt(\bx | \be_c)$.
+			\item Sample $\bx \sim \pt(\bx | \be_c)$.
 		\end{enumerate}
 	\end{block}
 \end{frame}

@@ -190,7 +190,7 @@
                 \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
                 - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \left[\frac{1}{2\tilde{\beta}_t} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]}_{\cL_t}}.
             \end{multline*}
-            \vspace{-0.7cm}
+            \vspace{-0.5cm}
         \end{enumerate}
     \end{block}
     \eqpause
@@ -318,8 +318,7 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \begin{block}{Training}
         \begin{enumerate}
-            \item Sample $\bx_0 \sim \pd(\bx)$.
-            \item Sample $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
+            \item Sample $\bx_0 \sim \pd(\bx)$, $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
             \item Compute noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$.
             \item Compute loss $ \cL_{\text{simple}} = \| \bepsilon - \bepsilon_{\btheta, t}(\bx_t) \|^2 $.
         \end{enumerate}
@@ -400,7 +399,7 @@
 %=======
 \begin{frame}{DDPM vs NCSN: Sampling}
 	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
-	\begin{block}{DDPM Sampling (Ancestral Sampling)}
+	\begin{block}{Sampling (Ancestral)}
 			\vspace{-0.7cm}
 			\begin{align*}
 				\bx_T &\sim \cN(0, \bI) \\
@@ -414,17 +413,17 @@
 			\vspace{-0.5cm}
 	\end{block}
 	\eqpause
-	\begin{block}{NCSN Sampling (Annealed Langevin Dynamics)}
-		\begin{itemize}
+	\begin{block}{Sampling (Annealed Langevin Dynamics)}
+		\begin{enumerate}
 			\item Sample $\bx_T^0 \sim \cN(0, \sigma_T^2\, \bI) \approx q(\bx_T)$.
-			\item Perform $L$ steps of Langevin dynamics:
-			\vspace{-0.2cm}
+			\item Update $\bx_t^l$ via $L$ steps of Langevin dynamics at each noise level $\sigma_t$:
+			\vspace{-0.3cm}
 			\[
 				\bx_t^l = \bx_t^{l-1} + \frac{\eta_t}{2} \cdot \bs_{\btheta, \sigma_t}(\bx_t^{l - 1}) + \sqrt{\eta_t} \cdot \bepsilon_t^l.
-			\] 
-			\vspace{-0.7cm}
-			\item Set $\bx_{t-1}^0 = \bx_t^L$ and move to the next $\sigma_t$.
-		\end{itemize}
+			\]
+			\vspace{-0.5cm}
+			\item Update $\bx_{t-1}^0 := \bx_t^L$ and proceed to the next noise level $\sigma_{t-1}$.
+		\end{enumerate}
 	\end{block}
 \end{frame}
 %=======
@@ -537,7 +536,7 @@
 	\begin{block}{DDPM Sampling}
 		\begin{enumerate}
 			\item Sample $\bx_T \sim \cN(0, \bI)$.
-			\item Generate the denoised image (unconditional generation):
+			\item Denoise the image (unconditional generation):
 			\vspace{-0.3cm}
 			\begin{align*}
 				\bx_{t - 1} &= \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal}\bs_{\btheta, t} (\bx_t)} +  \sigma_t \cdot \bepsilon \\
@@ -738,7 +737,7 @@
 			\item Use their convex combination at inference.
 		\end{itemize}
 	\end{block}
-	\begin{block}{Guided Sampling}
+	\begin{block}{Sampling (Guided)}
 		\vspace{-0.3cm}
 		\[
 			\bx_{t-1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon

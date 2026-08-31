@@ -138,25 +138,25 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://arxiv.org/abs/2006.09011}{Song Y. et al. Improved Techniques for Training Score-Based Generative Models, 2020}
-    \begin{block}{NCSN Training}
+    \begin{block}{Training}
         \begin{enumerate}
-            \item Obtain a sample $\bx_0 \sim \pd(\bx)$.
-            \item Sample noise level $t \sim U\{1, T\}$ and noise $\bepsilon \sim \cN(0, \bI)$.
-            \item Construct noisy image $\bx_t = \bx_0 + \sigma_t \cdot \bepsilon$.
-            \item Compute the loss $ \cL = \sigma_t^2 \cdot \| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \|^2 $.
+            \item Sample $\bx_0 \sim \pd(\bx)$, $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
+            \item Compute noisy image $\bx_t = \bx_0 + \sigma_t \bepsilon$.
+            \item Compute loss $ \cL = \sigma_t^2 \left\| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \right\|^2 $.
+            \item Update $\btheta$ via stochastic gradient descent.
         \end{enumerate}
     \end{block}
-    \begin{block}{NCSN Sampling (Annealed Langevin Dynamics)}
-        \begin{itemize}
-            \item Sample $\bx_0 \sim \cN(0, \sigma_T^2 \cdot \bI) \approx q(\bx_T)$.
-            \item Apply $L$ steps of Langevin dynamics:
-            \vspace{-0.2cm}
+    \begin{block}{Sampling (Annealed Langevin Dynamics)}
+        \begin{enumerate}
+            \item Sample $\bx_0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$.
+            \item Update $\bx_l$ via $L$ steps of Langevin dynamics at each noise level $\sigma_t$:
+            \vspace{-0.3cm}
             \[
-                \bx_l = \bx_{l-1} + \frac{\eta_t}{2} \cdot \bs_{\btheta, \sigma_t}(\bx_{l - 1}) + \sqrt{\eta_t} \cdot \bepsilon_l.
-            \] 
+                \bx_l = \bx_{l-1} + \frac{\eta_t}{2} \bs_{\btheta, \sigma_t}(\bx_{l-1}) + \sqrt{\eta_t} \bepsilon_l.
+            \]
             \vspace{-0.5cm}
-            \item Update $\bx_0 := \bx_L$ and proceed to the next $\sigma_t$.
-        \end{itemize}
+            \item Update $\bx_0 := \bx_L$ and proceed to the next noise level $\sigma_{t-1}$.
+        \end{enumerate}
     \end{block}
 \end{frame}
 %=======

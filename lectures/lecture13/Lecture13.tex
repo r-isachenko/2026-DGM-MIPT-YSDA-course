@@ -357,7 +357,7 @@
 	\begin{block}{Training}
 		\begin{enumerate}
 			\item Sample $\bX_0 \sim \pd(\bX)$, $t \sim U\{1, \ldots, T\}$.
-			\item Corrupt the sequence by independent masking:
+			\item Sample the corrupted sequence by independent masking:
 			\vspace{-0.3cm}
 			\[
 				\bx_t^i =
@@ -379,7 +379,7 @@
 			\item Compute masked-CE loss:
 			\vspace{-0.3cm}
 			\[
-				\cL(\btheta)
+				\cL
 				=
 				\rho_t \sum_{i=1}^m [\bx_t^i=\be_m]\,
 				\big[-\log \pt(\bx_0^i | \bX_t)\big].
@@ -393,7 +393,7 @@
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Initialize $\bX_T \leftarrow \be_m \bone^\top$ (fully masked).
-			\item For $t = T, T-1, \ldots, 1$:
+			\item Iterate for $t = T, T-1, \ldots, 1$:
 			\begin{enumerate}
 				\item Predict $\pt(\bx_0^i | \bX_t)$ for all positions.
 				\item For each masked position ($\bx_t^i = \be_m$):
@@ -489,7 +489,7 @@
 	\begin{block}{Training}
 		\begin{enumerate}
 			\item Sample $\bX_0 \sim \pd(\bX)$, ${\color{violet}\lambda \sim U[0, 1]}$.
-			\item Corrupt the sequence by independent masking:
+			\item Sample the corrupted sequence by independent masking:
 			\vspace{-0.3cm}
 			\[
 				\bx_{\color{violet}\lambda}^i =
@@ -511,7 +511,7 @@
 			\item Compute masked-CE loss:
 			\vspace{-0.3cm}
 			\[
-				\cL(\btheta)
+				\cL
 				=
 				{\color{violet}w(\lambda)} \sum_{i=1}^m [\bx_{\color{violet}\lambda}^i=\be_m]\,
 				\big[-\log \pt(\bx_0^i | \bX_{\color{violet}\lambda})\big].
@@ -526,7 +526,7 @@
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Initialize $\bX_{{\color{violet}\lambda_1}} \leftarrow \be_m \bone^\top$ (fully masked).
-			\item For a decreasing schedule ${\color{violet}1 = \lambda_1 > \lambda_2 > \cdots > \lambda_L = 0}$, $\ell = 1, \ldots, L-1$:
+			\item Iterate for $\ell = 1, \ldots, L-1$ over a decreasing schedule ${\color{violet}1 = \lambda_1 > \lambda_2 > \cdots > \lambda_L = 0}$:
 			\begin{enumerate}
 				\item Predict $\pt(\bx_0^i | \bX_{{\color{violet}\lambda_\ell}})$ for all positions.
 				\item For each masked position ($\bx_{{\color{violet}\lambda_\ell}}^i = \be_m$):

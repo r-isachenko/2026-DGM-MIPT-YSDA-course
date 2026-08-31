@@ -140,7 +140,10 @@
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 	\begin{block}{Sampling}
-		To sample, solve the reverse SDE using numerical solvers (\SDESolve).
+		\begin{enumerate}
+			\item Sample $\bx(1) \sim \cN(0, \bI)$.
+			\item Solve the reverse SDE using numerical solvers (\SDESolve).
+		\end{enumerate}
 		\vspace{-0.3cm}
 		\begin{figure}
 			\includegraphics[width=0.8\linewidth]{figs/sbgm}

@@ -534,16 +534,14 @@
     	\log \pt(\bx) = \sum_{j=1}^m \log \pt(x_j | \bx_{1:j - 1})
     \]
     \eqpause
+    \begin{block}{Sampling (Ancestral)}
+    	\begin{enumerate}
+    		\item Sample $\hat{x}_1 \sim \pt(x_1)$, $\hat{x}_2 \sim \pt(x_2 | \hat{x}_1)$, \ldots, $\hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})$.
+    		\item Return $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \ldots, \hat{x}_m)$.
+    	\end{enumerate}
+    \end{block}
+    \eqpause
     \begin{itemize}
-	    \item Sampling is performed sequentially:
-	    \begin{itemize}
-    		\item Sample $\hat{x}_1 \sim \pt(x_1)$;
-    		\item Sample $\hat{x}_2 \sim \pt(x_2 | \hat{x}_1)$;
-    		\item $\ldots$
-    		\item Sample $\hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})$;
-    		\item The generated sample is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \ldots, \hat{x}_m)$.
-    	\end{itemize}
-        \eqpause
         \item Each conditional $\pt(x_j | \bx_{1:j - 1})$ can be modeled using a neural network.
         \eqpause
         \item Modeling all conditionals separately isn't feasible. To address this, we share parameters across all conditionals.

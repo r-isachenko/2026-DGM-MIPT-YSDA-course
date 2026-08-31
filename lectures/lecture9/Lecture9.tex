@@ -60,8 +60,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx_0 \sim \pd(\bx)$.
-			\item Sample $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
+			\item Sample $\bx_0 \sim \pd(\bx)$, $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
 			\item Compute noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$.
 			\item Compute loss $ \cL_{\text{simple}} = \| \bepsilon - \bepsilon_{\btheta, t}(\bx_t) \|^2 $.
 		\end{enumerate}

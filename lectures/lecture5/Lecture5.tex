@@ -12,7 +12,7 @@
 \begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx \sim \pd(\bx)$ and $\bepsilon \sim p(\bepsilon)$.
+			\item Sample $\bx \sim \pd(\bx)$, $\bepsilon \sim p(\bepsilon)$.
 			\item Reparametrize $\bz = \bg_{\bphi}(\bx, \bepsilon)$.
 			\item Compute the ELBO:
 			\vspace{-0.3cm}
@@ -26,7 +26,7 @@
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Sample $\bz \sim p(\bz) = \cN(0, \bI)$.
-			\item Generate $\bx \sim \pt(\bx | \bz)$.
+			\item Sample $\bx \sim \pt(\bx | \bz)$.
 		\end{enumerate}
 	\end{block}
 	\textbf{Note:} The encoder $q_{\bphi}(\bz| \bx)$ isn't needed during generation.

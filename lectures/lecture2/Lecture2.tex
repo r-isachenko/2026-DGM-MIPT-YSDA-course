@@ -71,12 +71,11 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Sampling}
-		\vspace{-0.5cm}
-		\[
-		{\color{teal} \hat{x}_1} \sim \pt(x_1), \quad \hat{x}_2 \sim \pt(x_2 | {\color{teal} \hat{x}_1}), \quad \ldots, \quad \hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})
-		\]
-		The generated sample is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
+	\begin{block}{Sampling (Ancestral)}
+		\begin{enumerate}
+			\item Sample $\hat{x}_1 \sim \pt(x_1)$, $\hat{x}_2 \sim \pt(x_2 | \hat{x}_1)$, \ldots, $\hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})$.
+			\item Return $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \ldots, \hat{x}_m)$.
+		\end{enumerate}
 	\end{block}
 \end{frame}
 %=======
@@ -366,7 +365,7 @@
 	}
 	\vspace{-0.5cm}
 	\eqpause
-	\begin{block}{Sampling}
+	\begin{block}{Generative Direction}
 		\vspace{-0.3cm}
 		\[
 		x_j = \sigma_{j, \btheta} (\bx_{1:j-1}) \cdot z_j + \mu_{j, \btheta}(\bx_{1:j-1}), \quad z_j \sim \cN(0, 1)

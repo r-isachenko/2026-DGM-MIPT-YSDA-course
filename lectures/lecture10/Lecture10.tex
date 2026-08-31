@@ -428,9 +428,10 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 	Same trained score $\bs_{\btheta}(\bx, t)$; only the discretization changes (reverse SDE derived in the next section).
 	\eqpause
-	\begin{block}{Reverse SDE Sampling (\SDESolve, Euler--Maruyama)}
+	\begin{block}{Sampling (Reverse SDE, Euler--Maruyama)}
 		\begin{enumerate}
-			\item Sample $\bx_T \sim \cN(0, \bI)$; choose step $\Delta t = T / K$.
+			\item Sample $\bx_T \sim \cN(0, \bI)$.
+			\item Initialize step $\Delta t = T / K$.
 			\item Denoise:
 			\vspace{-0.2cm}
 			\[
@@ -440,9 +441,10 @@
 		\end{enumerate}
 	\end{block}
 	\eqpause
-	\begin{block}{PF-ODE Sampling (\ODESolve: Euler / Heun / RK4)}
+	\begin{block}{Sampling (PF-ODE: Euler / Heun / RK4)}
 		\begin{enumerate}
-			\item Sample $\bx_T \sim \cN(0, \bI)$; choose step $\Delta t = T / K$ \,(with $K \ll$ SDE case).
+			\item Sample $\bx_T \sim \cN(0, \bI)$.
+			\item Initialize step $\Delta t = T / K$ \,(with $K \ll$ SDE case).
 			\item Denoise:
 			\vspace{-0.2cm}
 			\[
@@ -772,11 +774,11 @@
 \begin{frame}{Score-Based Generative Models Through SDEs}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 	\begin{block}{Training}
-		\vspace{-0.5cm}
-		\[
-			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
-		\]
-		\vspace{-0.7cm}
+		\begin{enumerate}
+			\item Sample $\bx(0) \sim \pd(\bx)$, $t \sim U[0, 1]$.
+			\item Sample $\bx(t) \sim q(\bx(t) | \bx(0))$.
+			\item Compute loss $\cL = \bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2$.
+		\end{enumerate}
 	\end{block}
 	\[
 		q(\bx(t) | \bx(0)) = \cN\Bigl(\bmu(\bx(0), t), \sigma^2(t) \cdot \bI\Bigr)
@@ -805,7 +807,10 @@
 \begin{frame}{Score-Based Generative Models Through SDEs}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 	\begin{block}{Sampling}
-		Solve the reverse SDE using numerical solvers (\SDESolve).
+		\begin{enumerate}
+			\item Sample $\bx(1) \sim \cN(0, \bI)$.
+			\item Solve the reverse SDE using numerical solvers (\SDESolve).
+		\end{enumerate}
 		\begin{figure}
 			\includegraphics[width=0.8\linewidth]{figs/sbgm}
 		\end{figure}

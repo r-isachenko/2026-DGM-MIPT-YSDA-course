@@ -655,10 +655,10 @@
     \eqpause
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx_0 \sim \pd(\bx)$.
-			\item Sample $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
+			\item Sample $\bx_0 \sim \pd(\bx)$, $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
 			\item Compute noisy image $\bx_t = \bx_0 + \sigma_t \bepsilon$.
 			\item Compute loss $ \cL = \sigma_t^2 \left\| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \right\|^2 $.
+			\item Update $\btheta$ via stochastic gradient descent.
 		\end{enumerate}
 		\vspace{-0.3cm}
 	\end{block}
@@ -671,13 +671,13 @@
 	\begin{block}{Sampling (Annealed Langevin Dynamics)}
 		\begin{enumerate}
 			\item Sample $\bx_0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$.
-			\item At each noise level, apply $L$ steps of Langevin dynamics:
-			\vspace{-0.2cm}
+			\item Update $\bx_l$ via $L$ steps of Langevin dynamics at each noise level $\sigma_t$:
+			\vspace{-0.3cm}
 			\[
 				\bx_l = \bx_{l-1} + \frac{\eta_t}{2} \bs_{\btheta, \sigma_t}(\bx_{l-1}) + \sqrt{\eta_t} \bepsilon_l.
 			\]
 			\vspace{-0.5cm}
-			\item Update $\bx_0 := \bx_L$ and reduce to the next lower $\sigma_t$.
+			\item Update $\bx_0 := \bx_L$ and proceed to the next noise level $\sigma_{t-1}$.
 		\end{enumerate}
 	\end{block}
     \eqpause
