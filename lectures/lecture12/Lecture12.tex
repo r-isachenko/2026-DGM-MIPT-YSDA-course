@@ -60,6 +60,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lectures}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 	\begin{block}{Theorem}
 		The following vector field generates the probability path $p_t(\bx)$:
 		\vspace{-0.2cm}
@@ -449,6 +450,7 @@
 \end{frame}
 %=======
 \begin{frame}{Score-Based Generative Models through SDEs}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 	\[
 		p_t(\bx| \bx_1) = q_{1-t}(\bx| \bx_0=\bx_1)
 	\]
@@ -655,6 +657,7 @@
 \end{frame}
 %=======
 \begin{frame}{Transition Matrix}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\[
 		q(\bx_t|\bx_0) = \Cat(\bQ_{1:t}\bx_0),
 		\qquad
@@ -682,7 +685,7 @@
 \end{frame}
 %=======
 \begin{frame}{Transition Matrix}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 
 	\begin{block}{Absorbing Diffusion}
 		\[
@@ -704,7 +707,7 @@
 \end{frame}
 %=======
 \begin{frame}{Uniform vs. Absorbing Transition Matrix}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{table}[h!]
 		\centering
 		\small
@@ -740,7 +743,7 @@
 \section{Reverse Diffusion Process}
 %=======
 \begin{frame}{Posterior of the Forward Process}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{block}{ELBO}
 		\vspace{-0.7cm}
 		\begin{multline*}
@@ -767,7 +770,7 @@
 \end{frame}
 %=======
 \begin{frame}{Posterior of the Forward Process}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{block}{Discrete conditioned reverse distribution}
 		\[
 			q(\bx_{t-1} | \bx_t, \bx_0)
@@ -795,7 +798,7 @@
 \end{frame}
 %=======
 \begin{frame}{Discrete-time ELBO for Discrete Diffusion}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 
 	\begin{block}{ELBO term}
 		\vspace{-0.3cm}
@@ -831,6 +834,7 @@
 \section{From Token To Sequence}
 %=======
 \begin{frame}{From Token to Sequence}
+    \myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
     \begin{block}{One-hot sequence representation}
         \vspace{-0.3cm}
         \[
@@ -864,6 +868,7 @@
 \end{frame}
 %=======
 \begin{frame}{From Token to Sequence}
+    \myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
     \[
         q(\bX_t |\bX_{t-1}) =
 		\prod_{i=1}^m q(\bx_t^i |\bx_{t-1}^i) = \Cat(\bQ_t \bX_{t-1})
@@ -894,6 +899,7 @@
 \end{frame}
 %=======
 \begin{frame}{Reverse Model for Sequence}
+    \myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
     \[
         \pt(\bX_{t-1}|\bX_t) =
 		\prod_{i=1}^m \pt(\bx_{t-1}^i | {\color{violet}\bX_t}).

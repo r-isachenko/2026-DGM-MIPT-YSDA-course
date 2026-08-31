@@ -439,6 +439,7 @@
 \end{frame}
 %=======
 \begin{frame}{ELBO Gradients: $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$}
+	\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
 	\begin{block}{Gradient $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$}
 		Unlike the $\btheta$-gradient, the density $q_{\bphi}(\bz| \bx)$ now depends on $\bphi$, so standard Monte Carlo estimation can't be applied:
 		\begin{align*}
@@ -459,7 +460,8 @@
 \end{frame}
 %=======
 \begin{frame}{ELBO Gradients: $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$}
-	\begin{block}{Reparametrization Trick (LOTUS Trick)} 
+	\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
+	\begin{block}{Reparametrization Trick (LOTUS Trick)}
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\nabla_{\bphi}\int q_{\bphi}(\bz| \bx) \bff(\bz) d\bz = {\color{olive}\nabla_{\bphi}} \int p(\bepsilon)  \bff(\bg_{\bphi}(\bx, \bepsilon)) d\bepsilon 

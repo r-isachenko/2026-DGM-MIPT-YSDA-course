@@ -267,7 +267,7 @@
  \end{frame}
 %=======
 \begin{frame}{Forward Gaussian Diffusion Process}
-    \myfootnotewithlink{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An introduction to Diffusion Probabilistic Models, blog post, 2021}
+    \myfootnotewithlink{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An Introduction to Diffusion Probabilistic Models, blog post, 2021}
 	\textbf{Diffusion} describes the migration of particles from regions of high density to those of low density.
 	\vspace{-0.2cm}
 	\begin{figure}
@@ -286,7 +286,8 @@
 \end{frame}
 %=======
 \begin{frame}{Denoising Score Matching}
-	\begin{block}{NCSN} 
+    \myfootnotewithlink{https://arxiv.org/abs/1907.05600}{Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019}
+	\begin{block}{NCSN}
 		\vspace{-0.7cm} 
 		\[
 			q(\bx_t | \bx_0) = \cN(\bx_0, \sigma_t^2 \bI), \quad q(\bx_1) \approx \pd(\bx), \quad q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
@@ -353,7 +354,7 @@
 \end{frame}
 %=======
 \begin{frame}{Reverse Gaussian Diffusion Process}
-    \myfootnote{\href{}{Feller W. On the theory of stochastic processes, with particular reference to applications, 1949} \\ 
+    \myfootnote{Feller W. On the theory of stochastic processes, with particular reference to applications, 1949 \\
     \href{https://arxiv.org/abs/2112.07804}{Xiao Z., Kreis K., Vahdat A. Tackling the generative learning trilemma with denoising diffusion GANs, 2021}}
 	\vspace{-0.4cm}
 	\[

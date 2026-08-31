@@ -74,6 +74,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://aaronlou.com/blog/2024/discrete-diffusion/}{https://aaronlou.com/blog/2024/discrete-diffusion/}
 	\begin{block}{Continuous state space}
 		\begin{itemize}
 			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$ $\;\Rightarrow\;$ \textbf{DDPM / NCSN}.
@@ -125,7 +126,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{block}{Uniform vs. Absorbing Transition Matrix}
         \begin{table}[h!]
             \centering
@@ -160,7 +161,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{block}{Discrete conditioned reverse distribution}
 		\[
 			q(\bx_{t-1} | \bx_t, \bx_0)
@@ -188,6 +189,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.}
 	\begin{block}{Independent Token-wise Forward Process}
 		\vspace{-0.3cm}
 		\[
@@ -260,6 +262,7 @@
 \end{frame}
 %=======
 \begin{frame}{Absorbing Diffusion}
+	\myfootnotewithlink{https://arxiv.org/abs/2406.07524}{Sahoo S. et al. Simple and effective masked diffusion language models, 2024}
 	\begin{block}{Conditioned reverse distribution}
 		\vspace{-0.5cm}
 		\[
@@ -292,6 +295,7 @@
 \end{frame}
 %=======
 \begin{frame}{Absorbing Diffusion}
+    \myfootnotewithlink{https://arxiv.org/abs/2406.07524}{Sahoo S. et al. Simple and effective masked diffusion language models, 2024}
     \begin{block}{Sequence Distribution}
         \vspace{-0.3cm}
         \[
@@ -385,6 +389,7 @@
 \end{frame}
 %=======
 \begin{frame}{Algorithm: Discrete-Time Absorbing Diffusion}
+	\myfootnotewithlink{https://arxiv.org/abs/2406.07524}{Sahoo S. et al. Simple and effective masked diffusion language models, 2024}
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Initialize $\bX_T \leftarrow \be_m \bone^\top$ (fully masked).
@@ -446,6 +451,7 @@
 \end{frame}
 %=======
 \begin{frame}{Discrete ELBO Revisited}
+    \myfootnotewithlink{https://arxiv.org/abs/2406.07524}{Sahoo S. et al. Simple and effective masked diffusion language models, 2024}
     Recall the per-step ELBO term for absorbing diffusion:
     \[
         \cL_t
@@ -516,6 +522,7 @@
 \end{frame}
 %=======
 \begin{frame}{Algorithm: Masked Diffusion Language Model (MDLM)}
+	\myfootnotewithlink{https://arxiv.org/abs/2406.07524}{Sahoo S. et al. Simple and effective masked diffusion language models, 2024}
 	\begin{block}{Sampling}
 		\begin{enumerate}
 			\item Initialize $\bX_{{\color{violet}\lambda_1}} \leftarrow \be_m \bone^\top$ (fully masked).
