@@ -135,14 +135,14 @@
                 \textbf{Aspect} & \textbf{Uniform Diffusion} & \textbf{Absorbing Diffusion} \\
                 \midrule
                 $\bQ_t$
-                    & $(1-\beta_t)\bI + \beta_t \mathbf{U}$ 
-                    & $(1-\beta_t)\bI + \beta_t \mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+                    & $(1-\beta_t)\bI + \beta_t \bU$ 
+                    & $(1-\beta_t)\bI + \beta_t \be_m\bone^\top$ \\[4pt]
                 $\bQ_{1:t}$
-                    & $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{U}$
-                    & $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+                    & $\bar\alpha_t \bI + (1-\bar\alpha_t)\bU$
+                    & $\bar\alpha_t \bI + (1-\bar\alpha_t)\be_m\bone^\top$ \\[4pt]
                 $\bQ_{1:\infty}$
-                    & $\mathbf{U}$
-                    & $\Cat(\mathbf{e}_m)$ \\[4pt]
+                    & $\bU$
+                    & $\Cat(\be_m)$ \\[4pt]
                 Interpretation
                     & Random replacement
                     & Gradual masking of tokens \\[4pt]
@@ -233,15 +233,15 @@
 	Let's restrict to the case of absorbing transition matrix.
 	\vspace{-0.3cm}
 	\begin{align*}
-		\bQ_t &= (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top,
+		\bQ_t &= (1-\beta_t)\bI + \beta_t\, \be_m \bone^\top,
 		\qquad
 		\bar\alpha_t = \prod_{s=1}^t (1-\beta_s). \\
-		\bQ_{1:t} &= \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\mathbf{e}_m \mathbf{1}^\top.
+		\bQ_{1:t} &= \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\be_m \bone^\top.
 	\end{align*}
 	\eqpause
 	Each position is either still clean or already masked:
 	\[
-		q(\bx_t | \bx_0) = \bar\alpha_t [\bx_t = \bx_0] + (1 - \bar\alpha_t) [\bx_t = \mathbf{e}_m]
+		q(\bx_t | \bx_0) = \bar\alpha_t [\bx_t = \bx_0] + (1 - \bar\alpha_t) [\bx_t = \be_m]
 	\]
 	\eqpause
 	\[
@@ -266,9 +266,9 @@
 			q(\bx_{t-1} | \bx_t, \bx_0) =
 			\begin{cases}
 				[\bx_{t-1} = \bx_t], 
-				& \text{if } \bx_t \neq \mathbf{e}_m, \\
-				\rho_t[\bx_{t-1} = \bx_0] + (1-\rho_t)[\bx_{t-1} = \mathbf{e}_m], 
-				& \text{if } \bx_t = \mathbf{e}_m,
+				& \text{if } \bx_t \neq \be_m, \\
+				\rho_t[\bx_{t-1} = \bx_0] + (1-\rho_t)[\bx_{t-1} = \be_m], 
+				& \text{if } \bx_t = \be_m,
 			\end{cases}
 		\]
 		where
@@ -278,16 +278,16 @@
 	\end{block}
 	\eqpause
 	\begin{itemize}
-		\item If $\bx_t \neq \mathbf{e}_m$, then the token must be unchanged:
+		\item If $\bx_t \neq \be_m$, then the token must be unchanged:
 		$\bx_{t-1} = \bx_t$.
 		\item Observing an unmasked token at time $t$ fixes the entire history:
 		$\bx_{t-1} = \bx_t = \cdots = \bx_0$.
 		\eqpause
-		\item If $\bx_t = \mathbf{e}_m$, the previous token may be either clean or masked.
+		\item If $\bx_t = \be_m$, the previous token may be either clean or masked.
 		\item With probability $\rho_t$, masking occurred exactly at step $t$
 		(so $\bx_{t-1} = \bx_0$).
         \item With probability $(1 - \rho_t)$, the token was already masked earlier
-		(so $\bx_{t-1} = \mathbf{e}_m$).
+		(so $\bx_{t-1} = \be_m$).
 	\end{itemize}
 \end{frame}
 %=======
@@ -302,13 +302,13 @@
     \end{block}
 	Each position $i$ has two possible cases:
 	\[
-		\bx_t^i \neq \mathbf{e}_m
+		\bx_t^i \neq \be_m
 		\;\Rightarrow\;
 		\bx_{t-1}^i = \bx_t^i,
 		\qquad
-		\bx_t^i = \mathbf{e}_m
+		\bx_t^i = \be_m
 		\;\Rightarrow\;
-		\bx_{t-1}^i \in \{\bx_0^i, \mathbf{e}_m\}.
+		\bx_{t-1}^i \in \{\bx_0^i, \be_m\}.
 	\]
     \vspace{-0.5cm}
     \eqpause
@@ -334,14 +334,14 @@
 	\]
 	\vspace{-0.3cm}
     \eqpause
-    \begin{block}{Objective: sequence-level $\mathcal{L}_t$}
+    \begin{block}{Objective: sequence-level $\cL_t$}
         \vspace{-0.3cm}
         \[
             \cL_t
             =
             \bbE_{q(\bX_t| \bX_0)}
             \sum_{i=1}^m
-            \rho_t [\bx_t^i=\mathbf{e}_m] \left[-\log \pt(\bx_0^i | \bX_t)\right]
+            \rho_t [\bx_t^i=\be_m] \left[-\log \pt(\bx_0^i | \bX_t)\right]
 			+ \text{const}
         \]
     \end{block}
@@ -358,7 +358,7 @@
 			\[
 				\bx_t^i =
 				\begin{cases}
-					\mathbf e_m, & \text{with prob. } 1-\bar\alpha_t,\\
+					\be_m, & \text{with prob. } 1-\bar\alpha_t,\\
 					\bx_0^i, & \text{with prob. } \bar\alpha_t,
 				\end{cases}
 				\qquad i=1,\dots,m.
@@ -377,7 +377,7 @@
 			\[
 				\cL(\btheta)
 				=
-				\rho_t \sum_{i=1}^m [\bx_t^i=\mathbf e_m]\,
+				\rho_t \sum_{i=1}^m [\bx_t^i=\be_m]\,
 				\big[-\log \pt(\bx_0^i | \bX_t)\big].
 			\]
 		\end{enumerate}
@@ -387,17 +387,17 @@
 \begin{frame}{Algorithm: Discrete-Time Absorbing Diffusion}
 	\begin{block}{Sampling}
 		\begin{enumerate}
-			\item Initialize $\bX_T \leftarrow \mathbf e_m \mathbf 1^\top$ (fully masked).
+			\item Initialize $\bX_T \leftarrow \be_m \bone^\top$ (fully masked).
 			\item For $t = T, T-1, \ldots, 1$:
 			\begin{enumerate}
 				\item Predict $\pt(\bx_0^i | \bX_t)$ for all positions.
-				\item For each masked position ($\bx_t^i = \mathbf e_m$):
+				\item For each masked position ($\bx_t^i = \be_m$):
 				\vspace{-0.3cm}
 				\[
 					\bx_{t-1}^i =
 					\begin{cases}
 						\hat\bx_0^i \sim \pt(\bx_0^i | \bX_t), & \text{with prob. } \rho_t,\\
-						\mathbf e_m, & \text{with prob. } 1-\rho_t.
+						\be_m, & \text{with prob. } 1-\rho_t.
 					\end{cases}
 				\]
 				\vspace{-0.5cm}
@@ -418,7 +418,7 @@
         q(\bx_t | \bx_0) =
         \bar\alpha_t[\bx_t=\bx_0]
         +
-        (1-\bar\alpha_t)[\bx_t=\mathbf{e}_m].
+        (1-\bar\alpha_t)[\bx_t=\be_m].
     \]
 	\vspace{-0.5cm}
     \eqpause
@@ -440,7 +440,7 @@
 		\[
 			q(\bx_\lambda | \bx_0) =
 			(1-\lambda)[\bx_{\lambda}=\bx_0]
-			+ \lambda[\bx_{\lambda}=\mathbf{e}_m].
+			+ \lambda[\bx_{\lambda}=\be_m].
 		\]
 	\end{itemize}
 \end{frame}
@@ -452,7 +452,7 @@
         =
         \bbE_{q(\bX_t | \bX_0)}
         \sum_{i=1}^m
-        {\color{violet}\rho_t}[\bx_t^i=\mathbf e_m]
+        {\color{violet}\rho_t}[\bx_t^i=\be_m]
         \left[-\log \pt(\bx_0^i | \bX_t)\right]
         + \text{const}.
     \]
@@ -460,13 +460,13 @@
     Replacing the discrete index $t$ with the continuous mask rate $\lambda$,
     the training objective becomes
     \[
-        \mathcal L
+        \cL
         =
         \int_0^1
        {\color{violet} w(\lambda)}
         \bbE_{q_\lambda(\bX_\lambda | \bX_0)}
         \sum_{i=1}^m
-        [\bx_\lambda^i=\mathbf e_m]
+        [\bx_\lambda^i=\be_m]
         \left[-\log \pt(\bx_0^i | \bX_\lambda)\right] 
 		d\lambda.
     \]
@@ -488,7 +488,7 @@
 			\[
 				\bx_{\color{violet}\lambda}^i =
 				\begin{cases}
-					\mathbf e_m, & \text{with prob. }{\color{violet}\lambda},\\
+					\be_m, & \text{with prob. }{\color{violet}\lambda},\\
 					\bx_0^i, & \text{with prob. }{\color{violet}1-\lambda},
 				\end{cases}
 				\qquad i=1,\dots,m.
@@ -507,7 +507,7 @@
 			\[
 				\cL(\btheta)
 				=
-				{\color{violet}w(\lambda)} \sum_{i=1}^m [\bx_{\color{violet}\lambda}^i=\mathbf e_m]\,
+				{\color{violet}w(\lambda)} \sum_{i=1}^m [\bx_{\color{violet}\lambda}^i=\be_m]\,
 				\big[-\log \pt(\bx_0^i | \bX_{\color{violet}\lambda})\big].
 			\]
 		\end{enumerate}
@@ -518,17 +518,17 @@
 \begin{frame}{Algorithm: Masked Diffusion Language Model (MDLM)}
 	\begin{block}{Sampling}
 		\begin{enumerate}
-			\item Initialize $\bX_{{\color{violet}\lambda_1}} \leftarrow \mathbf e_m \mathbf 1^\top$ (fully masked).
+			\item Initialize $\bX_{{\color{violet}\lambda_1}} \leftarrow \be_m \bone^\top$ (fully masked).
 			\item For a decreasing schedule ${\color{violet}1 = \lambda_1 > \lambda_2 > \cdots > \lambda_L = 0}$, $\ell = 1, \ldots, L-1$:
 			\begin{enumerate}
 				\item Predict $\pt(\bx_0^i | \bX_{{\color{violet}\lambda_\ell}})$ for all positions.
-				\item For each masked position ($\bx_{{\color{violet}\lambda_\ell}}^i = \mathbf e_m$):
+				\item For each masked position ($\bx_{{\color{violet}\lambda_\ell}}^i = \be_m$):
 				\vspace{-0.3cm}
 				\[
 					\bx_{{\color{violet}\lambda_{\ell+1}}}^i =
 					\begin{cases}
 						\hat\bx_0^i \sim \pt(\bx_0^i | \bX_{{\color{violet}\lambda_\ell}}), & \text{with prob. } {\color{violet}1 - \tfrac{\lambda_{\ell+1}}{\lambda_\ell}},\\
-						\mathbf e_m, & \text{with prob. } {\color{violet}\tfrac{\lambda_{\ell+1}}{\lambda_\ell}}.
+						\be_m, & \text{with prob. } {\color{violet}\tfrac{\lambda_{\ell+1}}{\lambda_\ell}}.
 					\end{cases}
 				\]
 				\vspace{-0.5cm}
@@ -704,7 +704,7 @@
 		Categorical $\bx_t$ with transition matrices $\bQ_t$:
 		\begin{itemize}
 			\item \textbf{Uniform}: $\bQ_t = (1-\beta_t)\bI + \beta_t\bU$
-			\item \textbf{Absorbing}: $\bQ_t = (1-\beta_t)\bI + \beta_t\,\be_m \mathbf{1}^{\top}$ (mask token)
+			\item \textbf{Absorbing}: $\bQ_t = (1-\beta_t)\bI + \beta_t\,\be_m \bone^{\top}$ (mask token)
 		\end{itemize}
 	\end{block}
 	\begin{block}{Reverse process \& Discrete ELBO (L12)}

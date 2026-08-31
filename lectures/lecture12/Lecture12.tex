@@ -527,7 +527,7 @@
 %=======
 \begin{frame}{Discrete or Continuous Diffusion Models?}
 	\textbf{Reminder:} Diffusion models define a forward corruption process and a reverse denoising process.
-	Previously, we studied diffusion models with continuous states $\bx(t) \in \mathbb{R}^m$.
+	Previously, we studied diffusion models with continuous states $\bx(t) \in \bbR^m$.
 	\begin{block}{Continuous state space}
 		\begin{itemize}
 			\item \textbf{Discrete time} $t \in \{0,1,\ldots,T\}$ $\;\Rightarrow\;$ \textbf{DDPM / NCSN}.
@@ -576,7 +576,7 @@
 	\begin{block}{Continuous Diffusion Markov Chain}
 		In continuous diffusion, the forward Markov chain is defined by progressively corrupting data with Gaussian noise:
 		\[
-			q(\bx_t|\bx_{t-1}) = \mathcal{N}(\sqrt{1-\beta_t}\bx_{t-1}, \beta_t \bI).
+			q(\bx_t|\bx_{t-1}) = \cN(\sqrt{1-\beta_t}\bx_{t-1}, \beta_t \bI).
 		\]
 	\end{block}
 	\eqpause
@@ -639,14 +639,14 @@
 			\[
 				\bQ_t = (1 - \beta_t) \bI + \beta_t \bU,
 				\qquad
-				\mathbf{U}_{ij} = \tfrac{1}{K}.
+				\bU_{ij} = \tfrac{1}{K}.
 			\]
 			Each token is replaced by a uniformly random symbol with probability $\beta_t$.
 			The stationary distribution is uniform noise.
 			\eqpause
 			\item \textbf{Absorbing diffusion}
 			\[
-				\bQ_t = (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top.
+				\bQ_t = (1-\beta_t)\bI + \beta_t\, \be_m \bone^\top.
 			\]
 			Tokens are gradually replaced by a special mask $m$;
 			the stationary distribution is fully masked.
@@ -663,12 +663,12 @@
 	\eqpause
 	\begin{block}{Uniform Diffusion}
 		\[
-			\bQ_t = (1-\beta_t)\bI + \beta_t \mathbf{U},
+			\bQ_t = (1-\beta_t)\bI + \beta_t \bU,
 			\qquad
-			\mathbf{U}_{ij} = \tfrac{1}{K}.
+			\bU_{ij} = \tfrac{1}{K}.
 		\]
 		\[
-			\bQ_{1:t} = \bar\alpha_t\bI + (1 - \bar\alpha_t) \mathbf{U},
+			\bQ_{1:t} = \bar\alpha_t\bI + (1 - \bar\alpha_t) \bU,
 			\quad
 			\bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
 		\]
@@ -686,18 +686,18 @@
 
 	\begin{block}{Absorbing Diffusion}
 		\[
-			\bQ_t = (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top,
+			\bQ_t = (1-\beta_t)\bI + \beta_t\, \be_m \bone^\top,
 		\]
 		\[
-			\bQ_{1:t} = \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\mathbf{e}_m \mathbf{1}^\top,
+			\bQ_{1:t} = \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\be_m \bone^\top,
 			\qquad
 			\bar\alpha_t = \prod_{s=1}^t (1-\beta_s).
 		\]
 		\eqpause
 		\begin{itemize}
 			\item Each token retains its original value with prob.~$\bar\alpha_t$.
-			\item It becomes $\mathbf{e}_m$ with prob.~$(1 - \bar\alpha_t)$.
-			\item As $t \to T$, all tokens converge to the mask state: $q(\bx_T) \approx \Cat(\mathbf{e}_m)$.
+			\item It becomes $\be_m$ with prob.~$(1 - \bar\alpha_t)$.
+			\item As $t \to T$, all tokens converge to the mask state: $q(\bx_T) \approx \Cat(\be_m)$.
 			\item This makes the process analogous to \textbf{masked language modeling}.
 		\end{itemize}
 	\end{block}
@@ -713,14 +713,14 @@
 			\textbf{Aspect} & \textbf{Uniform Diffusion} & \textbf{Absorbing Diffusion} \\
 			\midrule
 			$\bQ_t$
-				& $(1-\beta_t)\bI + \beta_t \mathbf{U}$ 
-				& $(1-\beta_t)\bI + \beta_t \mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+				& $(1-\beta_t)\bI + \beta_t \bU$ 
+				& $(1-\beta_t)\bI + \beta_t \be_m\bone^\top$ \\[4pt]
 			$\bQ_{1:t}$
-				& $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{U}$
-				& $\bar\alpha_t \bI + (1-\bar\alpha_t)\mathbf{e}_m\mathbf{1}^\top$ \\[4pt]
+				& $\bar\alpha_t \bI + (1-\bar\alpha_t)\bU$
+				& $\bar\alpha_t \bI + (1-\bar\alpha_t)\be_m\bone^\top$ \\[4pt]
 			$\bQ_{1:\infty}$
-				& $\mathbf{U}$
-				& $\Cat(\mathbf{e}_m)$ \\[4pt]
+				& $\bU$
+				& $\Cat(\be_m)$ \\[4pt]
 			Interpretation
 				& Random replacement
 				& Gradual masking of tokens \\[4pt]

@@ -413,7 +413,7 @@
 			\pd(x, y) = (0, U[0, 1])
 		\]	
 		\[
-			p_{\theta}(x, y) = (\theta, U[0, 1])
+			\pt(x, y) = (\theta, U[0, 1])
 		\]
 	\end{minipage}%
 	\begin{minipage}[t]{0.52\columnwidth}
@@ -506,13 +506,13 @@
 	\begin{itemize}
 		\item We must ensure that $f$ is $K$-Lipschitz continuous.
 		\item Let $f_{\bphi}(\bx)$ be a feedforward neural network parameterized by $\bphi$.
-		\item If the weights $\bphi$ are restricted to a compact set $\boldsymbol{\Phi}$, then $f_{\bphi}$ is $K$-Lipschitz.
+		\item If the weights $\bphi$ are restricted to a compact set $\bPhi$, then $f_{\bphi}$ is $K$-Lipschitz.
 		\eqpause
-		\item Clamp weights within the box $\boldsymbol{\Phi} = [-c, c]^d$ (e.g.\ $c = 0.01$) after each update.
+		\item Clamp weights within the box $\bPhi = [-c, c]^d$ (e.g.\ $c = 0.01$) after each update.
 	\end{itemize}
 	\begin{multline*}
 		K \cdot W(\pd \| \pt) = \max_{\| f \|_L \leq K} \Bigl[ \bbE_{\pd(\bx)} f(\bx)  - \bbE_{\pt(\bx)} f(\bx)\Bigr]\ \geq\ 
-		\\  \geq \max_{\bphi \in \boldsymbol{\Phi}} \Bigl[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{\pt(\bx)} f_{\bphi}(\bx)\Bigr]
+		\\  \geq \max_{\bphi \in \bPhi} \Bigl[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{\pt(\bx)} f_{\bphi}(\bx)\Bigr]
 	\end{multline*}
 \end{frame}
 %=======
@@ -528,7 +528,7 @@
 	\begin{block}{WGAN Objective}
 		\vspace{-0.3cm}
 		\[
-			\min_{\btheta} {\color{violet}W(\pd \| \pt)} \approx \min_{\btheta} {\color{violet}\max_{\bphi \in \boldsymbol{\Phi}} \Bigl[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bz)} f_{\bphi}(\bG_{\btheta}(\bz))\Bigr]}
+			\min_{\btheta} {\color{violet}W(\pd \| \pt)} \approx \min_{\btheta} {\color{violet}\max_{\bphi \in \bPhi} \Bigl[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bz)} f_{\bphi}(\bG_{\btheta}(\bz))\Bigr]}
 		\]
 		\vspace{-0.3cm}
 	\end{block}
@@ -647,16 +647,16 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2401.09603}{Jayasumana S. et al. Rethinking FID: Towards a Better Evaluation Metric for Image Generation, 2024}
 	\vspace{-0.3cm}
 	\[
-		\FID (\pd, \pt) = \| \bmu_{\text{data}} - \bmu_{\boldsymbol{\theta}}\|^2 + \tr \left[ \bSigma_{\text{data}} + \bSigma_{\boldsymbol{\theta}} - 2 \left(\bSigma_{\text{data}}^{1/2} \bSigma_{\boldsymbol{\theta}} \bSigma_{\text{data}}^{1/2} \right)^{1/2} \right]
+		\FID (\pd, \pt) = \| \bmu_{\text{data}} - \bmu_{\btheta}\|^2 + \tr \left[ \bSigma_{\text{data}} + \bSigma_{\btheta} - 2 \left(\bSigma_{\text{data}}^{1/2} \bSigma_{\btheta} \bSigma_{\text{data}}^{1/2} \right)^{1/2} \right]
 	\]
 	\vspace{-0.5cm}
 	\begin{itemize}
 		\item FID is computed in the latent space $\bz$.
 		\item We use a pretrained image embedder to get latent representations $\bz = \bff(\bx)$.
-		\item $\bmu_{\text{data}}$, $\bSigma_{\text{data}}$ and $\bmu_{\boldsymbol{\theta}}$, $\bSigma_{\boldsymbol{\theta}}$ are statistics of latent representations for samples from $\pd(\bx)$ and $\pt(\bx)$.
+		\item $\bmu_{\text{data}}$, $\bSigma_{\text{data}}$ and $\bmu_{\btheta}$, $\bSigma_{\btheta}$ are statistics of latent representations for samples from $\pd(\bx)$ and $\pt(\bx)$.
 	\end{itemize}
 	\eqpause
-	\begin{block}{$FID(p(\bx), \cN(0, \bI))$}
+	\begin{block}{$\FID(p(\bx), \cN(0, \bI))$}
 		\begin{figure}
 			\includegraphics[width=0.95\linewidth]{figs/fid_normal}
 		\end{figure}
@@ -667,7 +667,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2401.09603}{Jayasumana S. et al. Rethinking FID: Towards a Better Evaluation Metric for Image Generation, 2024}
 	\vspace{-0.4cm}
 	\[
-		\FID (\pd, \pt) = \| \bmu_{\text{data}} - \bmu_{\boldsymbol{\theta}}\|^2 + \tr \left[ \bSigma_{\text{data}} + \bSigma_{\boldsymbol{\theta}} - 2 \left(\bSigma_{\text{data}}^{1/2} \bSigma_{\boldsymbol{\theta}} \bSigma_{\text{data}}^{1/2} \right)^{1/2} \right]
+		\FID (\pd, \pt) = \| \bmu_{\text{data}} - \bmu_{\btheta}\|^2 + \tr \left[ \bSigma_{\text{data}} + \bSigma_{\btheta} - 2 \left(\bSigma_{\text{data}}^{1/2} \bSigma_{\btheta} \bSigma_{\text{data}}^{1/2} \right)^{1/2} \right]
 	\]
 	\eqpause
 	\vspace{-0.3cm}

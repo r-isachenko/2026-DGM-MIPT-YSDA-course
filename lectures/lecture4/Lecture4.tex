@@ -119,8 +119,8 @@
 	\begin{block}{Gradient w.r.t. $\bphi$ — Reparametrization Trick}
 		\vspace{-0.8cm}
 		\begin{multline*}
-			\nabla_{\bphi}\cL_{\bphi, \btheta}(\bx) = \int p(\bepsilon) \nabla_{\bphi} \log \pt(\bx | \bg_{\bphi}(\bx, \bepsilon)) d\bepsilon  - \nabla_{\bphi} \KL
-			\\ \approx \nabla_{\bphi} \log \pt(\bx | \bg_{\bphi}(\bx, \bepsilon^*))  - \nabla_{\bphi} \text{KL}
+			\nabla_{\bphi}\cL_{\bphi, \btheta}(\bx) = \int p(\bepsilon) \nabla_{\bphi} \log \pt(\bx | \bg_{\bphi}(\bx, \bepsilon)) d\bepsilon  - \nabla_{\bphi} \KL(q_{\bphi}(\bz| \bx) \| p(\bz))
+			\\ \approx \nabla_{\bphi} \log \pt(\bx | \bg_{\bphi}(\bx, \bepsilon^*))  - \nabla_{\bphi} \KL(q_{\bphi}(\bz| \bx) \| p(\bz))
 		\end{multline*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -586,7 +586,7 @@
 			\item Compute total loss with codebook and commitment terms:
 			\vspace{-0.3cm}
 			\[
-				\cL = - \cL_{\bphi, \btheta}(\bx) + \big\|\text{sg}[\bz_e] - \be_{k^*}\big\|_2^2 + \beta \big\|\bz_e - \texttt{stop\_grad}[\be_{k^*}]\big\|_2^2.
+				\cL = - \cL_{\bphi, \btheta}(\bx) + \big\|\sg[\bz_e] - \be_{k^*}\big\|_2^2 + \beta \big\|\bz_e - \sg[\be_{k^*}]\big\|_2^2.
 			\]
 			\vspace{-0.5cm}
 			\item Update $\bphi$, $\btheta$ (straight-through estimator for the encoder).
