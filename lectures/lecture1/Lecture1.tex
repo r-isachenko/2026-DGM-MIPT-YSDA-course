@@ -628,15 +628,15 @@
     \begin{itemize}
     	\item Our target is to approximate the data distribution both for density estimation and for generation.
     	\vfill
+    	\item Modern generative models span several families --- autoregressive models, normalizing flows, VAEs, GANs, diffusion models --- organized in the course taxonomy.
+    	\vfill
     	\item The divergence minimization framework offers a principled way to learn distributions that match the data.
     	\vfill
     	\item Minimizing the forward KL divergence is equivalent to maximum likelihood estimation.
     	\vfill
-    	\item Autoregressive models decompose the joint distribution as a product of conditionals.
+    	\item Autoregressive models decompose the joint distribution as a product of conditionals $\pt(x_j | \bx_{1:j - 1})$; evaluating the density multiplies them all.
     	\vfill
         \item Autoregressive sampling is simple, but inherently sequential.
-        \vfill
-        \item Joint density evaluation multiplies all conditional probabilities $\pt(x_j | \bx_{1:j - 1})$.
         \vfill
      	\item ImageGPT applies a transformer architecture to sequences of raster-ordered image pixels.
     \end{itemize}

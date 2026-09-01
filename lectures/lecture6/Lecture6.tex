@@ -699,13 +699,13 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Langevin dynamics enable sampling from generative models using gradients of the log-likelihood.
+		\item Langevin dynamics enables sampling from unnormalized densities (e.g. EBMs) using the gradient of the log-density $\nabla_{\bx} \log \pt(\bx)$.
 		\vfill
 		\item Score matching proposes minimizing Fisher divergence to estimate the score function.
 		\vfill
 		\item Denoising score matching minimizes the Fisher divergence on corrupted samples, making the divergence estimable via sampling.
-		\vfill 
-		\item The Noise-Conditioned Score Network leverages a range of noise levels and annealed Langevin dynamics to learn the score function and enable sampling	
+		\vfill
+		\item The Noise-Conditioned Score Network leverages a range of noise levels and annealed Langevin dynamics to learn the score function and enable sampling.
 	\end{itemize}
 \end{frame}
 %=======
