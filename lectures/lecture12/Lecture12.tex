@@ -37,8 +37,8 @@
 		\[
 			\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
 		\]
-		If $\supp(p_t(\bx)) = \bbR^m$, then the optimal value of the FM objective equals the optimum for CFM.
-		\vspace{-0.3cm}	
+		If $\supp(p_t(\bx)) = \bbR^m$, then the optimal value of the FM objective equals the optimal value of the CFM objective.
+		\vspace{-0.3cm}
 	\end{block}
 	\begin{block}{Training}
 		\begin{enumerate}
@@ -84,7 +84,7 @@
 		\vspace{-0.7cm}
 	\end{block}
 	\begin{block}{Theorem}
-		If $\supp(p_t(\bx)) = \bbR^m$, then the optimal value of the FM objective equals the optimum for CFM.
+		If $\supp(p_t(\bx)) = \bbR^m$, then the optimal value of the FM objective equals the optimal value of the CFM objective.
 	\end{block}
 \end{frame}
 %=======
@@ -92,24 +92,24 @@
     \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/cfm_uncond_to_cond}
+		\includegraphics[width=0.55\linewidth]{figs/cfm_uncond_to_cond}
 	\end{figure}
-	\vspace{-0.3cm}
-	\begin{block}{Constraints}
-		\vspace{-0.3cm}
-		\[
-			\bbE_{p(\bz)} p_0(\bx | \bz) = \cN(0, \bI); \quad \bbE_{p(\bz)} p_1(\bx | \bz)= \pd(\bx).
-		\]
-		\vspace{-0.5cm}
+	\vspace{-0.5cm}
+	\begin{block}{Open Questions}
+		\begin{itemize}
+			\item[Q1] How should we choose the convenient conditioning latent variable $\bz$?
+			\item[Q2] How can we parametrize $p_t(\bx)$ (or $p_t(\bx | \bz)$) to enforce the following constraints?
+			\vspace{-0.3cm}
+			\[
+				\bbE_{p(\bz)} p_0(\bx | \bz) = \cN(0, \bI); \quad \bbE_{p(\bz)} p_1(\bx | \bz)= \pd(\bx).
+			\]
+			\vspace{-0.5cm}
+		\end{itemize}
 	\end{block}
-	\begin{itemize}
-		\item[Q1] How should we choose the convenient conditioning latent variable $\bz$?
-		\item[Q2] How can we parametrize $p_t(\bx | \bz)$ to enforce the constraints?
-	\end{itemize}
-	\begin{block}{Gaussian Probability Path and Flow}
+	\begin{block}{Gaussian Conditional Probability Path}
 		\vspace{-0.5cm}
 		\[
-			p_t(\bx | \bz) = \cN\left(\bmu_t(\bz), \bsigma_t^2(\bz)\right) \quad
+			p_t(\bx | \bz) = \cN\left(\bmu_t(\bz), \bsigma_t^2(\bz)\right); \quad
 			\bx_t = \bpsi_t(\bx_0, \bz) = \bmu_t(\bz) + \bsigma_t(\bz) \odot \bepsilon
 		\]
 	\end{block}
@@ -123,19 +123,19 @@
 			p_t(\bx | \bz) = \cN\left(\bmu_t(\bz), \bsigma_t^2(\bz)\right); \quad \bx_t = \bpsi_t(\bx_0, \bz) = \bmu_t(\bz) + \bsigma_t(\bz) \odot \bepsilon
 		\]
 		\vspace{-0.5cm}
-		\[
-			\bv(\bx_t, \bz, t) = \bpsi_t'\left(\bpsi_t(\bx_t, \bz)^{-1}, \bz\right) =  \bmu_t'(\bz) + \frac{\bsigma_t'(\bz)}{\bsigma_t(\bz)} \odot (\bx_t - \bmu_t(\bz))
-		\]
-		\vspace{-0.3cm}
 	\end{block}
-	\begin{block}{Conditioning Latent Variable}
-		Let’s choose $\bz = \bx_1$. Then $p(\bz) = p_1(\bx_1)$.
+	\vspace{-0.3cm}
+	\[
+		\boxed{\bv(\bx_t, \bz, t) = \bpsi_t'\left(\bpsi_t(\bx_t, \bz)^{-1}, \bz\right) = \bmu_t'(\bz) + \frac{\bsigma_t'(\bz)}{\bsigma_t(\bz)} \odot (\bx_t - \bmu_t(\bz))}
+	\]
+	\begin{block}{Conditioning Latent Variable [Q1]}
+		Let us choose $\bz = \bx_1$. Then $p(\bz) = p_1(\bx_1)$.
 		\[
 			p_t(\bx) = \int p_t(\bx | \bx_1) p_1(\bx_1) d \bx_1
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	We must ensure the boundary constraints:
+	We need to ensure the boundary constraints:
 	\[
 		\begin{cases}
 			\bbE_{p(\bz)} p_0(\bx | \bz) = \cN(0, \bI) \\
@@ -144,7 +144,7 @@
 		\quad \Rightarrow \quad 
 		\begin{cases}
 			p_0(\bx | \bx_1) = \cN(0, \bI); \\
-			p_1(\bx | \bx_1) = \delta(\bx - \bx_1).
+			p_1(\bx | \bx_1) = \delta(\bx - \bx_1)
 		\end{cases}
 	\]
 	\vspace{-0.3cm}
@@ -153,26 +153,26 @@
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
 	\[
-		p_0(\bx | \bx_1) = \cN(0, \bI); \quad p_1(\bx | \bx_1) = \delta(\bx - \bx_1).
+		p_0(\bx | \bx_1) = \cN(0, \bI); \quad p_1(\bx | \bx_1) = \delta(\bx - \bx_1)
 	\]
 	
 	\begin{block}{Gaussian Conditional Probability Path}
 		\vspace{-0.5cm}
 		\[
-			p_t(\bx | \bx_1) = \cN\left(\bmu_t(\bx_1), \bsigma_t^2(\bx_1)\right); \quad \bx_t = \bmu_t(\bx_1) +  \bsigma_t(\bx_1) \odot \bx_0.
+			p_t(\bx | \bx_1) = \cN\left(\bmu_t(\bx_1), \bsigma_t^2(\bx_1)\right); \quad \bx_t = \bmu_t(\bx_1) +  \bsigma_t(\bx_1) \odot {\color{olive}\bepsilon}
 		\]
 		\vspace{-0.6cm}
 	\end{block}
-	Let’s consider straight conditional paths:	
+	Let's consider straight conditional paths:
 	\[
 		\begin{cases}
-			\bmu_t(\bx_1) = t \bx_1; \\
-			\bsigma_t(\bx_1) = 1 - t.
+			\bmu_t(\bx_1) = t \bx_1 \\
+			\bsigma_t(\bx_1) = 1 - t
 		\end{cases}
-		\quad \Rightarrow \quad 
+		\quad \Rightarrow \quad
 		\begin{cases}
-			p_t(\bx | \bx_1) = \cN\left(t \bx_1, (1-t)^2 \bI\right); \\
-		 	\bx_t = t \bx_1 + (1 - t) \bx_0. 
+			p_t(\bx | \bx_1) = \cN\left(t \bx_1, (1-t)^2 \cdot \bI\right) \\
+		 	\bx_t = t \bx_1 + (1 - t) {\color{olive}\bx_0}
 	 \end{cases}
 	\]
 	\vspace{-0.3cm}
@@ -192,10 +192,12 @@
 		\bv(\bx_t, \bx_1, t) = \frac{\bx_1 - \bx_t}{1-t} = \bx_1 - \bx_0
 	\]
 	\vspace{-0.7cm}
+	{\small
 	\begin{multline*}
-		\bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2
-		 = \\ = \bbE_{\bx_1 \sim \pd(\bx)} \bbE_{\bx_0 \sim \cN(0, \bI)}\left\| (\bx_1 - \bx_0) - \bv_{\btheta}\left(t \bx_1 + (1 - t) \bx_0, t\right) \right\|^2
+		\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bv(\bx, \bz, t) - \bv_{\btheta}(\bx, t) \right\|^2
+		 = \\ = \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pd(\bx)} \bbE_{\bx_0 \sim \cN(0, \bI)}\left\| (\bx_1 - \bx_0) - \bv_{\btheta}\left(t \bx_1 + (1 - t) \bx_0, t\right) \right\|^2
 	\end{multline*}
+	}
 	\vspace{-0.7cm}
 	\begin{itemize}
 		\item $\bv(\bx_t, \bx_1, t)$ defines straight lines between $\pd(\bx)$ and $\cN(0, \bI)$.
@@ -236,7 +238,7 @@
 			\item Solve the ODE to obtain $\bx_1$:
 			\vspace{-0.3cm}
 			\[
-				\bx_1 = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
+				\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
 			\]
 		\end{enumerate}
 	\end{block}

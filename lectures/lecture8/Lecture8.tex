@@ -13,7 +13,7 @@
     \begin{block}{Forward Gaussian Diffusion Process}
         Let $\bx_0 = \bx \sim \pd(\bx)$, $\beta_t \ll 1$, $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}_t = \prod_{s=1}^t \alpha_s$. 
         \begin{align*}
-            \bx_t &= \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon, \quad \text{where }\bepsilon \sim \cN(0, \bI); \\
+            \bx_t &= \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon_t, \quad \text{where }\bepsilon_t \sim \cN(0, \bI); \\
             \bx_t &= \sqrt{\bar{\alpha}_t} \cdot \bx_{0} + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon, \quad \text{where } \bepsilon \sim \cN(0, \bI).
         \end{align*}
         \vspace{-0.6cm}
@@ -30,19 +30,19 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An Introduction to Diffusion Probabilistic Models, blog post, 2021}
-    \textbf{Diffusion} describes the process where particles migrate from regions of high density to regions of low density.
+    \textbf{Diffusion} describes the migration of particles from regions of high density to those of low density.
     \vspace{-0.2cm}
     \begin{figure}
         \includegraphics[width=0.5\linewidth]{figs/diffusion_over_time}
     \end{figure}
     \vspace{-0.6cm}
     \begin{enumerate}
-        \item $\bx_0 = \bx \sim \pd(\bx)$;
-        \item $\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon$, with $\bepsilon \sim \cN(0, \bI)$, $t \geq 1$;
-        \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$, for $T \gg 1$.
+        \item $\bx_0 = \bx \sim \pd(\bx)$
+        \item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$, $\bepsilon \sim \cN(0, \bI)$, $t \geq 1$
+        \item After $T \gg 1$ steps: $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
     \end{enumerate}
-    If we can invert this process, we would have a way to sample $\bx \sim \pd(\bx)$ using noise samples, i.e. $p_{\infty}(\bx) = \cN(0, \bI)$. \\ 
-    Hence, our objective becomes to reverse this process.
+    If this process can be reversed, we can sample from $\pd(\bx)$ by starting from noise $p_\infty(\bx) = \cN(0, \bI)$. \\
+    Our goal now becomes inverting this diffusion.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -58,23 +58,23 @@
         \[
             q(\bx_{t-1}|\bx_{t}) = \frac{q(\bx_{t}|\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} \approx \pt(\bx_{t - 1} | \bx_t) = \cN \left(\bmu_{\btheta, t}(\bx_t), \bsigma_{\btheta, t}^2(\bx_t)\right)
         \]}
-        {\color{gray}The Feller theorem guarantees this approximation is valid.}
+        {\color{gray}Feller's theorem justifies this Gaussian assumption.}
     \end{block}
     \begin{minipage}{0.5\linewidth}
         \begin{block}{Forward Process}
             \begin{enumerate}
-                \item $\bx_0 = \bx \sim \pd(\bx)$;
-                \item $\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon$;
-                \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$.
+                \item $\bx_0 = \bx \sim \pd(\bx)$
+                \item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$
+                \item $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
             \end{enumerate}
         \end{block}
     \end{minipage}%
     \begin{minipage}{0.55\linewidth}
         \begin{block}{Reverse Process}
             \begin{enumerate}
-                \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$;
-                \item $\bx_{t - 1} = \bsigma_{\btheta, t}(\bx_t) \cdot \bepsilon + \bmu_{\btheta, t}(\bx_t)$;
-                \item $\bx_0 = \bx \sim \pd(\bx)$.
+                \item $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
+                \item $\bx_{t-1} = \bsigma_{\btheta, t}(\bx_t) \bepsilon + \bmu_{\btheta, t}(\bx_t)$
+                \item $\bx_0 = \bx \sim \pd(\bx)$
             \end{enumerate}
         \end{block}
     \end{minipage}
@@ -83,16 +83,16 @@
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 
-	\textbf{Forward Process}: Converts an arbitrary distribution $\pd(\bx)$ into the standard normal $\cN(0, \bI)$ by incrementally adding noise.
+	\textbf{Forward process} maps any distribution $\pd(\bx)$ to $\cN(0, \bI)$ by injection of noise:
 	\begin{align*}
 		q(\bx_t | \bx_{t-1}) &= \cN(\sqrt{1 - \beta_t}\, \bx_{t-1}, \beta_t\, \bI); \\
 		q(\bx_t | \bx_0) &= \cN(\sqrt{\bar{\alpha}_t}\, \bx_0, (1 - \bar{\alpha}_t)\, \bI).
 	\end{align*}
-	\textbf{Reverse Process}: This intractable distribution can be well-approximated by a Gaussian (with unknown parameters) when $\beta_t$ is sufficiently small.
+	\textbf{Reverse process} refers to an intractable distribution that can be approximated by a normal distribution (with unknown parameters) for small $\beta_t$:
 	\[
 		q(\bx_{t-1}|\bx_{t}) = \frac{q(\bx_{t}|\bx_{t-1}) q(\bx_{t-1})}{q(\bx_{t})} \approx \cN \left(\bmu_{\btheta, t}(\bx_t), \bsigma_{\btheta, t}^2(\bx_t)\right)
 	\]
-	\textbf{Conditioned Reverse Process}: This Gaussian, with known parameters, describes how to denoise a noisy image~$\bx_t$ when the final clean image~$\bx_0$ is known.
+	\textbf{Conditioned reverse process} is a normal distribution with known parameters, describing how to denoise a noisy image $\bx_t$ when we know the clean image $\bx_0$.
 	\vspace{-0.3cm}
 	\[
 		q(\bx_{t-1}|\bx_{t}, {\color{olive}\bx_0}) = \cN(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t\, \bI)
@@ -100,7 +100,8 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An Introduction to Diffusion Probabilistic Models, blog post, 2021}
+	\myfootnote{\href{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An Introduction to Diffusion Probabilistic Models, blog post, 2021} \\
+	\href{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}}
 	\begin{itemize}
 		\item $\bz = (\bx_1, \dots, \bx_T)$ represents the latent variables.
 		\item Variational posterior distribution:
@@ -117,15 +118,15 @@
 		\]
 	\end{itemize}
 	\vspace{-0.2cm}
-	\begin{block}{ELBO}
+	\begin{block}{Standard ELBO}
 		\vspace{-0.2cm}
 		\[
-			\log \pt(\bx) \geq \bbE_{q({\color{teal}\bz} | \bx)} \log \frac{\pt(\bx, {\color{teal}\bz})}{q({\color{teal}\bz} | \bx)} = \cL_{\bphi, \btheta}(\bx) \rightarrow \max_{q, \btheta}
+			\log \pt(\bx) \geq \bbE_{q({\color{teal}\bz} | \bx)} \log \frac{\pt(\bx, {\color{teal}\bz})}{q({\color{teal}\bz} | \bx)} = \cL_{\bphi, \btheta}(\bx) \rightarrow \max_{\bphi, \btheta}
 		\]
 		\vspace{-0.5cm}
 		\begin{multline*}
 			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
+			- {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}}
 		\end{multline*}
 	\end{block}
 \end{frame}
@@ -649,7 +650,7 @@
 		\vspace{-0.3cm}
 	\end{block}
 	\eqpause
-	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$, increasing contrast
+	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$, increasing the contrast
 	\[
 		\hat{p}(\by | \bx_t) \propto p(\by | \bx_t)^{\gamma}.
 	\]

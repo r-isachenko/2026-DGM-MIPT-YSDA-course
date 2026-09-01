@@ -12,11 +12,11 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-	\begin{block}{Continuous-Time Dynamics (Neural ODE)}
+	\begin{block}{Continuous-Time Dynamics}
 		\vspace{-0.5cm}
 		\begin{align*}
-			\frac{d \bx(t)}{dt} &= \bv_{\btheta}(\bx(t), t);\quad \text{where } \bx(t_0) = \bx_0. \\
-			\bpsi_{t_1}(\bx_0) &= \int^{t_1}_{t_0} \bv_{\btheta}(\bx(t), t) d t  + \bx_0 \approx {\color{teal}\ODESolve_v(\bx_0, \btheta, t_0, t_1)}.
+			\frac{d \bx(t)}{dt} &= \bv_{\btheta}(\bx(t), t); \quad \text{with initial condition }\bx(t_0) = \bx_0. \\
+			\bpsi_t(\bx_0) &= \int^{t}_{t_0} \bv_{\btheta}(\bx(s), s) d s  + \bx_0 \approx {\color{teal}\ODESolve_v(\bx_0, \btheta, t_0, t)}.
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -24,7 +24,7 @@
 		\item $\bv_{\btheta}: \bbR^m \times [t_0, t_1] \rightarrow \bbR^m$ is a vector field.
 		\item $\bpsi: \bbR^m \times [t_0, t_1] \rightarrow \bbR^m$ is a flow (the solution of ODE):
 	\end{itemize}
-	\begin{block}{Euler Update Step (ODESolve)}
+	\begin{block}{Euler \ODESolve}
 		\vspace{-0.3cm}
 		\[
   			\bx(t + h) = \bx(t) + h \cdot \bv_{\btheta}(\bx(t), t)
@@ -54,16 +54,18 @@
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 	\begin{block}{Theorem (Picard)}
-		If $\bv$ is continuously differentiable in $\bx$ (with bounded derivative) and continuous in $t$, then the ODE has a \textbf{unique} solution.
+		If $\bv$ is continuously differentiable with a bounded derivative in $\bx$ and continuous in $t$, then the ODE has a \textbf{unique solution} given by a flow $\bpsi_t$.
 	\end{block}
-	This means the ODE can be \textbf{uniquely inverted}:
+	This guarantees the ODE is \textbf{uniquely reversible}.
+	\vspace{-0.3cm}
 	\begin{align*}
+		\bpsi_1(\bx_0) &= \bx_0 + \int_{0}^{1} \bv_{\btheta}(\bpsi_t(\bx_0), t) dt \\
 		\bx(1) &= \bx(0) + \int_{0}^{1} \bv_{\btheta}(\bx(t), t) dt \\
 		\bx(0) &= \bx(1) + \int_{1}^{0} \bv_{\btheta}(\bx(t), t) dt
 	\end{align*}
-	\textbf{Note:} Unlike discrete-time NF, $\bv$ need not be invertible (uniqueness ensures bijectivity).
-	
-	How can we compute $p_t(\bx)$ for any $t$?
+	\textbf{Note:} Unlike discrete-time flows, $\bv$ need not be invertible (uniqueness ensures bijection).
+
+	How can we compute $p_t(\bx)$ at arbitrary $t$?
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -79,7 +81,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Solution of the Continuity Equation}
+	\begin{block}{Solution}
 		\vspace{-0.3cm}
 		\[
 			\log p_1(\bx(1)) = \log p_0(\bx(0)) - {\color{teal}\int_{0}^{1} \tr  \left( \frac{\partial \bv(\bx(t), t)}{\partial \bx(t)} \right) dt}.
@@ -106,7 +108,7 @@
 		\]
 	\end{block}
 	\vspace{-0.3cm}
-	\begin{block}{Discretization of SDE (Euler Method) - \SDESolve}
+	\begin{block}{Discretizing the SDE (Euler-Maruyama Update) – \SDESolve}
 		\vspace{-0.3cm}
 		\[
 			\bx(t + dt) = \bx(t) + \bff(\bx(t), t) \cdot dt + g(t) \cdot \bepsilon \cdot \sqrt{dt}
@@ -132,16 +134,16 @@
  	\begin{block}{Langevin SDE (Special Case)}
  		\vspace{-0.3cm}
  		\[
- 			d \bx = {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log \pt(\bx)} d t + {\color{teal} 1 } \cdot d \bw
+ 			d \bx = {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx) d t} + {\color{olive}1} \cdot d \bw
  		\]
  		\vspace{-0.3cm}
  	\end{block}
- 	The density $\pt(\bx)$ is a \textbf{stationary} distribution for the SDE.
-	\begin{block}{Langevin Dynamics}
+ 	The density $p_t(\bx)$ is a \textbf{stationary} distribution for the SDE.
+	\begin{block}{Langevin Dynamic}
 		Samples from the following dynamics will come from $\pt(\bx)$ under mild regularity conditions for a small enough $\eta$:
 		\vspace{-0.2cm}
 		\[
-			\bx_{t + 1} = \bx_t + \frac{\eta}{2} \nabla_{\bx_t} \log \pt(\bx_t) + \sqrt{\eta} \cdot \bepsilon, \quad \bepsilon \sim \cN(0, \bI).
+			\bx_{t + 1} = \bx_t + \frac{\eta}{2} \cdot \nabla_{\bx} \log \pt(\bx) + \sqrt{\eta} \cdot \bepsilon, \quad \eta \approx dt.
 		\]
 	\end{block}
 \end{frame}

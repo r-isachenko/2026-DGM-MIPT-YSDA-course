@@ -13,7 +13,7 @@
 	\begin{block}{MLE for LVM}
 		\vspace{-0.3cm}
 		\[
-			\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i) = \argmax_{\btheta}  \sum_{i=1}^n \log \int \pt(\bx_i| \bz_i) p(\bz_i) d\bz_i.
+			\sum_{i=1}^n \log \pt(\bx_i) = \sum_{i=1}^n \log \int \pt(\bx_i| \bz_i) p(\bz_i) d\bz_i \rightarrow \max_{\btheta}.
 		\]
 		\vspace{-0.3cm}
 	\end{block}
@@ -25,7 +25,7 @@
 		\vspace{-0.5cm} \\
 		where $\bz_k \sim p(\bz)$. 
 	\end{block}
-	\begin{block}{Variational Lower Bound (ELBO)}
+	\begin{block}{Variational Evidence Lower Bound (ELBO)}
 		\vspace{-0.3cm}
 		\[
 			\cL_{q, \btheta}(\bx) = \bbE_{q} \log \frac{\pt(\bx, \bz)}{q(\bz)}
@@ -41,16 +41,17 @@
 	\begin{block}{Variational Evidence Lower Bound (ELBO)}
 		\vspace{-0.3cm}
 		\[
-			\log \pt(\bx) = \cL_{q, \btheta}(\bx) + \KL(q(\bz) \| \pt(\bz|\bx)) \geq \cL_{q, \btheta}(\bx).
+			\cL_{q, \btheta}(\bx) = \bbE_{q} \log \frac{\pt(\bx, \bz)}{q(\bz)}  \leq \log \pt(\bx)
 		\]
+		\vspace{-0.5cm}
 	\end{block}
 
-	\vspace{-0.5cm}
+	\vspace{-0.7cm}
 	\[
 	 	{\color{olive}\cL_{q, \btheta}(\bx)} = \int q(\bz) \log \frac{\pt(\bx, \bz)}{q(\bz)}d\bz = \bbE_{q} \log \pt(\bx | \bz) - \KL (q(\bz) \| p(\bz))
 	\]
-	\vspace{-0.3cm}
-	\begin{block}{Log-likelihood Decomposition}
+	\vspace{-0.4cm}
+	\begin{block}{Log-Likelihood Decomposition}
 		\vspace{-0.5cm}
 		\[
 	 		\log \pt(\bx) = {\color{olive}\bbE_{q} \log \pt(\bx | \bz) - \KL (q(\bz) \| p(\bz))} + \KL(q(\bz) \| \pt(\bz|\bx)).
@@ -71,7 +72,7 @@
 \begin{frame}{Recap of Previous Lecture}
 	\vspace{-0.5cm}
 	\begin{multline*}
-		\cL_{q, \btheta}(\bx)  =  \bbE_{q} \log \pt(\bx | \bz) - \KL (q(\bz) \| p(\bz)) = \\ = \bbE_q \left[ \log \pt(\bx | \bz) - \log \frac{q(\bz)}{p(\bz)} \right]d\bz \rightarrow \max_{q, \btheta}.
+		\cL_{q, \btheta}(\bx)  =  \bbE_{q} \log \pt(\bx | \bz) - \KL (q(\bz) \| p(\bz)) = \\ = \bbE_q \left[ \log \pt(\bx | \bz) - \log \frac{q(\bz)}{p(\bz)} \right] \rightarrow \max_{q, \btheta}.
 	\end{multline*}
 	\vspace{-0.5cm}
 	\begin{block}{Variational Posterior}
@@ -104,10 +105,10 @@
 \begin{frame}{Recap of Previous Lecture}
 	\vspace{-0.3cm}
 	\[
-		\cL_{\bphi, \btheta}(\bx)  = \bbE_{q_{\bphi}(\bz| \bx)} \log \pt(\bx| \bz) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)) \rightarrow \max_{\bphi, \btheta}.
+		\cL_{\bphi, \btheta}(\bx)  = \bbE_{q} \log \pt(\bx | \bz) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)) \rightarrow \max_{\bphi, \btheta}.
 	\]
 	\vspace{-0.3cm}
-	\begin{block}{Gradient w.r.t. $\btheta$ — Monte Carlo Estimation}
+	\begin{block}{Gradient $\nabla_{\btheta} \cL_{\bphi, \btheta}(\bx)$}
 		\vspace{-0.8cm}
 		\begin{multline*}
 			\nabla_{\btheta}\cL_{\bphi, \btheta}(\bx)
@@ -116,7 +117,7 @@
 		\end{multline*}
 		\vspace{-0.7cm}
 	\end{block}
-	\begin{block}{Gradient w.r.t. $\bphi$ — Reparametrization Trick}
+	\begin{block}{Gradient $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$}
 		\vspace{-0.8cm}
 		\begin{multline*}
 			\nabla_{\bphi}\cL_{\bphi, \btheta}(\bx) = \int p(\bepsilon) \nabla_{\bphi} \log \pt(\bx | \bg_{\bphi}(\bx, \bepsilon)) d\bepsilon  - \nabla_{\bphi} \KL(q_{\bphi}(\bz| \bx) \| p(\bz))

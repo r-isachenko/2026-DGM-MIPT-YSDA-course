@@ -20,57 +20,59 @@
 		\end{itemize}
 	\end{block}
 
-	\begin{block}{Divergence Minimization Task}
+	\begin{block}{What is a Divergence?}
 		\begin{itemize}
-			\item $D(\pi \| p) \geq 0$ for all $\pi, p \in \cP$;
-			\item $D(\pi \| p) = 0$ if and only if $\pi \equiv p$.
+			\item $D(\pi \| p) \geq 0$ for all $\pi, p \in \cP$
+			\item $D(\pi \| p) = 0$ if and only if $\pi \equiv p$
 		\end{itemize}
+	\end{block}
+	\vspace{-0.1cm}
+	\begin{block}{Divergence Minimization Problem}
+		\vspace{-0.3cm}
 		\[
 		\min_{\btheta} D(\pd \| \pt)
 		\]
+		\vspace{-0.5cm}
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\begin{block}{Forward KL Divergence}
+	\begin{block}{Forward KL}
 		\vspace{-0.2cm}
 		\[
-		\KL(\pd \| \pt) = \int \pd (\bx) \log \frac{\pd(\bx)}{\pt(\bx)}\, d \bx \rightarrow \min_{\btheta}
+		\KL(\pd \| \pt) = \int \pd(\bx) \log \frac{\pd(\bx)}{\pt(\bx)} d \bx \rightarrow \min_{\btheta}
 		\]
 	\end{block}
-	\begin{block}{Reverse KL Divergence}
+	\begin{block}{Reverse KL}
 		\vspace{-0.2cm}
 		\[
-		\KL(\pt \| \pd) = \int \pt(\bx) \log \frac{\pt(\bx)}{\pd(\bx)}\, d \bx \rightarrow \min_{\btheta}
+		\KL(\pt \| \pd) = \int \pt(\bx) \log \frac{\pt(\bx)}{\pd(\bx)} d \bx \rightarrow \min_{\btheta}
 		\]
 	\end{block}
-	
+
 	\begin{block}{Maximum Likelihood Estimation (MLE)}
+	Let $\{\bx_i\}_{i=1}^n$ be i.i.d.\ observed samples.
 		\vspace{-0.3cm}
 		\[
-		\btheta^* = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i)
+		\btheta^* = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i).
 		\]
 		\vspace{-0.1cm}
 	\end{block}
-	Maximum likelihood estimation is equivalent to minimizing the Monte Carlo estimate of the forward KL divergence.
+	Maximum likelihood estimation is equivalent to minimizing a Monte Carlo estimate of the forward KL divergence.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\begin{block}{Likelihood as Product of Conditionals}
-		Let $\bx = (x_1, \dots, x_m)$, and define $\bx_{1:j} = (x_1, \dots, x_j)$. Then,
+	\begin{block}{Likelihood as a Product of Conditionals}
+	For $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$,
 		\[
-		\pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j-1}), \quad 
-		\log \pt(\bx) = \sum_{j=1}^m \log \pt(x_j | \bx_{1:j-1})
+		\pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j - 1});\quad
+		\log \pt(\bx) = {\color{violet}\sum_{j=1}^m \log \pt(x_j | \bx_{1:j - 1})}
 		\]
 	\end{block}
 	\vspace{-0.3cm}
-	\begin{block}{MLE for Autoregressive Models}
-		\vspace{-0.3cm}
-		\[
-		\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \sum_{j=1}^m \log \pt(x_{ij} | \bx_{i, 1:j-1})
-		\]
-		\vspace{-0.5cm}
-	\end{block}
+	\[
+	\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \Big[{\color{violet} \sum_{j=1}^m \log \pt(x_{ij} | \bx_{i, 1:j - 1})}\Big]
+	\]
 	\begin{block}{Sampling (Ancestral)}
 		\begin{enumerate}
 			\item Sample $\hat{x}_1 \sim \pt(x_1)$, $\hat{x}_2 \sim \pt(x_2 | \hat{x}_1)$, \ldots, $\hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})$.
@@ -80,9 +82,9 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnote{\href{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}\\ \href{https://cdn.openai.com/papers/Generative_Pretraining_from_Pixels_V2.pdf}{Chen M. et al. Generative Pretraining from Pixels, 2020}}
+	\myfootnote{\href{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}\\ \href{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel Recurrent Neural Networks, 2016}\\ \href{https://cdn.openai.com/papers/Generative_Pretraining_from_Pixels_V2.pdf}{Chen M. et al. Generative Pretraining from Pixels, 2020}}
 	\vspace{-0.2cm}
-	\begin{block}{Autoregressive MLP}
+	\begin{block}{Autoregressive Models: MLP}
 		\vspace{-0.3cm}
  		\begin{figure}
 		     \centering
@@ -91,7 +93,7 @@
 	\end{block}
 	\vspace{-0.4cm}
 
-	\begin{block}{Autoregressive Transformer}
+	\begin{block}{Autoregressive Models: ImageGPT}
 		\begin{minipage}[t]{0.5\columnwidth}
 			\begin{figure}
 				\centering

@@ -11,25 +11,28 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-    \myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+    \myfootnote{\href{https://arxiv.org/abs/2510.21890}{Lai C. H. et al. The principles of diffusion models, 2025.} \\
+    \href{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}}
 	\vspace{-0.3cm}
-	\begin{block}{Langevin Dynamics}
+	\begin{block}{Theorem (Informal)}
 		Let $\bx_0$ be a random vector. Under mild regularity conditions, samples from the following dynamics will eventually follow $\pt(\bx)$ (for sufficiently small $\eta$ and large $l$):
+		\vspace{-0.3cm}
 		\[
 			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \nabla_{\bx_l} \log \pt(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI).
 		\]
 		\vspace{-0.5cm}
-		\begin{itemize}
-			\item The density $\pt(\bx)$ is the \textbf{stationary} distribution of the Markov chain.
-			\item The gradient is taken with respect to $\bx$, not $\btheta$.
-			\item $\nabla_{\bx} \log \pt(\bx)$ defines a vector field.
-		\end{itemize}
 	\end{block}
+	\vspace{-0.2cm}
+	\begin{itemize}
+		\item The density $\pt(\bx)$ is the \textbf{stationary} distribution of the Markov chain.
+		\item The gradient is taken with respect to $\bx$, not $\btheta$.
+		\item $\nabla_{\bx} \log \pt(\bx)$ defines a vector field.
+	\end{itemize}
 	\vspace{-0.3cm}
 	\begin{block}{Fisher Divergence}
 		\vspace{-0.7cm}
 		\[
-			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pi}\left\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
+			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pd}\left\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -39,14 +42,14 @@
     \myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
 	\\
 	Define \textbf{score function} $\bs_{\btheta}(\bx) = \nabla_{\bx}\log \pt(\bx)$.
-	\begin{block}{Training (Score matching)}
+	\begin{block}{Fisher Divergence}
 		\vspace{-0.3cm}
 		\[
-			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pi}\left\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
+			D_F(\pd, \pt) = \frac{1}{2}\bbE_{\pd}\left\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Sampling (Langevin Dynamics)}
+	\begin{block}{Langevin Dynamics}
 		\vspace{-0.3cm}
 		\[
 			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \bs_{\btheta}(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI)
@@ -67,15 +70,17 @@
     \[
         q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx.
     \]
-    \vspace{-0.6cm} \\
-    Then the solution of 
-    \vspace{-0.2cm}
-    \[
-        \frac{1}{2} \bbE_{q(\bx_{\sigma})}\bigl\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \bigr\|^2_2 \rightarrow \min_{\btheta}
-    \]
-    \vspace{-0.5cm} \\
-    satisfies $\bs_{\btheta, \sigma}(\bx_{\sigma}) \approx \bs_{\btheta, 0}(\bx_0) = \bs_{\btheta}(\bx)$ if $\sigma$ is sufficiently small.
-    \begin{block}{Theorem (Denoising Score Matching)}
+    \vspace{-0.6cm}
+    \begin{block}{Assumption}
+        The solution to
+        \vspace{-0.3cm}
+        \[
+            \frac{1}{2} \bbE_{q(\bx_{\sigma})}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \big\|^2_2 \rightarrow \min_{\btheta}
+        \]
+        \vspace{-0.3cm} \\
+        satisfies $\bs_{\btheta, \sigma}(\bx_{\sigma}) \approx \bs_{\btheta, 0}(\bx_0) = \bs_{\btheta}(\bx)$ if $\sigma$ is sufficiently small.
+    \end{block}
+    \begin{block}{Theorem}
         \vspace{-0.8cm}
         \begin{multline*}
             \bbE_{q(\bx_{\sigma})}\bigl\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \bigr\|^2_2 = \\ = \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\bigl\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \bigr\|^2_2 + \text{const}(\btheta)
@@ -114,7 +119,7 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://arxiv.org/abs/1907.05600}{Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019}
-    \begin{block}{Noise-Conditioned Score Network}
+    \begin{block}{Noise-Conditioned Score Network (NCSN)}
         \begin{itemize}
             \item Define a sequence of noise levels: $\sigma_1 < \sigma_2 < \dots < \sigma_T$.
             \item Train the denoising score function $\bs_{\btheta, \sigma_t}(\bx_t)$ for each noise level:
@@ -123,7 +128,7 @@
                 \sum_{t=1}^T {\color{violet}\sigma_t^2} \cdot \bbE_{\pd(\bx)} \bbE_{q(\bx_t | \bx)}\bigl\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \bigr\|^2_2 \rightarrow \min_{\btheta}
             \]
             \vspace{-0.5cm}
-            \item Sample using \textbf{annealed} Langevin dynamics (for $t=1, \dots, T$).
+            \item Sample using \textbf{annealed} Langevin dynamics (for $t = T, \dots, 1$).
         \end{itemize}
     \end{block}
     \vspace{-0.3cm}
@@ -137,7 +142,8 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-    \myfootnotewithlink{https://arxiv.org/abs/2006.09011}{Song Y. et al. Improved Techniques for Training Score-Based Generative Models, 2020}
+    \myfootnote{\href{https://arxiv.org/abs/1907.05600}{Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019} \\
+    \href{https://arxiv.org/abs/2006.09011}{Song Y. et al. Improved Techniques for Training Score-Based Generative Models, 2020}}
     \begin{block}{Training}
         \begin{enumerate}
             \item Sample $\bx_0 \sim \pd(\bx)$, $t \sim U\{1, T\}$, $\bepsilon \sim \cN(0, \bI)$.
@@ -145,7 +151,9 @@
             \item Compute loss $ \cL = \sigma_t^2 \left\| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \right\|^2 $.
             \item Update $\btheta$ via stochastic gradient descent.
         \end{enumerate}
+        \vspace{-0.3cm}
     \end{block}
+    \vspace{-0.2cm}
     \begin{block}{Sampling (Annealed Langevin Dynamics)}
         \begin{enumerate}
             \item Sample $\bx_0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$.

@@ -11,26 +11,34 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
-	\begin{block}{GAN Optimality Theorem}
+	\begin{block}{Theorem}
 		The minimax game
+		\vspace{-0.3cm}
 		\[
 		\min_{G} \max_D \Bigl[ \underbrace{\bbE_{\pd(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(\bG(\bz)))}_{V(G, D)} \Bigr]
 		\]
-		has a global optimum at $\pd(\bx) = \pt(\bx)$, and then $D^*(\bx) = 0.5$.
+		\vspace{-0.5cm} \\
+		achieves its global optimum precisely when $\pd(\bx) = \pt(\bx)$, and $D^*(\bx) = 0.5$.
 	\end{block}
 	\vspace{-0.3cm}
 	\[
-		\min_{G} V(G, D^*) = \min_{G} \left[ 2 \JSD(\pi \| p) - \log 4 \right] = -\log 4, \quad \pd(\bx) = \pt(\bx).
+		V(G, D^*) = 2\,\JSD(\pd(\bx) \,\|\, \pt(\bx)) - 2\log 2, \quad V(G^*, D^*) = -2\log 2.
 	\]
-	If the generator can be \textbf{any} function and the discriminator is \textbf{optimal} at each step, then the generator is \textbf{guaranteed to converge} to the data distribution.  
+	\begin{block}{Expectations}
+		If the generator can express \textbf{any} function and the discriminator is \textbf{optimal} at every step, the generator \textbf{will converge} to the target distribution.
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
-	\begin{itemize}
-		\item The generator is updated in the parameter space; the discriminator isn't optimal at every iteration.
-		\item Both generator and discriminator loss typically oscillate during GAN training.
-	\end{itemize}
+	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
+		\href{https://arxiv.org/abs/1611.02163}{Metz L. et al. Unrolled Generative Adversarial Networks, 2016}}
+	\begin{block}{Reality}
+		\begin{itemize}
+			\item Generator updates are performed in parameter space, and the discriminator is often imperfectly optimized.
+			\item Generator and discriminator losses typically oscillate during GAN training.
+		\end{itemize}
+	\end{block}
+	\vspace{-0.3cm}
 	\begin{block}{Objective}
 		\vspace{-0.5cm}
 		\[
@@ -38,22 +46,19 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\vspace{-0.2cm}
 	\begin{figure}
 		\centering
-		\includegraphics[width=1.0\linewidth]{figs/gan_1}
+		\includegraphics[width=0.85\linewidth]{figs/gan_1}
 	\end{figure}
+	\vspace{-0.3cm}
+	Mode collapse refers to the phenomenon where the generator in a GAN produces only one or a few different modes of the distribution.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
+	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\
 		\href{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}}
-	\begin{block}{Main Issues With Standard GANs}
-		\begin{itemize}
-			\item Vanishing gradients (solution: non-saturating GAN).
-			\item Mode collapse (arises from Jensen-Shannon divergence).
-		\end{itemize}
-	\end{block}
-	\begin{block}{Standard GAN}
+	\begin{block}{Standard GAN Objective}
 		\vspace{-0.2cm}
 		\[
 		\min_{\btheta} \max_{\bphi} \left[ \bbE_{\pd(\bx)} \log D_{\bphi}(\bx) + \bbE_{p(\bz)} \log (1 - D_{\bphi}(\bG_{\btheta}(\bz))) \right]
@@ -61,21 +66,28 @@
 		\vspace{-0.4cm}
 	\end{block}
 	\vspace{-0.1cm}
-	\begin{block}{Informal Theoretical Results}
-		Both the data distribution $\pd(\bx)$ and the generative distribution $\pt(\bx)$ are low-dimensional with disjoint supports. In such cases,
+	\begin{block}{Theoretical Results}
+		\begin{itemize}
+			\item Both the data distribution $\pd(\bx)$ and the generative distribution $\pt(\bx)$ are supported on low-dimensional manifolds.
+			\item If $\pd(\bx)$ and $\pt(\bx)$ are disjoint, a smooth optimal discriminator can exist!
+		\end{itemize}
+		For such low-dimensional, disjoint manifolds:
+		\vspace{-0.2cm}
 		\[
-			\KL(\pd \| \pt) = \KL(\pt \| \pd) = \infty, \quad \JSD(\pd \| \pt) = \log 2.
+			\KL(\pd\,\|\,\pt) = \KL(\pt\,\|\,\pd) = \infty, \quad \JSD(\pd\,\|\,\pt) = \log 2
 		\]
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}
+	\myfootnote{\href{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023} \\
+		\href{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}}
+	\vspace{-0.1cm}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.8\linewidth]{figs/discrete_wasserstein}
 	\end{figure}
-	\vspace{-0.3cm}
+	\vspace{-0.4cm}
 	\begin{block}{Wasserstein Distance}
 		\vspace{-0.7cm}
 		{\small
@@ -85,9 +97,9 @@
 		}
 		\vspace{-0.5cm}
 		\begin{itemize}
-			\item $\gamma(\bx_1, \bx_2)$ -- transportation plan (amount of "dirt" to transport from $\bx_1$ to $\bx_2$).
-			\item $\Gamma(\pi, p)$ -- set of all joint distributions $\gamma (\bx_1, \bx_2)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx_1, \bx_2) d \bx_1 = p(\bx_2)$, $\int \gamma(\bx_1, \bx_2) d \bx_2 = \pi(\bx_1)$).
-			\item $\gamma(\bx_1, \bx_2)$ -- the amount; $\|\bx_1 - \bx_2 \|$ -- the distance.
+			\item $\gamma(\bx_1, \bx_2)$ is the transport plan: the amount of ``dirt'' assigned from $\bx_1$ to $\bx_2$.
+			\item $\Gamma(\pi, p)$ denotes the set of all joint distributions $\gamma (\bx_1, \bx_2)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx_1, \bx_2) d \bx_1 = p(\bx_2)$, $\int \gamma(\bx_1, \bx_2) d \bx_2 = \pi(\bx_1)$).
+			\item $\gamma(\bx_1, \bx_2)$ is the mass, $\|\bx_1 - \bx_2 \|$ is the distance.
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -99,19 +111,20 @@
 		\[
 		W(\pd \| \pt) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\pd(\bx)} f(\bx)  - \bbE_{\pt(\bx)} f(\bx)\right],
 		\]
-		where $\| f \|_L \leq K$ denotes $K$-Lipschitz continuous functions.
+		where $f : \bbR^m \rightarrow \bbR$ is $K$-Lipschitz continuous ($\| f \|_L \leq K$).
 	\end{block}
 	\begin{block}{WGAN Objective}
 		\vspace{-0.5cm}
 		\[
-		\min_{\btheta} {\color{violet}W(\pd \| \pt)} = \min_{\btheta} {\color{violet}\max_{\bphi \in \bPhi} \left[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bz)} f_{\bphi}(\bG_{\btheta}(\bz))\right]}.
+		\min_{\btheta} {\color{violet}W(\pd \| \pt)} \approx \min_{\btheta} {\color{violet}\max_{\bphi \in \bPhi} \left[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bz)} f_{\bphi}(\bG_{\btheta}(\bz))\right]}.
 		\]
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
-		\item The function $f$ in WGAN is called the \textit{critic}.
-		\item If parameters $\bphi$ lie in a compact set $\bPhi \in [-c, c]^d$, then $f(\bx, \bphi)$ is $K$-Lipschitz continuous. 
+		\item The discriminator $D$ is replaced by function $f$: in WGAN, it is known as the \textbf{critic}, which is \emph{not} a classifier.
+		\item If the weights $\bphi$ are restricted to a compact set $\bPhi = [-c, c]^d$, then $f_{\bphi}(\bx)$ is $K$-Lipschitz continuous.
 	\end{itemize}
+	\vspace{-0.4cm}
 	\begin{multline*}
 		K \cdot W(\pd \| \pt) = \max_{\| f \|_L \leq K} \left[ \bbE_{\pd(\bx)} f(\bx) - \bbE_{\pt(\bx)} f(\bx)\right] \geq 
 		\\ \geq \max_{\bphi \in \bPhi} \left[ \bbE_{\pd(\bx)} f_{\bphi}(\bx)  - \bbE_{\pt(\bx)} f_{\bphi}(\bx)\right]
@@ -119,39 +132,41 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-    \myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
+    \myfootnote{\href{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017} \\
+		\href{https://arxiv.org/abs/2401.09603}{Jayasumana S. et al. Rethinking FID: Towards a Better Evaluation Metric for Image Generation, 2024}}
 	\vspace{-0.3cm}
 	\begin{block}{Frechet Inception Distance (FID)}
 		For normal distributions $\pd(\bx_1) = \cN(\bmu_{\text{data}}, \bSigma_{\text{data}})$, $p(\bx_2) = \cN(\bmu_{\btheta}, \bSigma_{\btheta})$:
 		\vspace{-0.3cm}
 		\begin{multline*}
-			\FID (\pd, \pt) =  W_2^2(\pd, \pt) = \inf_{\gamma \in \Gamma(\pd, \pt)} \bbE_{(\bx_1, \bx_2) \sim \gamma} \| \bx_1 - \bx_2 \|^2 \\
+			\FID (\pd, \pt) =  W_2^2(\pd \| \pt) = \inf_{\gamma \in \Gamma(\pd, \pt)} \bbE_{(\bx_1, \bx_2) \sim \gamma} \| \bx_1 - \bx_2 \|^2 \\
 			= \| \bmu_{\text{data}} - \bmu_{\btheta}\|^2 + \tr \left[ \bSigma_{\text{data}} + \bSigma_{\btheta} - 2 \left(\bSigma_{\text{data}}^{1/2} \bSigma_{\btheta} \bSigma_{\text{data}}^{1/2} \right)^{1/2} \right]
 		\end{multline*}
 		\vspace{-0.4cm}
 	\end{block}
-	\begin{itemize}
-		\item Requires a large sample size for evaluation
-		\item FID computation is relatively slow
-		\item Results are highly dependent on the chosen pretrained classifier
-		\item Relies on the normality assumption
-	\end{itemize}
+	\begin{block}{Drawbacks}
+		\begin{itemize}
+			\item Depends on the pretrained classification network.
+			\item Uses the normality assumption.
+			\item May not correlate with human evaluation.
+		\end{itemize}
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
 	\vspace{-0.3cm}
 	\begin{itemize}
-		\item $\cS_{\text{data}} = \{\bx_i\}_{i=1}^{n} \sim \pd(\bx)$: real samples
-		\item $\cS_{\btheta} = \{\bx_i\}_{i=1}^{n} \sim \pt(\bx)$: generated samples
+		\item $\cS_{\text{data}} = \{\bx_i\}_{i=1}^{n} \sim \pd(\bx)$ -- real samples;
+		\item $\cS_{\btheta} = \{\bx_i\}_{i=1}^{n} \sim \pt(\bx)$ -- generated samples.
 	\end{itemize}
-	Define a binary indicator function:
+	Define a binary function:
 	\vspace{-0.2cm}
 	\[
 		\bbI(\bx, \cS) = 
 		\begin{cases}
-			1, & \text{if}~ \exists~ \bx' \in \cS: \| \bx  - \bx'\|_2 \leq \| \bx' - \NN_k(\bx', \cS)\|_2; \\
-			0, & \text{otherwise}
+			1, & \text{if } \exists\ \bx' \in \cS: \| \bx  - \bx'\|_2 \leq \| \bx' - \NN_k(\bx', \cS)\|_2; \\
+			0, & \text{otherwise.}
 		\end{cases}
 	\]
 	\vspace{-0.3cm}
@@ -163,7 +178,7 @@
 		\includegraphics[width=0.75\linewidth]{figs/pr_k_nearest}
 	\end{figure}
 	\vspace{-0.3cm}
-	The samples are embedded using a pretrained network, as in FID evaluation.
+	Embed the samples using a pretrained network (as in FID).
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -184,26 +199,22 @@
 			\end{figure}
 		\end{block}
 	\end{minipage}
-	We require metrics that evaluate not only the quality of generated images, but also their relevance to the prompt.
-	\begin{block}{CLIP Score}
-		\begin{figure}
-			\includegraphics[width=0.5\linewidth]{figs/clip}
-		\end{figure}
-	\end{block}
+	We need a way to measure not only the quality of the generated image, but also how well it's aligned with the prompt.
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figs/clip}
+	\end{figure}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://ya.ru/ai/art}{YandexART 2.5, 2025} 
 	\begin{itemize}
-		\item No perfect automatic evaluation metric exists
-		\item The most reliable assessment is via human evaluation
-		\item It's important to evaluate a variety of model aspects
+		\item No automated metric is perfect.
+		\item The best way to evaluate generative models is by human assessment.
+		\item It's important to assess various properties.
 	\end{itemize}
-	\begin{block}{Human Evaluation}
-		\begin{figure}
-			\includegraphics[width=1.0\linewidth]{figs/yaart_2.5}
-		\end{figure}
-	\end{block}
+	\begin{figure}
+		\includegraphics[width=1.0\linewidth]{figs/yaart_2.5}
+	\end{figure}
 \end{frame}
 %=======
 \begin{frame}{Outline}

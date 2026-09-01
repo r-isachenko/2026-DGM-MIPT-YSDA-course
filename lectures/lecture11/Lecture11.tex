@@ -36,16 +36,12 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
-	\vspace{-0.3cm}
-	\[
-		d\bx = \bff(\bx, t) dt + g(t) d \bw \qquad \text{(SDE with the probability path $p_t(\bx)$)}
-	\]
-	\vspace{-0.7cm}
 	\begin{block}{Probability Flow ODE}
-		There exists an ODE with the identical probability path $p_t(\bx)$ of the form:
+		Suppose the SDE $d\bx = \bff(\bx, t) dt + g(t) d \bw$ induces the probability path $p_t(\bx)$ with $p_t(\bx) > 0$.
+		Then, there exists an ODE with the same probability path $p_t(\bx)$, given by
 		\vspace{-0.3cm}
 		\[
-			d\bx = \bv(\bx, t) dt, \quad \bv(\bx, t) = \bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx)
+			d\bx = \bv(\bx, t) dt = \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -69,18 +65,20 @@
 	\end{block}
 	\vspace{-0.5cm}
 	\begin{block}{Reverse SDE}
-		There's a reverse SDE for $d\bx = \bff(\bx, t) dt + g(t) d\bw$ in the following form:
+		There exists a reverse SDE for $d\bx = \bff(\bx, t) dt + g(t) d \bw$ (assume $p_t(\bx) > 0$), given by:
 		\vspace{-0.3cm}
 		\[
-			d\bx = \left(\bff(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bar{\bw}, \quad dt < 0
+			d\bx = \left(\bff(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bar{\bw}
 		\]
+		\vspace{-0.5cm}\\
+		where $dt<0$ and $\bar{\bw}(t)$ is a reverse-time Wiener process.
 	\end{block}
 	\vspace{-0.5cm}
-	\begin{block}{Sketch of the Proof}
+	\begin{block}{Proof Sketch}
 		\begin{itemize}
-			\item Convert the initial SDE to the probability flow ODE.
+			\item Convert the initial SDE to a probability flow ODE.
 			\item Reverse the probability flow ODE.
-			\item Convert the reverse probability flow ODE to the reverse SDE.
+			\item Convert the reversed probability flow ODE back to an SDE.
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -151,16 +149,16 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
-		\item Discretizing the reverse SDE gives us ancestral sampling.
+		\item Discretizing the reverse SDE provides ancestral sampling.
 		\item If we use the probability flow ODE instead, then the reverse ODE yields DDIM sampling.
 	\end{itemize}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
-	Consider ODE dynamics $\bx(t)$ in the interval $t \in [0, 1]$ with $\bx_0 \sim p_0(\bx) = \cN(0, \bI)$, $\bx_1 \sim p_1(\bx) =  \pd(\bx)$.
+	Consider ODE dynamics $\bx_t = \bx(t)$ in the interval $t \in [0, 1]$ with $\bx_0 \sim p_0(\bx)$ (mostly $\cN(0, \bI)$), $\bx_1 \sim p_1(\bx) = \pd(\bx)$.
 	\[
-		\frac{d \bx}{dt} = \bv (\bx, t),  \quad \text{with initial condition $\bx(0) = \bx_0$}.
+		\frac{d \bx_t}{dt} = \bv (\bx_t, t),  \quad \text{with initial condition } \bx(0) = \bx_0.
 	\]
 	\vspace{-0.5cm}
 	\begin{block}{KFP Theorem (Continuity Equation)}
@@ -170,7 +168,10 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	Solving the continuity equation ODE numerically is complicated and unstable.
+	\begin{itemize}
+		\item It's hard to solve the continuity equation directly due to the trace term.
+		\item There's a method (the adjoint method) that solves this equation directly, but it's unstable and unscalable.
+	\end{itemize}
 	\begin{block}{Flow Matching}
 		\vspace{-0.3cm}
 		\[

@@ -11,7 +11,7 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
-	\begin{block}{ELBO of the Gaussian Diffusion Model}
+	\begin{block}{ELBO for Gaussian Diffusion Model}
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
@@ -20,8 +20,8 @@
 		\vspace{-1.0cm}
 	\end{block}
 	\begin{align*}
-		q(\bx_{t-1} | \bx_t, \bx_0) &= \cN(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \bI), \\
-		\pt(\bx_{t - 1} | \bx_t) &= \cN \bigl(\bmu_{\btheta, t}(\bx_t), {\color{violet}\bsigma_{\btheta, t}^2(\bx_t)}\bigr)
+		q(\bx_{t-1} | \bx_t, \bx_0) &= \cN(\bx_{t-1} | \tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \bI), \\
+		\pt(\bx_{t - 1} | \bx_t) &= \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), {\color{violet}\bsigma_{\btheta, t}^2(\bx_t)}\bigr)
 	\end{align*}
 	It is assumed that ${\color{violet}\bsigma_{\btheta, t}^2(\bx_t) = \tilde{\beta}_t \bI}$.
 	\[
@@ -39,7 +39,7 @@
 		\vspace{-0.7cm}
 		\begin{align*}
 			\tilde{\bmu}_t(\bx_t, \bx_0) &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon \\
-			\bmu_{\btheta, t}(\bx_t) &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}({\color{teal}\bx_t})
+			\bmu_{\btheta, t}(\bx_t) &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - {\color{teal}\frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}}} \cdot \bepsilon_{\btheta, t}(\bx_t)
 		\end{align*}
 		\vspace{-0.7cm}
 	\end{block}
@@ -47,11 +47,11 @@
 	\[
 		\cL_t  =	 \bbE_{\color{violet}\bepsilon \sim \cN(0, \bI)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t (1 - \bar{\alpha}_t)} \Bigl\| \bepsilon - \bepsilon_{\btheta, t}\bigl( {\color{teal}\sqrt{\bar{\alpha}_t} \bx_0 + \sqrt{1 - \bar{\alpha}_t} \bepsilon}\bigr) \Bigr\|^2 \right]
 	\]
-	At each step in the reverse diffusion process, our goal is to predict the noise~$\bepsilon$ added by the forward process!
+	At every step of the reverse process, we attempt to predict the noise~$\bepsilon$ that was used in the forward diffusion process!
 	\begin{block}{Simplified Objective}
 		\vspace{-0.7cm}
 		\[
-			 \cL_{\text{simple}} = \bbE_{t \sim U\{2, T\}} \bbE_{\bepsilon \sim \cN(0, \bI)} \Bigl\| \bepsilon - \bepsilon_{\btheta, t}\bigl( \sqrt{\bar{\alpha}_t} \bx_0 + \sqrt{1 - \bar{\alpha}_t} \bepsilon\bigr) \Bigr\|^2 
+			 \cL_{\text{simple}} = \bbE_{t \sim U\{2, T\}} \bbE_{\bepsilon \sim \cN(0, \bI)} \Bigl\| \bepsilon - \bepsilon_{\btheta, t}\bigl( \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon\bigr) \Bigr\|^2
 		\]
 	\end{block}
 \end{frame}
@@ -68,13 +68,13 @@
 	\begin{block}{Sampling (Ancestral)}
 		\begin{enumerate}
 			\item Sample $\bx_T \sim \cN(0, \bI)$.
-			\item Compute the mean of $\pt(\bx_{t-1} | \bx_t) = \cN(\bmu_{\btheta, t}(\bx_t), \sigma_t^2 \cdot \bI)$:
+			\item Compute the mean of $\pt(\bx_{t-1} | \bx_t) = \cN(\bmu_{\btheta, t}(\bx_t), \tilde{\beta}_t \cdot \bI)$:
 			\vspace{-0.3cm}
 			\[
 				\bmu_{\btheta, t}(\bx_t) = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}(\bx_t).
 			\]
 			\vspace{-0.5cm}
-			\item Denoise $\bx_{t - 1} = \bmu_{\btheta, t}(\bx_t) +  \sigma_t \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
+			\item Denoise $\bx_{t - 1} = \bmu_{\btheta, t}(\bx_t) +  \sqrt{\tilde{\beta}_t} \cdot \bepsilon$, $\bepsilon \sim \cN(0, \bI)$.
 		\end{enumerate}
 	\end{block}
 \end{frame}
@@ -84,9 +84,12 @@
 	\begin{block}{DDPM Objective}
 		\vspace{-0.5cm}
 		\[
-			\bbE_{\pd(\bx_0)} \bbE_{t \sim U\{1, T\}}\bbE_{q(\bx_t | \bx_0)} \left[ {\color{olive}\frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t}} \Bigl\|  \bs_{\btheta, t} (\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \Bigr\|_2^2  \right]
+			\bbE_{\pd(\bx_0)} \bbE_{t \sim U\{1, T\}}\bbE_{q(\bx_t | \bx_0)} \left[ {\color{olive}C_{2, t}} \Bigl\|  \bs_{\btheta, t} (\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \Bigr\|_2^2  \right]
 		\]
-		In practice, {\color{olive}this coefficient} is usually omitted.
+		\[
+			\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon
+		\]
+		In practice, {\color{olive}this coefficient} is often omitted.
 	\end{block}
 	\begin{block}{NCSN Objective}
 		\vspace{-0.3cm}
@@ -104,21 +107,21 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
-	\begin{block}{Unconditional Generation}
+	\begin{block}{DDPM Sampling}
 		\vspace{-0.3cm}
 		\[
 			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal} \nabla_{\bx_t} \log \pt(\bx_t)} +  \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Conditional Generation}
+	\begin{block}{Guided Generation}
 		\vspace{-0.5cm}
 		\[
 			\bx_{t - 1} =  \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by}) +  \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Conditional Distribution}
+	\begin{block}{Guided Generation}
 		\vspace{-0.5cm}
 		\begin{align*}
 			{\color{olive}\nabla_{\bx_t} \log \pt(\bx_t | \by)} &
@@ -136,42 +139,50 @@
 		\vspace{-0.5cm}
 		\begin{align*}
 			\bs_{\btheta, t}(\bx_t, \by) &= \bs_{\btheta, t}(\bx_t) + \nabla_{\bx_t} \log p(\by | \bx_t) \\
-			{\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} &= \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
+			{\color{violet}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} &= \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
-	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$, increasing contrast
+	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$, increasing the contrast
 	\[
 		\hat{p}(\by | \bx_t) \propto p(\by | \bx_t)^{\gamma}.
 	\]
-	\vspace{-0.7cm}
+	\vspace{-1.0cm}
 	\begin{block}{Training}
 		\begin{enumerate}
 			\item Train the DDPM as before.
 			\item Train an additional classifier $p(\by | \bx_t)$ on noisy data (time-dependent).
 		\end{enumerate}
-		\vspace{-0.3cm}
+		\vspace{-0.5cm}
 	\end{block}
+	\vspace{-0.2cm}
 	\begin{block}{Sampling (Guided)}
-		\vspace{-0.3cm}
-		\[
-			\bx_{t-1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon.
-		\]
+		\begin{enumerate}
+			\item Sample $\bx_T \sim \cN(0, \bI)$.
+			\item Denoise with the scaled guided score function:
+			\vspace{-0.3cm}
+			\[
+				\bx_{t-1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon.
+			\]
+			\vspace{-0.5cm}
+		\end{enumerate}
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
-	\\ The previous method requires an additional classifier $p(\by | \bx_t)$ trained on noisy data. Let's try to avoid this requirement.
+	\myfootnote{\href{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022} \\
+	\href{https://arxiv.org/abs/2506.02070}{Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025}}
+	The previous method requires an additional classifier $p(\by | \bx_t)$ trained on noisy data. Let's try to avoid this requirement.
 	\[
 		{\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} =  \nabla_{\bx_t} \log \pt(\bx_t| \by) -\nabla_{\bx_t} \log  \pt(\bx_t)
 	\]
-	\vspace{-0.7cm}
+	\vspace{-0.9cm}
 	\begin{multline*}
-		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \nabla_{\bx_t} {\color{violet}\log p(\by | \bx_t)} = \\
+		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot {\color{teal} \nabla_{\bx_t} \log p(\by | \bx_t)} = \\
+		= \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \bigl( {\color{teal}\nabla_{\bx_t} \log \pt(\bx_t| \by) - \nabla_{\bx_t} \log  \pt(\bx_t)} \bigr) = \\
 		=  (1 - \gamma) \cdot  \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot  \nabla_{\bx_t} \log \pt(\bx_t| \by)
 	\end{multline*}
-	\vspace{-0.5cm}
+	\vspace{-0.7cm}
 	\begin{block}{Scaled Guided Score Function}
 		\vspace{-0.3cm}
 		\[
@@ -179,11 +190,15 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{itemize}
-		\item Introduce $\by = \varnothing$  for $\bs_{\btheta, t}(\bx_t) = \bs_{\btheta, t}(\bx_t, \varnothing)$.		
-		\item Drop the labels $\by$ with some fixed probability.
-		\item Apply the model twice during inference to get $\bs_{\btheta, t}(\bx_t, \varnothing)$ and $\bs_{\btheta, t}(\bx_t, \by)$.
-	\end{itemize}
+	\vspace{-0.3cm}
+	\begin{block}{CFG}
+		\begin{enumerate}
+			\item Introduce the ``absence of conditioning'' label $\by = \varnothing$.
+			\item Identify the unguided score function $\bs_{\btheta, t}(\bx_t) = \bs_{\btheta, t}(\bx_t, \varnothing)$.
+			\item Train a single model $\bs_{\btheta, t}(\bx_t, \by)$ on \textbf{supervised} data, dropping the label $\by$ with some fixed probability (simulating $\by = \varnothing$).
+			\item At inference, evaluate the model twice to obtain $\bs_{\btheta, t}(\bx_t, \varnothing)$ and $\bs_{\btheta, t}(\bx_t, \by)$.
+		\end{enumerate}
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Outline}

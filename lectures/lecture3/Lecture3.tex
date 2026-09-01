@@ -44,62 +44,59 @@
 	\end{block}
 	\vspace{-0.1cm}
 	\begin{figure}
-		\includegraphics[width=0.85\linewidth]{figs/flows_how2}
+		\includegraphics[width=0.75\linewidth]{figs/flows_how2}
 	\end{figure}
 	\vspace{-0.5cm}
 	\begin{block}{Log-Likelihood}
 		\vspace{-0.5cm}
 		\[
-			\log \pt(\bx) = \log p(\bff_K \circ \cdots \circ \bff_1(\bx)) + \sum_{k=1}^K\log |\det (\bJ_{\bff_k})|
+			\log \pt(\bx) = \log p(\bff_K \circ \ldots \circ \bff_1(\bx)) + \sum_{k=1}^K \log |\det (\bJ_{\bff_k})|
 		\]
+		\vspace{-0.4cm} \\
+		where $\bJ_{\bff_k} = \frac{\partial \bff_k}{\partial \bff_{k-1}}$.
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-    \myfootnote{\href{https://arxiv.org/abs/1807.03039}{Kingma D. P., et al. Glow: Generative Flow With Invertible 1x1 Convolutions, 2018}  \\
+    \myfootnote{\href{https://arxiv.org/abs/1807.03039}{Kingma D. P., et al. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}  \\
 	\href{https://arxiv.org/abs/1901.11137}{Hoogeboom E., et al. Emerging Convolutions for Generative Normalizing Flows, 2019}
 	}
 	\vspace{-0.5cm}
-	\begin{block}{Flow Log-Likelihood}
+	\begin{block}{NF Log-Likelihood}
 		\vspace{-0.3cm}
 		\[
 			\log \pt(\bx) = \log p(\bff_{\btheta}(\bx)) + \log |\det (\bJ_\bff)|
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	One significant challenge is efficiently computing the Jacobian determinant.
-	\begin{block}{Linear Flows}	
-		\vspace{-0.2cm}
-		\[
-			\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW^\top
-		\]
+	The principal computational challenge is evaluating the Jacobian determinant.
+	\vspace{-0.4cm}
+	\[
+		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW
+	\]
+	\vspace{-0.5cm}
+	\begin{block}{Matrix Decompositions}
+		\begin{itemize}
+			\item \textbf{LU Decomposition:} $\bW = \bP \bL \bU$, where $\bP$ is a permutation matrix, $\bL$ is lower triangular with positive diagonal, and $\bU$ is upper triangular with positive diagonal.
+			\item \textbf{QR Decomposition:} $\bW = \bQ \bR$, where $\bQ$ is orthogonal, and $\bR$ is upper triangular with positive diagonal.
+		\end{itemize}
 	\end{block}
-	\vspace{-0.3cm}
-	\begin{itemize}
-		\item LU Decomposition:
-		\[
-			\bW = \bP \bL \bU.
-		\]
-		\item QR Decomposition:
-		\[
-			\bW = \bQ \bR.
-		\]
-	\end{itemize}
-	Decomposition is performed only once during initialization. Then the decomposed matrices ($\bP, \bL, \bU$ or $\bQ, \bR$) are optimized.
+	\vspace{-0.2cm}
+	Decomposition is performed only at initialization; the decomposed matrices ($\bP, \bL, \bU$ or $\bQ, \bR$) are optimized during training.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-	Consider an autoregressive model:
+	Consider the autoregressive model:
 	\vspace{-0.3cm}
 	{\small
 		\[
-		\pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j - 1}), \quad
-		\pt(x_j | \bx_{1:j - 1}) = \cN \left(\mu_{j, \btheta}(\bx_{1:j-1}), \sigma^2_{j, \btheta} (\bx_{1:j-1})\right).
+		\pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j-1}), \quad
+		\pt(x_j | \bx_{1:j-1}) = \cN \left(\mu_{j, \btheta}(\bx_{1:j-1}), \sigma^2_{j, \btheta} (\bx_{1:j-1})\right)
 		\]
 	}
 	\vspace{-0.5cm}
-	\begin{block}{Gaussian Autoregressive Normalizing Flow}
+	\begin{block}{Gaussian AR NF}
 		\vspace{-0.5cm}
 		\begin{align*}
 			\bx &= \bff^{-1}_{\btheta}(\bz) \quad \Rightarrow \quad {\color{violet} x_j} = \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}). \\
@@ -108,39 +105,39 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
-		\item This transformation is both \textbf{$C^1$-diffeomorphism}, mapping $p(\bz)$ to $\pt(\bx)$.
-		\item The Jacobian matrix for this transformation is triangular.
+		\item This gives a \textbf{$C^1$-diffeomorphism} from $p(\bz)$ to $\pt(\bx)$ (assume that $\sigma_j \neq 0$).
+		\item The Jacobian matrix of this transformation is triangular.
 	\end{itemize}
-	The generative function $\bff^{-1}_{\btheta}(\bz)$ is \textbf{sequential}, while the inference function $\bff_{\btheta}(\bx)$ is \textbf{not sequential}.
+	Sampling must be done sequentially, but density estimation can be parallelized.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 
-	Let us partition $\bx$ and $\bz$ into two groups: 
+	Split $\bx$ and $\bz$ into two parts:
 	\[
-		\bx = [\bx_1, \bx_2] = [\bx_{1:d}, \bx_{d+1:m}]; \quad \bz = [\bz_1, \bz_2] = [\bz_{1:d}, \bz_{d+1:m}].
+		\bx = [\bx_1, \bx_2] = [\bx_{1:d}, \bx_{d+1:m}]; \quad \bz = [\bz_1, \bz_2] = [\bz_{1:d}, \bz_{d+1:m}]
 	\]
 	\vspace{-0.7cm}
 	\begin{block}{Coupling Layer}
 		\vspace{-0.7cm}
 		\[
-			\begin{cases} {\color{violet}\bx_1} = {\color{teal}\bz_1}; \\ {\color{violet}\bx_2} = {\color{teal}\bz_2} \odot \bsigma_{\btheta}({\color{teal}\bz_1}) + \bmu_{\btheta}({\color{teal}\bz_1}).\end{cases}  
-			\begin{cases} {\color{teal}\bz_1} ={\color{violet} \bx_1}; \\ {\color{teal}\bz_2} = \left({\color{violet}\bx_2} - \bmu_{\btheta}({\color{violet}\bx_1}) \right) \odot \frac{1}{\bsigma_{\btheta}({\color{violet}\bx_1})}.\end{cases}
+			\begin{cases} {\color{violet}\bx_1} = {\color{teal}\bz_1} \\ {\color{violet}\bx_2} = {\color{teal}\bz_2} \odot \bsigma_{\btheta}({\color{teal}\bz_1}) + \bmu_{\btheta}({\color{teal}\bz_1}) \end{cases}
+			\begin{cases} {\color{teal}\bz_1} ={\color{violet} \bx_1} \\ {\color{teal}\bz_2} = ({\color{violet}\bx_2} - \bmu_{\btheta}({\color{violet}\bx_1})) \odot \frac{1}{\bsigma_{\btheta}({\color{violet}\bx_1})} \end{cases}
 		\]
-		Both density estimation and sampling require just a single pass!
+		In both training and sampling, only a single forward pass is needed!
 	\end{block}
 	\begin{block}{Jacobian}
 		\vspace{-0.3cm}
 		\[
 			\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
 			\begin{pmatrix}
-				\bI_d & 0_{d \times (m - d)} \\
+				\bI_d & 0_{d \times m-d} \\
 				\frac{\partial \bz_2}{\partial \bx_1} & \frac{\partial \bz_2}{\partial \bx_2}
-			\end{pmatrix} = \prod_{j=1}^{m - d} \frac{1}{\sigma_{j, \btheta}(\bx_1)}.
+			\end{pmatrix} = \prod_{j=1}^{m-d} \frac{1}{\sigma_{j, \btheta}(\bx_1)}.
 		\]
 	\end{block}
-	A coupling layer is a special instance of an gaussian autoregressive normalizing flow.
+	A coupling layer is a special instance of the Gaussian autoregressive NF.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}

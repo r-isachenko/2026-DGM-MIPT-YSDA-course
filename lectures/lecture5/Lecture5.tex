@@ -33,7 +33,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
 	\vspace{-0.3cm}
 	\begin{block}{Theorem}
 		\vspace{-0.6cm}
@@ -42,19 +42,20 @@
 		\]
 		\vspace{-0.6cm}
 	\end{block}
-	\begin{block}{ELBO Surgery}
-		\vspace{-0.5cm}
+	\begin{block}{Revisiting the ELBO}
+		\vspace{-0.7cm}
 		{\small
-		\[		  
-		    \frac{1}{n} \sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \underbrace{\frac{1}{n} \sum_{i=1}^n \bbE_{q_{\bphi}(\bz| \bx_i)} \log \pt(\bx_i | \bz)}_{\text{Reconstruction Loss}}
-		    - \underbrace{\vphantom{\sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{\sum_{i=1}^n} \KL({\color{teal}q_{\text{agg}, \bphi}(\bz)} \,\|\, {\color{violet}p(\bz)})}_{\text{Marginal KL}}
-		\]}
+		\begin{multline*}
+		    \frac{1}{n} \sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \underbrace{\frac{1}{n} \sum_{i=1}^n \bbE_{q_{\bphi}(\bz| \bx_i)} \log \pt(\bx_i | \bz)}_{\text{Reconstruction Loss}} - \\
+		    - \underbrace{\vphantom{\sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{Mutual Information}} - \underbrace{\vphantom{\sum_{i=1}^n} \KL({\color{teal}q_{\text{agg}, \bphi}(\bz)} \,\|\, {\color{violet}p(\bz)})}_{\text{Marginal KL}}
+		\end{multline*}}
+		\vspace{-0.4cm}
 	\end{block}
 	\vspace{-0.7cm}
-	\begin{block}{Optimal Prior}
+	\begin{block}{Optimal VAE Prior}
 		\vspace{-0.7cm}
 		\[
-			\KL(q_{\text{agg}, \bphi}(\bz) \,\|\, p(\bz)) = 0 \ \Leftrightarrow \ p (\bz) = \qagg(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i).
+			\KL(q_{\text{agg}, \bphi}(\bz) \,\|\, p(\bz)) = 0 \ \Leftrightarrow \ p (\bz) = q_{\text{agg}, \bphi}(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i).
 		\]
 		\vspace{-0.5cm}\\
 		Thus, the optimal prior distribution $p(\bz)$ is the aggregated variational posterior $q_{\text{agg}, \bphi}(\bz)$.
@@ -83,7 +84,7 @@
 				\bpi = (\pi_1, \dots, \pi_K), \quad \pi_k = P(c = k), \quad \sum_{k=1}^K \pi_k = 1.
 			\]
 			\vspace{-0.7cm}
-			\item Suppose the VAE employs a discrete latent code $c$, with prior $p(c) = \Uniform\{1, \dots, K\}$.
+			\item Suppose the VAE adopts a discrete latent variable $c$ with prior $p(c) = \Uniform\{1, \dots, K\}$.
 		\end{itemize}
 	\end{block}
 	\vspace{-0.3cm}
@@ -98,12 +99,12 @@
 		\KL(q_{\bphi}(c| \bx) \,\|\, p(c)) = - \Ent(q_{\bphi}(c| \bx)) + \log K. 
 	\]		
 	\vspace{-0.5cm}
-	\begin{block}{Vector Quantization}
-		Define the codebook $\{\be_k\}_{k=1}^K$, where $\be_k \in \bbR^L$ and $K$ is the size of the dictionary.
+	\begin{block}{Quantized Representation}
+		Define the codebook (dictionary) space $\{\be_k\}_{k=1}^K$ with $\be_k \in \bbR^L$ and $K$ the number of codebook entries.
 		\vspace{-0.3cm}
 		\[
-			\bz_q = \bq (\bz) = \be_{k^*}, \quad \text{where}\;\; k^* = \argmin_k \| \bz - \be_k \|.
-		\] 
+			\bz_q = \bq (\bz) = \be_{k^*}, \quad \text{where } k^* = \argmin_k \| \bz - \be_k \|.
+		\]
 		\vspace{-0.7cm}
 	\end{block}
 \end{frame}
@@ -118,9 +119,9 @@
 	\begin{block}{Deterministic Variational Posterior}
 		\vspace{-0.3cm}
 		\[
-			q_{\bphi}(c_{ij} = k^* | \bx) = \begin{cases}
-				1,  & \text{if}\;\; k^* = \argmin_k \| [\bz_e]_{ij} - \be_k \|; \\
-				0,  & \text{otherwise}.
+			q_{\bphi}(c = k^* | \bx) = \begin{cases}
+				1 , \quad \text{for } k^* = \argmin_k \| \bz_e - \be_k \|; \\
+				0, \quad \text{otherwise}.
 			\end{cases}
 		\]
 		\vspace{-0.5cm}
@@ -132,7 +133,7 @@
 		\]
 		\vspace{-0.6cm}
 	\end{block}
-	\begin{block}{Straight-Through Gradient Estimation}
+	\begin{block}{Straight-Through Gradient Estimator}
 		\vspace{-0.6cm}
 		\[
 			\frac{\partial \log p(\bx | \bz_q , \btheta)}{\partial \bphi} = \frac{\partial \log \pt(\bx| \bz_q)}{\partial \bz_q} \cdot {\color{red}\frac{\partial \bz_q}{\partial \bphi}} \approx \frac{\partial \log \pt(\bx| \bz_q)}{\partial \bz_q} \cdot \frac{\partial \bz_e}{\partial \bphi}
@@ -143,25 +144,28 @@
 \begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Likelihood-Free Learning}
 		\begin{itemize}
-			\item Likelihood isn't a perfect metric for generative models.
-			\item Likelihood may be intractable.
+			\item Likelihood isn't always a suitable metric for evaluating generative models.
+			\item Sometimes, the likelihood function can't even be computed exactly.
 		\end{itemize}
 	\end{block}
+	\vspace{-0.3cm}
 	Imagine we have two sets of samples:
 	\begin{itemize}
 		\item $\{\bx_i\}_{i=1}^{n_1} \sim \pd(\bx)$ -- real samples;
 		\item $\{\bx_i\}_{i=1}^{n_2} \sim \pt(\bx)$ -- generated (fake) samples.
 	\end{itemize}
+	\vspace{-0.2cm}
 	\[
 		p(y = 1 | \bx) = P(\bx \sim \pd(\bx)); \quad p(y = 0 | \bx) = P(\bx \sim \pt(\bx))
 	\]
-	\vspace{-0.5cm}
+	\vspace{-0.7cm}
 	\begin{block}{Assumption}
-		The generative distribution $\pt(\bx)$ matches the true distribution $\pd(\bx)$ if we can't distinguish between them using a discriminative model $p(y|\bx)$.
+		The generative model $\pt(\bx)$ matches $\pd(\bx)$ if a discriminative model $p(y | \bx)$ can't distinguish between them --- that is, if $p(y = 1 | \bx) = 0.5$ for every $\bx$.
 	\end{block}
+	\vspace{-0.3cm}
 	\begin{itemize}
-		\item \textbf{Generator:} a generative model $\bx = \bG(\bz)$ that produces more realistic samples.
-		\item \textbf{Discriminator:} a classifier $D(\bx) \in [0, 1]$ distinguishing real from generated samples.
+		\item \textbf{Generator:} a generative model $\bx = \bG_{\btheta}(\bz)$ that produces more realistic samples.
+		\item \textbf{Discriminator:} a classifier $D_{\bphi}(\bx) \in [0, 1]$ distinguishing real from generated samples.
 	\end{itemize}
 \end{frame}
 %=======
