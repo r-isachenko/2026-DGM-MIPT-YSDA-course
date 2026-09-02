@@ -38,7 +38,7 @@
 	\begin{block}{Theorem}
 		\vspace{-0.6cm}
 		\[
-			\frac{1}{n} \sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \,\|\, p(\bz)) = \KL({\color{teal}q_{\text{agg}, \bphi}(\bz) } \,\|\, p(\bz)) + \bbI_{q} [\bx, \bz].
+			\frac{1}{n} \sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \,\|\, p(\bz)) = \KL({\color{teal}\qagg(\bz) } \,\|\, p(\bz)) + \bbI_{q} [\bx, \bz].
 		\]
 		\vspace{-0.6cm}
 	\end{block}
@@ -47,7 +47,7 @@
 		{\small
 		\begin{multline*}
 		    \frac{1}{n} \sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \underbrace{\frac{1}{n} \sum_{i=1}^n \bbE_{q_{\bphi}(\bz| \bx_i)} \log \pt(\bx_i | \bz)}_{\text{Reconstruction Loss}} - \\
-		    - \underbrace{\vphantom{\sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{Mutual Information}} - \underbrace{\vphantom{\sum_{i=1}^n} \KL({\color{teal}q_{\text{agg}, \bphi}(\bz)} \,\|\, {\color{violet}p(\bz)})}_{\text{Marginal KL}}
+		    - \underbrace{\vphantom{\sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{Mutual Information}} - \underbrace{\vphantom{\sum_{i=1}^n} \KL({\color{teal}\qagg(\bz)} \,\|\, {\color{violet}p(\bz)})}_{\text{Marginal KL}}
 		\end{multline*}}
 		\vspace{-0.4cm}
 	\end{block}
@@ -55,17 +55,17 @@
 	\begin{block}{Optimal VAE Prior}
 		\vspace{-0.7cm}
 		\[
-			\KL(q_{\text{agg}, \bphi}(\bz) \,\|\, p(\bz)) = 0 \ \Leftrightarrow \ p (\bz) = q_{\text{agg}, \bphi}(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i).
+			\KL(\qagg(\bz) \,\|\, p(\bz)) = 0 \ \Leftrightarrow \ p (\bz) = \qagg(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i).
 		\]
 		\vspace{-0.5cm}\\
-		Thus, the optimal prior distribution $p(\bz)$ is the aggregated variational posterior $q_{\text{agg}, \bphi}(\bz)$.
+		Thus, the optimal prior distribution $p(\bz)$ is the aggregated variational posterior $\qagg(\bz)$.
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015}
 	\begin{itemize}
-		\item \textbf{Prior mismatch:} The unimodal encoder $q_{\bphi}(\bz|\bx)$ yields $q_{\text{agg}, \bphi}(\bz)$ that often does not match the Gaussian prior $p(\bz)$.
+		\item \textbf{Prior mismatch:} The unimodal encoder $q_{\bphi}(\bz|\bx)$ yields $\qagg(\bz)$ that often does not match the Gaussian prior $p(\bz)$.
 		\item \textbf{Blurriness from averaging:} With Gaussian decoder, ELBO minimization gives $\bmu^*(\bz) = \bbE_{q_{\bphi}(\bx|\bz)}[\bx]$. If distinct inputs $\bx \neq \bx'$ map to \emph{overlapping} latent regions, the decoder averages over unrelated data.
 	\end{itemize}
 	\begin{figure}

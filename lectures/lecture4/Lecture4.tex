@@ -252,14 +252,14 @@
 	\begin{block}{Theorem}
 		\vspace{-0.5cm}
 		\[
-		    \frac{1}{n} \sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| p(\bz)) = {\color{violet} \KL(q_{\text{agg}, \bphi}(\bz) \| p(\bz))} + {\color{teal}\bbI_{q} [\bx, \bz]};
+		    \frac{1}{n} \sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| p(\bz)) = {\color{violet} \KL(\qagg(\bz) \| p(\bz))} + {\color{teal}\bbI_{q} [\bx, \bz]};
 		\]
         \eqpause
 		\vspace{-0.5cm}
 		\begin{itemize}
-			\item $q_{\text{agg}, \bphi}(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i)$ denotes the \textbf{aggregated} variational posterior.
+			\item $\qagg(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i)$ denotes the \textbf{aggregated} variational posterior.
 			\item $\bbI_{q} [\bx, \bz]$ is the mutual information between $\bx$ and $\bz$ under the data distribution $\pd(\bx)$ and $q_{\bphi}(\bz| \bx)$.
-			\item  {\color{violet} The first term} encourages $q_{\text{agg}, \bphi}(\bz)$ to match the prior $p(\bz)$.
+			\item  {\color{violet} The first term} encourages $\qagg(\bz)$ to match the prior $p(\bz)$.
 			\item {\color{teal} The second term} reduces the information about $\bx$ encoded in~$\bz$.
 		\end{itemize}
 	\end{block}
@@ -269,7 +269,7 @@
 	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
 		\vspace{-0.4cm}
 		\[
-		    \frac{1}{n} \sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| p(\bz)) = \KL(q_{\text{agg}, \bphi}(\bz) \| p(\bz)) + \bbI_q [\bx, \bz].
+		    \frac{1}{n} \sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| p(\bz)) = \KL(\qagg(\bz) \| p(\bz)) + \bbI_q [\bx, \bz].
 		\]
 		\vspace{-0.3cm}
 	\begin{block}{Proof}
@@ -277,15 +277,15 @@
 		{\footnotesize
 		\begin{multline*}
 		    \frac{1}{n} \sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| p(\bz)) = \frac{1}{n} \sum_{i=1}^n \int q_{\bphi}(\bz| \bx_i) \log \frac{q_{\bphi}(\bz| \bx_i)}{p(\bz)} d \bz
-		    \nextonslide{= \\= \frac{1}{n} \sum_{i=1}^n \int q_{\bphi}(\bz| \bx_i) \log \frac{{\color{violet}q_{\text{agg}, \bphi}(\bz)} {\color{teal}q_{\bphi}(\bz| \bx_i)}}{{\color{violet}p(\bz)} {\color{teal}q_{\text{agg}, \bphi}(\bz)}} d \bz}
-		    \nextonslide{= \\ = \int \frac{1}{n} \sum_{i=1}^n  q_{\bphi}(\bz| \bx_i) \log {\color{violet}\frac{q_{\text{agg}, \bphi}(\bz)}{p(\bz)}} d \bz + \frac{1}{n}\sum_{i=1}^n \int q_{\bphi}(\bz| \bx_i) \log {\color{teal}\frac{q_{\bphi}(\bz| \bx_i)}{q_{\text{agg}, \bphi}(\bz)}} d \bz}
-		    \nextonslide{= \\ = \KL (q_{\text{agg}, \bphi}(\bz) \| p(\bz)) + \frac{1}{n}\sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| q_{\text{agg}, \bphi}(\bz))}
+		    \nextonslide{= \\= \frac{1}{n} \sum_{i=1}^n \int q_{\bphi}(\bz| \bx_i) \log \frac{{\color{violet}\qagg(\bz)} {\color{teal}q_{\bphi}(\bz| \bx_i)}}{{\color{violet}p(\bz)} {\color{teal}\qagg(\bz)}} d \bz}
+		    \nextonslide{= \\ = \int \frac{1}{n} \sum_{i=1}^n  q_{\bphi}(\bz| \bx_i) \log {\color{violet}\frac{\qagg(\bz)}{p(\bz)}} d \bz + \frac{1}{n}\sum_{i=1}^n \int q_{\bphi}(\bz| \bx_i) \log {\color{teal}\frac{q_{\bphi}(\bz| \bx_i)}{\qagg(\bz)}} d \bz}
+		    \nextonslide{= \\ = \KL (\qagg(\bz) \| p(\bz)) + \frac{1}{n}\sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| \qagg(\bz))}
 		\end{multline*}
         \eqpause
 		}
 		\vspace{-0.4cm}
 		\[
-			\bbI_{q} [\bx, \bz] = \frac{1}{n}\sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| q_{\text{agg}, \bphi}(\bz)).
+			\bbI_{q} [\bx, \bz] = \frac{1}{n}\sum_{i=1}^n \KL(q_{\bphi}(\bz| \bx_i) \| \qagg(\bz)).
 		\]
 	\end{block}
 \end{frame}
@@ -298,7 +298,7 @@
 		{\small
 		\begin{multline*}
 		    \frac{1}{n}\sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \frac{1}{n} \sum_{i=1}^n \left[ \bbE_{q_{\bphi}(\bz| \bx_i)} \log \pt(\bx_i | \bz) - \KL(q_{\bphi}(\bz| \bx_i) \| p(\bz)) \right]
-		    \nextonslide{= \\ = \underbrace{\frac{1}{n} \sum_{i=1}^n \bbE_{q_{\bphi}(\bz| \bx_i)} \log \pt(\bx_i | \bz)}_{\text{Reconstruction Loss}} - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{Mutual Information}} - \underbrace{\vphantom{ \sum_{i=1}^n} \KL(q_{\text{agg}, \bphi}(\bz) \| {\color{teal}p(\bz)})}_{\text{Marginal KL}}}
+		    \nextonslide{= \\ = \underbrace{\frac{1}{n} \sum_{i=1}^n \bbE_{q_{\bphi}(\bz| \bx_i)} \log \pt(\bx_i | \bz)}_{\text{Reconstruction Loss}} - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{Mutual Information}} - \underbrace{\vphantom{ \sum_{i=1}^n} \KL(\qagg(\bz) \| {\color{teal}p(\bz)})}_{\text{Marginal KL}}}
 		\end{multline*}
 		}
 		\vspace{-0.3cm}
@@ -309,23 +309,23 @@
 	\begin{block}{Optimal VAE Prior}
 		\vspace{-0.7cm}
 		\[
-	  		\KL(q_{\text{agg}, \bphi}(\bz) \| p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q_{\text{agg}, \bphi}(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i).
+	  		\KL(\qagg(\bz) \| p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = \qagg(\bz) = \frac{1}{n} \sum_{i=1}^n q_{\bphi}(\bz| \bx_i).
 		\]
         \eqpause
 		\vspace{-0.4cm} \\
-		Hence, the optimal prior $p(\bz)$ is the aggregated variational posterior $q_{\text{agg}, \bphi}(\bz)$.
+		Hence, the optimal prior $p(\bz)$ is the aggregated variational posterior $\qagg(\bz)$.
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Marginal KL}
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 	\[
-		\KL(q_{\text{agg}, \bphi}(\bz) \| p(\bz))
+		\KL(\qagg(\bz) \| p(\bz))
 	\]
 	\vspace{-0.5cm}
 	\begin{itemize}
 		\item $q_{\bphi}(\bz| \bx) = \cN(\bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx))$ is unimodal. 
-		\item It is generally believed that the \textbf{mismatch between} $p(\bz)$  \textbf{and} $q_{\text{agg}, \bphi}(\bz)$  is the primary explanation for blurry VAE-generated images.
+		\item It is generally believed that the \textbf{mismatch between} $p(\bz)$  \textbf{and} $\qagg(\bz)$  is the primary explanation for blurry VAE-generated images.
 	\end{itemize}
     \eqpause
 	\begin{figure}
@@ -354,7 +354,7 @@
 	\eqpause
 	\begin{block}{Blurriness from Averaging}
 		\begin{itemize}
-			\item $\pd(\bx)$ and $q_{\bphi}(\bz | \bx)$ give us the aggregated posterior $q_{\text{agg}, \bphi}(\bz)$.
+			\item $\pd(\bx)$ and $q_{\bphi}(\bz | \bx)$ give us the aggregated posterior $\qagg(\bz)$.
 			\item If $\bx \neq \bx'$ map to overlapping latent regions, $\bmu^*(\bz)$ averages over unrelated inputs.
 			\item This leads to \textbf{blurry, non-distinct outputs}.
 		\end{itemize}
@@ -719,7 +719,7 @@
 		\vfill
 		\item ELBO surgery gives insights into the prior's influence in VAEs; the optimal prior is the aggregated variational posterior.
 		\vfill
-		\item The mismatch between $p(\bz)$ and $q_{\text{agg}, \bphi}(\bz)$ is widely regarded as the principal reason for VAE-generated image blurriness.		
+		\item The mismatch between $p(\bz)$ and $\qagg(\bz)$ is widely regarded as the principal reason for VAE-generated image blurriness.		
 		\vfill
 		\item Vector quantization provides a way to construct VAEs with discrete latents and deterministic variational posteriors.
 		\vfill
