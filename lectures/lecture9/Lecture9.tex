@@ -106,6 +106,30 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnote{\href{https://arxiv.org/abs/2107.00630}{Kingma D. et al. Variational Diffusion Models, 2021} \\
+	\href{https://arxiv.org/abs/2011.13456}{Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}}
+	\begin{block}{Summary}
+		\begin{itemize}
+		\item Different Markov chains:
+			\begin{itemize}
+				\item DDPM: $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$;
+				\item NCSN: $\bx_t = \bx_0 + \sigma_t \cdot \bepsilon$.
+				\item One can generalize to $q(\bx_t |\bx_0) = \cN(\alpha_t \cdot \bx_0, \sigma^2_t\, \bI)$.
+			\end{itemize}
+		\eqpause
+		\item The objectives coincide: ELBO $\equiv$ score-matching.
+		\eqpause
+		\item The sampling procedures differ:
+			\begin{itemize}
+				\item Ancestral sampling in DDPM;
+				\item Annealed Langevin dynamics for NCSN;
+				\item Hybrid approaches that combine both updates are possible.
+			\end{itemize}
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 	\begin{block}{DDPM Sampling}
 		\vspace{-0.3cm}

@@ -46,6 +46,45 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://arxiv.org/abs/1907.05600}{Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019}
+	\begin{block}{NCSN}
+		\vspace{-0.7cm} 
+		\[
+			q(\bx_t | \bx_0) = \cN(\bx_0, \sigma_t^2 \bI), \quad q(\bx_1) \approx \pd(\bx), \quad q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
+		\]
+		\[
+			\nabla_{\bx_t} \log q(\bx_t | \bx) = - \frac{\bx_t - \bx}{\sigma_t^2}
+		\]
+		\vspace{-0.6cm} 
+	\end{block}
+	\vspace{-0.2cm}
+    \eqpause
+	\begin{block}{Gaussian Diffusion}
+		\vspace{-0.7cm} 
+		\[
+			q(\bx_t | \bx_0) = \cN(\sqrt{\bar{\alpha}_t} \bx_0, (1 - \bar{\alpha}_t) \bI), \quad q(\bx_1) \approx \pd(\bx), \quad q(\bx_T) \approx \cN(0, \bI)
+		\]
+		\[
+			\nabla_{\bx_t} \log q(\bx_t | \bx_0) = - \frac{\bx_t - \sqrt{\bar{\alpha}_t} \bx_0}{1 - \bar{\alpha}_t}
+		\]
+		\vspace{-0.6cm} 
+	\end{block}
+	\vspace{-0.2cm}
+    \eqpause
+	\begin{block}{Theorem (Denoising Score Matching)}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\bbE_{q(\bx_t)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t) \right\|_2^2 = \\
+			= \bbE_{\pd(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+    \eqpause
+	\vspace{-0.3cm}
+	\textbf{Note:} Annealed Langevin dynamics applies to diffusion, too.
+\end{frame}
+%=======
+\begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://lilianweng.github.io/posts/2021-07-11-diffusion-models/}{Weng L. What are Diffusion Models?, blog post, 2021}
     \vspace{-0.3cm}
     \begin{figure}
