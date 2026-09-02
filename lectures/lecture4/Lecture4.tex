@@ -76,12 +76,11 @@
 	\end{multline*}
 	\vspace{-0.5cm}
 	\begin{block}{Variational Posterior}
-		\vspace{-0.7cm}
-		\begin{multline*}
-			q^*(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx) = \\
-			= \argmin_q \KL(q(\bz) \| p_{\btheta^*}(\bz | \bx)) = p_{\btheta^*}(\bz| \bx);
-		\end{multline*}
-		\vspace{-0.7cm}
+		\vspace{-0.3cm}
+		\[
+			q^*(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx) = \argmin_q \KL(q \| p) = p_{\btheta^*}(\bz| \bx).
+		\]
+		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Amortized Variational Inference}
 			We restrict the family of possible distributions $q(\bz)$ to a parametric class $q_{\bphi}(\bz| \bx)$, {\color{teal}conditioned on data $\bx$} and {\color{violet}parameterized by $\bphi$}.
