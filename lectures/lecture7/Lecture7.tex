@@ -156,14 +156,14 @@
     \vspace{-0.2cm}
     \begin{block}{Sampling (Annealed Langevin Dynamics)}
         \begin{enumerate}
-            \item Sample $\bx_0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$.
-            \item Update $\bx_l$ via $L$ steps of Langevin dynamics at each noise level $\sigma_t$:
+            \item Sample $\bx_T^0 \sim \cN(0, \sigma_T^2 \bI) \approx q(\bx_T)$.
+            \item Update $\bx_t^l$ via $L$ steps of Langevin dynamics at each noise level $\sigma_t$:
             \vspace{-0.3cm}
             \[
-                \bx_l = \bx_{l-1} + \frac{\eta_t}{2} \bs_{\btheta, \sigma_t}(\bx_{l-1}) + \sqrt{\eta_t} \bepsilon_l.
+                \bx_t^l = \bx_t^{l-1} + \frac{\eta_t}{2} \bs_{\btheta, \sigma_t}(\bx_t^{l-1}) + \sqrt{\eta_t} \bepsilon_t^l.
             \]
             \vspace{-0.5cm}
-            \item Update $\bx_0 := \bx_L$ and proceed to the next noise level $\sigma_{t-1}$.
+            \item Update $\bx_{t-1}^0 := \bx_t^L$ and proceed to the next noise level $\sigma_{t-1}$.
         \end{enumerate}
     \end{block}
 \end{frame}
