@@ -139,8 +139,8 @@
  		\vspace{-0.3cm}
  	\end{block}
  	The density $p_t(\bx)$ is a \textbf{stationary} distribution for the SDE.
+	Setting the stationary density to the model distribution, $p_t(\bx) = \pt(\bx)$ for all $t$:
 	\begin{block}{Langevin Dynamic}
-		Samples from the following dynamics will come from $\pt(\bx)$ under mild regularity conditions for a small enough $\eta$:
 		\vspace{-0.2cm}
 		\[
 			\bx_{t + 1} = \bx_t + \frac{\eta}{2} \cdot \nabla_{\bx} \log \pt(\bx) + \sqrt{\eta} \cdot \bepsilon, \quad \eta \approx dt.
