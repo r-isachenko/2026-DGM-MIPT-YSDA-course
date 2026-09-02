@@ -38,7 +38,7 @@
     \vspace{-0.6cm}
     \begin{enumerate}
         \item $\bx_0 = \bx \sim \pd(\bx)$
-        \item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$, $\bepsilon \sim \cN(0, \bI)$, $t \geq 1$
+        \item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon_t$, $\bepsilon_t \sim \cN(0, \bI)$, $t \geq 1$
         \item After $T \gg 1$ steps: $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
     \end{enumerate}
     If this process can be reversed, we can sample from $\pd(\bx)$ by starting from noise $p_\infty(\bx) = \cN(0, \bI)$. \\
@@ -64,7 +64,7 @@
         \begin{block}{Forward Process}
             \begin{enumerate}
                 \item $\bx_0 = \bx \sim \pd(\bx)$
-                \item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$
+                \item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon_t$
                 \item $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
             \end{enumerate}
         \end{block}
@@ -298,7 +298,7 @@
         \begin{block}{Forward Process}
             \begin{enumerate}
                 \item $\bx_0 = \bx \sim \pd(\bx)$;
-                \item $\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon$;
+                \item $\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon_t$;
                 \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$.
             \end{enumerate}
         \end{block}

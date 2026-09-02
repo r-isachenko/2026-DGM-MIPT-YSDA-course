@@ -285,7 +285,7 @@
 	\vspace{-0.5cm}
 	\begin{enumerate}
 		\item $\bx_0 = \bx \sim \pd(\bx)$
-		\item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$, $\bepsilon \sim \cN(0, \bI)$, $t \geq 1$
+		\item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon_t$, $\bepsilon_t \sim \cN(0, \bI)$, $t \geq 1$
 		\item After $T \gg 1$ steps: $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
 	\end{enumerate}
     \eqpause
@@ -397,7 +397,7 @@
 		\begin{block}{Forward Process}
 			\begin{enumerate}
 				\item $\bx_0 = \bx \sim \pd(\bx)$
-				\item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$
+				\item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon_t$
 				\item $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
 			\end{enumerate}
 		\end{block}
