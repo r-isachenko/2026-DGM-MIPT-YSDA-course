@@ -1,0 +1,21 @@
+{
+  "name": "dgm-course-slidev",
+  "private": true,
+  "scripts": {
+    "dev": "node tools/run.mjs dev",
+    "check": "node tools/run.mjs check",
+    "build": "node tools/run.mjs build",
+    "export": "node tools/run.mjs export",
+    "finalize": "node tools/run.mjs finalize",
+    "test:demos": "node --test tools/test-demos.mjs tools/test-course.mjs"
+  },
+  "devDependencies": {
+    "@slidev/cli": "52.19.1",
+    "@slidev/theme-default": "0.25.0",
+    "playwright-chromium": "1.55.0",
+    "pdf-lib": "1.17.1"
+  },
+  "overrides": {
+    "floating-vue": "5.2.2"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "stanford-llm-progress-2026.png": {
+    "source": "https://hai.stanford.edu/assets/files/ai_index_report_2026_chapter_2_technical.pdf",
+    "description": "Stanford AI Index 2026, Figure 2.1.2, p. 77; chart extracted from PDF page 10 at 4x, crop L/B/R/T = 34/454/32/71 pt. Includes the full chart; no data or labels changed.",
+    "sha256": "a306c2771909cdb0fac2271f1df84c91f986a117af584a604f63ae70a9c14715"
+  },
+  "genie3-worlds.jpg": {
+    "source": "https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/",
+    "download": "https://lh3.googleusercontent.com/BirHhzrtzHQtXvNG0dXcj9QFA7vGUNWQYbeQiMiY7RL8a7-xGrLDGybf9YZZ1nML7lRVZh4KYARz0PFO8xBAfe7FAatH6xVlRnakHtnESHlpzEBTEA=w1440-h810-n-nu",
+    "description": "Official Genie 3 announcement collage, 5 August 2025. Original downloaded JPEG, unmodified.",
+    "sha256": "93ad65e589b104986d7fce617be15e40d5028c337e4d8438db28920843db4207"
+  }
+}

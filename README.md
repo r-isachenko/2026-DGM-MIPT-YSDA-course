@@ -30,10 +30,12 @@ The course is supported by seminars and hands-on assignments that help build int
 
 ## Materials
 
+A parallel [Slidev version](lectures-slidev/README.md) is available for Lecture 1: [slides PDF](lectures-slidev/lecture1/Lecture1.pdf), [handout](lectures-slidev/lecture1/Lecture1-handout.pdf). The original Beamer materials remain available.
+
 | # | Date | Description | Slides |
 |---|---|---|---|
 <!---
-| 1 | September, 17 | <b>Lecture 1:</b><ul><li>Introduction and Logistics</li><li>Generative Models Overview</li><li>Generative Modeling Framework<ul><li>Course Tricks</li><li>Problem Statement</li><li>Divergence Minimization Framework</li></ul></li><li>Autoregressive Models (ImageGPT)</li></ul> | [slides](lectures/lecture1/Lecture1.pdf) |
+| 1 | September, 17 | <b>Lecture 1:</b><ul><li>Introduction and Logistics</li><li>Generative Models Overview</li><li>Generative Modeling Framework<ul><li>Course Tricks</li><li>Problem Statement</li><li>Divergence Minimization Framework</li></ul></li><li>Autoregressive Models (ImageGPT)</li></ul> | [Beamer](lectures/lecture1/Lecture1.pdf) · [Slidev](lectures-slidev/lecture1/slides.md) · [PDF](lectures-slidev/lecture1/Lecture1.pdf) · [handout](lectures-slidev/lecture1/Lecture1-handout.pdf) |
 |  |  | <b>Seminar 1:</b> Introduction. Maximum likelihood estimation. Histograms. Bayes theorem. PixelCNN. VAR. | [slides](seminars/seminar1/) <a href="https://colab.research.google.com/github/r-isachenko/2024-DGM-MIPT-YSDA-course/blob/main/seminars/seminar1/PixelCNN.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> |
 | 2 | September, 24 | <b>Lecture 2:</b><ul><li>Normalizing Flows (NF)</li><li>NF Examples<ul><li>Linear NF</li><li>Gaussian Autoregressive NF</li><li>Coupling Layer (RealNVP)</li></ul></li><li>Latent Variable Models (LVM)</li></ul> | [slides](lectures/lecture2/Lecture2.pdf) |
 |  |  | <b>Seminar 2:</b> Planar and Radial Flows. Forward vs Reverse KL. | [slides](seminars/seminar2/) |

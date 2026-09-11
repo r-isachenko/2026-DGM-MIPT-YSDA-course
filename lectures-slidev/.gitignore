@@ -1,0 +1,8 @@
+node_modules/
+dist/
+output/
+.slidev/
+.DS_Store
+sessions/
+
+**/.slidev/

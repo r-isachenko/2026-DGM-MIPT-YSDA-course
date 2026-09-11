@@ -1,0 +1,281 @@
+[
+  {
+    "slide": 1,
+    "frame": 1,
+    "title": "Deep Generative Models",
+    "clicks": 0
+  },
+  {
+    "slide": 2,
+    "frame": 2,
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 3,
+    "frame": "auto: Introduction and Logistics",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 4,
+    "frame": 3,
+    "title": "Generative vs Discriminative Models",
+    "clicks": 1
+  },
+  {
+    "slide": 5,
+    "frame": 4,
+    "title": "Course Team",
+    "clicks": 0
+  },
+  {
+    "slide": 6,
+    "frame": 5,
+    "title": "About the Course",
+    "clicks": 1
+  },
+  {
+    "slide": 7,
+    "frame": 6,
+    "title": "Course Structure and Grading",
+    "clicks": 2
+  },
+  {
+    "slide": 8,
+    "frame": 7,
+    "title": "Lecture Schedule",
+    "clicks": 0
+  },
+  {
+    "slide": 9,
+    "frame": 8,
+    "title": "Prerequisites",
+    "clicks": 2
+  },
+  {
+    "slide": 10,
+    "frame": "auto: Generative Models Overview",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 11,
+    "frame": 9,
+    "title": "Generative Models Taxonomy",
+    "clicks": 0
+  },
+  {
+    "slide": 12,
+    "frame": 10,
+    "title": "VAE — The First Scalable Approach for Image Generation",
+    "clicks": 0
+  },
+  {
+    "slide": 13,
+    "frame": 11,
+    "title": "DCGAN — The First Convolutional GAN for Image Generation",
+    "clicks": 0
+  },
+  {
+    "slide": 14,
+    "frame": 12,
+    "title": "StyleGAN — High-Quality Face Generation",
+    "clicks": 0
+  },
+  {
+    "slide": 15,
+    "frame": 13,
+    "title": "Language Modeling at Scale",
+    "clicks": 0
+  },
+  {
+    "slide": 16,
+    "frame": "extension: 13",
+    "title": "Language Models: 2023–2026",
+    "clicks": 0
+  },
+  {
+    "slide": 17,
+    "frame": 14,
+    "title": "Diffusion Models — A Breakthrough in Image Generation",
+    "clicks": 0,
+    "mergedFrames": [
+      15
+    ]
+  },
+  {
+    "slide": 18,
+    "frame": "extension: 14",
+    "title": "Diffusion Language Models — LLaDA (2025)",
+    "clicks": 0
+  },
+  {
+    "slide": 19,
+    "frame": 16,
+    "title": "Sora — Video Generation (2024)",
+    "clicks": 0
+  },
+  {
+    "slide": 20,
+    "frame": 17,
+    "title": "Nano Banana Pro (2025)",
+    "clicks": 0
+  },
+  {
+    "slide": 21,
+    "frame": "extension: 16",
+    "title": "Genie 3 — Interactive World Generation (2025)",
+    "clicks": 0
+  },
+  {
+    "slide": 22,
+    "frame": 18,
+    "title": "Generative Models Timeline",
+    "clicks": 0
+  },
+  {
+    "slide": 23,
+    "frame": 19,
+    "title": "Open Problems in Generative Models",
+    "clicks": 0
+  },
+  {
+    "slide": 24,
+    "frame": "auto: Generative Modeling Framework",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 25,
+    "frame": "auto: Course Tricks",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 26,
+    "frame": 20,
+    "title": "Course Tricks I",
+    "clicks": 2
+  },
+  {
+    "slide": 27,
+    "frame": 21,
+    "title": "Course Tricks II",
+    "clicks": 4
+  },
+  {
+    "slide": 28,
+    "frame": 22,
+    "title": "Course Tricks III",
+    "clicks": 3
+  },
+  {
+    "slide": 29,
+    "frame": "auto: Problem Statement",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 30,
+    "frame": 23,
+    "title": "Problem Statement",
+    "clicks": 4
+  },
+  {
+    "slide": 31,
+    "frame": 24,
+    "title": "Histogram as a Generative Model",
+    "clicks": 3
+  },
+  {
+    "slide": 32,
+    "frame": 25,
+    "title": "Conditional Models",
+    "clicks": 1
+  },
+  {
+    "slide": 33,
+    "frame": "auto: Divergence Minimization Framework",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 34,
+    "frame": 26,
+    "title": "Divergences",
+    "clicks": 3
+  },
+  {
+    "slide": 35,
+    "frame": 27,
+    "title": "Forward KL vs Reverse KL (Kullback-Leibler Divergence)",
+    "clicks": 3
+  },
+  {
+    "slide": 36,
+    "frame": 28,
+    "title": "Forward KL vs Reverse KL: MLE as Forward KL",
+    "clicks": 6
+  },
+  {
+    "slide": 37,
+    "frame": "auto: Autoregressive Models (ImageGPT)",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 38,
+    "frame": 29,
+    "title": "Generative Models Taxonomy",
+    "clicks": 0
+  },
+  {
+    "slide": 39,
+    "frame": 30,
+    "title": "Autoregressive Modeling",
+    "clicks": 3
+  },
+  {
+    "slide": 40,
+    "frame": 31,
+    "title": "Autoregressive Models",
+    "clicks": 3
+  },
+  {
+    "slide": 41,
+    "frame": "extension: 31",
+    "title": "Sampling vs Density Evaluation",
+    "clicks": 0
+  },
+  {
+    "slide": 42,
+    "frame": 32,
+    "title": "Autoregressive Models: MLP",
+    "clicks": 3
+  },
+  {
+    "slide": 43,
+    "frame": 33,
+    "title": "Autoregressive Models: LLM",
+    "clicks": 0
+  },
+  {
+    "slide": 44,
+    "frame": 34,
+    "title": "Autoregressive Models for Images",
+    "clicks": 1
+  },
+  {
+    "slide": 45,
+    "frame": 35,
+    "title": "Autoregressive Models: ImageGPT",
+    "clicks": 0
+  },
+  {
+    "slide": 46,
+    "frame": 36,
+    "title": "Summary",
+    "clicks": 0
+  }
+]
