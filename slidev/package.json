@@ -1,0 +1,19 @@
+{
+  "name": "dgm-course-slidev",
+  "private": true,
+  "scripts": {
+    "dev": "slidev lecture01.md --port 3031",
+    "build": "slidev build lecture01.md --base ./ --out dist/lecture01",
+    "export": "node tools/export.mjs lecture01",
+    "check": "node tools/check-source.mjs lecture01",
+    "test:demos": "node --test tools/test-demos.mjs"
+  },
+  "devDependencies": {
+    "@slidev/cli": "52.19.1",
+    "@slidev/theme-default": "0.25.0",
+    "playwright-chromium": "1.55.0"
+  },
+  "overrides": {
+    "floating-vue": "5.2.2"
+  }
+}

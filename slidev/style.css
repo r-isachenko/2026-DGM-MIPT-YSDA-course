@@ -1,0 +1,79 @@
+:root { --navy: #17324d; --teal: #007f82; --muted: #587083; }
+.slidev-layout { padding: 72px 58px 62px; color: var(--navy); background: white; font: 24px/1.4 Arial, sans-serif; }
+.slidev-layout h1 { color: var(--navy); font-size: 37px; line-height: 1.14; font-weight: 650; letter-spacing: -.6px; margin: 0 0 28px; }
+.slidev-layout h2 { font-size: 24px; line-height: 1.2; color: var(--teal); font-weight: 650; margin: 0 0 10px; }
+.slidev-layout p { margin: 10px 0; }
+.slidev-layout h1 + p { opacity: 1 !important; }
+.slidev-layout strong { color: var(--teal); font-weight: 650; }
+.slidev-layout li { margin: 7px 0; padding-left: 3px; }
+.slidev-layout ul, .slidev-layout ol { padding-left: 1.2em; }
+.slidev-layout li > p { margin: 0; }
+.slidev-layout a { color: inherit; }
+.slidev-layout .katex { font-size: 1.04em; }
+.slidev-layout .katex-display { margin: 12px 0; }
+.slidev-layout .block { margin: 17px 0; }
+.slidev-layout .block:first-child { margin-top: 0; }
+.columns { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+.balanced { align-items: center; }
+.source { position: absolute; bottom: 19px; left: 58px; right: 110px; font-size: 12px; line-height: 1.3; color: var(--muted); border-top: 1px solid #dae3e9; padding-top: 8px; }
+.source a { border: none; }
+.course-header { position: absolute; left: 58px; top: 25px; color: var(--muted); font: 12px Arial, sans-serif; letter-spacing: 1.7px; }
+.course-folio { position: absolute; bottom: 23px; right: 40px; color: var(--muted); font: 12px Arial, sans-serif; }
+.cover.slidev-layout { padding-top: 125px; }
+.cover-kicker { color: var(--teal); font-size: 18px; letter-spacing: 2px; margin-bottom: 38px; }
+.cover h1 { font-size: 64px; margin-bottom: 14px; max-width: 950px; }
+.cover-lecture { color: var(--teal); font-size: 40px; margin-bottom: 46px; }
+.cover-institute { font-size: 20px; color: var(--muted); line-height: 1.6; }
+.course-outline { max-width: 1040px; margin-top: 35px; }
+.outline-item { display: flex; gap: 26px; margin-bottom: 26px; color: #667a8b; }
+.outline-item > span { color: var(--teal); }
+.outline-item.current { color: var(--navy); font-weight: 650; }
+.outline-sub { font-size: 20px; font-weight: 400; margin-top: 10px; color: #667a8b; }
+.team { display: grid; grid-template-columns: repeat(3,1fr); gap: 25px; text-align: center; margin-top: 28px; }
+.team img { width: 175px; height: 175px; object-fit: cover; border-radius: 50%; margin: 0 auto 22px; }
+.team p { font-size: 22px; margin: 11px 0; }
+.team code { background: none; font-size: 18px; }
+.team h2 { margin-bottom: 0; }
+.schedule { font-size: 23px; line-height: 1.35; }
+.schedule li { margin: 13px 0; }
+.slidev-layout table { width: 100%; font-size: 23px; border-collapse: collapse; }
+.slidev-layout th { color: var(--teal); text-align: left; }
+.slidev-layout td, .slidev-layout th { border-bottom: 1px solid #dce5eb; padding: 9px 12px; }
+.table-slide table { font-size: 21px; }
+.table-slide td, .table-slide th { padding: 9px 12px; }
+.hero { display: block; width: 100%; height: 468px; object-fit: contain; margin: 0 auto; }
+.figure-slide h1 { margin-bottom: 20px; }
+.figure-slide:has(> p) .hero { height: 420px; }
+.wide-figure { display: block; width: 100%; height: 310px; object-fit: contain; margin: 5px auto 25px; }
+.figure-top { width: 100%; height: 195px; object-fit: contain; margin: 0 auto 18px; }
+.figure-bottom { width: 100%; height: 260px; object-fit: contain; margin: 0 auto; }
+.taxonomy { width: 100%; height: 475px; object-fit: contain; }
+.timeline { width: 100%; height: 155px; object-fit: contain; margin-bottom: 18px; }
+.glossary { font-size: 22px; line-height: 1.9; }
+.column-figure { width: 100%; height: 370px; object-fit: contain; }
+.histogram { grid-template-columns: 3fr 1fr; gap: 40px; }
+.histogram-figure { width: 100%; height: 180px; object-fit: contain; }
+.mlp-figure { width: 100%; height: 165px; object-fit: contain; }
+.pixel-figure { width: 100%; height: 275px; object-fit: contain; }
+.theorems { line-height: 1.3; }
+.theorems h1 { margin-bottom: 20px; }
+.theorems .block { margin: 16px 0; }
+.theorems p { margin: 7px 0; }
+.theorems .katex-display { margin: 8px 0; }
+.math-chain { margin: 16px 0; white-space: nowrap; font-size: 23px; }
+.math-chain p { display: inline; }
+.math-chain > span { display: inline-block; }
+.derivation .block { margin: 15px 0; }
+.derivation .katex-display { text-align: left; margin: 10px 0; }
+.derivation .katex-display > .katex { text-align: left; }
+.summary li { margin: 16px 0; }
+/* Native KaTeX line ranges normally dim future rows. Course reveals hide them. */
+.slidev-layout .slidev-katex-wrapper .mord.dishonored { opacity: 0 !important; pointer-events: none; }
+.slidev-layout .slidev-vclick-hidden { opacity: 0 !important; pointer-events: none; }
+.slidev-vclick-target { transition: none !important; }
+/* Reserve a separate bottom row so Slidev's navigation stays above the pen tools. */
+body:has(.course-tools) #page-root,
+body:has(.course-tools) .slidev-presenter { height: calc(var(--vh, 1vh) * 100 - 66px); }
+@media print { .course-tools, .tool-message { display: none !important; } }
+/* The course toolbar replaces the stock drawing toolbar while it is visible. */
+body:has(.course-tools) div:has(> button[title="Draw with stylus"]) { display: none !important; }

@@ -4,7 +4,7 @@ Before editing, read `CLAUDE.md`: it is the shared course convention reference. 
 
 Project skills are in `.agents/skills/`: `lecture-audit`, `notation-lint`, `recap-sync`, `summary-sync`, `readme-sync`. Read the matching skill before performing its workflow. Use the available Codex tools; `.claude/skills/` is the preserved previous version.
 
-For Beamer-to-Slidev migration, read `presentation-experiments/SLIDEV-MIGRATION.md` before editing. It defines the working migration rules, including reveal semantics, tablet annotations, shared sources, and verification; unfinished prototype features are explicitly marked.
+For Beamer-to-Slidev migration, read `slidev/MIGRATION.md` before editing. It defines the working migration rules, including reveal semantics, tablet annotations, shared sources, and verification; unfinished prototype features are explicitly marked.
 
 - Do not touch, rebuild or sync `lectures/merged/` unless explicitly requested.
 - Before each commit, show the resulting diff and obtain the author’s confirmation. Do not add agent attribution to commit messages or PR descriptions.
