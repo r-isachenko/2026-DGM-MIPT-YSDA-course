@@ -9,8 +9,7 @@
 | Лекция | Исходник | PDF с раскрытиями | Раздатка | Перенос и проверки |
 |---|---|---|---|---|
 | 1 | [slides.md](lecture1/slides.md) | [Lecture1.pdf](lecture1/Lecture1.pdf) | [Lecture1-handout.pdf](lecture1/Lecture1-handout.pdf) | [migration.md](lecture1/migration.md) |
-
-Папка `lecture2/` появится при переносе второй лекции; пустые заготовки не нужны.
+| 2 | [slides.md](lecture2/slides.md) | [Lecture2.pdf](lecture2/Lecture2.pdf) | [Lecture2-handout.pdf](lecture2/Lecture2-handout.pdf) | [migration.md](lecture2/migration.md) |
 
 ## Запуск
 
@@ -26,6 +25,7 @@ npm run dev -- 1
 порт 3030 + N. В каждой папке лекции основной файл называется `slides.md`.
 
 - Lecture 1: `http://localhost:3031/`.
+- Lecture 2: `http://localhost:3032/` (`npm run dev -- 2`).
 - Режим преподавателя: `http://localhost:3031/presenter/1`.
 - Показ с закреплённой панелью пера: `http://localhost:3031/1?tools`.
 - Arrow Right / Space — следующий шаг; Arrow Left — предыдущий.
@@ -93,7 +93,7 @@ Slidev пишет общие generated-файлы внутри установл�
   В headmatter: `theme: ../theme`.
 - `lectureN/public/figs/` — локальные иллюстрации; в слайдах `src="/figs/name.png"`.
   Общие SVG подключает `TaxonomyDiagram` из темы через явные импорты;
-  вариант AR: `<TaxonomyDiagram autoregressive />`.
+  вариант AR: `<TaxonomyDiagram autoregressive />`, NF: `<TaxonomyDiagram normalizing-flow />`.
 - `lectureN/components/` и `lectureN/lib/` — демонстрации этой лекции.
 - `lectureN/slide-map.json` и `migration.md` — карта и журнал переноса.
 - `tools/` — общие команды, тесты и проверка PDF.
@@ -135,3 +135,18 @@ Slidev пишет общие generated-файлы внутри установл�
 Исторические снимки и прототипы сохранены в `codex/slidev-before-interactivity`
 (`1446c57`) и `codex/lecture01-interactivity`. Там используется прежняя папка
 `slidev/`; рабочая структура на `main` — `lectures-slidev/`.
+
+## Интерактивная Lecture 2
+
+Демо якобиана объединено с исходным слайдом; AR и RealNVP добавлены после соответствующих исходных слайдов:
+
+- Слайд 10: площадь и определитель якобиана — Identity / Shear / Stretch,
+  ползунки Stretch / Shear, Reset.
+- Слайд 23: Gaussian AR flow — Sampling / Density evaluation,
+  Next coordinate / Compute all, Reset.
+- Слайд 27: RealNVP — Apply layer, Invert last layer, Strength, Reset.
+
+Во всех трёх демо статические примеры для PDF заданы отдельно. Управлять в
+выводимом на экран окне: состояние между presenter/viewer не синхронизируется.
+Браузерные сценарии: `node tools/inspect-flow-demos.mjs` при работающей Lecture 2.
+Численные проверки входят в `npm run test:demos` и `npm run finalize -- 2`.

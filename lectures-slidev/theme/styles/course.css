@@ -14,6 +14,8 @@
 .slidev-layout .block { margin: 17px 0; }
 .slidev-layout .block:first-child { margin-top: 0; }
 .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+.flow-directions { grid-template-columns: 1.8fr 1fr; gap: 18px 36px; }
+.flow-directions .figure-top { height: 165px; margin: 0; }
 .balanced { align-items: center; }
 .source { position: absolute; bottom: 19px; left: 58px; right: 110px; font-size: 12px; line-height: 1.3; color: var(--muted); border-top: 1px solid #dae3e9; padding-top: 8px; }
 .source a { border: none; }
@@ -47,6 +49,7 @@
 .wide-figure { display: block; width: 100%; height: 310px; object-fit: contain; margin: 5px auto 25px; }
 .figure-top { width: 100%; height: 195px; object-fit: contain; margin: 0 auto 18px; }
 .figure-bottom { width: 100%; height: 260px; object-fit: contain; margin: 0 auto; }
+.figure-tall { height: 340px; }
 .taxonomy { width: 100%; height: 475px; object-fit: contain; }
 .timeline { width: 100%; height: 155px; object-fit: contain; margin-bottom: 18px; }
 .glossary { font-size: 22px; line-height: 1.55; }
@@ -63,6 +66,11 @@
 .histogram-figure { width: 100%; height: 180px; object-fit: contain; }
 .mlp-figure { width: 100%; height: 165px; object-fit: contain; }
 .pixel-figure { width: 100%; height: 275px; object-fit: contain; }
+.recap-models { grid-template-columns: 0.85fr 1.15fr; gap: 44px; margin-top: 32px; }
+.recap-models > section + section { border-left: 1px solid #dae3e9; padding-left: 36px; }
+.recap-illustrations { height: 370px; display: flex; align-items: center; justify-content: center; }
+.recap-illustrations img { width: 100%; max-height: 350px; object-fit: contain; }
+.recap-imagegpt { display: grid; grid-template-columns: 0.65fr 1fr; gap: 20px; }
 .theorems { line-height: 1.4; }
 .theorems h1 { margin-bottom: 20px; }
 .theorems .block { margin: 16px 0; }

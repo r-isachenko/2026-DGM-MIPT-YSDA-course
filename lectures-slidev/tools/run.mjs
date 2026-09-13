@@ -16,7 +16,7 @@ switch (action) {
   case 'export': exportPdf(); break
   case 'finalize':
     check()
-    runNode(['--test', tool('test-demos.mjs'), tool('test-course.mjs')])
+    runNode(['--test', tool('test-demos.mjs'), tool('test-flow-demos.mjs'), tool('test-course.mjs')])
     build()
     exportPdf()
     console.log(`Built ${lecture.name} and both PDFs. Render and visually review them before committing.`)

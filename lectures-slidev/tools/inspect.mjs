@@ -25,7 +25,9 @@ async function sample() {
     function visible(el) { for(let a=el; a && a!==layout; a=a.parentElement) { const s=getComputedStyle(a); if(+s.opacity===0||s.display==='none'||s.visibility==='hidden') return false } return true }
     const nodes=[...layout.querySelectorAll('h1,h2,p,li,img,table,.katex-display,.math-chain,.katex-html,.mord')]
     const rects=nodes.map(el=>{const r=el.getBoundingClientRect();return [r.x,r.y,r.width,r.height].map(v=>Math.round(v*100)/100)})
-    return { rects, visible:nodes.map(visible), overflow:nodes.map((el,i)=>({tag:el.tagName,text:el.textContent.slice(0,70),r:rects[i]})).filter(n=>n.r[0]+n.r[2]>1255 || n.r[1]+n.r[3]>672), rawMath:layout.innerText.includes('$'), mathErrors:layout.querySelectorAll('.katex-error').length, images:[...layout.querySelectorAll('img')].every(i=>i.complete&&i.naturalWidth>0) }
+    const footer = layout.querySelector('.source')
+    const contentBottom = Math.min(672, footer ? footer.getBoundingClientRect().top - 12 : 672)
+    return { rects, visible:nodes.map(visible), overflow:nodes.map((el,i)=>({tag:el.tagName,text:el.textContent.slice(0,70),r:rects[i],isContent:!el.closest('.source')})).filter(n=>n.isContent && (n.r[0]+n.r[2]>1255 || n.r[1]+n.r[3]>contentBottom)), rawMath:layout.innerText.includes('$'), mathErrors:layout.querySelectorAll('.katex-error').length, images:[...layout.querySelectorAll('img')].every(i=>i.complete&&i.naturalWidth>0) }
   })
 }
 try {
@@ -47,6 +49,7 @@ try {
   }
   const last=states.at(-1)
   assert.equal(last.mathErrors,0);assert.equal(last.rawMath,false);assert.equal(last.images,true)
+  assert.deepEqual(last.overflow, [], `Content crosses the slide or footnote boundary on slide ${slide.slide}`)
   result.push({...slide,overflow:last.overflow,states:states.length,geometryStable:true,backwardStable:true})
   console.log(`${slide.slide}: ${states.length} states; ${last.overflow.length ? JSON.stringify(last.overflow) : 'OK'}`)
  }

@@ -3,9 +3,12 @@ set -euo pipefail
 project="$(cd "$(dirname "$0")/.." && pwd)"
 work="$(mktemp -d "${TMPDIR:-/tmp}/dgm-taxonomy.XXXXXX")"
 trap 'rm -rf "$work"' EXIT
-for variant in taxonomy taxonomy-ar; do
+variants=("$@")
+if [[ ${#variants[@]} -eq 0 ]]; then variants=(taxonomy taxonomy-ar taxonomy-nf); fi
+for variant in "${variants[@]}"; do
   highlight=""
   if [[ "$variant" = "taxonomy-ar" ]]; then highlight="ar"; fi
+  if [[ "$variant" = "taxonomy-nf" ]]; then highlight="nf"; fi
   cat > "$work/$variant.tex" <<EOF
 \\def\\pgfsysdriver{pgfsys-dvisvgm.def}
 \\documentclass[tikz,border=3pt]{standalone}
