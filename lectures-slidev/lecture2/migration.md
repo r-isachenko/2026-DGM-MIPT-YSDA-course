@@ -242,3 +242,21 @@ Validation:
 
 Final `slides.md` SHA-256:
 `4a754093cdcf35fefbc1190ec36cad64ca1618eb92de027b7b3ad2e569d25590`.
+
+## Slide 18: restore the explicit statement (2026-09-13)
+
+At the author's request, the Continuous Parameterization block now starts with
+the explicit nonexistence of a continuous surjection from `R^(m^2)` onto all
+invertible `m x m` matrices. The determinant-sign explanation follows in the
+shared muted gray color, with the same font size. The mathematical meaning,
+single reveal step, slide map, Summary and recap interfaces are unchanged.
+
+`finalize -- 2` passed, including all 11 tests and both exports (33 / 80 pages).
+The affected handout page 18 and reveal page 39 were rendered and reviewed at
+full size. Pixel comparison of every PDF page against the preceding reviewed
+exports found changes only on those two pages. The final browser check on slide
+18 passed both reveal states, geometry, backward navigation and footer spacing.
+`git diff --check` passed.
+
+Final `slides.md` SHA-256:
+`d2f1b154780a97f6f28a78fd7b591cb58bb5544b453d7b38763a585e408afee3`.

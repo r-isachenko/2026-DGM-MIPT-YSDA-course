@@ -610,11 +610,15 @@ Computing $\bff_{\btheta}^{-1}(\bz)$ means solving $\bW\bx=\bz$: $O(m^3)$ for a 
 </div>
 <div class="block" v-click="1">
 
-## Why Fix the Determinant Sign?
+## Continuous Parameterization
 
-A continuous path from $\det\bW>0$ to $\det\bW<0$ must cross $\det\bW=0$, where the matrix is **not invertible**.
+There is no continuous surjective map from $\bbR^{m^2}$ onto the set of all invertible $m\times m$ matrices.
 
-Therefore, a continuous parameterization $\bW(\btheta)$, $\btheta\in\bbR^{m^2}$, that guarantees invertibility must keep the determinant sign fixed. It cannot cover **all** invertible matrices.
+<div style="color: var(--muted)">
+
+Explanation: a continuous path from $\det\bW>0$ to $\det\bW<0$ must cross $\det\bW=0$, where invertibility is lost. A continuous parameterization that guarantees invertibility must therefore keep the determinant sign fixed.
+
+</div>
 
 </div>
 
