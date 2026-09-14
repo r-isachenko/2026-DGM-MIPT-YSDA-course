@@ -1,0 +1,152 @@
+[
+  {
+    "slide": 1,
+    "frame": 1,
+    "title": "Deep Generative Models",
+    "clicks": 0
+  },
+  {
+    "slide": 2,
+    "frame": 2,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 3,
+    "frame": 3,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 4,
+    "frame": 4,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 5,
+    "frame": 5,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 6,
+    "frame": 6,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 7,
+    "frame": 7,
+    "title": "Recap of Previous Lecture",
+    "clicks": 1
+  },
+  {
+    "slide": 8,
+    "frame": 8,
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 9,
+    "frame": "auto: Latent Variable Models (LVM) (continued)",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 10,
+    "frame": 9,
+    "title": "MLE for LVM",
+    "clicks": 3
+  },
+  {
+    "slide": 11,
+    "frame": "auto: Variational Evidence Lower Bound (ELBO)",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 12,
+    "frame": 10,
+    "title": "ELBO Derivation I",
+    "clicks": 5
+  },
+  {
+    "slide": 13,
+    "frame": 11,
+    "title": "ELBO Derivation II",
+    "clicks": 6
+  },
+  {
+    "slide": 14,
+    "frame": 12,
+    "title": "Variational Evidence Lower Bound (ELBO)",
+    "clicks": 5
+  },
+  {
+    "slide": 15,
+    "frame": 13,
+    "title": "Variational Evidence Lower Bound (ELBO)",
+    "clicks": 6
+  },
+  {
+    "slide": 16,
+    "frame": "auto: Amortized Inference",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 17,
+    "frame": 14,
+    "title": "Parametric Variable Posterior",
+    "clicks": 3
+  },
+  {
+    "slide": 18,
+    "frame": 15,
+    "title": "ELBO Optimization",
+    "clicks": 0
+  },
+  {
+    "slide": 19,
+    "frame": 16,
+    "title": "ELBO Optimization",
+    "clicks": 2
+  },
+  {
+    "slide": 20,
+    "frame": "auto: ELBO Gradients, Reparametrization Trick",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 21,
+    "frame": 17,
+    "title": "ELBO Gradients: $\\nabla_{\\btheta} \\cL_{\\bphi, \\btheta}(\\bx)$",
+    "clicks": 5
+  },
+  {
+    "slide": 22,
+    "frame": 18,
+    "title": "ELBO Gradients: $\\nabla_{\\bphi} \\cL_{\\bphi, \\btheta}(\\bx)$",
+    "clicks": 3
+  },
+  {
+    "slide": 23,
+    "frame": 19,
+    "title": "ELBO Gradients: $\\nabla_{\\bphi} \\cL_{\\bphi, \\btheta}(\\bx)$",
+    "clicks": 2
+  },
+  {
+    "slide": 24,
+    "frame": 20,
+    "title": "ELBO Gradient: $\\nabla_{\\bphi} \\cL_{\\bphi, \\btheta}(\\bx)$",
+    "clicks": 4
+  },
+  {
+    "slide": 25,
+    "frame": 21,
+    "title": "Summary",
+    "clicks": 0
+  }
+]
