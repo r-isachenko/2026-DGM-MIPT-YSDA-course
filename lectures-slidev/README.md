@@ -11,6 +11,7 @@
 | 1 | [slides.md](lecture1/slides.md) | [Lecture1.pdf](lecture1/Lecture1.pdf) | [Lecture1-handout.pdf](lecture1/Lecture1-handout.pdf) | [migration.md](lecture1/migration.md) |
 | 2 | [slides.md](lecture2/slides.md) | [Lecture2.pdf](lecture2/Lecture2.pdf) | [Lecture2-handout.pdf](lecture2/Lecture2-handout.pdf) | [migration.md](lecture2/migration.md) |
 | 3 | [slides.md](lecture3/slides.md) | [Lecture3.pdf](lecture3/Lecture3.pdf) | [Lecture3-handout.pdf](lecture3/Lecture3-handout.pdf) | [migration.md](lecture3/migration.md) |
+| 4 | [slides.md](lecture4/slides.md) | [Lecture4.pdf](lecture4/Lecture4.pdf) | [Lecture4-handout.pdf](lecture4/Lecture4-handout.pdf) | [migration.md](lecture4/migration.md) |
 
 ## Запуск
 
@@ -28,6 +29,7 @@ npm run dev -- 1
 - Lecture 1: `http://localhost:3031/`.
 - Lecture 2: `http://localhost:3032/` (`npm run dev -- 2`).
 - Lecture 3: `http://localhost:3033/` (`npm run dev -- 3`).
+- Lecture 4: `http://localhost:3034/` (`npm run dev -- 4`).
 - Режим преподавателя: `http://localhost:3031/presenter/1`.
 - Показ с закреплённой панелью пера: `http://localhost:3031/1?tools`.
 - Arrow Right / Space — следующий шаг; Arrow Left — предыдущий.

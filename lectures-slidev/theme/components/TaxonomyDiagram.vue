@@ -2,9 +2,10 @@
 import taxonomy from '../assets/taxonomy.svg'
 import taxonomyAr from '../assets/taxonomy-ar.svg'
 import taxonomyNf from '../assets/taxonomy-nf.svg'
-defineProps<{ autoregressive?: boolean, normalizingFlow?: boolean }>()
+import taxonomyVae from '../assets/taxonomy-vae.svg'
+defineProps<{ autoregressive?: boolean, normalizingFlow?: boolean, variationalAutoencoder?: boolean }>()
 </script>
 
 <template>
-  <img :src="normalizingFlow ? taxonomyNf : autoregressive ? taxonomyAr : taxonomy" alt="Generative models taxonomy">
+  <img :src="variationalAutoencoder ? taxonomyVae : normalizingFlow ? taxonomyNf : autoregressive ? taxonomyAr : taxonomy" alt="Generative models taxonomy">
 </template>
