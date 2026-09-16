@@ -408,7 +408,7 @@ A normalizing flow is a $C^1$-diffeomorphism that transforms data $\bx$ to noise
 <div v-click="1">
 
 - **Normalizing** refers to mapping samples from $\pd(\bx)$ to a base distribution $p(\bz)$.
-- **Flow** describes the sequence of transformations that maps samples from $p(\bz)$ to the target, more complex distribution.
+- **Flow** describes the sequence of transformations from base noise to data.
 
 $$
 \bz=\bff_K\circ\ldots\circ\bff_1(\bx);\quad\bx=\bff_1^{-1}\circ\ldots\circ\bff_K^{-1}(\bz)
@@ -428,11 +428,11 @@ where $\bJ_{\bff_k}=\frac{\partial\bff_k}{\partial\bff_{k-1}}$.
 </div>
 <div v-click="3">
 
-**Note:** Here we consider only **continuous** random variables.
+We focus on **continuous** variables; **discrete flows** have not become mainstream.
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/1912.02762">Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019</a></div>
+<div class="source"><a href="https://arxiv.org/abs/1912.02762">Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019</a><br><a href="https://arxiv.org/abs/1905.10347">Tran D. et al. Discrete Flows: Invertible Generative Models of Discrete Data, 2019</a></div>
 
 ---
 clicks: 2
@@ -587,27 +587,22 @@ $z_j$ depends only on $\bx_{1:j}$ (autoregressive dependency).
 </div>
 
 ---
-clicks: 1
+clicks: 2
 sourceFrame: "15"
+mergedSourceFrames: [16]
 class: theorems
 ---
 
 # Linear Normalizing Flows
 
 $$
-\bz=\bff_{\btheta}(\bx)=\bW\bx,\quad\bW\in\bbR^{m\times m},\quad\btheta=\bW,\quad\bJ_\bff=\bW
+\bz=\bff_{\btheta}(\bx)=\bW\bx,\quad\bW\in\bbR^{m\times m},\quad\bJ_\bff=\bW
 $$
 
 Computing $\bff_{\btheta}^{-1}(\bz)$ means solving $\bW\bx=\bz$: $O(m^3)$ for a general dense matrix.
 
-<div class="block" v-click="1">
+Diagonal systems cost $O(m)$; triangular systems cost $O(m^2)$.
 
-## Invertibility
-
-- Diagonal matrix: $O(m)$.
-- Triangular matrix: $O(m^2)$.
-
-</div>
 <div class="block" v-click="1">
 
 ## Continuous Parameterization
@@ -621,60 +616,26 @@ Explanation: a continuous path from $\det\bW>0$ to $\det\bW<0$ must cross $\det\
 </div>
 
 </div>
+<div class="block" v-click="2">
 
-<div class="source"><a href="https://arxiv.org/abs/1912.02762">Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019</a></div>
+## Structured Factors
 
----
-clicks: 3
-sourceFrame: "16"
-class: theorems
----
+Structured factorizations (e.g. LU or QR) simplify determinant and inverse calculations. Keep triangular diagonals nonzero to preserve invertibility.
 
-# Linear Normalizing Flows
-
-$$
-\bz=\bff_{\btheta}(\bx)=\bW\bx,\quad\bW\in\bbR^{m\times m},\quad\btheta=\bW,\quad\bJ_\bff=\bW
-$$
-
-<div class="block" v-click="1">
-
-## Matrix Decompositions
-
-<div class="columns">
-<div>
-
-**LU Decomposition:**
-
-$$
-\bW=\bP\bL\bU,
-$$
-
-- $\bP$: permutation matrix.
-- $\bL$: lower triangular with positive diagonal.
-- $\bU$: upper triangular with positive diagonal.
-
-</div>
-<div v-click="2">
-
-**QR Decomposition:**
-
-$$
-\bW=\bQ\bR,
-$$
-
-- $\bQ$: orthogonal matrix.
-- $\bR$: upper triangular with positive diagonal.
-
-</div>
-</div>
-</div>
-<div v-click="3" class="takeaway">
-
-Decomposition is performed only at initialization; the decomposed matrices ($\bP,\bL,\bU$ or $\bQ,\bR$) are optimized during training.
+**Learn the factors directly** during training.
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/1807.03039">Kingma D. P., et al. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018</a><br><a href="https://arxiv.org/abs/1901.11137">Hoogeboom E., et al. Emerging Convolutions for Generative Normalizing Flows, 2019</a></div>
+<div class="source"><a href="https://arxiv.org/abs/1912.02762">Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019</a><br><a href="https://arxiv.org/abs/1807.03039">Kingma D. P., et al. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018</a><br><a href="https://arxiv.org/abs/1901.11137">Hoogeboom E., et al. Emerging Convolutions for Generative Normalizing Flows, 2019</a></div>
+
+<!--
+Why the determinant sign matters:
+A continuous path from det W > 0 to det W < 0 must cross det W = 0,
+where invertibility is lost. The parameter space R^(m^2) is connected,
+whereas the full set of invertible matrices has two components distinguished
+by determinant sign. A continuous parameterization that guarantees
+invertibility therefore keeps the determinant sign fixed.
+-->
 
 ---
 clicks: 0
@@ -746,53 +707,8 @@ The Jacobian matrix of this transformation is triangular.
 <div class="source"><a href="https://arxiv.org/abs/1606.04934">Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016</a></div>
 
 ---
-clicks: 2
-sourceFrame: "18"
-class: theorems
----
-
-# Gaussian Autoregressive NF
-
-<div class="columns balanced flow-directions">
-<div>
-
-## Forward Transformation: $\bff_{\btheta}(\bx)$
-
-$$
-\begin{aligned}
-\bz&=\bff_{\btheta}(\bx)\\
-{\color{teal}z_j}&=\frac{{\color{#8854c0}x_j}-\mu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})}{\sigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})}
-\end{aligned}
-$$
-
-</div>
-<img class="figure-top" src="/figs/af_iaf_explained_2.png" alt="Forward autoregressive transform computes all noise coordinates in parallel" />
-<div v-click="1">
-
-## Inverse Transformation: $\bff^{-1}_{\btheta}(\bz)$
-
-$$
-\begin{aligned}
-\bx&=\bff^{-1}_{\btheta}(\bz)\\
-{\color{#8854c0}x_j}&=\sigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})\cdot{\color{teal}z_j}+\mu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})
-\end{aligned}
-$$
-
-</div>
-<img v-click="1" class="figure-top" src="/figs/af_iaf_explained_1.png" alt="Inverse transform samples coordinates sequentially" />
-</div>
-<div v-click="2">
-
-- Sampling must be done sequentially, but density evaluation can be parallelized.
-- The forward KL divergence is a natural objective for training.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/1705.07057">Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017</a></div>
-
----
 clicks: 0
-sourceFrame: "extension: 18"
+sourceFrame: "18"
 class: interactive-slide
 ---
 
@@ -921,6 +837,163 @@ class: interactive-slide
 <div class="source"><a href="https://arxiv.org/abs/1605.08803">Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016</a></div>
 
 ---
+clicks: 2
+sourceFrame: "extension: 17"
+class: theorems
+---
+
+# TarFlow: Autoregression over Patches
+
+Replace scalar coordinates by $N$ image patches $\bx_j\in\bbR^d$. Keep the same dependence on the **previous patches** $\bx_{1:j-1}$.
+
+<div class="block">
+
+## Density Evaluation
+
+$$
+\bz_j=\left(\bx_j-\bmu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})\right)\odot\frac{1}{\bsigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})}.
+$$
+
+All input patches are observed: compute every $\bz_j$ **in parallel** within a block.
+
+</div>
+<div class="block" v-click="1">
+
+## Sampling
+
+$$
+\bx_j=\bz_j\odot\bsigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})+\bmu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}}).
+$$
+
+Earlier output patches must be generated first: compute $\bx_j$ **sequentially**.
+
+</div>
+<div class="block" v-click="2">
+
+The Jacobian stays **triangular**; positive componentwise scales ensure invertibility.
+
+Here $j=2,\ldots,N$; the first patch is unchanged: $\bz_1=\bx_1$.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2412.06329">Zhai S. et al. Normalizing Flows are Capable Generative Models, 2024. Section 2.2.</a></div>
+
+<!--
+Relate both identities directly to Gaussian Autoregressive NF: the scalar
+coordinate becomes a vector of d pixel values. N is the number of patches,
+so Nd is the image dimension. Patches are indexed in the current block's order.
+The functions predict componentwise shifts and positive scales from the strict
+prefix. There is no dependence on the current patch inside these functions.
+This gives a block lower-triangular Jacobian with diagonal within-patch blocks;
+its determinant is the product of inverse componentwise scales.
+Training uses the same exact flow likelihood and MLE objective introduced earlier.
+The slide compares the two directions of a single AR block, rather than repeating
+the common Training/Sampling algorithm. For the full flow, sample the base Gaussian
+and invert all blocks in reverse order. Parallelism is across patches within one
+block; both directions traverse the flow blocks sequentially.
+-->
+
+---
+clicks: 1
+sourceFrame: "extension: 11"
+class: theorems
+---
+
+# TarFlow: Transformer Architecture
+
+Use a **causal Transformer** to predict the shifts and scales of each AR flow block.
+
+<img style="width: 100%; height: 330px; object-fit: contain; margin: 12px auto" src="/figs/tarflow-architecture.png" alt="TarFlow maps image patches to noise through a stack of causal Transformer affine flow blocks" />
+
+<div v-click="1">
+
+- Causal attention uses only earlier patches. The Transformer itself need not be invertible.
+- Stack affine AR blocks and reverse patch order between blocks.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2412.06329">Zhai S. et al. Normalizing Flows are Capable Generative Models, 2024. Figure 2.</a></div>
+
+<!--
+TarFlow is a patchwise extension of Masked Autoregressive Flow, operating directly
+on pixels. Patchification is a reshape, not a learned lossy tokenizer. The
+Transformer predicts parameters of the affine map introduced on the previous
+slide. Strict prefix conditioning uses a shifted causal Transformer output;
+log-scales are exponentiated to make each scale positive.
+The first block uses the original patch order; each subsequent block reverses it.
+Inversion undoes the affine maps and permutations in reverse block order.
+The original diagram uses zero-based patch indices and t for the block index;
+the preceding method slide uses the course's one-based indices for one block.
+-->
+
+---
+clicks: 1
+sourceFrame: "extension: 12"
+class: figure-slide
+---
+
+# TarFlow: Flows Can Generate Detailed Images
+
+<img style="width: 100%; height: 310px; object-fit: contain; margin: 8px auto 16px" src="/figs/tarflow-samples.jpeg" alt="TarFlow guided samples: AFHQ animal faces and ImageNet objects and scenes" />
+
+AFHQ $256\times256$ (left); ImageNet $128\times128$ and $64\times64$ (right).
+
+<div class="block" v-click="1">
+
+- The **autoregressive flow construction** scales to detailed images using networks over patches.
+- The flow keeps a tractable likelihood and sequential sampling across patches.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2412.06329">Zhai S. et al. Normalizing Flows are Capable Generative Models, 2024. Figure 3: samples from the paper's full generation setup.</a></div>
+
+<!--
+These are examples reported by the authors, not samples generated for this course.
+The paper appeared on arXiv in December 2024 and at ICML 2025; the assets are from
+arXiv v3. This slide makes no current state-of-the-art or universal diffusion
+comparison claim. The full published generation setup also uses noise augmentation,
+guidance and denoising; these are not introduced in Lecture 2. The examples should
+not be presented as samples from the bare affine-block inversion shown above.
+-->
+
+---
+clicks: 2
+sourceFrame: "extension: 13"
+class: theorems
+---
+
+# Normalizing Flows: What Comes Next?
+
+We can now turn simple noise into complex data, with both **sampling** and **exact density evaluation**.
+
+<div class="block">
+
+## What We Learned
+
+- Change of variables gives an exact likelihood and an MLE training objective.
+- Efficient training and sampling require tractable Jacobian determinants and efficient inverses.
+
+</div>
+<div class="columns">
+<div class="block" v-click="1" style="margin: 0">
+
+## Next: Latent Variable Models
+
+Relax the one-to-one map with a probabilistic decoder. Marginalizing latent variables makes likelihood evaluation harder, motivating variational inference (L3–L4).
+
+</div>
+<div class="block" v-click="2" style="margin: 0">
+
+## Later: Continuous Flows (L9–L11)
+
+Continuous-time normalizing flows (CNF) replace layers by an ODE, relaxing the layer constraints. Flow Matching learns the velocity field by regression; sampling uses a numerical solver.
+
+</div>
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/1912.02762">Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019</a><br><a href="https://arxiv.org/abs/2210.02747">Lipman Y. et al. Flow Matching for Generative Modeling, 2022</a></div>
+
+---
 clicks: 0
 sourceFrame: "auto: Latent Variable Models (LVM)"
 class:
@@ -937,8 +1010,9 @@ class:
 </div>
 
 ---
-clicks: 1
+clicks: 2
 sourceFrame: "21"
+mergedSourceFrames: [22]
 class: theorems
 ---
 
@@ -974,46 +1048,14 @@ $$
 
 ## Interpretation
 
-- We begin with unknown variables $\btheta$ and a prior belief $p(\btheta)$.
-- Once data $\bx$ is observed, the posterior $p(\btheta|\bx)$ incorporates both prior beliefs and evidence from the data.
+The prior $p(\btheta)$ expresses our belief before observing data; the posterior $p(\btheta|\bx)$ updates it after observing $\bx$.
 
 </div>
+<div class="block" v-click="2">
 
----
-clicks: 3
-sourceFrame: "22"
-class: theorems
----
+## Computational Challenge
 
-# Bayesian Framework
-
-Consider the case where the unobserved variables $\btheta$ are model parameters (i.e., $\btheta$ are random variables).
-
-- $\bX=\{\bx_i\}_{i=1}^n$: observed samples;
-- $p(\btheta)$: prior distribution.
-
-<div class="block" v-click="1">
-
-## Posterior Distribution
-
-$$
-p(\btheta|\bX)=\frac{p(\bX|\btheta)p(\btheta)}{p(\bX)}
-=\frac{p(\bX|\btheta)p(\btheta)}{\int p(\bX|\btheta)p(\btheta)d\btheta}
-$$
-
-</div>
-<div v-click="2">
-
-If the evidence $p(\bX)$ is intractable (due to high-dimensional integration), the posterior cannot be computed exactly.
-
-</div>
-<div class="block" v-click="3">
-
-## Maximum a Posteriori (MAP) Estimation
-
-$$
-\btheta^*=\argmax_{\btheta}p(\btheta|\bX)=\argmax_{\btheta}(\log p(\bX|\btheta)+\log p(\btheta))
-$$
+The evidence requires integration over the unobserved variables. If it is intractable, the posterior cannot be evaluated exactly.
 
 </div>
 
@@ -1028,6 +1070,8 @@ class: theorems
 <div class="block">
 
 ## Maximum Likelihood Estimation (MLE) Problem
+
+For the observed dataset $\bX=\{\bx_i\}_{i=1}^n$,
 
 $$
 \btheta^*=\argmax_{\btheta}\pt(\bX)=\argmax_{\btheta}\prod_{i=1}^n\pt(\bx_i)=\argmax_{\btheta}\sum_{i=1}^n\log\pt(\bx_i).
@@ -1059,8 +1103,7 @@ $$
 </div>
 <div v-click="4">
 
-- $p(\bz)$ is the prior distribution over the latent variable.
-- $\pt(\bx|\bz)$ is the **decoder** distribution.
+- $p(\bz)$ is the **prior** and $\pt(\bx|\bz)$ is the **decoder** distribution.
 - Both $\pt(\bx|\bz)$ and $p(\bz)$ are usually much simpler than $\pt(\bx)$.
 
 </div>
@@ -1115,9 +1158,9 @@ class: summary
 
 # Summary
 
-- The CoV theorem provides a method for computing a random variable's density under an invertible transformation.
-- Normalizing flows transform a simple base distribution into a complex one via a sequence of invertible mappings, each with efficient Jacobian determinants.
-- Linear NFs capture invertible matrices by using matrix decompositions.
-- Gaussian autoregressive NFs are AR models with triangular Jacobians.
-- The RealNVP coupling layer provides an efficient normalizing flow (a special case of AR NF), supporting fast density evaluation and sampling.
-- LVMs introduce latent representations for observed data, building a complex $\pt(\bx)$ from much simpler $\pt(\bx|\bz)$ and $p(\bz)$.
+- Change of variables computes densities under invertible transformations.
+- Normalizing flows use invertible maps with tractable Jacobians; CNF and Flow Matching extend this view of transporting distributions.
+- Linear NFs use structured matrix factors to simplify determinant and inverse calculations.
+- TarFlow uses Transformers to scale Gaussian AR flows with triangular Jacobians.
+- RealNVP coupling is a special case of AR NF with fast density evaluation and sampling.
+- LVMs combine a decoder $\pt(\bx|\bz)$ and prior $p(\bz)$; marginalization makes $\pt(\bx)$ harder to evaluate.

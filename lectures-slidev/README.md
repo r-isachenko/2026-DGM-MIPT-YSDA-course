@@ -153,18 +153,34 @@ Slidev пишет общие generated-файлы внутри установл�
 
 ## Интерактивная Lecture 2
 
-Демо якобиана объединено с исходным слайдом; AR и RealNVP добавлены после соответствующих исходных слайдов:
+Демо якобиана и AR объединены с соответствующей теорией; демо RealNVP следует за её разбором:
 
 - Слайд 10: площадь и определитель якобиана — Identity / Shear / Stretch,
   ползунки Stretch / Shear, Reset.
-- Слайд 23: Gaussian AR flow — Sampling / Density evaluation,
+- Слайд 21: Gaussian AR flow — Sampling / Density evaluation,
   Next coordinate / Compute all, Reset.
-- Слайд 27: RealNVP — Apply layer, Invert last layer, Strength, Reset.
+- Слайд 25: RealNVP — Apply layer, Invert last layer, Strength, Reset.
 
 Во всех трёх демо статические примеры для PDF заданы отдельно. Управлять в
 выводимом на экран окне: состояние между presenter/viewer не синхронизируется.
 Браузерные сценарии: `node tools/inspect-flow-demos.mjs` при работающей Lecture 2.
 Численные проверки входят в `npm run test:demos` и `npm run finalize -- 2`.
+
+## Интерактивная Lecture 3
+
+- Слайд 14: вариационный Gaussian posterior и зазор ELBO. Poor / Better / Exact,
+  ползунки среднего и стандартного отклонения, Reset. Модель и наблюдение фиксированы.
+- Слайд 18: отдельные оптимизации для наблюдений и один общий encoder;
+  три раскрытия штатными кликами Slidev.
+- Слайды 22–25: смысловые цвета и штатные `v-mark` для зависимостей от θ / φ.
+
+Состояние ползунков сохраняется при уходе со слайда и возврате. Управлять демо
+в выводимом на экран окне: между presenter/viewer состояние компонентов
+не синхронизируется. PDF содержит все три подготовленных примера демо ELBO.
+
+Браузерные сценарии: `node tools/inspect-variational-demos.mjs` при работающей Lecture 3.
+Два численных теста входят в `npm run test:demos` и `npm run finalize -- 3`.
+Подробности и проверенные ограничения: [журнал Lecture 3](lecture3/migration.md).
 
 ## Интерактивная Lecture 5
 

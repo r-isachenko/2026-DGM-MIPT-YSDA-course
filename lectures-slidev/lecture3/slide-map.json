@@ -103,48 +103,54 @@
   },
   {
     "slide": 18,
+    "frame": "extension: 14",
+    "clicks": 3,
+    "title": "Amortized Inference: One Shared Encoder"
+  },
+  {
+    "slide": 19,
     "frame": 15,
     "title": "ELBO Optimization",
     "clicks": 0
   },
   {
-    "slide": 19,
+    "slide": 20,
     "frame": 16,
     "title": "ELBO Optimization",
     "clicks": 2
   },
   {
-    "slide": 20,
+    "slide": 21,
     "frame": "auto: ELBO Gradients, Reparametrization Trick",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 21,
+    "slide": 22,
     "frame": 17,
     "title": "ELBO Gradients: $\\nabla_{\\btheta} \\cL_{\\bphi, \\btheta}(\\bx)$",
     "clicks": 5
   },
   {
-    "slide": 22,
+    "slide": 23,
     "frame": 18,
     "title": "ELBO Gradients: $\\nabla_{\\bphi} \\cL_{\\bphi, \\btheta}(\\bx)$",
     "clicks": 3
   },
   {
-    "slide": 23,
+    "slide": 24,
     "frame": 19,
     "title": "ELBO Gradients: $\\nabla_{\\bphi} \\cL_{\\bphi, \\btheta}(\\bx)$",
     "clicks": 2
   },
   {
-    "slide": 24,
+    "slide": 25,
     "frame": 20,
     "title": "ELBO Gradient: $\\nabla_{\\bphi} \\cL_{\\bphi, \\btheta}(\\bx)$",
     "clicks": 4
   },
   {
-    "slide": 25,
+    "slide": 26,
     "frame": 21,
     "title": "Summary",
     "clicks": 0

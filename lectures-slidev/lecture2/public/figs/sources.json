@@ -1,0 +1,16 @@
+{
+  "tarflow-architecture.png": {
+    "source": "https://arxiv.org/abs/2412.06329",
+    "description": "Figure 2 from TarFlow, arXiv:2412.06329v3; original unmodified architecture diagram.",
+    "assetUrl": "https://arxiv.org/html/2412.06329v3/modelv3.png",
+    "license": "CC BY 4.0",
+    "sha256": "2b91d8034c2fc587a664ac617398826d86e8d9e90ee8dbe077fbf62d36815073"
+  },
+  "tarflow-samples.jpeg": {
+    "source": "https://arxiv.org/abs/2412.06329",
+    "description": "Figure 3 from TarFlow, arXiv:2412.06329v3; original unmodified guided AFHQ and ImageNet samples.",
+    "assetUrl": "https://arxiv.org/html/2412.06329v3/figures/guided_samples.jpeg",
+    "license": "CC BY 4.0",
+    "sha256": "6909e229665cb0ca732e51886985cd53d40eda9c340927b61a3fc11e1095378a"
+  }
+}

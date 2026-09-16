@@ -7,7 +7,7 @@
     "build": "node tools/run.mjs build",
     "export": "node tools/run.mjs export",
     "finalize": "node tools/run.mjs finalize",
-    "test:demos": "node --test tools/test-demos.mjs tools/test-flow-demos.mjs tools/test-course.mjs"
+    "test:demos": "node --test tools/test-demos.mjs tools/test-flow-demos.mjs tools/test-course.mjs tools/test-variational-demos.mjs"
   },
   "devDependencies": {
     "@slidev/cli": "52.19.1",

@@ -8,7 +8,7 @@ const baseURL = process.env.SLIDEV_QA_URL || `http://localhost:${lecture.port}`
 const qa = resolve(root, 'output/qa/lecture2/flow-demos')
 mkdirSync(qa, { recursive: true })
 const map = JSON.parse(readFileSync(lecture.map, 'utf8'))
-const slide = frame => map.find(s => s.frame === (frame === 9 ? 9 : `extension: ${frame}`)).slide
+const slide = frame => (map.find(s => s.frame === `extension: ${frame}`) || map.find(s => s.frame === frame)).slide
 const browser = await chromium.launch({ executablePath: process.env.SLIDEV_BROWSER_PATH || '/Applications/Yandex.app/Contents/MacOS/Yandex', headless: true })
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } })
 const errors = [], failures = [], states = []
@@ -56,6 +56,11 @@ try {
   assert.equal(await demo.getAttribute('data-shear'), '0')
 
   demo = await go(18)
+  const directions = demo.locator('[data-direction]')
+  assert.equal(await directions.count(), 2, 'Both general AR directions stay visible')
+  assert.equal(await demo.locator('[data-direction="sample"]').evaluate(el => el.classList.contains('active')), true)
+  const generalFormulas = await directions.allTextContents()
+  const formulaGeometry = await directions.evaluateAll(els => els.map(el => el.getBoundingClientRect().toJSON()))
   await capture('ar-start')
   for (let n = 1; n <= 4; n++) {
     await demo.getByRole('button', { name: 'Next coordinate', exact: true }).click()
@@ -77,6 +82,10 @@ try {
   }
   assert.equal(await demo.getByRole('button', { name: 'Next coordinate' }).isDisabled(), true)
   await demo.getByRole('button', { name: 'Density evaluation', exact: true }).click()
+  assert.equal(await demo.locator('[data-direction="evaluate"]').evaluate(el => el.classList.contains('active')), true)
+  assert.equal(await demo.locator('[data-direction="sample"]').evaluate(el => el.classList.contains('active')), false)
+  assert.deepEqual(await directions.allTextContents(), generalFormulas, 'Mode switching preserves both general formulas')
+  assert.deepEqual(await directions.evaluateAll(els => els.map(el => el.getBoundingClientRect().toJSON())), formulaGeometry, 'Mode switching preserves formula geometry')
   assert.equal(await demo.locator('.result[data-known="true"]').count(), 0)
   await capture('ar-evaluate-start')
   await demo.getByRole('button', { name: 'Compute all', exact: true }).click()

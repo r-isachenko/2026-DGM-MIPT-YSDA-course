@@ -470,7 +470,7 @@ Distribution $q(\bz)$ is treated as **variational** parameter.
 ---
 clicks: 5
 sourceFrame: "12"
-class: theorems derivation
+class: theorems interactive-slide derivation
 ---
 
 # Variational Evidence Lower Bound (ELBO)
@@ -498,10 +498,7 @@ $\displaystyle\phantom{q^*(\bz)}=\argmin_q\KL(q(\bz)\|p_{\btheta^*}(\bz|\bx))$
 Here we got the intuition about variational distribution $q(\bz)$: it estimates the posterior $p_{\btheta^*}(\bz|\bx)$.
 
 </div>
-<div class="columns" v-click="5" style="margin-top: 14px">
-<img src="/figs/em_bishop1.png" alt="The KL gap separates the ELBO from the log likelihood" class="figure-top" style="height: 185px" />
-<img src="/figs/em_bishop2.png" alt="The exact posterior closes the KL gap and makes the ELBO tight" class="figure-top" style="height: 185px" />
-</div>
+<ElboDemo v-click="5" />
 
 <div class="source">Bishop C. Pattern Recognition and Machine Learning, 2006</div>
 
@@ -607,6 +604,58 @@ $$
 </div>
 
 ---
+clicks: 3
+sourceFrame: "extension: 14"
+class: theorems
+---
+
+# Amortized Inference: One Shared Encoder
+
+<div class="amort-columns">
+<section>
+<h2>Optimize separately for each observation</h2>
+<div class="amort-rows">
+<div class="amort-row"><span><L3Math formula="\bx_1" /></span><b>→</b><div>Fit parameters of <L3Math formula="q_1" /></div><b>→</b><span><L3Math formula="q_1(\bz)" /></span></div>
+<div class="amort-row"><span><L3Math formula="\bx_2" /></span><b>→</b><div>Fit parameters of <L3Math formula="q_2" /></div><b>→</b><span><L3Math formula="q_2(\bz)" /></span></div>
+<div class="amort-row"><span><L3Math formula="\bx_3" /></span><b>→</b><div>Fit parameters of <L3Math formula="q_3" /></div><b>→</b><span><L3Math formula="q_3(\bz)" /></span></div>
+</div>
+<p class="amort-caption">A separate optimization problem for each new input.</p>
+</section>
+<section>
+<h2 v-click="1">Learn one shared mapping</h2>
+<div class="amort-inputs"><span><L3Math formula="\bx_1" /></span><span><L3Math formula="\bx_2" /></span><span><L3Math formula="\bx_3" /></span></div>
+<div v-click="1" class="amort-network">
+<div class="amort-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
+<div class="amort-encoder">Encoder with shared parameters <L3Math formula="\bphi" /></div>
+</div>
+<div v-click="2" class="amort-output">
+<div class="amort-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
+<div class="amort-distributions"><span><L3Math formula="q_{\bphi}(\bz|\bx_1)" /></span><span><L3Math formula="q_{\bphi}(\bz|\bx_2)" /></span><span><L3Math formula="q_{\bphi}(\bz|\bx_3)" /></span></div>
+</div>
+<p v-click="2" class="amort-caption">After training, a forward pass predicts the variational distribution for a new input.</p>
+</section>
+</div>
+<div v-click="3" class="takeaway">The variational distribution is conditioned on each input. The same parameters <L3Math formula="\bphi" /> are reused to produce all of them.</div>
+
+<style scoped>
+.amort-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 24px; }
+.amort-columns h2 { min-height: 30px; }
+.amort-rows { display: flex; flex-direction: column; gap: 24px; margin-top: 18px; }
+.amort-row { display: flex; align-items: center; justify-content: space-between; gap: 9px; min-height: 61px; }
+.amort-row > div { border: 1px solid #bbced8; padding: 10px 12px; border-radius: 6px; }
+.amort-row b { color: #587083; }
+.amort-caption { min-height: 68px; margin-top: 22px !important; }
+.amort-inputs, .amort-arrows, .amort-distributions { display: grid; grid-template-columns: repeat(3,1fr); text-align: center; gap: 10px; }
+.amort-inputs { min-height: 50px; align-items: center; }
+.amort-arrows { color: #8854c0; font-size: 31px; line-height: 40px; }
+.amort-encoder { border: 2px solid #8854c0; padding: 16px 8px; background: #f5f0fa; text-align: center; border-radius: 6px; }
+.amort-distributions { min-height: 66px; align-items: center; color: #007f82; }
+.takeaway { margin-top: 22px !important; }
+</style>
+
+<div class="source"><a href="https://arxiv.org/abs/1312.6114">Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013</a></div>
+
+---
 clicks: 0
 sourceFrame: "15"
 class: theorems
@@ -707,11 +756,13 @@ $$
 
 ## Gradient $\nabla_{\btheta}\cL_{\bphi,\btheta}(\bx)$
 
+<div class="gradient-cue"><span v-mark="{ at: 2, type: 'underline', color: '#007f82' }"><L3Math formula="q_{\bphi}(\bz|\bx)" /> is independent of <L3Math formula="\btheta" />.</span> Differentiate the decoder.</div>
+
 $$ {1|1-2|all} {at:2}
 \begin{aligned}
-\nabla_{\btheta}\cL_{\bphi,\btheta}(\bx)&={\color{olive}\nabla_{\btheta}}\int q_{\bphi}(\bz|\bx)\log\pt(\bx|\bz)d\bz\\
-&=\int q_{\bphi}(\bz|\bx){\color{olive}\nabla_{\btheta}}\log\pt(\bx|\bz)d\bz\\
-&\approx\nabla_{\btheta}\log\pt(\bx|\bz^*),\quad\bz^*\sim q_{\bphi}(\bz|\bx).
+\nabla_{\btheta}\cL_{\bphi,\btheta}(\bx)&={\color{olive}\nabla_{\btheta}}\int q_{\bphi}(\bz|\bx){\color{teal}\log\pt(\bx|\bz)}d\bz\\
+&=\int q_{\bphi}(\bz|\bx){\color{olive}\nabla_{\btheta}}{\color{teal}\log\pt(\bx|\bz)}d\bz\\
+&\approx\nabla_{\btheta}{\color{teal}\log\pt(\bx|\bz^*)},\quad\bz^*\sim q_{\bphi}(\bz|\bx).
 \end{aligned}
 $$
 
@@ -733,6 +784,10 @@ The variational posterior $q_{\bphi}(\bz|\bx)$ typically concentrates more proba
 
 <div class="source"><a href="https://jmtomczak.github.io/blog/4/4_VAE.html">Image credit: https://jmtomczak.github.io/blog/4/4_VAE.html</a></div>
 
+
+<style scoped>
+.gradient-cue { font-size: 20px; margin: 7px 0 11px; }
+</style>
 ---
 clicks: 3
 sourceFrame: "18"
@@ -745,12 +800,12 @@ class: theorems derivation
 
 ## Gradient $\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)$
 
-Unlike the $\btheta$-gradient, the density $q_{\bphi}(\bz|\bx)$ now depends on $\bphi$, so standard Monte Carlo estimation can't be applied:
+Unlike the $\btheta$-gradient, the density <span v-mark="{ at: 1, type: 'underline', color: '#8854c0' }">$q_{\bphi}(\bz|\bx)$ now depends on $\bphi$</span>, so standard Monte Carlo estimation can't be applied:
 
 $$ {1|all} {at:1}
 \begin{aligned}
-\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)&={\color{olive}\nabla_{\bphi}}\int q_{\bphi}(\bz|\bx)\log\pt(\bx|\bz)d\bz-\nabla_{\bphi}\KL(q_{\bphi}(\bz|\bx)\|p(\bz))\\
-&{\color{#8854c0}\neq}\int q_{\bphi}(\bz|\bx){\color{olive}\nabla_{\bphi}}\log\pt(\bx|\bz)d\bz-\nabla_{\bphi}\KL(q_{\bphi}(\bz|\bx)\|p(\bz))
+\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)&={\color{olive}\nabla_{\bphi}}\int {\color{#8854c0}q_{\bphi}(\bz|\bx)}\log\pt(\bx|\bz)d\bz-\nabla_{\bphi}\KL(q_{\bphi}(\bz|\bx)\|p(\bz))\\
+&{\color{#8854c0}\neq}\int {\color{#8854c0}q_{\bphi}(\bz|\bx)}{\color{olive}\nabla_{\bphi}}\log\pt(\bx|\bz)d\bz-\nabla_{\bphi}\KL(q_{\bphi}(\bz|\bx)\|p(\bz))
 \end{aligned}
 $$
 
@@ -767,7 +822,7 @@ $$
 
 <div v-click="3">
 
-**Note:** The LHS expectation is with respect to the parametric distribution $q_{\bphi}(\bz|\bx)$, while the RHS is for the non-parametric $p(\bepsilon)$.
+**Note:** The LHS expectation is with respect to the parametric distribution $q_{\bphi}(\bz|\bx)$, while the RHS uses <span v-mark="{ at: 3, type: 'underline', color: '#007f82' }">$p(\bepsilon)$</span>, which does not depend on $\bphi$.
 
 </div>
 </div>
@@ -787,14 +842,14 @@ class: theorems derivation
 ## Reparametrization Trick (LOTUS Trick)
 
 $$
-\nabla_{\bphi}\int q_{\bphi}(\bz|\bx)\bff(\bz)d\bz={\color{olive}\nabla_{\bphi}}\int p(\bepsilon)\bff(\bg_{\bphi}(\bx,\bepsilon))d\bepsilon
+\nabla_{\bphi}\int q_{\bphi}(\bz|\bx)\bff(\bz)d\bz={\color{olive}\nabla_{\bphi}}\int p(\bepsilon)\bff({\color{#8854c0}\bg_{\bphi}(\bx,\bepsilon)})d\bepsilon
 $$
 
 <div v-click="1">
 
 $$
 \phantom{\nabla_{\bphi}\int q_{\bphi}(\bz|\bx)\bff(\bz)d\bz}
-=\int p(\bepsilon){\color{olive}\nabla_{\bphi}}\bff(\bg_{\bphi}(\bx,\bepsilon))d\bepsilon\approx\nabla_{\bphi}\bff(\bg_{\bphi}(\bx,\bepsilon^*)),
+=\int p(\bepsilon){\color{olive}\nabla_{\bphi}}\bff({\color{#8854c0}\bg_{\bphi}(\bx,\bepsilon)})d\bepsilon\approx\nabla_{\bphi}\bff(\bg_{\bphi}(\bx,\bepsilon^*)),
 $$
 
 where $\bepsilon^*\sim p(\bepsilon)$.
@@ -813,7 +868,7 @@ $$
 q_{\bphi}(\bz|\bx)=\cN(\bmu_{\bphi}(\bx),\bsigma^2_{\bphi}(\bx)).
 $$
 
-Here, $\bmu_{\bphi}(\cdot)$ and $\bsigma_{\bphi}(\cdot)$ are parameterized functions (outputs of a neural network).
+Here, $\bmu_{\bphi}(\cdot)$ and $\bsigma_{\bphi}(\cdot)$ are <span v-mark="{ at: 2, type: 'underline', color: '#8854c0' }">parameterized functions</span> (outputs of a neural network).
 
 Thus, we can write $q_{\bphi}(\bz|\bx)=\NN_{e,\bphi}(\bx)$, the **encoder**.
 
@@ -847,7 +902,7 @@ $$
 \end{aligned}
 $$
 
-where $\bepsilon^*\sim\cN(0,\bI)$.
+where $\bepsilon^*\sim\cN(0,\bI)$; <span v-mark="{ at: 2, type: 'underline', color: '#8854c0' }">differentiate through $\bg_{\bphi}(\bx,\bepsilon^*)$</span>.
 
 <div v-click="2">
 

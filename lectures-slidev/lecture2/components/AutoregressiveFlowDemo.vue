@@ -12,12 +12,22 @@ const input = computed(() => mode.value === 'sample' ? noise : observation)
 const output = computed(() => mode.value === 'sample' ? observation : reconstructed)
 const complete = computed(() => step.value === 4)
 const active = computed(() => Math.min(step.value + 1, 4))
+const directions = [
+  { mode: 'sample', label: 'Sampling: sequential', formula: String.raw`\displaystyle {\color{#8854c0}x_j}=\mu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})+\sigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}}){\color{teal}z_j}` },
+  { mode: 'evaluate', label: 'Density evaluation: parallel', formula: String.raw`\displaystyle {\color{teal}z_j}=\frac{{\color{#8854c0}x_j}-\mu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})}{\sigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})}` },
+]
 function reset() { step.value = 0 }
 function choose(value: string) { if (mode.value !== value) { mode.value = value; reset() } }
 function next() { step.value = mode.value === 'sample' ? Math.min(4, step.value + 1) : 4 }
 </script>
 <template>
   <DemoPanel data-demo="ar-flow" :data-mode="mode" :data-step="step">
+    <div class="ar-directions">
+      <div v-for="direction in directions" :key="direction.mode" class="ar-direction" :class="{ active: isPrintMode || mode === direction.mode }" :data-direction="direction.mode">
+        <h2>{{ direction.label }}</h2>
+        <FlowMath :formula="direction.formula" />
+      </div>
+    </div>
     <div v-if="!isPrintMode" class="demo-controls">
       <button :aria-pressed="mode === 'sample'" @click="choose('sample')">Sampling</button>
       <button :aria-pressed="mode === 'evaluate'" @click="choose('evaluate')">Density evaluation</button>
@@ -70,25 +80,29 @@ function next() { step.value = mode.value === 'sample' ? Math.min(4, step.value 
   </DemoPanel>
 </template>
 <style scoped>
-.ar-model { display: flex; gap: 30px; align-items: center; margin: 8px 0 22px; }
-.row-heading { margin-bottom: 14px; }
+.ar-directions { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 8px; }
+.ar-direction { border-bottom: 2px solid #dce5eb; padding-bottom: 10px; }
+.ar-direction h2 { margin: 0 0 4px; }
+.ar-direction.active { border-bottom-color: #007f82; background: #eaf5f4; }
+.demo-controls { margin-bottom: 10px; }
+.ar-model { display: flex; gap: 30px; align-items: center; margin: 6px 0 8px; }
+.row-heading { margin-bottom: 8px; }
 .coord-row, .flow-arrows { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.coord { border: 2px solid; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; padding: 12px 22px; font-size: 27px; font-variant-numeric: tabular-nums; height: 68px; }
+.coord { border: 2px solid; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; padding: 8px 22px; font-size: 27px; font-variant-numeric: tabular-nums; height: 52px; }
 .noise { color: #007f82; border-color: #007f82; background: #eaf5f4; }
 .data { color: #8854c0; border-color: #8854c0; background: #f5f0fa; }
 .coord.pending { background: #f3f6f8; border-color: #d5e0e7; color: #718593; }
 .coord.current { border-color: #e17838; }
-.flow-arrows { height: 42px; font-size: 30px; text-align: center; color: #c4d0d9; }
+.flow-arrows { height: 26px; font-size: 30px; line-height: 26px; text-align: center; color: #c4d0d9; }
 .flow-arrows .ready { color: #007f82; }
-.dependency-band { position: relative; height: 86px; padding-top: 24px; display: flex; gap: 30px; align-items: center; font-size: 21px; }
+.dependency-band { position: relative; height: 70px; padding-top: 24px; display: flex; gap: 30px; align-items: center; font-size: 21px; }
 .prefix-arrows { position: absolute; top: 0; left: 0; width: 100%; height: 34px; }
 .dependency-band > span:last-child { max-width: 670px; }
-.ar-density { margin-top: 14px; }
-.ar-print { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 36px; }
+.ar-density { margin-top: 6px; }
+.ar-print { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 20px; }
 .ar-print > div { padding: 20px; border: 1px solid #dce5eb; border-radius: 6px; }
-.print-chain { display: flex; gap: 12px; margin: 26px 0; }
+.print-chain { display: flex; gap: 12px; margin: 18px 0; }
 .print-chain > span { flex: 1; display: flex; flex-direction: column; text-align: center; background: #f3f6f8; padding: 10px; gap: 5px; }
 .print-chain b { font-variant-numeric: tabular-nums; font-weight: 400; }
 .print-chain small { color: #587083; font-size: 16px; }
-.ar-print p { min-height: 60px; }
 </style>
