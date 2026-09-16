@@ -1,6 +1,6 @@
 # Deferred Slidev demonstrations
 
-## KL: reuse in the GAN lectures
+## KL: reused in Lecture 5
 
 Author decision, 2026-09-11: remove the additional KL illustration from Lecture 1
 and keep it for the GAN discussion. The matching existing frame is
@@ -8,14 +8,20 @@ and keep it for the GAN discussion. The matching existing frame is
 `lectures/lecture5/Lecture5.tex`, immediately after **Mode Collapse**.
 It already compares a two-Gaussian target and a single-Gaussian model.
 
-Retain `deferred/kl/components/KLDemo.vue`, `deferred/kl/lib/kl-demo.mjs`, and its numerical tests.
-When migrating that frame, reuse the interactive plot in place of its KL
-illustrations. The component currently compares forward and reverse KL only;
-the existing JSD part still needs its own illustration. Do not equate reverse-KL
-minimization with GAN training. No changes to Lecture 5 are requested yet.
+The 2026-09-15 migration integrated the plot in
+[`lecture5/slides.md`](lecture5/slides.md): slide 17 retains the divergence
+definitions and original JSD illustration; slide 18 continues the same source
+frame with the interactive forward/reverse KL comparison. Reverse-KL fitting is
+not identified with GAN training.
 
-The former Lecture 1 example is preserved below for reuse. Adapt sourceFrame
-and the speaker note to Lecture 5, and verify layout, controls, and PDF there.
+`lecture5/components/KLDemo.vue` and `lecture5/lib/kl-demo.mjs` are copies of the
+preserved originals in `deferred/kl/`. The numerical tests remain in the shared
+test suite. Both PDFs include the forward optimum and a reverse-KL minimum;
+controls, reset, keyboard input and state on return were checked in Lecture 5.
+Current evidence is in [`lecture5/migration.md`](lecture5/migration.md).
+
+The former Lecture 1 insertion is preserved below as historical reuse context;
+its sourceFrame and speaker note are superseded by the Lecture 5 integration.
 
 ```md
 ---

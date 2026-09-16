@@ -12,6 +12,10 @@
 | 2 | [slides.md](lecture2/slides.md) | [Lecture2.pdf](lecture2/Lecture2.pdf) | [Lecture2-handout.pdf](lecture2/Lecture2-handout.pdf) | [migration.md](lecture2/migration.md) |
 | 3 | [slides.md](lecture3/slides.md) | [Lecture3.pdf](lecture3/Lecture3.pdf) | [Lecture3-handout.pdf](lecture3/Lecture3-handout.pdf) | [migration.md](lecture3/migration.md) |
 | 4 | [slides.md](lecture4/slides.md) | [Lecture4.pdf](lecture4/Lecture4.pdf) | [Lecture4-handout.pdf](lecture4/Lecture4-handout.pdf) | [migration.md](lecture4/migration.md) |
+| 5 | [slides.md](lecture5/slides.md) | [Lecture5.pdf](lecture5/Lecture5.pdf) | [Lecture5-handout.pdf](lecture5/Lecture5-handout.pdf) | [migration.md](lecture5/migration.md) |
+| 6 | [slides.md](lecture6/slides.md) | [Lecture6.pdf](lecture6/Lecture6.pdf) | [Lecture6-handout.pdf](lecture6/Lecture6-handout.pdf) | [migration.md](lecture6/migration.md) |
+| 7 | [slides.md](lecture7/slides.md) | [Lecture7.pdf](lecture7/Lecture7.pdf) | [Lecture7-handout.pdf](lecture7/Lecture7-handout.pdf) | [migration.md](lecture7/migration.md) |
+| 8 | [slides.md](lecture8/slides.md) | [Lecture8.pdf](lecture8/Lecture8.pdf) | [Lecture8-handout.pdf](lecture8/Lecture8-handout.pdf) | [migration.md](lecture8/migration.md) |
 
 ## Запуск
 
@@ -30,6 +34,10 @@ npm run dev -- 1
 - Lecture 2: `http://localhost:3032/` (`npm run dev -- 2`).
 - Lecture 3: `http://localhost:3033/` (`npm run dev -- 3`).
 - Lecture 4: `http://localhost:3034/` (`npm run dev -- 4`).
+- Lecture 5: `http://localhost:3035/` (`npm run dev -- 5`).
+- Lecture 6: `http://localhost:3036/` (`npm run dev -- 6`).
+- Lecture 7: `http://localhost:3037/` (`npm run dev -- 7`).
+- Lecture 8: `http://localhost:3038/` (`npm run dev -- 8`).
 - Режим преподавателя: `http://localhost:3031/presenter/1`.
 - Показ с закреплённой панелью пера: `http://localhost:3031/1?tools`.
 - Arrow Right / Space — следующий шаг; Arrow Left — предыдущий.
@@ -97,12 +105,15 @@ Slidev пишет общие generated-файлы внутри установл�
   В headmatter: `theme: ../theme`.
 - `lectureN/public/figs/` — локальные иллюстрации; в слайдах `src="/figs/name.png"`.
   Общие SVG подключает `TaxonomyDiagram` из темы через явные импорты;
-  вариант AR: `<TaxonomyDiagram autoregressive />`, NF: `<TaxonomyDiagram normalizing-flow />`.
+  Использовать `class="taxonomy"` для размера эталонной Lecture 1.
+  Выделение задаётся флагами `autoregressive`, `normalizing-flow`,
+  `variational-autoencoder`, `generative-adversarial-network`, `score-matching`
+  или `denoising-diffusion`.
 - `lectureN/components/` и `lectureN/lib/` — демонстрации этой лекции.
 - `lectureN/slide-map.json` и `migration.md` — карта и журнал переноса.
 - `tools/` — общие команды, тесты и проверка PDF.
-- `deferred/kl/` — сохранённое демо для будущей миграции Lecture 5;
-  [заметки по повторному использованию](deferred-demos.md).
+- `deferred/kl/` — сохранённый оригинал KL-демо; его копия используется в Lecture 5.
+  [Заметки по повторному использованию](deferred-demos.md).
 
 ## Пометки занятия
 
@@ -154,3 +165,16 @@ Slidev пишет общие generated-файлы внутри установл�
 выводимом на экран окне: состояние между presenter/viewer не синхронизируется.
 Браузерные сценарии: `node tools/inspect-flow-demos.mjs` при работающей Lecture 2.
 Численные проверки входят в `npm run test:demos` и `npm run finalize -- 2`.
+
+## Интерактивная Lecture 5
+
+- Слайд 18: одна Gaussian-модель для смеси двух Gaussians — ползунки Mean / Std. deviation,
+  Fit forward KL, Fit reverse KL: left / right, Reset.
+- Демо продолжает исходное сравнение Jensen–Shannon и KL на слайде 17;
+  иллюстрация JSD сохранена. Reverse-KL fitting не отождествляется с GAN training.
+- В PDF показаны оба подготовленных решения: forward KL и один симметричный минимум reverse KL.
+  Состояние ползунков сохраняется при возврате на слайд; управлять демо в выводимом
+  на экран окне, синхронизация с presenter/viewer не предполагается.
+
+Численные проверки сохранённого KL-демо входят в `npm run test:demos`.
+Проверенные сценарии управления и экспорта: [журнал Lecture 5](lecture5/migration.md).

@@ -38,7 +38,7 @@ const assets = [...md.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/g)]
 const provenancePath = resolve(paths.dir, 'public/figs/sources.json')
 const provenance = existsSync(provenancePath) ? JSON.parse(readFileSync(provenancePath, 'utf8')) : {}
 for (const [tag] of md.matchAll(/<TaxonomyDiagram\b[^>]*\/>/g))
-  assets.push([tag, `../theme/assets/${/\bvariational-autoencoder\b/.test(tag) ? 'taxonomy-vae.svg' : /\bnormalizing-flow\b/.test(tag) ? 'taxonomy-nf.svg' : /\bautoregressive\b/.test(tag) ? 'taxonomy-ar.svg' : 'taxonomy.svg'}`])
+  assets.push([tag, `../theme/assets/${/\bdenoising-diffusion\b/.test(tag) ? 'taxonomy-ddpm.svg' : /\bscore-matching\b/.test(tag) ? 'taxonomy-sm.svg' : /\bgenerative-adversarial-network\b/.test(tag) ? 'taxonomy-gan.svg' : /\bvariational-autoencoder\b/.test(tag) ? 'taxonomy-vae.svg' : /\bnormalizing-flow\b/.test(tag) ? 'taxonomy-nf.svg' : /\bautoregressive\b/.test(tag) ? 'taxonomy-ar.svg' : 'taxonomy.svg'}`])
 for (const [,src] of assets) {
   const local = src.startsWith('/figs/')
   if (!local && !src.startsWith('../theme/assets/')) fail(`Unexpected image location: ${src}`)

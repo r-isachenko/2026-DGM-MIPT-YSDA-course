@@ -1,0 +1,212 @@
+[
+  {
+    "slide": 1,
+    "frame": 1,
+    "title": "Deep Generative Models",
+    "clicks": 0
+  },
+  {
+    "slide": 2,
+    "frame": 2,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 3,
+    "frame": 3,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 4,
+    "frame": 4,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 5,
+    "frame": 5,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 6,
+    "frame": 6,
+    "title": "Recap of Previous Lecture",
+    "clicks": 1
+  },
+  {
+    "slide": 7,
+    "frame": 7,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 8,
+    "frame": 8,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 9,
+    "frame": 9,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 10,
+    "frame": 10,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 11,
+    "frame": 11,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 12,
+    "frame": 12,
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 13,
+    "frame": "auto: Langevin Dynamics",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 14,
+    "frame": 13,
+    "title": "Energy-Based Models",
+    "clicks": 2
+  },
+  {
+    "slide": 15,
+    "frame": 14,
+    "title": "Langevin Dynamics",
+    "clicks": 1
+  },
+  {
+    "slide": 16,
+    "frame": "auto: Score Matching",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 17,
+    "frame": 15,
+    "title": "Generative Models Taxonomy",
+    "clicks": 0
+  },
+  {
+    "slide": 18,
+    "frame": 16,
+    "title": "Score Function",
+    "clicks": 1
+  },
+  {
+    "slide": 19,
+    "frame": 17,
+    "title": "Score Matching",
+    "clicks": 2
+  },
+  {
+    "slide": 20,
+    "frame": 18,
+    "title": "Why Is the Score Function Better than the Density?",
+    "clicks": 1
+  },
+  {
+    "slide": 21,
+    "frame": "auto: Denoising Score Matching",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 22,
+    "frame": 19,
+    "title": "Denoising Score Matching",
+    "clicks": 3
+  },
+  {
+    "slide": 23,
+    "frame": 20,
+    "title": "Denoising Score Matching",
+    "clicks": 3
+  },
+  {
+    "slide": 24,
+    "frame": 21,
+    "title": "Denoising Score Matching",
+    "clicks": 3
+  },
+  {
+    "slide": 25,
+    "frame": 22,
+    "title": "Denoising Score Matching",
+    "clicks": 4
+  },
+  {
+    "slide": 26,
+    "frame": 23,
+    "title": "Denoising Score Matching",
+    "clicks": 5
+  },
+  {
+    "slide": 27,
+    "frame": 24,
+    "title": "Denoising Score Matching",
+    "clicks": 3
+  },
+  {
+    "slide": 28,
+    "frame": 25,
+    "title": "Denoising Score Matching",
+    "clicks": 5
+  },
+  {
+    "slide": 29,
+    "frame": 26,
+    "title": "Denoising Score Matching",
+    "clicks": 4
+  },
+  {
+    "slide": 30,
+    "frame": "auto: Noise-Conditioned Score Network (NCSN)",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 31,
+    "frame": 27,
+    "title": "Denoising Score Matching",
+    "clicks": 0
+  },
+  {
+    "slide": 32,
+    "frame": 28,
+    "title": "Noise-Conditioned Score Network (NCSN)",
+    "clicks": 1
+  },
+  {
+    "slide": 33,
+    "frame": 29,
+    "title": "Noise-Conditioned Score Network (NCSN)",
+    "clicks": 3
+  },
+  {
+    "slide": 34,
+    "frame": 30,
+    "title": "Noise-Conditioned Score Network (NCSN)",
+    "clicks": 1
+  },
+  {
+    "slide": 35,
+    "frame": 31,
+    "title": "Summary",
+    "clicks": 0
+  }
+]
