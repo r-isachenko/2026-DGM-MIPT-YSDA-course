@@ -1,0 +1,356 @@
+[
+  {
+    "slide": 1,
+    "frame": 1,
+    "title": "Deep Generative Models",
+    "clicks": 0
+  },
+  {
+    "slide": 2,
+    "frame": 2,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 3,
+    "frame": "extension: 2",
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 4,
+    "frame": 3,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 5,
+    "frame": "extension: 3",
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 6,
+    "frame": 4,
+    "title": "Recap of Previous Lectures",
+    "clicks": 0
+  },
+  {
+    "slide": 7,
+    "frame": "extension: 4",
+    "title": "Recap of Previous Lectures",
+    "clicks": 0
+  },
+  {
+    "slide": 8,
+    "frame": 5,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 9,
+    "frame": "extension: 5",
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 10,
+    "frame": 6,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 11,
+    "frame": "extension: 6",
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 12,
+    "frame": 7,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 13,
+    "frame": "extension: 7",
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 14,
+    "frame": 8,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 15,
+    "frame": "extension: 8",
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 16,
+    "frame": 9,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 17,
+    "frame": 10,
+    "title": "Recap of Previous Lecture",
+    "clicks": 1
+  },
+  {
+    "slide": 18,
+    "frame": 11,
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 19,
+    "frame": "auto: Two-Sided Conditioning",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 20,
+    "frame": 12,
+    "title": "Pair Conditioning",
+    "clicks": 0
+  },
+  {
+    "slide": 21,
+    "frame": "extension: 12",
+    "title": "Pair Conditioning",
+    "clicks": 1
+  },
+  {
+    "slide": 22,
+    "frame": 13,
+    "title": "Two-Sided Conditioning",
+    "clicks": 0
+  },
+  {
+    "slide": 23,
+    "frame": "extension: 13",
+    "title": "Two-Sided Conditioning",
+    "clicks": 2
+  },
+  {
+    "slide": 24,
+    "frame": 14,
+    "title": "Flow Matching: One-Sided vs. Two-Sided Conditioning",
+    "clicks": 1
+  },
+  {
+    "slide": 25,
+    "frame": 15,
+    "title": "Two-Sided Conditioning: Vector Field and Objective",
+    "clicks": 1
+  },
+  {
+    "slide": 26,
+    "frame": "extension: 15",
+    "title": "Two-Sided Conditioning: Vector Field and Objective",
+    "clicks": 1
+  },
+  {
+    "slide": 27,
+    "frame": 16,
+    "title": "CFM with Two-Sided Conditioning: Training and Sampling",
+    "clicks": 1
+  },
+  {
+    "slide": 28,
+    "frame": "extension: 16",
+    "title": "CFM with Two-Sided Conditioning: Training and Sampling",
+    "clicks": 0
+  },
+  {
+    "slide": 29,
+    "frame": 17,
+    "title": "Stable Diffusion 3: Scalable Flow Matching",
+    "clicks": 0
+  },
+  {
+    "slide": 30,
+    "frame": "auto: Link between Flow Matching and Score-Based Models",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 31,
+    "frame": 18,
+    "title": "Score-Based Generative Models through SDEs",
+    "clicks": 1
+  },
+  {
+    "slide": 32,
+    "frame": "extension: 18",
+    "title": "Score-Based Generative Models through SDEs",
+    "clicks": 0
+  },
+  {
+    "slide": 33,
+    "frame": 19,
+    "title": "Score-Based Generative Models through SDEs",
+    "clicks": 0
+  },
+  {
+    "slide": 34,
+    "frame": "extension: 19",
+    "title": "Score-Based Generative Models through SDEs",
+    "clicks": 1
+  },
+  {
+    "slide": 35,
+    "frame": 20,
+    "title": "Flow Matching vs Score-Based SDE Models",
+    "clicks": 2
+  },
+  {
+    "slide": 36,
+    "frame": 21,
+    "title": "Flow Matching vs Score-Based SDE Models",
+    "clicks": 1
+  },
+  {
+    "slide": 37,
+    "frame": "auto: Discrete Diffusion Models",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 38,
+    "frame": 22,
+    "title": "Generative Models Taxonomy",
+    "clicks": 0
+  },
+  {
+    "slide": 39,
+    "frame": 23,
+    "title": "Discrete or Continuous Diffusion Models?",
+    "clicks": 1
+  },
+  {
+    "slide": 40,
+    "frame": 24,
+    "title": "Why Discrete Diffusion Models?",
+    "clicks": 4
+  },
+  {
+    "slide": 41,
+    "frame": 25,
+    "title": "2025 \u2013 Big Bang of Discrete Diffusion Models",
+    "clicks": 0
+  },
+  {
+    "slide": 42,
+    "frame": "auto: Forward Discrete Process",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 43,
+    "frame": 26,
+    "title": "Forward Discrete Process",
+    "clicks": 2
+  },
+  {
+    "slide": 44,
+    "frame": 27,
+    "title": "Forward Process over Time",
+    "clicks": 4
+  },
+  {
+    "slide": 45,
+    "frame": 28,
+    "title": "Transition Matrix",
+    "clicks": 3
+  },
+  {
+    "slide": 46,
+    "frame": 29,
+    "title": "Transition Matrix",
+    "clicks": 2
+  },
+  {
+    "slide": 47,
+    "frame": 30,
+    "title": "Transition Matrix",
+    "clicks": 1
+  },
+  {
+    "slide": 48,
+    "frame": 31,
+    "title": "Uniform vs. Absorbing Transition Matrix",
+    "clicks": 1
+  },
+  {
+    "slide": 49,
+    "frame": "auto: Reverse Diffusion Process",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 50,
+    "frame": 32,
+    "title": "Posterior of the Forward Process",
+    "clicks": 1
+  },
+  {
+    "slide": 51,
+    "frame": "extension: 32",
+    "title": "Posterior of the Forward Process",
+    "clicks": 0
+  },
+  {
+    "slide": 52,
+    "frame": 33,
+    "title": "Posterior of the Forward Process",
+    "clicks": 2
+  },
+  {
+    "slide": 53,
+    "frame": 34,
+    "title": "Discrete-time ELBO for Discrete Diffusion",
+    "clicks": 3
+  },
+  {
+    "slide": 54,
+    "frame": "auto: From Token To Sequence",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 55,
+    "frame": 35,
+    "title": "From Token to Sequence",
+    "clicks": 2
+  },
+  {
+    "slide": 56,
+    "frame": 36,
+    "title": "From Token to Sequence",
+    "clicks": 3
+  },
+  {
+    "slide": 57,
+    "frame": 37,
+    "title": "Reverse Model for Sequence",
+    "clicks": 1
+  },
+  {
+    "slide": 58,
+    "frame": "extension: 37",
+    "title": "Reverse Model for Sequence",
+    "clicks": 0
+  },
+  {
+    "slide": 59,
+    "frame": 38,
+    "title": "Summary",
+    "clicks": 0
+  }
+]

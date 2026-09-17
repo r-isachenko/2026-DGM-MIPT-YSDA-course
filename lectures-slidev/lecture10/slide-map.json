@@ -1,0 +1,278 @@
+[
+  {
+    "slide": 1,
+    "frame": 1,
+    "title": "Deep Generative Models",
+    "clicks": 0
+  },
+  {
+    "slide": 2,
+    "frame": 2,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 3,
+    "frame": 3,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 4,
+    "frame": 4,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 5,
+    "frame": 5,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 6,
+    "frame": 6,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 7,
+    "frame": 7,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 8,
+    "frame": 8,
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 9,
+    "frame": "auto: Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 10,
+    "frame": 9,
+    "title": "Score Matching SDE",
+    "clicks": 4
+  },
+  {
+    "slide": 11,
+    "frame": 10,
+    "title": "Score Matching SDE",
+    "clicks": 2
+  },
+  {
+    "slide": 12,
+    "frame": 11,
+    "title": "Diffusion SDE",
+    "clicks": 3
+  },
+  {
+    "slide": 13,
+    "frame": 12,
+    "title": "Diffusion SDE",
+    "clicks": 1
+  },
+  {
+    "slide": 14,
+    "frame": 13,
+    "title": "Diffusion SDE",
+    "clicks": 1
+  },
+  {
+    "slide": 15,
+    "frame": "auto: Probability Flow ODE",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 16,
+    "frame": 14,
+    "title": "Probability Flow ODE",
+    "clicks": 1
+  },
+  {
+    "slide": 17,
+    "frame": 15,
+    "title": "Probability Flow ODE",
+    "clicks": 1
+  },
+  {
+    "slide": 18,
+    "frame": 16,
+    "title": "Probability Flow ODE",
+    "clicks": 3
+  },
+  {
+    "slide": 19,
+    "frame": 17,
+    "title": "Probability Flow ODE",
+    "clicks": 2
+  },
+  {
+    "slide": 20,
+    "frame": 18,
+    "title": "Probability Flow ODE",
+    "clicks": 2
+  },
+  {
+    "slide": 21,
+    "frame": 19,
+    "title": "Why convert SDEs to PF-ODEs? (1) Efficient Sampling",
+    "clicks": 2
+  },
+  {
+    "slide": 22,
+    "frame": 20,
+    "title": "Why convert SDEs to PF-ODEs? (2) Deterministic Sampling",
+    "clicks": 2
+  },
+  {
+    "slide": 23,
+    "frame": 21,
+    "title": "Sampling: Reverse SDE vs PF-ODE",
+    "clicks": 2
+  },
+  {
+    "slide": 24,
+    "frame": "auto: Reverse SDE",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 25,
+    "frame": 22,
+    "title": "Reverse SDE",
+    "clicks": 3
+  },
+  {
+    "slide": 26,
+    "frame": 23,
+    "title": "Reverse SDE",
+    "clicks": 2
+  },
+  {
+    "slide": 27,
+    "frame": 24,
+    "title": "Proof of Reverse SDE",
+    "clicks": 1
+  },
+  {
+    "slide": 28,
+    "frame": "extension: 24",
+    "title": "Proof of Reverse SDE",
+    "clicks": 0
+  },
+  {
+    "slide": 29,
+    "frame": 25,
+    "title": "Reverse SDE",
+    "clicks": 1
+  },
+  {
+    "slide": 30,
+    "frame": 26,
+    "title": "Reverse SDE",
+    "clicks": 1
+  },
+  {
+    "slide": 31,
+    "frame": 27,
+    "title": "Score Matching SDE",
+    "clicks": 3
+  },
+  {
+    "slide": 32,
+    "frame": 28,
+    "title": "Diffusion SDE",
+    "clicks": 1
+  },
+  {
+    "slide": 33,
+    "frame": "auto: Score-Based Generative Models Through SDEs",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 34,
+    "frame": 29,
+    "title": "Score-Based Generative Models Through SDEs",
+    "clicks": 2
+  },
+  {
+    "slide": 35,
+    "frame": 30,
+    "title": "Generative Models Taxonomy",
+    "clicks": 0
+  },
+  {
+    "slide": 36,
+    "frame": 31,
+    "title": "Score-Based Generative Models Through SDEs",
+    "clicks": 2
+  },
+  {
+    "slide": 37,
+    "frame": 32,
+    "title": "Score-Based Generative Models Through SDEs",
+    "clicks": 3
+  },
+  {
+    "slide": 38,
+    "frame": 33,
+    "title": "Score-Based Generative Models Through SDEs",
+    "clicks": 5
+  },
+  {
+    "slide": 39,
+    "frame": 34,
+    "title": "Score-Based Generative Models Through SDEs",
+    "clicks": 2
+  },
+  {
+    "slide": 40,
+    "frame": 35,
+    "title": "Score-Based Generative Models Through SDEs",
+    "clicks": 1
+  },
+  {
+    "slide": 41,
+    "frame": "auto: Flow Matching (FM)",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 42,
+    "frame": 36,
+    "title": "Continuous-Time Normalizing Flows",
+    "clicks": 2
+  },
+  {
+    "slide": 43,
+    "frame": 37,
+    "title": "Continuous-Time Normalizing Flows",
+    "clicks": 2
+  },
+  {
+    "slide": 44,
+    "frame": 38,
+    "title": "Flow Matching: Training and Sampling",
+    "clicks": 3
+  },
+  {
+    "slide": 45,
+    "frame": 39,
+    "title": "Flow Matching",
+    "clicks": 0
+  },
+  {
+    "slide": 46,
+    "frame": 40,
+    "title": "Summary",
+    "clicks": 0
+  }
+]

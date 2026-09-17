@@ -16,6 +16,15 @@
 | 6 | [slides.md](lecture6/slides.md) | [Lecture6.pdf](lecture6/Lecture6.pdf) | [Lecture6-handout.pdf](lecture6/Lecture6-handout.pdf) | [migration.md](lecture6/migration.md) |
 | 7 | [slides.md](lecture7/slides.md) | [Lecture7.pdf](lecture7/Lecture7.pdf) | [Lecture7-handout.pdf](lecture7/Lecture7-handout.pdf) | [migration.md](lecture7/migration.md) |
 | 8 | [slides.md](lecture8/slides.md) | [Lecture8.pdf](lecture8/Lecture8.pdf) | [Lecture8-handout.pdf](lecture8/Lecture8-handout.pdf) | [migration.md](lecture8/migration.md) |
+| 9 | [slides.md](lecture9/slides.md) | [Lecture9.pdf](lecture9/Lecture9.pdf) | [Lecture9-handout.pdf](lecture9/Lecture9-handout.pdf) | [migration.md](lecture9/migration.md) |
+| 10 | [slides.md](lecture10/slides.md) | [Lecture10.pdf](lecture10/Lecture10.pdf) | [Lecture10-handout.pdf](lecture10/Lecture10-handout.pdf) | [migration.md](lecture10/migration.md) |
+| 11 | [slides.md](lecture11/slides.md) | [Lecture11.pdf](lecture11/Lecture11.pdf) | [Lecture11-handout.pdf](lecture11/Lecture11-handout.pdf) | [migration.md](lecture11/migration.md) |
+| 12 | [slides.md](lecture12/slides.md) | [Lecture12.pdf](lecture12/Lecture12.pdf) | [Lecture12-handout.pdf](lecture12/Lecture12-handout.pdf) | [migration.md](lecture12/migration.md) |
+| 13 | [slides.md](lecture13/slides.md) | [Lecture13.pdf](lecture13/Lecture13.pdf) | [Lecture13-handout.pdf](lecture13/Lecture13-handout.pdf) | [migration.md](lecture13/migration.md) |
+| 14 | [slides.md](lecture14/slides.md) | [Lecture14.pdf](lecture14/Lecture14.pdf) | [Lecture14-handout.pdf](lecture14/Lecture14-handout.pdf) | [migration.md](lecture14/migration.md) |
+
+Lecture 14 сохраняет текущую черновую редакцию Beamer; статус содержания и
+согласованные ограничения описаны в [журнале переноса](lecture14/migration.md).
 
 ## Запуск
 
@@ -38,6 +47,12 @@ npm run dev -- 1
 - Lecture 6: `http://localhost:3036/` (`npm run dev -- 6`).
 - Lecture 7: `http://localhost:3037/` (`npm run dev -- 7`).
 - Lecture 8: `http://localhost:3038/` (`npm run dev -- 8`).
+- Lecture 9: `http://localhost:3039/` (`npm run dev -- 9`).
+- Lecture 10: `http://localhost:3040/` (`npm run dev -- 10`).
+- Lecture 11: `http://localhost:3041/` (`npm run dev -- 11`).
+- Lecture 12: `http://localhost:3042/` (`npm run dev -- 12`).
+- Lecture 13: `http://localhost:3043/` (`npm run dev -- 13`).
+- Lecture 14: `http://localhost:3044/` (`npm run dev -- 14`).
 - Режим преподавателя: `http://localhost:3031/presenter/1`.
 - Показ с закреплённой панелью пера: `http://localhost:3031/1?tools`.
 - Arrow Right / Space — следующий шаг; Arrow Left — предыдущий.
@@ -107,8 +122,9 @@ Slidev пишет общие generated-файлы внутри установл�
   Общие SVG подключает `TaxonomyDiagram` из темы через явные импорты;
   Использовать `class="taxonomy"` для размера эталонной Lecture 1.
   Выделение задаётся флагами `autoregressive`, `normalizing-flow`,
-  `variational-autoencoder`, `generative-adversarial-network`, `score-matching`
-  или `denoising-diffusion`.
+  `variational-autoencoder`, `generative-adversarial-network`, `score-matching`,
+  `denoising-diffusion`, `continuous-normalizing-flow`, `sde-based-diffusion`,
+  `flow-matching`, `discrete-diffusion` или `absorbing-diffusion`.
 - `lectureN/components/` и `lectureN/lib/` — демонстрации этой лекции.
 - `lectureN/slide-map.json` и `migration.md` — карта и журнал переноса.
 - `tools/` — общие команды, тесты и проверка PDF.

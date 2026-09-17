@@ -30,7 +30,7 @@ The course is supported by seminars and hands-on assignments that help build int
 
 ## Materials
 
-A parallel [Slidev version](lectures-slidev/README.md) is available for Lecture 1: [slides PDF](lectures-slidev/lecture1/Lecture1.pdf), [handout](lectures-slidev/lecture1/Lecture1-handout.pdf). The original Beamer materials remain available.
+A parallel [Slidev version](lectures-slidev/README.md) is available for Lectures 1–14, with editable sources, PDFs with progressive reveals, and handouts. Lecture 14 preserves the current draft content. The original Beamer materials remain available.
 
 | # | Date | Description | Slides |
 |---|---|---|---|

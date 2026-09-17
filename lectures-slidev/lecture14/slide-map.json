@@ -1,0 +1,152 @@
+[
+  {
+    "slide": 1,
+    "frame": 1,
+    "title": "Deep Generative Models",
+    "clicks": 0
+  },
+  {
+    "slide": 2,
+    "frame": 2,
+    "title": "Recap: Discrete Diffusion (Lecture 12)",
+    "clicks": 0
+  },
+  {
+    "slide": 3,
+    "frame": "extension: 2",
+    "title": "Recap: Discrete Diffusion (Lecture 12)",
+    "clicks": 0
+  },
+  {
+    "slide": 4,
+    "frame": 3,
+    "title": "Recap: Discrete Diffusion (Lecture 12)",
+    "clicks": 0
+  },
+  {
+    "slide": 5,
+    "frame": 4,
+    "title": "Setup: where PF-ODE solvers floor",
+    "clicks": 3
+  },
+  {
+    "slide": 6,
+    "frame": 5,
+    "title": "Setup: shortcut networks",
+    "clicks": 2
+  },
+  {
+    "slide": 7,
+    "frame": 6,
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 8,
+    "frame": "auto: Consistency Models",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 9,
+    "frame": 7,
+    "title": "Consistency function: an ODE perspective",
+    "clicks": 0
+  },
+  {
+    "slide": 10,
+    "frame": "extension: 7",
+    "title": "Consistency function: an ODE perspective",
+    "clicks": 1
+  },
+  {
+    "slide": 11,
+    "frame": 8,
+    "title": "Consistency function: an ODE perspective",
+    "clicks": 1
+  },
+  {
+    "slide": 12,
+    "frame": 9,
+    "title": "Self-consistency: the integrated form",
+    "clicks": 1
+  },
+  {
+    "slide": 13,
+    "frame": 10,
+    "title": "Skip-connection parameterization",
+    "clicks": 1
+  },
+  {
+    "slide": 14,
+    "frame": 11,
+    "title": "Consistency Distillation (CD)",
+    "clicks": 1
+  },
+  {
+    "slide": 15,
+    "frame": "extension: 11",
+    "title": "Consistency Distillation (CD)",
+    "clicks": 0
+  },
+  {
+    "slide": 16,
+    "frame": 12,
+    "title": "Pseudocode (Consistency Distillation)",
+    "clicks": 0
+  },
+  {
+    "slide": 17,
+    "frame": "extension: 12",
+    "title": "Pseudocode (Consistency Distillation)",
+    "clicks": 1
+  },
+  {
+    "slide": 18,
+    "frame": 13,
+    "title": "Latent Consistency Models (LCM)",
+    "clicks": 2
+  },
+  {
+    "slide": 19,
+    "frame": "auto: Distribution Matching Distillation",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 20,
+    "frame": 14,
+    "title": "One-step generator",
+    "clicks": 2
+  },
+  {
+    "slide": 21,
+    "frame": 15,
+    "title": "KL gradient via score difference",
+    "clicks": 2
+  },
+  {
+    "slide": 22,
+    "frame": 16,
+    "title": "Two score networks",
+    "clicks": 2
+  },
+  {
+    "slide": 23,
+    "frame": 17,
+    "title": "DMD1: total loss",
+    "clicks": 2
+  },
+  {
+    "slide": 24,
+    "frame": 18,
+    "title": "DMD2: improvements",
+    "clicks": 4
+  },
+  {
+    "slide": 25,
+    "frame": 19,
+    "title": "Summary",
+    "clicks": 0
+  }
+]
