@@ -1,48 +1,60 @@
 ---
 name: readme-sync
-description: Verify that the README.md "Materials" table bullets agree with each LectureN.tex's \section{...} titles, per CLAUDE.md ("README as the schedule source of truth"). Use after renaming/adding/removing a \section in any lecture, or when the user asks to "sync README", "check README matches lectures", "regenerate the schedule bullets". Can also apply fixes to README from the current .tex section list.
+description: Compare the course Materials schedule with Beamer or Slidev section hierarchies, and check the Slidev artifact catalog. Use for schedule/README sync or section changes; an explicit fix direction authorizes the matching README update.
 ---
 
-# readme-sync
+# README sync
 
-[README.md](../../../README.md) holds the canonical course schedule. In the `Materials` table, each lecture row's `<b>Lecture N:</b><ul>...</ul>` bullets mirror the `\section{...}` structure of `lectures/lectureN/LectureN.tex`: each top-level `<li>` corresponds to a `\section`, and a nested `<ul><li>...</li></ul>` inside it corresponds to that section's `\subsection`s. These two files must never disagree — see [CLAUDE.md](../../../CLAUDE.md), section *README as the schedule source of truth*.
+Read [shared context and format selection](../lecture-audit/references/formats.md)
+first. The root [README.md](../../../README.md) is the course schedule;
+[lectures-slidev/README.md](../../../lectures-slidev/README.md) is the migrated-artifact
+catalog and command guide. They have different roles.
 
-Note: in the current README, the `Materials` table is wrapped in an HTML comment (`<!--- ... -->`) so it doesn't render publicly while the schedule is being finalized. **Treat the commented content as authoritative for now** — that's the working schedule. Don't unwrap the comment or strip it.
+## Scope and source selection
 
-## Codex invocation
+- A lecture number/path limits the check to that lecture. For a general schedule
+  request with no target, check all applicable rows. In a lecture audit, use only
+  the resolved audit targets, not the whole course.
+- Use the explicitly requested source/format, then active task context and approved
+  section changes. For Slidev compare the actual migrated hierarchy, its Beamer
+  baseline, and the migration record. Do not silently overwrite an approved Slidev
+  rename from an older TeX source or propagate Slidev edits into Beamer.
+- `--fix`, "sync README from these slides", or an equivalent request authorizes
+  the corresponding README edit. A bare check/audit is report-only. If neither
+  source direction nor the intended section hierarchy can be resolved, ask about
+  that editorial choice while completing independent checks.
 
-Use the available Codex tools. Current user instructions take precedence: keep audit/check requests report-only, and treat an explicit request to apply a specified change as authorization for that change. Ask about unresolved fix direction or authorial takeaways rather than requesting the same permission again.
+## Materials schedule
 
-## Inputs
+1. Locate each row by `<b>Lecture N:</b>`, not the leftmost table number; placeholder
+   rows can shift positions. Inspect whether the schedule is commented out. Preserve
+   any existing comment wrapper and other surrounding markup.
+2. Extract ordered section/subsection trees: TeX `\section`/`\subsection`, or Slidev
+   section transitions with source hierarchy and documented changes. Repeated
+   agenda listings and all individual slide titles are not independent sections.
+3. Compare top-level and nested Materials bullets with the chosen hierarchy. Flag
+   missing/extra titles, renames, order differences, or incorrectly nested subsections.
+   Decode harmless presentation markup for comparison while preserving the original
+   HTML entities/case in the output; do not lose mathematical notation in titles.
+4. Explain any three-way disagreement among README, Beamer, and Slidev. Classify a
+   documented author-approved change separately from an accidental migration drift.
 
-- If the user passes a lecture number, check just that one.
-- If no argument, check all lectures in [lectures/](../../../lectures/).
-- The `--fix` flag (or "fix it" in natural language) means apply edits to README.md. Without it, report only.
+## Slidev catalog
 
-## Procedure
+For the migrated lectures in scope, verify links to `slides.md`, both final PDFs,
+and `migration.md`; check referenced commands against the current project scripts.
+Do not create placeholder rows/directories for unmigrated lectures. A catalog link
+can exist before artifacts are ready, but missing/stale PDFs must be reported and
+must not be described as verified. Page totals belong in the lecture map/journal,
+not a second independently maintained list in README.
 
-For each lecture in scope, extract the `\section{...}` / `\subsection{...}` titles from the `.tex` and the bullet structure from its README row, then diff them.
+## Report or fix
 
-- Match README rows on the `<b>Lecture N:</b>` tag, **not** the leftmost `|N|` column — the table can contain placeholder rows ("Lecture rescheduled") that shift row numbers.
-- Preserve HTML entities (`&amp;`, `&lt;`) and existing pluralizations/casings — don't normalize them away when comparing or fixing.
+For mismatches show the relevant README location and source location, the current
+and expected hierarchy, and the proposed direction. Keep matches concise.
 
-Flag any of:
-
-- README bullet present, no matching `\section`
-- `\section` present, no matching README bullet
-- Title text mismatch (rename in either direction)
-- Order mismatch (sections reordered in `.tex` but not in README, or vice versa)
-
-For subsection mismatches, report them nested under the parent section.
-
-**Report mode (default):** for each mismatched lecture, print a side-by-side comparison (README bullet vs `.tex` section, ✓/✗ per line), then a one-line summary "M lectures out of sync".
-
-**Fix mode (`--fix`):** the `.tex` is the source of truth for the Materials list (renames typically happen in the slides first). Regenerate the bullet structure for the affected lectures' README rows from their `\section{...}` (and `\subsection{...}`) lists, preserving the surrounding `<b>Lecture N:</b>`, date column, and the trailing `[slides](...)` link untouched. Show a unified diff of the proposed README edit and ask the user to confirm before writing.
-
-If the `.tex` direction is *not* obviously the right one (e.g. README has a section title the lecture doesn't, suggesting a rename in the lecture that lost information), do NOT auto-fix — ask which direction to apply.
-
-## Caveats
-
-- Some `.tex` sections may legitimately be omitted from README for brevity (e.g. an `Outline` or `References` section), but in this course `\section` corresponds 1:1 to a Materials bullet — if you find unmapped sections, flag them rather than silently dropping them.
-- Don't reflow the README's Markdown — keep line breaks and indentation as-is around your edits (CLAUDE.md, *Style preferences for edits*).
-- Don't touch the `Homeworks` table, the `Game rules` section, or the `Previous episodes` list.
+In an authorized fix, update only affected Materials bullets or catalog entries,
+preserving date columns, unrelated links, comment wrappers, Homeworks, Game rules,
+and surrounding formatting. Review the resulting diff. Do not ask again before
+writing a change whose scope and direction are already specified. Source ambiguity
+is not permission to pick an arbitrary direction or to modify the other lecture format.

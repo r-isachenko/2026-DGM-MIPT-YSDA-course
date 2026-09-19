@@ -7,7 +7,7 @@ Migrated 2026-09-05 from the project’s saved memory. Current sources and the a
 - Keep Outline slides strictly for the agenda. Never add notation, definitions, explanations, or other lecture content to them.
 - `lectures/merged/` is managed by the author. Never run `merge_lectures.py`, rebuild, edit or sync that directory without an explicit request. This overrides the suggestion in `CLAUDE.md` §7.
 - An explicit request to commit is sufficient authorization within the requested scope; review the diff and commit without another confirmation. Keep commit and PR text free of agent attribution.
-- Use existing shared LaTeX conventions and the five project skills. Do not apply old broad shell allowlists as Codex permission policy.
+- Use the project skills in `.agents/skills/`: `slidev-migrate` runs the migration workflow; the five lecture checks handle Beamer and Slidev through their shared format context. Use the PDF skill for artifact inspection alongside those checks. Do not apply old broad shell allowlists as Codex permission policy.
 
 ## Known course state
 
@@ -17,8 +17,6 @@ Migrated 2026-09-05 from the project’s saved memory. Current sources and the a
 
 ## Slidev editorial decisions
 
-- Use `Sampling` (introduced as `Sampling (generation)`) and `Density evaluation` for the two operations on a fitted model. Reserve `Density estimation` for learning the density from data. Label performance assessment `Model quality evaluation`. Keep ordinary application names such as image/video generation and original paper titles intact.
+- Course-wide Slidev decisions were consolidated on 2026-09-13 in [MIGRATION.md](../lectures-slidev/MIGRATION.md): terminology, parallel Beamer/Slidev sources and shared infrastructure (2026-09-11), required finalization and both reviewed PDFs (2026-09-11), and strict visual consistency with the approved Slidev Lecture 1 (2026-09-13). Maintain those rules there; keep dated decisions about particular lectures here and in their migration records. Commands live in the Slidev README.
 - 2026-09-11: Keep Lecture 1’s histogram on its original single frame; replace only the image with an interactive histogram whose sample count is 10 / 100 / 1000 / 10000.
 - 2026-09-11: Defer the interactive two-Gaussian forward/reverse KL plot to the GAN discussion. The matching existing frame is “Jensen-Shannon vs Kullback-Leibler Divergences” in Lecture 5, after “Mode Collapse”. Remove the additional example from Slidev Lecture 1, preserving its original KL definitions and MLE derivation. Keep the component, numerical tests, and reuse notes in `lectures-slidev/deferred-demos.md`; do not insert it into Lecture 5 until working on that migration.
-- 2026-09-11: Keep the original Beamer lectures in `lectures/` and maintain Slidev in parallel under `lectures-slidev/lectureN/`. Use one course dependency installation and a shared local `theme/`; each lecture owns `slides.md`, `public/figs/`, its demos, and its migration record. Do not remove the Beamer version without a separate author decision.
-- 2026-09-11: Finish every migration with `npm run finalize -- N` from `lectures-slidev/`, then render and visually review both PDFs. Commit `lectureN/LectureN.pdf` (all reveals) and `lectureN/LectureN-handout.pdf` with the completed migration. Keep temporary exports, web builds, and QA outputs out of Git.

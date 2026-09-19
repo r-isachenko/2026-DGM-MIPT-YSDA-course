@@ -1,33 +1,65 @@
 ---
 name: lecture-audit
-description: Run the full consistency audit for a lecture (or the current git diff) in one shot — notation-lint, recap-sync in both directions, summary-sync, and readme-sync — via parallel subagents, then merge everything into one report. Use after finishing edits to a lecture, before committing, or when the user asks to "audit lecture N", "check lecture N fully", "прогони все проверки".
+description: Audit course lectures in Beamer or Slidev, including notation, both recap directions, Summary, schedule, and Slidev PDF/browser evidence. Use for a full lecture check or migration verification; respect source-only or diff-only scope.
 ---
 
-# lecture-audit
+# Lecture audit
 
-Umbrella check that runs all four project checks for a lecture and merges their findings into a single report. It is **report-only**: apply fixes only after the user confirms, following each individual skill's own rules about direction-of-fix and confirmation.
+Read [shared context and format selection](references/formats.md) first. This is
+the report-only umbrella check for both lecture formats. For an actual conversion,
+use [slidev-migrate](../slidev-migrate/SKILL.md); audit findings do not cancel the
+parent task's authorization to fix migration defects.
 
-## Codex invocation
+## Source checks
 
-Use the available Codex tools. Current user instructions take precedence: keep audit/check requests report-only, and treat an explicit request to apply a specified change as authorization for that change. Ask about unresolved fix direction or authorial takeaways rather than requesting the same permission again.
+Resolve lecture(s), format(s), diff/full scope, and approved source baseline before
+starting workers. Use parallel subagents for independent source checks when available,
+respecting the concurrency limit; run remaining checks sequentially. Pass each worker
+the resolved targets, scope, author decisions, and report-only mode. Each worker reads
+its own skill and the shared context. Workers must not run competing builds or exports.
 
-## Inputs
+1. [notation-lint](../notation-lint/SKILL.md) on the selected sources.
+2. [recap-sync](../recap-sync/SKILL.md), N to N+1, when a successor exists.
+3. Incoming recap N−1 to N for a full named-lecture audit, or when the recap changed
+   in a diff audit; skip N = 1. Use the format selection rules for mixed neighbors.
+4. [summary-sync](../summary-sync/SKILL.md) on lecture N.
+5. [readme-sync](../readme-sync/SKILL.md) for the selected lecture rows and, for
+   Slidev, the corresponding entries in its artifact catalog.
 
-- Lecture number `N` (e.g. "lecture-audit 10") → audit `lectures/lectureN/LectureN.tex`.
-- No argument → infer the affected lecture(s) from `git diff --name-only`; audit each modified lecture.
+For Slidev migration verification also inspect sourceFrame coverage, automatic
+Outline transitions, clicks, assets, and approved deviations against Beamer and the
+migration record. Do not rely on the total page count as a per-state equivalence check.
 
-## Procedure
+## Rendered evidence
 
-Use **parallel subagents** for the independent checks when available, respecting the current concurrency limit. Run remaining checks sequentially if slots or delegation tools are unavailable. Each worker must read the corresponding SKILL.md in [.agents/skills/](../) and follow it in report-only mode:
+This stage applies to a full Slidev audit or an explicit PDF/visual request. A request
+limited to source, one issue, or a diff stays within that scope; identify what was not
+checked. A Beamer source audit does not become a new PDF rebuild by default.
 
-1. **notation-lint** on lecture N (diff-restricted if the audit was inferred from a diff, full-file if the user named the lecture).
-2. **recap-sync N → N+1** — does lecture N+1's recap still mirror lecture N's body? Skip if N is the last lecture.
-3. **recap-sync N−1 → N** — if lecture N's own recap region (before the first `\section`) was touched, does it still mirror lecture N−1? Skip if N = 1 or the recap region is untouched.
-4. **summary-sync** on lecture N.
-5. **readme-sync** for lecture N only.
+- Review the relevant current exports, using the `pdf` skill for reading/rendering.
+  A full Slidev migration audit reviews all pages of both PDFs, with dense content
+  inspected at full size. Use the slide map to locate reveal states. If either PDF
+  is absent or freshness cannot be established, report the gap; do not export in
+  report-only mode or certify an older artifact from a matching page count alone.
+- Compare recurring notation and recap blocks with the approved Lecture 1 and the
+  relevant previous Slidev lecture in PDF and browser, as required by MIGRATION §3.
+  Record the actual pairs and formats inspected. Check source-footnote clearance,
+  clipping, overlap, hidden future material, and a self-contained handout.
+- One coordinator owns browser inspection. Use a suitable running local server or
+  start an isolated inspection session only when it will not conflict with other
+  Slidev activity. Read current inspector limits; test missing interactions manually.
+  Report unavailable browser/device checks instead of declaring them passed.
+- Shared mechanism changes require checking their consumers under MIGRATION §7.
+  Reuse current evidence only when it demonstrably covers the same source revision
+  and scope. Browser success does not prove physical tablet/projector behavior.
 
-## Merged report
+## Report
 
-Combine the subagent reports into one, grouped by check, keeping each check's `path:line` references. Deduplicate overlaps (e.g. a style violation inside a recap frame may be reported by both notation-lint and recap-sync — report it once, under notation-lint).
-
-End with a single summary line ("notation: N findings, recap: M mismatches, summary: OK, README: OK") and — if anything was found — one consolidated question: which findings to fix. Respect each skill's rules when applying: recap-sync and summary-sync never pick a fix direction unilaterally; notation-lint never adds macros to `newcommands.tex` without showing them first.
+Merge and deduplicate source and visual findings with absolute clickable locations.
+State the selected source formats and scope. Separate migration defects, inherited
+editorial issues, approved differences, and missing verification. Give a compact status
+for notation, incoming/outgoing recap, Summary, schedule/catalog, PDF, and browser;
+use not applicable or not checked where appropriate. An audit with missing required
+evidence is incomplete, even when source checks pass. Do not edit the migration record
+or end with a mandatory permission question. If correction was already requested,
+return findings to the parent workflow so it can apply the authorized fixes.
