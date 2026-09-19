@@ -3,7 +3,18 @@ import { test } from 'node:test'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
-import { lecturePaths, root } from './course.mjs'
+import { lecturePaths, root, retainedSourceFrames } from './course.mjs'
+
+test('approved omissions exclude only their own frame and citations', () => {
+  const first = String.raw`\begin{frame}{First}\myfootnotewithlink{https://example.org/shared}{Shared}\end{frame}`
+  const second = String.raw`\begin{frame}{Removed}\myfootnotewithlink{https://example.org/removed}{Removed}\end{frame}`
+  const third = String.raw`\begin{frame}{Third}\myfootnotewithlink{https://example.org/shared}{Shared}\end{frame}`
+  const tex = [first, second, third].join('\n')
+  assert.equal(retainedSourceFrames(tex), tex)
+  assert.equal(retainedSourceFrames(tex, [2]), [first, third].join('\n'))
+  for (const omitted of [[0], [4], [1.5], ['2'], [2, 2], null, {}])
+    assert.throws(() => retainedSourceFrames(tex, omitted), /Invalid omittedSourceFrames/)
+})
 
 test('lecture paths are independent of the shell working directory', () => {
   const previous = process.cwd()

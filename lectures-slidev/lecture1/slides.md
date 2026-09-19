@@ -19,6 +19,7 @@ drawings:
   syncAll: true
 download: false
 info: false
+omittedSourceFrames: [18]
 clicks: 0
 sourceFrame: "1"
 class: cover
@@ -453,33 +454,6 @@ sourceFrame: "extension: 16"
 
 ---
 clicks: 0
-sourceFrame: "18"
----
-
-# Generative Models Timeline
-
-<img class="timeline" src="/figs/timeline.png" alt="timeline" />
-<div class="columns glossary"><div>
-
-- **EBM** — Energy-based Model.
-- **VAE** — Variational Autoencoder.
-- **NF** — Normalizing Flow.
-- **DPM** — Diffusion Probabilistic Model.
-- **NODE** — Neural ODE.
-
-</div><div>
-
-- **NCSN** — Noise Conditional Score Network.
-- **DDPM** — Denoising Diffusion Probabilistic Model.
-- **Score SDE** — Score-based Stochastic Differential Equation.
-- **FM** — Flow Matching.
-
-</div></div>
-<div class="source"><a href="https://arxiv.org/abs/2510.21890">Lai C. H. et al. The principles of diffusion models, 2025</a></div>
-
-
----
-clicks: 0
 sourceFrame: "19"
 ---
 
@@ -678,7 +652,7 @@ sourceFrame: "auto: Problem Statement"
 </div>
 
 ---
-clicks: 4
+clicks: 3
 sourceFrame: "23"
 ---
 
@@ -711,11 +685,6 @@ Learn a model $p(\bx)\approx\pd(\bx)$ from data (**density estimation**). Two mo
 ## Challenge
 
 The data is high-dimensional and complex. For example, image datasets live in $\bbR^{\text{width}\times\text{height}\times\text{channels}}$. The curse of dimensionality makes accurately estimating $\pd(\bx)$ infeasible.
-
-</div>
-<div v-click="4">
-
-**Convention:** $p$ denotes a density for continuous data and a probability mass function for discrete data (e.g., text tokens). For discrete data, replace integrals with sums.
 
 </div>
 
@@ -1166,4 +1135,3 @@ class: summary
 - Minimizing the forward KL divergence is equivalent to maximum likelihood estimation.
 - Autoregressive models factorize the joint distribution; density evaluation multiplies the conditionals.
 - ImageGPT applies a transformer to raster-ordered image pixels; autoregressive sampling is sequential.
-- Masked diffusion unmasks text; world models generate observations conditioned on actions.

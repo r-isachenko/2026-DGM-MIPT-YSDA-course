@@ -14,7 +14,9 @@
 43 логических слайда, 88 состояний. Снимок сохранён в коммите `1446c57`,
 ветка `codex/slidev-before-interactivity`.
 
-Текущая версия после правок 2026-09-11: **46 слайдов, 91 экспортируемое состояние**.
+Текущая версия после правок 2026-09-19: **45 слайдов, 89 экспортируемых состояний**.
+По запросу автора удалён слайд Generative Models Timeline (исходный frame 18);
+это согласованное исключение из покрытия Beamer (`omittedSourceFrames: [18]`).
 Frame 24 снова соответствует одному слайду с исходными формулами, текстом,
 вопросом и тремя раскрытиями. На месте картинки — компактная гистограмма.
 Дополнительный слайд сохранён только для frame 31 (AR).
@@ -45,31 +47,30 @@ KL-демонстрация отложена для лекции 5: [решен�
 | 19 | 16 | Sora — Video Generation (2024) | 0 |
 | 20 | 17 | Nano Banana Pro (2025) | 0 |
 | 21 | extension: 16 | Genie 3 — Interactive World Generation (2025) | 0 |
-| 22 | 18 | Generative Models Timeline | 0 |
-| 23 | 19 | Open Problems in Generative Models | 0 |
-| 24 | auto: Generative Modeling Framework | Outline | 0 |
-| 25 | auto: Course Tricks | Outline | 0 |
-| 26 | 20 | Course Tricks I | 2 |
-| 27 | 21 | Course Tricks II | 4 |
-| 28 | 22 | Course Tricks III | 3 |
-| 29 | auto: Problem Statement | Outline | 0 |
-| 30 | 23 | Problem Statement | 4 |
-| 31 | 24 | Histogram as a Generative Model | 3 |
-| 32 | 25 | Conditional Models | 1 |
-| 33 | auto: Divergence Minimization Framework | Outline | 0 |
-| 34 | 26 | Divergences | 3 |
-| 35 | 27 | Forward KL vs Reverse KL (Kullback-Leibler Divergence) | 3 |
-| 36 | 28 | Forward KL vs Reverse KL: MLE as Forward KL | 6 |
-| 37 | auto: Autoregressive Models (ImageGPT) | Outline | 0 |
-| 38 | 29 | Generative Models Taxonomy | 0 |
-| 39 | 30 | Autoregressive Modeling | 3 |
-| 40 | 31 | Autoregressive Models | 3 |
-| 41 | extension: 31 | Sampling vs Density Evaluation | 0 |
-| 42 | 32 | Autoregressive Models: MLP | 3 |
-| 43 | 33 | Autoregressive Models: LLM | 0 |
-| 44 | 34 | Autoregressive Models for Images | 1 |
-| 45 | 35 | Autoregressive Models: ImageGPT | 0 |
-| 46 | 36 | Summary | 0 |
+| 22 | 19 | Open Problems in Generative Models | 0 |
+| 23 | auto: Generative Modeling Framework | Outline | 0 |
+| 24 | auto: Course Tricks | Outline | 0 |
+| 25 | 20 | Course Tricks I | 2 |
+| 26 | 21 | Course Tricks II | 4 |
+| 27 | 22 | Course Tricks III | 3 |
+| 28 | auto: Problem Statement | Outline | 0 |
+| 29 | 23 | Problem Statement | 3 |
+| 30 | 24 | Histogram as a Generative Model | 3 |
+| 31 | 25 | Conditional Models | 1 |
+| 32 | auto: Divergence Minimization Framework | Outline | 0 |
+| 33 | 26 | Divergences | 3 |
+| 34 | 27 | Forward KL vs Reverse KL (Kullback-Leibler Divergence) | 3 |
+| 35 | 28 | Forward KL vs Reverse KL: MLE as Forward KL | 6 |
+| 36 | auto: Autoregressive Models (ImageGPT) | Outline | 0 |
+| 37 | 29 | Generative Models Taxonomy | 0 |
+| 38 | 30 | Autoregressive Modeling | 3 |
+| 39 | 31 | Autoregressive Models | 3 |
+| 40 | extension: 31 | Sampling vs Density Evaluation | 0 |
+| 41 | 32 | Autoregressive Models: MLP | 3 |
+| 42 | 33 | Autoregressive Models: LLM | 0 |
+| 43 | 34 | Autoregressive Models for Images | 1 |
+| 44 | 35 | Autoregressive Models: ImageGPT | 0 |
+| 45 | 36 | Summary | 0 |
 
 ## Представление исходного переноса
 
@@ -377,3 +378,33 @@ Summary сокращён без потери пунктов, чтобы сохр
 По уточнению автора развёрнутая нормировка и дополнительные пояснения убраны.
 Сохранены три раскрытия. Это уточнение параметризации только в Slidev.
 Recap L2 содержит ту же схему MLP, без формул параметризации; противоречий нет.
+
+
+## Подготовка коммита — 2026-09-19
+
+База проверки diff: `f8b37b6f`. SHA-256 текущего `slides.md`: `41942ae775c9457f85a62bfa7b3e774b9a436aff8ba55464b9a4de7638cef594`.
+
+- Сохранены подготовленные редакторские удаления: Timeline (frame 18), пояснение
+  density/PMF в Problem Statement и последний пункт Summary о masked diffusion/world models.
+- После удаления пояснения убран пустой четвёртый клик Problem Statement; карта
+  и текущая таблица выше синхронизированы. Summary содержит шесть пунктов.
+- `omittedSourceFrames` явно учитывает удалённый frame и его собственную ссылку;
+  проверка остальных frames, ссылок и исходного Beamer сохраняется.
+- Исходные проверки всех 14 лекций и 14 тестов прошли; web build и оба экспорта
+  успешны. PDF обновлены: 45 страниц раздатки, 89 страниц с раскрытиями.
+- Все страницы обоих PDF просмотрены на контактных листах; отдельно крупно —
+  Course Tricks II, Problem Statement, Histogram, вывод MLE и Summary.
+  Обрезки и наложений в просмотренном PDF не обнаружено.
+- Браузер: слайды 1–34 и 36–45 прошли проверки геометрии, раскрытий и возвратов;
+  панель пометок прошла Pen, Undo/Redo, Save, Clear, Restore и возврат на слайд.
+  На неизменённом слайде 35 (ранее 36) полный инспектор остановился на нижней
+  границе: bounding box индекса theta заканчивается на y = 672.45 при лимите 672 px.
+  Это отдельное замечание к прежней вёрстке, а не успешный полный browser-check;
+  соответствующий PDF просмотрен крупно. Общая тема и формулы здесь не менялись.
+- Проверки по diff: новых обозначений и изменений общих формул с Recap L2 нет;
+  удалённые обзорные фрагменты в Recap L2 не воспроизводятся. Разделы и каталог
+  README согласованы. Существующее различие формулировки Objective в Recap L2
+  (p_data вместо обучаемой модели p) не введено этим diff и оставлено вне его объёма.
+- Полный новый аудит содержания, отдельный прогон виджетов и проверка реального
+  планшета/проектора не выполнялись. Исторические номера в прежних записях выше
+  относятся к описываемым там редакциям, а не к текущей карте.

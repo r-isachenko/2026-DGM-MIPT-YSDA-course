@@ -5,6 +5,14 @@ import { spawnSync } from 'node:child_process'
 
 export const root = fileURLToPath(new URL('../', import.meta.url))
 
+export function retainedSourceFrames(tex, omitted = []) {
+  const frames = [...tex.matchAll(/\\begin\{frame\}[\s\S]*?\\end\{frame\}/g)].map(m => m[0])
+  if (!Array.isArray(omitted) || new Set(omitted).size !== omitted.length
+      || omitted.some(n => !Number.isInteger(n) || n < 1 || n > frames.length))
+    throw new Error('Invalid omittedSourceFrames: expected unique source frame numbers')
+  return frames.filter((_, i) => !omitted.includes(i + 1)).join('\n')
+}
+
 export function lecturePaths(value = '1') {
   if (!/^[1-9]\d?$/.test(String(value))) throw new Error('Expected a lecture number, e.g. npm run dev -- 1')
   const number = Number(value)

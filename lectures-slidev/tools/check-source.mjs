@@ -2,7 +2,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolve } from 'node:path'
 import { execFileSync } from 'node:child_process'
-import { lecturePaths, root } from './course.mjs'
+import { lecturePaths, root, retainedSourceFrames } from './course.mjs'
 const paths = lecturePaths(process.argv[2])
 const lecture = paths.number
 const md = readFileSync(paths.entry, 'utf8')
@@ -10,6 +10,9 @@ const tex = readFileSync(resolve(root, `../lectures/lecture${lecture}/Lecture${l
 const map = JSON.parse(readFileSync(paths.map, 'utf8'))
 const fail = message => { throw new Error(message) }
 const frames = [...tex.matchAll(/\\begin\{frame\}/g)]
+const headmatter = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] || ''
+const omitted = JSON.parse(headmatter.match(/^omittedSourceFrames: (.+)$/m)?.[1] || '[]')
+const retainedTex = retainedSourceFrames(tex, omitted)
 const sections = [...tex.matchAll(/\\(?:sub)?section\{([^}]+)\}/g)].map(m=>m[1])
 const ids = [...md.matchAll(/^sourceFrame: "(.+)"$/gm)].map(m=>m[1])
 const counts = [...md.matchAll(/^clicks: (\d+)$/gm)].map(m=>+m[1])
@@ -18,7 +21,7 @@ const merged = [...md.matchAll(/^mergedSourceFrames: \[([\d, ]+)\]$/gm)].flatMap
 const mappedMerged = map.flatMap(s => s.mergedFrames || [])
 if (JSON.stringify(merged) !== JSON.stringify(mappedMerged)) fail('Stale merged-frame map')
 for (const frame of merged) if (frame < 1 || frame > frames.length) fail(`Unknown merged frame ${frame}`)
-for (let i=1;i<=frames.length;i++) if (ids.filter(x=>x===String(i)).length + merged.filter(x=>x===i).length !== 1) fail(`Frame ${i} missing or duplicated`)
+for (let i=1;i<=frames.length;i++) if (ids.filter(x=>x===String(i)).length + merged.filter(x=>x===i).length + omitted.filter(x=>x===i).length !== 1) fail(`Frame ${i} missing or duplicated`)
 for (const id of ids) {
   if (/^\d+$/.test(id) && (+id < 1 || +id > frames.length)) fail(`Unknown source frame ${id}`)
   if (id.startsWith('extension: ')) {
@@ -32,7 +35,7 @@ for (const section of sections) {
   if (!md.includes(section)) fail(`Missing section ${section}`)
   if (!readme?.includes(`<li>${section}`)) fail(`README section mismatch ${section}`)
 }
-const urls = [...tex.matchAll(/\\myfootnotewithlink\{([^}]+)\}/g)].map(m=>m[1].replaceAll('\\_', '_'))
+const urls = [...retainedTex.matchAll(/\\myfootnotewithlink\{([^}]+)\}/g)].map(m=>m[1].replaceAll('\\_', '_'))
 for (const url of urls) if (!md.includes(`href="${url}"`)) fail(`Missing source ${url}`)
 const assets = [...md.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/g)]
 const provenancePath = resolve(paths.dir, 'public/figs/sources.json')
@@ -61,4 +64,4 @@ for (const [,src] of assets) {
 if (/\\(?:mathbf|boldsymbol|mathcal|mathbb)\b/.test(md)) fail('Raw notation in lecture; use the shared adapter')
 if (/<img[^>]+src="https?:/.test(md)) fail('Remote image dependency')
 execFileSync(process.execPath, [resolve(root,'tools/sync-notation.mjs'),'--check'],{stdio:'inherit'})
-console.log(`${paths.name}: ${frames.length} source frames, ${sections.length} section transitions, ${map.length} slides, ${counts.reduce((a,b)=>a+b+1,0)} states; ${urls.length} citations and ${assets.length} image uses checked.`)
+console.log(`${paths.name}: ${frames.length} source frames (${omitted.length} approved omissions), ${sections.length} section transitions, ${map.length} slides, ${counts.reduce((a,b)=>a+b+1,0)} states; ${urls.length} citations and ${assets.length} image uses checked.`)
