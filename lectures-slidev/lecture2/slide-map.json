@@ -130,7 +130,7 @@
   },
   {
     "slide": 22,
-    "frame": "auto: Coupling Layer (RealNVP)",
+    "frame": "auto: Blockwise Flows (RealNVP / TarFlow)",
     "title": "Outline",
     "clicks": 0
   },
@@ -166,24 +166,30 @@
   },
   {
     "slide": 28,
+    "frame": "extension: 13",
+    "title": "Dequantization of Images",
+    "clicks": 2
+  },
+  {
+    "slide": 29,
     "frame": "extension: 12",
     "title": "TarFlow: Flows Can Generate Detailed Images",
     "clicks": 1
   },
   {
-    "slide": 29,
+    "slide": 30,
     "frame": "extension: 13",
     "title": "Normalizing Flows: What Comes Next?",
     "clicks": 2
   },
   {
-    "slide": 30,
+    "slide": 31,
     "frame": "auto: Latent Variable Models (LVM)",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 31,
+    "slide": 32,
     "frame": 21,
     "title": "Bayesian Framework",
     "clicks": 2,
@@ -192,19 +198,19 @@
     ]
   },
   {
-    "slide": 32,
+    "slide": 33,
     "frame": 23,
     "title": "Latent Variable Models (LVM)",
     "clicks": 4
   },
   {
-    "slide": 33,
+    "slide": 34,
     "frame": 24,
     "title": "Latent Variable Models (LVM)",
     "clicks": 2
   },
   {
-    "slide": 34,
+    "slide": 35,
     "frame": 25,
     "title": "Summary",
     "clicks": 0

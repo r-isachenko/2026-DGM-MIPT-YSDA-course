@@ -633,3 +633,175 @@ Final SHA-256:
 - `slides.md`: `88a0cd93a5d515429b0c638d9dbc90ce2cf0e52f85a05ea9ede7fa1dab3e9321`.
 - `Lecture2.pdf`: `1cf463f6e5552a537596f95d6ae04294374e2cbccdce690fd50d8ecea5c92dcf`.
 - `Lecture2-handout.pdf`: `3987c57d44cad7c7c0d9a71cf26b757371627cc3452c3686b8ac3dbfcc676880`.
+
+
+## Dequantization before Bayesian inference (2026-09-22)
+
+The author's new request adds one or two slides based on Supplementary and recent
+TarFlow explanations, while retaining a substantive HW1 theory problem. This
+explicitly supersedes the 2026-09-14 exclusion of all noise discussion from L2;
+the autoregressive explanation of TarFlow remains unchanged.
+
+Baseline `slides.md` SHA-256:
+`88a0cd93a5d515429b0c638d9dbc90ce2cf0e52f85a05ea9ede7fa1dab3e9321`.
+
+- Add exactly two slides: 26, “Dequantization of Images”, after the RealNVP demo;
+  29, “Dequantization and Noise Augmentation”, between TarFlow architecture and
+  examples. Each has two reveals. Update the map to 36 slides / 87 states.
+- Adapt the author's Supplementary bin integral and uniform Jensen bound without
+  posterior, ELBO or variational dequantization. Distinguish discrete mass P from
+  continuous density p; work in integer coordinates on the first slide.
+- Distinguish TarFlow's separately trained likelihood and generation settings:
+  uniform noise within one pixel bin versus wider Gaussian augmentation followed
+  by denoising. Explain the noisy-density interpretation without a Tweedie, score,
+  guidance or optimal-denoiser derivation. Check scale and noise values against
+  Zhai et al., arXiv:2412.06329v3, §§2.4–2.5, 3.1 and Appendix C.
+- Theis et al. §3.1 is the visible foundational citation. The research check also
+  covered Apple's June 2025 author material, indexed portions of Su Jianlin's
+  January 17, 2025 TarFlow post, and the UvA image-flow tutorial. Detailed sources
+  and teaching decisions are kept with HW-04 in DGM-homeworks:
+  `reading-notes/theory-review/HW-04/lecture2-dequantization-notes.md`.
+- Qualify exact density as continuous in “What Comes Next?” and Summary; add the
+  uniform-dequantization takeaway to Summary. Update the samples' speaker notes.
+  Existing L3 recap still states the continuous CoV/likelihood interface correctly;
+  no recap or section-hierarchy change is needed. Root/Slidev README artifact links
+  remain valid. RealNVP, demo indices 10 / 21 / 25, and shared styles are unchanged.
+- Revise the HW-04 proposal to require an explicit family with fixed correct bin
+  masses and an arbitrarily large dequantization gap, followed by scale correction
+  and a bits/dim check. The bound itself is now a supplied lemma. The 0.6 + 0.4
+  rubric totals the same provisional 1 point. Preserve its frozen baseline and
+  separate instructor solution; do not transfer to the notebook or close HW-04.
+
+Validation of this addition (not a full new audit of the lecture):
+
+- `finalize 2` passed source/frame/map/citation/asset checks, 87 shared macros,
+  all 14 current tests, production build and both exports, with Node 24.19.0.
+  Dev, build and export were run sequentially in the shared installation.
+- `render-qa.py 2` checked and rendered 36 handout pages and 87 reveal pages.
+  All pages were reviewed on contact sheets. Slides 26, 29, 31 and 36 were inspected
+  at 1280 × 720; the three new noise-slide states were also inspected at full size.
+  Sources have clearance, future material is hidden, and the handout is complete.
+- An alignment adjustment on slide 29 was followed by another complete export
+  and render. Nine contact sheets were byte-identical to the already reviewed
+  version; only the sheets containing slide 29 changed, and both were reviewed
+  again. Both final PDFs are newer than the final slide-source edit.
+- Browser checks through CUA used the DOM geometry, math, image and boundary checks
+  from `inspect.mjs` for changed slides 26, 29, 31 and 36 (10 states). Forward and
+  backward reveals preserved geometry and restored visibility. After the margin
+  adjustment, all three states of slide 29 and returns from both neighbors were
+  rechecked. No content overflow or math-rendering errors were found. The full
+  external inspector was not rerun; unchanged demo/annotation mechanisms retain
+  their earlier evidence. The viewer receives navigation from other open presenter
+  sessions, so the two-page PDF excerpt is the stable review artifact.
+- Compare the current L1 handout slide 27 (“Course Tricks III”) with L2 slide 26
+  at 1280 × 720: heading/body style, vectors, density and expectation typography
+  agree. Shared theme, fonts, macros, demo code, dependencies and export code were
+  not changed; prior browser-style/device evidence applies to those mechanisms.
+  Physical tablet/projector behavior was not retested.
+- HW-04 HTML renders its student/instructor mathematics without errors or page
+  overflow. The notebook hash and immutable baseline were checked unchanged by
+  this addition. Historical Beamer/Supplementary and merged artifacts were untouched.
+
+Final SHA-256:
+
+- `slides.md`: `edd36c14fd2e1cfb28ef6b16bd1bdbaafd66c1f7b4fb25957453d55fc12dcb91`.
+- `Lecture2.pdf`: `83f188725b44be39223465828830220c7aec9a95f06e88bb3cd47740e1a26925`.
+- `Lecture2-handout.pdf`: `1b4593a6ae03d58f28b9495b688d5fe4710eb1618807286b20f581591589fdc2`.
+
+## 2026-09-22 — Simplify demo labels (slides 10 and 21)
+
+- At the author's request, remove the unexplained area symbols from the Jacobian
+  demo, retaining the coordinate labels.
+- Replace the AR demo's dependency-structure takeaway and Jacobian note with two
+  explicit statements: sampling is slow because coordinates are computed
+  sequentially; density evaluation is fast because they are computed in parallel.
+- `npm run check -- 2` and `git diff --check` passed. Slide/reveal counts and
+  mathematical transformations are unchanged. No shared styles were changed.
+- Browser visual verification could not be completed: the existing live viewer
+  repeatedly follows another session's navigation. The active dev server was
+  preserved; build/export were not run alongside it. Both PDFs still predate this
+  follow-up and need regeneration when the live session is available for export.
+
+## 2026-09-22 — Clarify the TarFlow teaching bridge (slide 27)
+
+- At the author's request, reframe the slide as a combination of two familiar
+  ideas: Gaussian AR NF's dependence on the strict prefix, and RealNVP's
+  elementwise affine transformation of a whole vector block.
+- Keep the title, sourceFrame and two clicks. Show Gaussian AR NF initially,
+  RealNVP on click 1, and their patchwise combination on click 2. Keep one
+  annotated sampling equation; retain the inverse equation in speaker notes.
+- Explicitly distinguish sequential sampling across patches from parallel
+  computation within each patch, and retain parallel density evaluation,
+  triangular Jacobian, positive scales and unchanged first patch.
+- Check the construction against Zhai et al., arXiv:2412.06329v3, section 2.2.
+  Speaker notes distinguish the teaching analogy from an actual stack of RealNVP
+  coupling layers. This rewording changes no Summary/Recap interface or sections.
+- Source/map/citation/macro checks and `git diff --check` pass. Browser checks on
+  the existing localhost:3032 server cover all three states forward and backward,
+  identical content geometry, correct visibility, no KaTeX errors and return from
+  slide 28. Review the initial and final states visually at 1280 x 720; content
+  ends around y=503, above the source at y=676. Shared theme/macros are unchanged.
+- The pre-existing active dev server is preserved. Build/export are not run in
+  parallel with it; both PDFs still need regeneration for this and the preceding
+  demo-label follow-up. PDF/device checks are not claimed for this change.
+
+## 2026-09-22 — Consolidate dequantization after TarFlow architecture
+
+- At the author's request, move “Dequantization of Images” from old slide 26
+  to the position of old slide 29, replacing “Dequantization and Noise
+  Augmentation”. The sequence is now RealNVP demo (25), TarFlow construction
+  (26), architecture (27), dequantization (28), generation examples (29).
+- Preserve the full pixel-bin integral, uniform-noise construction, Jensen bound,
+  citation and two reveals. Move the optional distinction between likelihood
+  dequantization and Gaussian augmentation/denoising to the samples' speaker
+  notes, removing the stale reference to a preceding noise-augmentation slide.
+- Update the map: 35 slides / 84 states. Section hierarchy, artifact catalog links,
+  Summary's uniform-dequantization takeaway and L3 recap remain consistent;
+  no changes to those interfaces are needed.
+- Source/frame/map/citation/macro checks and `git diff --check` pass. On the
+  existing browser server, traverse slide 28 at clicks 0, 1 and 2: expected
+  visibility, identical geometry, no KaTeX errors and clearance above the source.
+  Inspect the final slide visually in the current browser viewport. The moved
+  slide's layout and shared theme are unchanged.
+- Preserve the pre-existing active dev server; both PDFs still await regeneration
+  for the accumulated follow-ups. No fresh PDF or physical-device QA is claimed.
+
+## 2026-09-22 — Rename the blockwise-flow subsection
+
+- Author-approved exact title: “Blockwise Flows (RealNVP / TarFlow)”, with one
+  slash. Replace “Coupling Layer (RealNVP)” in all seven Outline instances,
+  the automatic transition ID/map, and Lecture 2's Materials entry in README.
+- Preserve Beamer's historical hierarchy. Declare its Slidev rename explicitly
+  in the JSON-valued `sectionTitleOverrides` headmatter field. The source checker
+  validates override keys against Beamer sections and checks the approved titles
+  against Slidev and README; lectures without overrides retain the original rule.
+- All 14 lecture source checks and the three existing course-tool tests pass;
+  `git diff --check` passes. Visually verify the exact title on browser slide 22.
+  No slide count, reveals, shared style, formulas or recap/summary changes.
+- PDFs still await regeneration with the other follow-ups while the existing dev
+  server remains active.
+
+## 2026-09-22 — Final exports before committing
+
+- Resolve the stale-PDF limitation recorded above: build and export in a temporary
+  copy of the complete Slidev project with an independent copy of node_modules,
+  preserving the running original dev server and its generated client files.
+  Verify the lecture source, map and edited components match before publishing
+  both exported PDFs back to the repository.
+- Node 24.19.0: source checks, all 14 existing tests and production build pass.
+  Export requires a local port/browser outside the filesystem sandbox and passes
+  there. Both exports use the unchanged course pipeline.
+- `render-qa.py 2` validates and renders all 35 handout / 84 reveal pages. Review
+  all pages on contact sheets; inspect handout slides 10, 21, 22, 26, 28 and 35
+  at 1280 x 720. No clipping, overlapping sources, missing reveals or raw math
+  is visible. The slide 21 takeaway clears the source rule.
+- The earlier browser checks cover the final TarFlow, dequantization and Outline
+  edits. No additional interactive-demo behavior or physical-device validation
+  is claimed by this export-only finalization. Shared rendering styles and
+  mathematical transformations remain unchanged.
+
+Final SHA-256:
+
+- `slides.md`: `3a076c6b5ca110f12c24f9259407b86fd31e3ae1a5cb0b5e2024b34d68f41738`.
+- `Lecture2.pdf`: `6e86256d2e13b90691c19e981abd12f91c88235adcd3435dfec35fc6ce579de1`.
+- `Lecture2-handout.pdf`: `51cc295205928a93ea530989d88231dc2178a375517c3d3e04b430938f515aba`.

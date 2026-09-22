@@ -13,7 +13,15 @@ const frames = [...tex.matchAll(/\\begin\{frame\}/g)]
 const headmatter = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] || ''
 const omitted = JSON.parse(headmatter.match(/^omittedSourceFrames: (.+)$/m)?.[1] || '[]')
 const retainedTex = retainedSourceFrames(tex, omitted)
-const sections = [...tex.matchAll(/\\(?:sub)?section\{([^}]+)\}/g)].map(m=>m[1])
+const sourceSections = [...tex.matchAll(/\\(?:sub)?section\{([^}]+)\}/g)].map(m=>m[1])
+const sectionTitleOverrides = JSON.parse(headmatter.match(/^sectionTitleOverrides: (.+)$/m)?.[1] || '{}')
+if (!sectionTitleOverrides || Array.isArray(sectionTitleOverrides) || typeof sectionTitleOverrides !== 'object')
+  fail('Invalid sectionTitleOverrides: expected an object')
+for (const [source, title] of Object.entries(sectionTitleOverrides)) {
+  if (!sourceSections.includes(source) || typeof title !== 'string' || !title.trim())
+    fail(`Invalid section title override: ${source}`)
+}
+const sections = sourceSections.map(title => sectionTitleOverrides[title] ?? title)
 const ids = [...md.matchAll(/^sourceFrame: "(.+)"$/gm)].map(m=>m[1])
 const counts = [...md.matchAll(/^clicks: (\d+)$/gm)].map(m=>+m[1])
 if (map.length !== ids.length || counts.length !== ids.length) fail('Map/frontmatter length mismatch')

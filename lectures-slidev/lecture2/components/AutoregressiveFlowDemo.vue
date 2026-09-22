@@ -75,8 +75,10 @@ function next() { step.value = mode.value === 'sample' ? Math.min(4, step.value 
         <p>All prefixes are already available in the observed vector.</p>
       </div>
     </div>
-    <div class="demo-takeaway">The dependency structure is unchanged. What differs is which values are already known.</div>
-    <div class="demo-note ar-density"><FlowMath formula="\log\pt(\bx)=\log p(\bz)+\log|\det\bJ_\bff|" />; here the Jacobian has unit diagonal, so the log-determinant is zero.</div>
+    <div class="demo-takeaway">
+      <div><strong>Sampling: slow</strong> — coordinates are computed sequentially.</div>
+      <div><strong>Density evaluation: fast</strong> — coordinates are computed in parallel.</div>
+    </div>
   </DemoPanel>
 </template>
 <style scoped>
@@ -98,7 +100,6 @@ function next() { step.value = mode.value === 'sample' ? Math.min(4, step.value 
 .dependency-band { position: relative; height: 70px; padding-top: 24px; display: flex; gap: 30px; align-items: center; font-size: 21px; }
 .prefix-arrows { position: absolute; top: 0; left: 0; width: 100%; height: 34px; }
 .dependency-band > span:last-child { max-width: 670px; }
-.ar-density { margin-top: 6px; }
 .ar-print { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 20px; }
 .ar-print > div { padding: 20px; border: 1px solid #dce5eb; border-radius: 6px; }
 .print-chain { display: flex; gap: 12px; margin: 18px 0; }

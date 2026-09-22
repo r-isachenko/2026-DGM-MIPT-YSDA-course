@@ -30,12 +30,12 @@ const examples = [{ title: 'Identity', a: 1, b: 0 }, { title: 'Shear', a: 1, b: 
       <div>
         <h2>Original unit square</h2>
         <FlowPlane square :range="1.6" color="#8854c0" label="Original unit square with area one" />
-        <FlowMath formula="\bx=(x_1,x_2),\quad A_x=1" />
+        <FlowMath formula="\bx=(x_1,x_2)" />
       </div>
       <div>
         <h2>Transformed square</h2>
         <FlowPlane square :range="1.6" :stretch="stretch" :shear="shear" label="Transformed square; determinant equals area ratio" />
-        <FlowMath formula="\bz=(z_1,z_2),\quad A_z=a" />
+        <FlowMath formula="\bz=(z_1,z_2)" />
       </div>
     </div>
     <div class="jac-readout" aria-live="polite"><FlowMath formula="\bz=\bJ\bx,\quad\bJ=\begin{pmatrix}a&b\\0&1\end{pmatrix}" /><span v-if="!isPrintMode"><FlowMath formula="|\det\bJ|=" /> {{ stretch.toFixed(1) }}</span></div>

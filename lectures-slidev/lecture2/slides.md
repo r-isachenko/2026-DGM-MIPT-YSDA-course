@@ -22,6 +22,7 @@ info: false
 clicks: 0
 sourceFrame: "1"
 class: cover
+sectionTitleOverrides: {"Coupling Layer (RealNVP)": "Blockwise Flows (RealNVP / TarFlow)"}
 ---
 
 <div class="cover-kicker">MIPT & YSDA · AUTUMN 2026</div>
@@ -189,7 +190,7 @@ class:
 <div class="course-outline">
 
 <div class="outline-item "><span>01</span><div>Normalizing Flows (NF)</div></div>
-<div class="outline-item "><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Coupling Layer (RealNVP)</div></div></div>
+<div class="outline-item "><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Blockwise Flows (RealNVP / TarFlow)</div></div></div>
 <div class="outline-item "><span>03</span><div>Latent Variable Models (LVM)</div></div>
 
 </div>
@@ -205,7 +206,7 @@ class:
 <div class="course-outline">
 
 <div class="outline-item current"><span>01</span><div>Normalizing Flows (NF)</div></div>
-<div class="outline-item "><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Coupling Layer (RealNVP)</div></div></div>
+<div class="outline-item "><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Blockwise Flows (RealNVP / TarFlow)</div></div></div>
 <div class="outline-item "><span>03</span><div>Latent Variable Models (LVM)</div></div>
 
 </div>
@@ -511,7 +512,7 @@ class:
 <div class="course-outline">
 
 <div class="outline-item "><span>01</span><div>Normalizing Flows (NF)</div></div>
-<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Coupling Layer (RealNVP)</div></div></div>
+<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Blockwise Flows (RealNVP / TarFlow)</div></div></div>
 <div class="outline-item "><span>03</span><div>Latent Variable Models (LVM)</div></div>
 
 </div>
@@ -527,7 +528,7 @@ class:
 <div class="course-outline">
 
 <div class="outline-item "><span>01</span><div>Normalizing Flows (NF)</div></div>
-<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub"><strong>Linear NF</strong><br>Gaussian Autoregressive NF<br>Coupling Layer (RealNVP)</div></div></div>
+<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub"><strong>Linear NF</strong><br>Gaussian Autoregressive NF<br>Blockwise Flows (RealNVP / TarFlow)</div></div></div>
 <div class="outline-item "><span>03</span><div>Latent Variable Models (LVM)</div></div>
 
 </div>
@@ -648,7 +649,7 @@ class:
 <div class="course-outline">
 
 <div class="outline-item "><span>01</span><div>Normalizing Flows (NF)</div></div>
-<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br><strong>Gaussian Autoregressive NF</strong><br>Coupling Layer (RealNVP)</div></div></div>
+<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br><strong>Gaussian Autoregressive NF</strong><br>Blockwise Flows (RealNVP / TarFlow)</div></div></div>
 <div class="outline-item "><span>03</span><div>Latent Variable Models (LVM)</div></div>
 
 </div>
@@ -720,7 +721,7 @@ class: interactive-slide
 
 ---
 clicks: 0
-sourceFrame: "auto: Coupling Layer (RealNVP)"
+sourceFrame: "auto: Blockwise Flows (RealNVP / TarFlow)"
 class:
 ---
 
@@ -729,7 +730,7 @@ class:
 <div class="course-outline">
 
 <div class="outline-item "><span>01</span><div>Normalizing Flows (NF)</div></div>
-<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br><strong>Coupling Layer (RealNVP)</strong></div></div></div>
+<div class="outline-item current"><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br><strong>Blockwise Flows (RealNVP / TarFlow)</strong></div></div></div>
 <div class="outline-item "><span>03</span><div>Latent Variable Models (LVM)</div></div>
 
 </div>
@@ -844,53 +845,68 @@ class: theorems
 
 # TarFlow: Autoregression over Patches
 
-Replace scalar coordinates by $N$ image patches $\bx_j\in\bbR^d$. Keep the same dependence on the **previous patches** $\bx_{1:j-1}$.
+<div class="columns" style="align-items: start">
+<div class="block" style="margin: 0">
 
+## Gaussian AR NF: Autoregression
+
+Transform one **scalar coordinate** $x_j$,
+conditioned on **all previous coordinates** $\bx_{1:j-1}$.
+
+</div>
+<div class="block" style="margin: 0" v-click="1">
+
+## RealNVP: Transform a Block
+
+Transform a **whole block** $\bx_2$ elementwise,
+with shifts and scales predicted from $\bx_1$.
+
+</div>
+</div>
+
+<div v-click="2">
 <div class="block">
 
-## Density Evaluation
+## TarFlow: Autoregression + Blockwise Transforms
+
+Split an image into patches $\bx_j\in\bbR^d$. Each patch is one block of pixel values.
 
 $$
-\bz_j=\left(\bx_j-\bmu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})\right)\odot\frac{1}{\bsigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})}.
+\underbrace{\bx_j}_{\text{whole patch}}
+=\bz_j\odot\bsigma_{j,\btheta}(\underbrace{{\color{#8854c0}\bx_{1:j-1}}}_{\text{previous patches}})
++\bmu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}}).
 $$
 
-All input patches are observed: compute every $\bz_j$ **in parallel** within a block.
+**Sampling:** sequential across patches, parallel within each patch.
+
+**Density evaluation:** all patches are observed, so compute all $\bz_j$ in parallel.
 
 </div>
-<div class="block" v-click="1">
 
-## Sampling
-
-$$
-\bx_j=\bz_j\odot\bsigma_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}})+\bmu_{j,\btheta}({\color{#8854c0}\bx_{1:j-1}}).
-$$
-
-Earlier output patches must be generated first: compute $\bx_j$ **sequentially**.
-
-</div>
-<div class="block" v-click="2">
-
-The Jacobian stays **triangular**; positive componentwise scales ensure invertibility.
-
-Here $j=2,\ldots,N$; the first patch is unchanged: $\bz_1=\bx_1$.
+The Jacobian stays **triangular**. Positive scales ensure invertibility; $\bz_1=\bx_1$.
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2412.06329">Zhai S. et al. Normalizing Flows are Capable Generative Models, 2024. Section 2.2.</a></div>
 
 <!--
-Relate both identities directly to Gaussian Autoregressive NF: the scalar
-coordinate becomes a vector of d pixel values. N is the number of patches,
-so Nd is the image dimension. Patches are indexed in the current block's order.
+Teaching bridge: combine the autoregressive dependence of Gaussian AR NF with
+RealNVP's elementwise affine transformation of a vector block. This is a conceptual
+connection, not a claim that TarFlow stacks RealNVP coupling layers or inherits
+RealNVP's fully parallel sampling. RealNVP conditions its transformed block on one
+unchanged block; TarFlow conditions each patch on the entire strict patch prefix.
+The scalar coordinate becomes a vector of d pixel values. N is the number of
+patches, so Nd is the image dimension. Patches use the current flow layer's order.
+The displayed sampling equation applies to j=2,...,N; the first patch is unchanged.
+The inverse is z_j = (x_j - mu_j(x_{1:j-1})) / sigma_j(x_{1:j-1}), elementwise.
 The functions predict componentwise shifts and positive scales from the strict
 prefix. There is no dependence on the current patch inside these functions.
 This gives a block lower-triangular Jacobian with diagonal within-patch blocks;
 its determinant is the product of inverse componentwise scales.
 Training uses the same exact flow likelihood and MLE objective introduced earlier.
-The slide compares the two directions of a single AR block, rather than repeating
-the common Training/Sampling algorithm. For the full flow, sample the base Gaussian
-and invert all blocks in reverse order. Parallelism is across patches within one
-block; both directions traverse the flow blocks sequentially.
+For the full flow, sample the base Gaussian and invert all layers in reverse order.
+Parallel density evaluation is across patches within one flow layer; both
+directions traverse the flow layers sequentially.
 -->
 
 ---
@@ -927,6 +943,65 @@ the preceding method slide uses the course's one-based indices for one block.
 -->
 
 ---
+clicks: 2
+sourceFrame: "extension: 13"
+class: theorems
+---
+
+# Dequantization of Images
+
+An 8-bit image has $\bx\in\{0,\ldots,255\}^m$. A flow models a **continuous density** $\pt(\bv)$.
+
+<div class="block">
+
+## Probability of a Pixel Bin
+
+For a model supported on $[0,256)^m$, the discrete image probability is
+
+$$
+P_{\btheta}(\bx)=\int_{[0,1)^m}\pt(\bx+\bu)\,d\bu.
+$$
+
+</div>
+<div class="block" v-click="1">
+
+## Uniform Dequantization
+
+$$
+\bu\sim\Uniform([0,1)^m),\qquad \bv=\bx+\bu,\qquad \lfloor\bv\rfloor=\bx.
+$$
+
+Each discrete value is spread over its bin. Train the flow on $\bv$.
+
+</div>
+<div v-click="2">
+
+By **Jensen's inequality**,
+
+$$
+\log P_{\btheta}(\bx)\geq\bbE_{\bu}\bigl[\log\pt(\bx+\bu)\bigr].
+$$
+
+Exact continuous density evaluation gives a **lower bound** on discrete log-likelihood.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/1511.01844">Theis L., van den Oord A., Bethge M. A Note on the Evaluation of Generative Models, 2015. Section 3.1.</a></div>
+
+<!--
+Adapted from the author's Supplementary: Data dequantization, especially Uniform
+dequantization. Work with integer pixel coordinates here; normalizing the inputs
+adds a change-of-variables constant. P is a probability mass and p is a density.
+Assume positive density and finite expected log-density. The uniform noise density
+and bin volume are both one, so the integral is an expectation; concavity of log
+then gives the displayed bound. Point-density spikes can improve the naive
+continuous objective on a discrete training set without improving bin masses.
+No approximate posterior, ELBO, or variational dequantization is needed here.
+The cube support is the simple theoretical setting; implementation boundary
+handling is outside this introduction.
+-->
+
+---
 clicks: 1
 sourceFrame: "extension: 12"
 class: figure-slide
@@ -952,8 +1027,19 @@ These are examples reported by the authors, not samples generated for this cours
 The paper appeared on arXiv in December 2024 and at ICML 2025; the assets are from
 arXiv v3. This slide makes no current state-of-the-art or universal diffusion
 comparison claim. The full published generation setup also uses noise augmentation,
-guidance and denoising; these are not introduced in Lecture 2. The examples should
-not be presented as samples from the bare affine-block inversion shown above.
+guidance and denoising. These additional techniques are left to later lectures.
+The examples should not be presented as samples from the bare affine-block
+inversion shown above.
+Optional context (Zhai et al., sections 2.4–2.5, 3.1 and Appendix C): likelihood
+and generation use separately trained configurations. For likelihood, uniform
+noise fills one pixel bin (width 1/128 after rescaling pixels to [-1,1]). For
+image generation, training uses broader Gaussian noise, followed by denoising
+of generated samples. For ImageNet 64x64, sigma=0.05 versus uniform-noise
+standard deviation approximately 0.002. Gaussian noise crosses pixel bins;
+its continuous-likelihood objective does not inherit the uniform-bin bound
+by direct substitution. Denoising is not claimed to exactly recover the clean
+distribution or preserve likelihood. No score, Tweedie or guidance derivation
+is introduced here.
 -->
 
 ---
@@ -964,13 +1050,13 @@ class: theorems
 
 # Normalizing Flows: What Comes Next?
 
-We can now turn simple noise into complex data, with both **sampling** and **exact density evaluation**.
+We can now turn simple noise into complex data, with both **sampling** and **exact continuous density evaluation**.
 
 <div class="block">
 
 ## What We Learned
 
-- Change of variables gives an exact likelihood and an MLE training objective.
+- Change of variables gives an exact continuous density and an MLE training objective.
 - Efficient training and sampling require tractable Jacobian determinants and efficient inverses.
 
 </div>
@@ -1004,7 +1090,7 @@ class:
 <div class="course-outline">
 
 <div class="outline-item "><span>01</span><div>Normalizing Flows (NF)</div></div>
-<div class="outline-item "><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Coupling Layer (RealNVP)</div></div></div>
+<div class="outline-item "><span>02</span><div>NF Examples<div class="outline-sub">Linear NF<br>Gaussian Autoregressive NF<br>Blockwise Flows (RealNVP / TarFlow)</div></div></div>
 <div class="outline-item current"><span>03</span><div>Latent Variable Models (LVM)</div></div>
 
 </div>
@@ -1158,9 +1244,10 @@ class: summary
 
 # Summary
 
-- Change of variables computes densities under invertible transformations.
+- Change of variables computes exact continuous densities under invertible transformations.
 - Normalizing flows use invertible maps with tractable Jacobians; CNF and Flow Matching extend this view of transporting distributions.
 - Linear NFs use structured matrix factors to simplify determinant and inverse calculations.
 - TarFlow uses Transformers to scale Gaussian AR flows with triangular Jacobians.
 - RealNVP coupling is a special case of AR NF with fast density evaluation and sampling.
+- Uniform dequantization gives a lower bound on discrete image log-likelihood.
 - LVMs combine a decoder $\pt(\bx|\bz)$ and prior $p(\bz)$; marginalization makes $\pt(\bx)$ harder to evaluate.
