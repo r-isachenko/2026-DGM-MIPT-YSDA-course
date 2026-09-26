@@ -7,6 +7,7 @@ Migrated 2026-09-05 from the project’s saved memory. Current sources and the a
 - Keep Outline slides strictly for the agenda. Never add notation, definitions, explanations, or other lecture content to them.
 - `lectures/merged/` is managed by the author. Never run `merge_lectures.py`, rebuild, edit or sync that directory without an explicit request. This overrides the suggestion in `CLAUDE.md` §7.
 - An explicit request to commit is sufficient authorization within the requested scope; review the diff and commit without another confirmation. Keep commit and PR text free of agent attribution.
+- When the author marks lecture preparation complete, publish that lecture's row in the root README Materials table, including links to the final PDF and handout. Move an existing row out of the comment instead of duplicating it; leave other unpublished lectures and seminars hidden.
 - Use the project skills in `.agents/skills/`: `slidev-migrate` runs the migration workflow; the five lecture checks handle Beamer and Slidev through their shared format context. Use the PDF skill for artifact inspection alongside those checks. Do not apply old broad shell allowlists as Codex permission policy.
 
 ## Known course state
