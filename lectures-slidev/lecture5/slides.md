@@ -95,7 +95,7 @@ class: theorems
 # Recap of Previous Lecture
 
 - **Prior mismatch:** The unimodal encoder $q_{\bphi}(\bz|\bx)$ yields $\qagg(\bz)$ that often does not match the Gaussian prior $p(\bz)$.
-- **Blurriness from averaging:** With Gaussian decoder, ELBO minimization gives $\bmu^*(\bz)=\bbE_{q_{\bphi}(\bx|\bz)}[\bx]$. If distinct inputs $\bx\neq\bx'$ map to *overlapping* latent regions, the decoder averages over unrelated data.
+- **Blurriness from averaging:** With a fixed encoder, prior and Gaussian decoder variance, ELBO maximization gives $\bmu^*(\bz)=\bbE_{q_{\bphi}(\bx|\bz)}[\bx]$. If distinct inputs $\bx\neq\bx'$ map to *overlapping* latent regions, the decoder averages over unrelated data.
 <img src="/figs/agg_posterior.png" alt="agg posterior" style="width: 100%; height: 240px; object-fit: contain; margin: 0 auto;" />
 
 

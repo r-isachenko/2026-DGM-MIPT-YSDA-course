@@ -22,8 +22,9 @@ info: false
 favicon: "data:,"
 clicks: 0
 importedSourceFrames: {"5": [10, 11, 12, 13, 14]}
-omittedSourceFrames: [7, 9, 10, 11]
+omittedSourceFrames: [7, 10, 11]
 omittedSourceSections: ["Variational Autoencoder (VAE)"]
+sectionTitleOverrides: {"Discrete VAE Latent Representations": "Discrete Latent VAEs"}
 sourceFrame: "1"
 class: cover
 ---
@@ -57,7 +58,7 @@ $$
 </div>
 <div class="block">
 
-## Naive Monte Carlo Estimation
+## A Naive Lower Bound
 
 $$
 \begin{aligned}
@@ -114,10 +115,10 @@ $$
 <ul>
 <li>
 
-Rather than maximizing likelihood, maximize the ELBO:
+Maximize the ELBO as a surrogate for log-likelihood:
 
 $$
-\max_{\btheta}\pt(\bx)\quad\rightarrow\quad\max_{q,\btheta}\cL_{q,\btheta}(\bx)
+\max_{\btheta}\log\pt(\bx)\quad\longrightarrow\quad\max_{q,\btheta}\cL_{q,\btheta}(\bx)
 $$
 
 </li>
@@ -215,7 +216,7 @@ $$
 </div>
 <div class="block">
 
-## Variational Assumption
+## Reparametrization: A Gaussian Example
 
 $$
 \begin{aligned}
@@ -283,6 +284,49 @@ Update $\bphi$, $\btheta$ via stochastic gradient ascent.
 
 ---
 clicks: 0
+sourceFrame: "9"
+class: theorems
+---
+
+# Recap of Previous Lecture
+
+$$
+\cL_{\bphi,\btheta}(\bx)=\bbE_q\log\pt(\bx|\bz)-\KL(q_{\bphi}(\bz|\bx)\|p(\bz))
+$$
+
+<div class="columns balanced" style="grid-template-columns: 3fr 2fr; gap: 28px; margin: 16px 0">
+<img src="/figs/VAE.png" alt="Variational autoencoder with stochastic encoder and decoder" class="wide-figure" style="height: 310px; margin: 0" />
+<img src="/figs/vae_scheme.png" alt="Probabilistic graphical model for the variational autoencoder" class="wide-figure" style="height: 310px; margin: 0" />
+</div>
+
+<div class="columns" style="grid-template-columns: 1fr 1fr 1fr; gap: 28px; margin-top: 18px">
+<div>
+
+## Encoder $q_{\bphi}(\bz|\bx)$
+
+Predicts $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$.
+
+</div>
+<div>
+
+## Decoder $\pt(\bx|\bz)$
+
+Predicts parameters of the data distribution.
+
+</div>
+<div>
+
+## Prior $p(\bz)$
+
+Typically $\cN(0,\bI)$; used for sampling.
+
+</div>
+</div>
+
+<div class="source"><a href="http://ijdykeman.github.io/ml/2016/12/21/cvae.html">image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html</a><br><a href="https://arxiv.org/abs/1906.02691">Kingma D. P., Welling M., An Introduction to Variational Autoencoders, 2019</a></div>
+
+---
+clicks: 0
 sourceFrame: "6"
 class: theorems
 ---
@@ -292,10 +336,9 @@ class: theorems
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
-<div class="outline-item"><span>05</span><div>Generative Adversarial Networks (GAN)</div></div>
+<div class="outline-item"><span>02</span><div>Discrete Latent VAEs<div class="outline-sub">Discrete VAE Latent Representations<br>Vector Quantized VAE (VQ-VAE)</div></div></div>
+<div class="outline-item"><span>03</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>04</span><div>Generative Adversarial Networks (GAN)</div></div>
 
 </div>
 
@@ -309,10 +352,9 @@ sourceFrame: "auto: ELBO Surgery and Optimal VAE Prior"
 <div class="course-outline">
 
 <div class="outline-item current"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
-<div class="outline-item"><span>05</span><div>Generative Adversarial Networks (GAN)</div></div>
+<div class="outline-item"><span>02</span><div>Discrete Latent VAEs<div class="outline-sub">Discrete VAE Latent Representations<br>Vector Quantized VAE (VQ-VAE)</div></div></div>
+<div class="outline-item"><span>03</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>04</span><div>Generative Adversarial Networks (GAN)</div></div>
 
 </div>
 
@@ -336,14 +378,24 @@ $$
 \frac{1}{n}\sum_{i=1}^n\KL(q_{\bphi}(\bz|\bx_i)\|p(\bz))={\color{#8854c0}\KL(\qagg(\bz)\|p(\bz))}+{\color{teal}\bbI_q[\bx,\bz]};
 $$
 
+</div>
+
 <div v-click="2">
 
-- $\qagg(\bz)=\frac{1}{n}\sum_{i=1}^n q_{\bphi}(\bz|\bx_i)$ denotes the **aggregated** variational posterior.
+<div class="takeaway">
+
+## Aggregated Variational Posterior
+
+$$
+\qagg(\bz)=\frac{1}{n}\sum_{i=1}^n q_{\bphi}(\bz|\bx_i)
+$$
+
+</div>
+
 - $\bbI_q[\bx,\bz]$ is the mutual information between $\bx$ and $\bz$ under the data distribution $\pd(\bx)$ and $q_{\bphi}(\bz|\bx)$.
 - <span style="color: #8854c0">The first term</span> encourages $\qagg(\bz)$ to match the prior $p(\bz)$.
 - <span style="color: teal">The second term</span> reduces the information about $\bx$ encoded in $\bz$.
 
-</div>
 </div>
 
 <div class="source"><a href="http://approximateinference.org/accepted/HoffmanJohnson2016.pdf">Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016</a></div>
@@ -351,7 +403,7 @@ $$
 ---
 clicks: 4
 sourceFrame: "13"
-class: derivation theorems
+class: theorems
 ---
 
 # ELBO Surgery
@@ -365,12 +417,12 @@ $$
 ## Proof
 
 $$ {1|1-2|1-3|all} {at:1}
-\begin{aligned}
-&\frac{1}{n}\sum_{i=1}^n\KL(q_{\bphi}(\bz|\bx_i)\|p(\bz))=\frac{1}{n}\sum_{i=1}^n\int q_{\bphi}(\bz|\bx_i)\log\frac{q_{\bphi}(\bz|\bx_i)}{p(\bz)}d\bz\\
-&=\frac{1}{n}\sum_{i=1}^n\int q_{\bphi}(\bz|\bx_i)\log\frac{{\color{#8854c0}\qagg(\bz)}{\color{teal}q_{\bphi}(\bz|\bx_i)}}{{\color{#8854c0}p(\bz)}{\color{teal}\qagg(\bz)}}d\bz\\
-&=\int\frac{1}{n}\sum_{i=1}^n q_{\bphi}(\bz|\bx_i)\log{\color{#8854c0}\frac{\qagg(\bz)}{p(\bz)}}d\bz+\frac{1}{n}\sum_{i=1}^n\int q_{\bphi}(\bz|\bx_i)\log{\color{teal}\frac{q_{\bphi}(\bz|\bx_i)}{\qagg(\bz)}}d\bz\\
-&=\KL(\qagg(\bz)\|p(\bz))+\frac{1}{n}\sum_{i=1}^n\KL(q_{\bphi}(\bz|\bx_i)\|\qagg(\bz))
-\end{aligned}
+\begin{gathered}
+\frac{1}{n}\sum_{i=1}^n\KL(q_{\bphi}(\bz|\bx_i)\|p(\bz))=\frac{1}{n}\sum_{i=1}^n\int q_{\bphi}(\bz|\bx_i)\log\frac{q_{\bphi}(\bz|\bx_i)}{p(\bz)}d\bz\\
+=\frac{1}{n}\sum_{i=1}^n\int q_{\bphi}(\bz|\bx_i)\log\frac{{\color{#8854c0}\qagg(\bz)}{\color{teal}q_{\bphi}(\bz|\bx_i)}}{{\color{#8854c0}p(\bz)}{\color{teal}\qagg(\bz)}}d\bz\\
+=\int\frac{1}{n}\sum_{i=1}^n q_{\bphi}(\bz|\bx_i)\log{\color{#8854c0}\frac{\qagg(\bz)}{p(\bz)}}d\bz+\frac{1}{n}\sum_{i=1}^n\int q_{\bphi}(\bz|\bx_i)\log{\color{teal}\frac{q_{\bphi}(\bz|\bx_i)}{\qagg(\bz)}}d\bz\\
+=\KL(\qagg(\bz)\|p(\bz))+\frac{1}{n}\sum_{i=1}^n\KL(q_{\bphi}(\bz|\bx_i)\|\qagg(\bz))
+\end{gathered}
 $$
 
 <div v-click="4">
@@ -404,9 +456,9 @@ $$ {1|all} {at:1}
 $$
 
 </div>
-<div v-click="2">
+<div class="takeaway" v-click="2">
 
-The prior distribution $p(\bz)$ only appears in the last term.
+The **prior distribution** $p(\bz)$ only appears in the **Marginal KL** term.
 
 </div>
 <div class="block" v-click="3">
@@ -417,9 +469,9 @@ $$
 \KL(\qagg(\bz)\|p(\bz))=0\quad\Leftrightarrow\quad p(\bz)=\qagg(\bz)=\frac{1}{n}\sum_{i=1}^n q_{\bphi}(\bz|\bx_i).
 $$
 
-<div v-click="4">
+<div class="takeaway" v-click="4">
 
-Hence, the optimal prior $p(\bz)$ is the aggregated variational posterior $\qagg(\bz)$.
+Hence, the **optimal prior** $p(\bz)$ is the **aggregated variational posterior** $\qagg(\bz)$.
 
 </div>
 </div>
@@ -438,10 +490,36 @@ $$
 \KL(\qagg(\bz)\|p(\bz))
 $$
 
+<div class="columns" style="gap: 24px; margin: 16px 0">
+<div class="takeaway" style="margin: 0">
+
+## Training
+
+The decoder receives $\bz\sim q_{\bphi}(\bz|\bx_i)$; over the training set, $\bz\sim\qagg(\bz)$.
+
+</div>
+<div class="takeaway" style="margin: 0">
+
+## Sampling (generation)
+
+The decoder receives $\bz\sim p(\bz)$, then generates $\bx\sim\pt(\bx|\bz)$.
+
+</div>
+</div>
+
+<div class="columns" style="gap: 24px; align-items: start; margin-top: 20px">
+<div>
+
 - $q_{\bphi}(\bz|\bx)=\cN(\bmu_{\bphi}(\bx),\bsigma^2_{\bphi}(\bx))$ is unimodal.
 - It is generally believed that the **mismatch between** $p(\bz)$ **and** $\qagg(\bz)$ is the primary explanation for blurry VAE-generated images.
 
-<img v-click="1" src="/figs/agg_posterior.png" alt="Mismatch between a multimodal aggregated posterior and the VAE prior" class="wide-figure" style="height: 280px; margin-top: 24px" />
+</div>
+<div>
+
+<img v-click="1" src="/figs/agg_posterior.png" alt="Mismatch between a multimodal aggregated posterior and the VAE prior" class="wide-figure" style="height: 300px; margin: 0" />
+
+</div>
+</div>
 
 <div class="source"><a href="https://arxiv.org/abs/1505.05770">Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015</a></div>
 
@@ -451,19 +529,57 @@ sourceFrame: "16"
 class: theorems
 ---
 
+# From ELBO to Squared Error
+
+Fix the encoder $q_{\bphi}(\bz|\bx)$, prior $p(\bz)$ and decoder variance $\sigma^2>0$; optimize only $\btheta$.
+
+$$
+\bbE_{\pd(\bx)}\cL_{\bphi,\btheta}(\bx)=\bbE_{\pd(\bx)q_{\bphi}(\bz|\bx)}\log\pt(\bx|\bz)-\underbrace{\bbE_{\pd(\bx)}\KL(q_{\bphi}(\bz|\bx)\|p(\bz))}_{\text{constant w.r.t. }\btheta}.
+$$
+
+<div class="takeaway" v-click="1">
+
+The **conditional KL is constant in $\btheta$**, not necessarily zero. At $p=\qagg$:
+
+$$
+\underbrace{\KL(\qagg(\bz)\|p(\bz))}_{\text{Marginal KL}}=0,\qquad\underbrace{\frac{1}{n}\sum_{i=1}^n\KL(q_{\bphi}(\bz|\bx_i)\|p(\bz))}_{\text{Average conditional KL}}=\bbI_q[\bx,\bz].
+$$
+
+</div>
+
+<div class="block" v-click="2">
+
+## Gaussian Decoder: Squared Reconstruction Error
+
+$$
+\pt(\bx|\bz)=\cN(\bmu_{\btheta}(\bz),\sigma^2\bI)\quad\Rightarrow\quad\log\pt(\bx|\bz)=-\frac{\|\bx-\bmu_{\btheta}(\bz)\|_2^2}{2\sigma^2}+\text{const}.
+$$
+
+$$
+\argmax_{\btheta}\bbE_{\pd(\bx)}\cL_{\bphi,\btheta}(\bx)=\argmin_{\btheta}\bbE_{\pd(\bx)q_{\bphi}(\bz|\bx)}\|\bx-\bmu_{\btheta}(\bz)\|_2^2.
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2510.21890">Lai C. H. et al. The principles of diffusion models, 2025.</a></div>
+
+---
+clicks: 2
+sourceFrame: "extension: 16"
+class: theorems
+---
+
 # Why are VAE Generations Blurry?
 
-Consider a Gaussian decoder $\pt(\bx|\bz)=\cN(\bmu_{\btheta}(\bz),\sigma^2\bI)$.
+Keep the encoder, prior and Gaussian decoder variance fixed. Maximizing ELBO gives
+
+$$
+\argmin_{\btheta}\bbE_{\pd(\bx)q_{\bphi}(\bz|\bx)}\|\bx-\bmu_{\btheta}(\bz)\|_2^2.
+$$
 
 <div class="block" v-click="1">
 
-## ELBO Optimization
-
-With **fixed** encoder $q_{\bphi}(\bz|\bx)$, optimizing ELBO reduces to
-
-$$
-\argmin_{\btheta}\bbE_{\pd(\bx)q_{\bphi}(\bz|\bx)}\|\bx-\bmu_{\btheta}(\bz)\|^2
-$$
+## Optimal Decoder Mean
 
 The optimal decoder mean is the **conditional expectation**:
 
@@ -486,7 +602,7 @@ $$
 
 ---
 clicks: 0
-sourceFrame: "auto: Discrete VAE Latent Representations"
+sourceFrame: "auto: Discrete Latent VAEs"
 ---
 
 # Outline
@@ -494,10 +610,9 @@ sourceFrame: "auto: Discrete VAE Latent Representations"
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item current"><span>02</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
-<div class="outline-item"><span>05</span><div>Generative Adversarial Networks (GAN)</div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Latent VAEs<div class="outline-sub"><strong>Discrete VAE Latent Representations</strong><br>Vector Quantized VAE (VQ-VAE)</div></div></div>
+<div class="outline-item"><span>03</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>04</span><div>Generative Adversarial Networks (GAN)</div></div>
 
 </div>
 
@@ -615,10 +730,9 @@ sourceFrame: "auto: Vector Quantized VAE (VQ-VAE)"
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item current"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
-<div class="outline-item"><span>05</span><div>Generative Adversarial Networks (GAN)</div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Latent VAEs<div class="outline-sub">Discrete VAE Latent Representations<br><strong>Vector Quantized VAE (VQ-VAE)</strong></div></div></div>
+<div class="outline-item"><span>03</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>04</span><div>Generative Adversarial Networks (GAN)</div></div>
 
 </div>
 
@@ -898,10 +1012,9 @@ sourceFrame: "auto: Likelihood-Free Learning"
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item current"><span>04</span><div>Likelihood-Free Learning</div></div>
-<div class="outline-item"><span>05</span><div>Generative Adversarial Networks (GAN)</div></div>
+<div class="outline-item"><span>02</span><div>Discrete Latent VAEs<div class="outline-sub">Discrete VAE Latent Representations<br>Vector Quantized VAE (VQ-VAE)</div></div></div>
+<div class="outline-item current"><span>03</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>04</span><div>Generative Adversarial Networks (GAN)</div></div>
 
 </div>
 
@@ -1006,10 +1119,9 @@ class: theorems
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
-<div class="outline-item current"><span>05</span><div>Generative Adversarial Networks (GAN)</div></div>
+<div class="outline-item"><span>02</span><div>Discrete Latent VAEs<div class="outline-sub">Discrete VAE Latent Representations<br>Vector Quantized VAE (VQ-VAE)</div></div></div>
+<div class="outline-item"><span>03</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item current"><span>04</span><div>Generative Adversarial Networks (GAN)</div></div>
 
 </div>
 
