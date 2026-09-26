@@ -20,6 +20,9 @@ drawings:
 download: false
 info: false
 favicon: "data:,"
+omittedSourceFrames: [2]
+omittedSourceSections: ["Langevin Dynamics"]
+importedSourceFrames: {"7": [9, 10, 11, 12, 13, 14]}
 clicks: 0
 sourceFrame: "1"
 class: cover
@@ -37,57 +40,12 @@ Roman Isachenko
 
 ---
 clicks: 0
-sourceFrame: "2"
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Theorem
-
-The minimax game
-
-$$
-\min_G\max_D\Bigl[\underbrace{\bbE_{\pd(\bx)}\log D(\bx)+\bbE_{p(\bz)}\log(1-D(\bG(\bz)))}_{V(G,D)}\Bigr]
-$$
-
-achieves its global optimum precisely when $\pd(\bx)=\pt(\bx)$, and $D^*(\bx)=0.5$.
-
-</div>
-
-$$
-V(G,D^*)=2\,\JSD(\pd(\bx)\,\|\,\pt(\bx))-2\log2,\qquad V(G^*,D^*)=-2\log2.
-$$
-
-<div class="block">
-
-## Expectations
-
-If the generator can express **any** function and the discriminator is **optimal** at every step, the generator **will converge** to the target distribution.
-
-</div>
-
-
-<div class="source"><a href="https://arxiv.org/abs/1406.2661">Goodfellow I. J. et al. Generative Adversarial Networks, 2014</a></div>
-
----
-clicks: 0
 sourceFrame: "3"
 class: theorems
 ---
 
 # Recap of Previous Lecture
 
-<div class="block">
-
-## Reality
-
-- Generator updates are performed in parameter space, and the discriminator is often imperfectly optimized.
-- Generator and discriminator losses typically oscillate during GAN training.
-
-</div>
 <div class="block">
 
 ## Objective
@@ -362,42 +320,12 @@ class: theorems
 <div class="source"><a href="https://ya.ru/ai/art">YandexART 2.5, 2025</a></div>
 
 ---
-clicks: 0
-sourceFrame: "12"
-class:
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item"><span>01</span><div>Langevin Dynamics</div></div>
-<div class="outline-item"><span>02</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
-
-</div>
-
----
-clicks: 0
-sourceFrame: "auto: Langevin Dynamics"
-class:
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item current"><span>01</span><div>Langevin Dynamics</div></div>
-<div class="outline-item"><span>02</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
-
-</div>
-
----
 clicks: 2
 sourceFrame: "13"
 class: theorems
 ---
 
-# Energy-Based Models
+# Recap of Previous Lecture
 
 <div class="block">
 
@@ -435,7 +363,7 @@ sourceFrame: "14"
 class: theorems
 ---
 
-# Langevin Dynamics
+# Recap of Previous Lecture
 
 <div class="block">
 
@@ -465,6 +393,21 @@ $$
 
 ---
 clicks: 0
+sourceFrame: "12"
+class:
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item"><span>01</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item"><span>02</span><div>Forward Gaussian Diffusion Process</div></div>
+
+</div>
+
+---
+clicks: 0
 sourceFrame: "auto: Score Matching"
 class:
 ---
@@ -473,8 +416,8 @@ class:
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Langevin Dynamics</div></div>
-<div class="outline-item current"><span>02</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item current"><span>01</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item"><span>02</span><div>Forward Gaussian Diffusion Process</div></div>
 
 </div>
 
@@ -598,8 +541,8 @@ class:
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Langevin Dynamics</div></div>
-<div class="outline-item current"><span>02</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item current"><span>01</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item"><span>02</span><div>Forward Gaussian Diffusion Process</div></div>
 
 </div>
 
@@ -1000,8 +943,8 @@ class:
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Langevin Dynamics</div></div>
-<div class="outline-item current"><span>02</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item current"><span>01</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item"><span>02</span><div>Forward Gaussian Diffusion Process</div></div>
 
 </div>
 
@@ -1133,13 +1076,302 @@ class: theorems
 
 ---
 clicks: 0
+sourceFrame: "auto: Forward Gaussian Diffusion Process"
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item"><span>01</span><div>Score Matching<div class="outline-sub">Denoising Score Matching<br>Noise-Conditioned Score Network (NCSN)</div></div></div>
+<div class="outline-item current"><span>02</span><div>Forward Gaussian Diffusion Process</div></div>
+
+</div>
+
+---
+clicks: 0
+sourceFrame: "imported: 7:9"
+---
+
+# Generative Models Taxonomy
+
+<TaxonomyDiagram class="taxonomy" denoising-diffusion alt="Generative models taxonomy with DDPM highlighted" />
+
+---
+clicks: 2
+sourceFrame: "imported: 7:10"
+class: theorems
+---
+
+# Forward Gaussian Diffusion Process
+
+Let $\bx_0=\bx\sim\pd(\bx)$, $\beta_t\ll1$. Define a Markov chain:
+
+$$
+\bx_t=\sqrt{1-\beta_t}\bx_{t-1}+\sqrt{\beta_t}\bepsilon_t,\quad\bepsilon_t\sim\cN(0,\bI)
+$$
+
+<div v-click="1">
+
+$$
+q(\bx_t|\bx_{t-1})=\cN(\sqrt{1-\beta_t}\bx_{t-1},\beta_t\bI)
+$$
+
+</div>
+<div class="block" v-click="2">
+
+## Langevin Dynamics
+
+$$
+\bx_{l+1}=\bx_l+\frac{\color{#8854c0}\eta}{2}\cdot{\color{teal}\nabla_{\bx_l}\log\pt(\bx_l)}+\sqrt{\color{#8854c0}\eta}\bepsilon_l,\quad\bepsilon_l\sim\cN(0,\bI)
+$$
+
+</div>
+
+<div class="source"><a href="http://proceedings.mlr.press/v37/sohl-dickstein15.pdf">Sohl-Dickstein J. Deep Unsupervised Learning using Nonequilibrium Thermodynamics, 2015</a></div>
+
+<!-- The final comparison from Lecture 7 source frame 10 continues on the next slide. The original pause before the expansion becomes the slide boundary. -->
+
+---
+clicks: 1
+sourceFrame: "extension: imported: 7:10"
+class: theorems
+---
+
+# Forward Gaussian Diffusion Process
+
+$$
+\begin{aligned}
+\bx_t&=\sqrt{1-\beta_t}\,\bx_{t-1}+\sqrt{\beta_t}\bepsilon_t\\
+&\approx\left(1-\frac{\beta_t}{2}\right)\bx_{t-1}+\sqrt{\beta_t}\bepsilon_t\\
+&=\bx_{t-1}+\frac{\color{#8854c0}\beta_t}{2}{\color{teal}(-\bx_{t-1})}+\sqrt{\color{#8854c0}\beta_t}\bepsilon_t
+\end{aligned}
+$$
+
+<div v-click="1">
+
+- ${\color{#8854c0}\beta_t=\eta}$
+- ${\color{teal}\nabla_{\bx_{t-1}}\log\pt(\bx_{t-1})=-\bx_{t-1}=\nabla_{\bx_{t-1}}\log\cN(0,\bI)}$
+
+</div>
+
+<div class="source"><a href="http://proceedings.mlr.press/v37/sohl-dickstein15.pdf">Sohl-Dickstein J. Deep Unsupervised Learning using Nonequilibrium Thermodynamics, 2015</a></div>
+
+---
+clicks: 1
+sourceFrame: "imported: 7:11"
+class: theorems
+---
+
+# Forward Gaussian Diffusion Process
+
+$$
+\begin{aligned}
+\bx_t&=\sqrt{1-\beta_t}\bx_{t-1}+\sqrt{\beta_t}\bepsilon_t,\quad\bepsilon_t\sim\cN(0,\bI)\\
+q(\bx_t|\bx_{t-1})&=\cN(\sqrt{1-\beta_t}\bx_{t-1},\beta_t\bI)
+\end{aligned}
+$$
+
+<div class="block" v-click="1">
+
+## Statement 1
+
+Let $\alpha_t=1-\beta_t$ and $\bar{\alpha}_t=\prod_{s=1}^t\alpha_s=\prod_{s=1}^t(1-\beta_s)$. Then
+
+$$
+q(\bx_t|\bx_0)=\cN(\sqrt{\bar{\alpha}_t}\,\bx_0,(1-\bar{\alpha}_t)\bI)
+$$
+
+</div>
+
+<div class="source"><a href="http://proceedings.mlr.press/v37/sohl-dickstein15.pdf">Sohl-Dickstein J. Deep Unsupervised Learning using Nonequilibrium Thermodynamics, 2015</a></div>
+
+---
+clicks: 4
+sourceFrame: "extension: imported: 7:11"
+class: derivation
+---
+
+# Forward Gaussian Diffusion Process
+
+<div class="block">
+
+## Statement 1 (continued)
+
+Thus, samples at any timestep $t$ can be generated directly from $\bx_0$
+
+$$ {1|1-2|1-3|1-4|all} {at:1}
+\begin{aligned}
+\bx_t&=\sqrt{\alpha_t}{\color{teal}\bx_{t-1}}+\sqrt{1-\alpha_t}\bepsilon_t\\
+&=\sqrt{\alpha_t}({\color{teal}\sqrt{\alpha_{t-1}}\bx_{t-2}+\sqrt{1-\alpha_{t-1}}\bepsilon_{t-1}})+\sqrt{1-\alpha_t}\bepsilon_t\\
+&=\sqrt{\alpha_t\alpha_{t-1}}\bx_{t-2}+({\color{#8854c0}\sqrt{\alpha_t(1-\alpha_{t-1})}\bepsilon_{t-1}+\sqrt{1-\alpha_t}\bepsilon_t})\\
+&=\sqrt{\alpha_t\alpha_{t-1}}\bx_{t-2}+{\color{#8854c0}\sqrt{1-\alpha_t\alpha_{t-1}}\bepsilon'_t}\\
+&=\ldots=\sqrt{\bar{\alpha}_t}\,\bx_0+\sqrt{1-\bar{\alpha}_t}\bepsilon,\quad\bepsilon\sim\cN(0,\bI)
+\end{aligned}
+$$
+
+</div>
+
+<div class="source"><a href="http://proceedings.mlr.press/v37/sohl-dickstein15.pdf">Sohl-Dickstein J. Deep Unsupervised Learning using Nonequilibrium Thermodynamics, 2015</a></div>
+
+<!-- Four cumulative rows preserve the four nextonslide stages of Lecture 7 source frame 11. The pause before the derivation becomes the slide boundary. -->
+
+---
+clicks: 0
+sourceFrame: "imported: 7:12"
+class: theorems
+---
+
+# Forward Gaussian Diffusion Process
+
+$$
+\begin{aligned}
+q(\bx_t|\bx_{t-1})&=\cN\left(\sqrt{1-\beta_t}\bx_{t-1},\beta_t\bI\right);\\
+q(\bx_t|\bx_0)&=\cN\left(\sqrt{\bar{\alpha}_t}\bx_0,(1-\bar{\alpha}_t)\bI\right)
+\end{aligned}
+$$
+
+<img src="/figs/conditional_diffusion.png" alt="Conditional diffusion from an image to noise" class="wide-figure" />
+
+<div class="source"><a href="https://arxiv.org/abs/2403.18103">Chan S. Tutorial on Diffusion Models for Imaging and Vision, 2024</a></div>
+
+---
+clicks: 2
+sourceFrame: "extension: imported: 7:12"
+class: theorems
+---
+
+# Forward Gaussian Diffusion Process
+
+<div class="block">
+
+## Statement 2
+
+Applying the Markov chain to any distribution $\pd(\bx)$ yields $\bx_\infty\sim p_\infty(\bx)=\cN(0,\bI)$, the **stationary** (limiting) distribution:
+
+$$
+p_\infty(\bx)=\int q(\bx|\bx')p_\infty(\bx')d\bx'
+$$
+
+<div v-click="1">
+
+$$
+\begin{aligned}
+p_\infty(\bx)&=\int q(\bx_\infty|\bx_0)\pd(\bx_0)d\bx_0\\
+&\approx\cN(0,\bI)\int\pd(\bx_0)d\bx_0=\cN(0,\bI)
+\end{aligned}
+$$
+
+</div></div>
+<div v-click="2">
+
+**Note:** This holds iff $\bar{\alpha}_t\rightarrow0$, i.e., $\sum_{t=1}^{\infty}\beta_t=+\infty$.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2403.18103">Chan S. Tutorial on Diffusion Models for Imaging and Vision, 2024</a></div>
+
+---
+clicks: 2
+sourceFrame: "imported: 7:13"
+class: theorems
+---
+
+# Forward Gaussian Diffusion Process
+
+**Diffusion** describes the migration of particles from regions of high density to those of low density.
+
+<img src="/figs/diffusion_over_time.png" alt="Diffusion over time" style="width:100%;height:155px;object-fit:contain" />
+
+<div v-click="1">
+
+1. $\bx_0=\bx\sim\pd(\bx)$
+2. $\bx_t=\sqrt{1-\beta_t}\bx_{t-1}+\sqrt{\beta_t}\bepsilon_t$, $\bepsilon_t\sim\cN(0,\bI)$, $t\geq1$
+3. After $T\gg1$ steps: $\bx_T\sim p_\infty(\bx)=\cN(0,\bI)$
+
+</div>
+<div v-click="2">
+
+If this process can be reversed, we can sample from $\pd(\bx)$ by starting from noise $p_\infty(\bx)=\cN(0,\bI)$.<br>
+Our goal now becomes inverting this diffusion.
+
+</div>
+
+<div class="source"><a href="https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html">Das A. An Introduction to Diffusion Probabilistic Models, blog post, 2021</a></div>
+
+---
+clicks: 1
+sourceFrame: "imported: 7:14"
+class: theorems
+---
+
+# Denoising Score Matching
+
+<div class="block">
+
+## NCSN
+
+$$
+\begin{aligned}
+q(\bx_t|\bx_0)&=\cN(\bx_0,\sigma_t^2\bI),\quad q(\bx_1)\approx\pd(\bx),\quad q(\bx_T)\approx\cN(0,\sigma_T^2\bI)\\
+\nabla_{\bx_t}\log q(\bx_t|\bx)&=-\frac{\bx_t-\bx}{\sigma_t^2}
+\end{aligned}
+$$
+
+</div>
+<div class="block" v-click="1">
+
+## Gaussian Diffusion
+
+$$
+\begin{aligned}
+q(\bx_t|\bx_0)&=\cN(\sqrt{\bar{\alpha}_t}\bx_0,(1-\bar{\alpha}_t)\bI),\quad q(\bx_1)\approx\pd(\bx),\quad q(\bx_T)\approx\cN(0,\bI)\\
+\nabla_{\bx_t}\log q(\bx_t|\bx_0)&=-\frac{\bx_t-\sqrt{\bar{\alpha}_t}\bx_0}{1-\bar{\alpha}_t}
+\end{aligned}
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/1907.05600">Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019</a></div>
+
+---
+clicks: 1
+sourceFrame: "extension: imported: 7:14"
+class: theorems
+---
+
+# Denoising Score Matching
+
+<div class="block">
+
+## Theorem (Denoising Score Matching)
+
+$$
+\begin{aligned}
+&\bbE_{q(\bx_t)}\left\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t)\right\|_2^2\\
+&\quad=\bbE_{\pd(\bx)}\bbE_{q(\bx_t|\bx)}\left\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t|\bx)\right\|_2^2+\text{const}(\btheta)
+\end{aligned}
+$$
+
+</div>
+<div v-click="1">
+
+**Note:** Annealed Langevin dynamics applies to diffusion, too.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/1907.05600">Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019</a></div>
+
+---
+clicks: 0
 sourceFrame: "31"
 class: summary
 ---
 
 # Summary
 
-- Langevin dynamics enables sampling from unnormalized densities (e.g. EBMs) using the gradient of the log-density $\nabla_{\bx}\log\pt(\bx)$.
-- Score matching proposes minimizing Fisher divergence to estimate the score function.
-- Denoising score matching minimizes the Fisher divergence on corrupted samples, making the divergence estimable via sampling.
-- The Noise-Conditioned Score Network leverages a range of noise levels and annealed Langevin dynamics to learn the score function and enable sampling.
+- Score matching minimizes Fisher divergence to estimate the score function.
+- Denoising score matching makes the score objective estimable using corrupted samples and the known corruption kernel.
+- Noise-Conditioned Score Networks learn scores at multiple noise levels and sample with annealed Langevin dynamics.
+- The forward Gaussian diffusion process admits a closed-form conditional distribution for any timestep.
+- With a suitable noise schedule, the forward process converges to standard Gaussian noise; denoising score matching also applies to these diffusion marginals.

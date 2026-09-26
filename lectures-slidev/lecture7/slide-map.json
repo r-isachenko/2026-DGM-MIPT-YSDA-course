@@ -7,234 +7,264 @@
   },
   {
     "slide": 2,
-    "frame": 2,
-    "title": "Recap of Previous Lecture",
-    "clicks": 0
-  },
-  {
-    "slide": 3,
     "frame": 3,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 4,
+    "slide": 3,
     "frame": 4,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 5,
+    "slide": 4,
     "frame": "extension: 4",
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 6,
+    "slide": 5,
     "frame": 5,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 7,
+    "slide": 6,
     "frame": 6,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 8,
+    "slide": 7,
     "frame": 7,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 9,
+    "slide": 8,
     "frame": "extension: 7",
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
+    "slide": 9,
+    "frame": 11,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
     "slide": 10,
+    "frame": 13,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 11,
     "frame": 8,
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 11,
-    "frame": "auto: Forward Gaussian Diffusion Process",
-    "title": "Outline",
-    "clicks": 0
-  },
-  {
     "slide": 12,
-    "frame": 9,
-    "title": "Generative Models Taxonomy",
-    "clicks": 0
-  },
-  {
-    "slide": 13,
-    "frame": 10,
-    "title": "Forward Gaussian Diffusion Process",
-    "clicks": 2
-  },
-  {
-    "slide": 14,
-    "frame": "extension: 10",
-    "title": "Forward Gaussian Diffusion Process",
-    "clicks": 1
-  },
-  {
-    "slide": 15,
-    "frame": 11,
-    "title": "Forward Gaussian Diffusion Process",
-    "clicks": 1
-  },
-  {
-    "slide": 16,
-    "frame": "extension: 11",
-    "title": "Forward Gaussian Diffusion Process",
-    "clicks": 4
-  },
-  {
-    "slide": 17,
-    "frame": 12,
-    "title": "Forward Gaussian Diffusion Process",
-    "clicks": 0
-  },
-  {
-    "slide": 18,
-    "frame": "extension: 12",
-    "title": "Forward Gaussian Diffusion Process",
-    "clicks": 2
-  },
-  {
-    "slide": 19,
-    "frame": 13,
-    "title": "Forward Gaussian Diffusion Process",
-    "clicks": 2
-  },
-  {
-    "slide": 20,
-    "frame": 14,
-    "title": "Denoising Score Matching",
-    "clicks": 1
-  },
-  {
-    "slide": 21,
-    "frame": "extension: 14",
-    "title": "Denoising Score Matching",
-    "clicks": 1
-  },
-  {
-    "slide": 22,
     "frame": "auto: Reverse Gaussian Diffusion Process",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 23,
+    "slide": 13,
     "frame": 15,
     "title": "Reverse Gaussian Diffusion Process",
     "clicks": 3
   },
   {
-    "slide": 24,
+    "slide": 14,
     "frame": 16,
     "title": "Reverse Gaussian Diffusion Process",
     "clicks": 1
   },
   {
-    "slide": 25,
+    "slide": 15,
     "frame": 17,
     "title": "Reverse Gaussian Diffusion Process (Ancestral Sampling)",
     "clicks": 0
   },
   {
-    "slide": 26,
+    "slide": 16,
     "frame": "extension: 17",
     "title": "Reverse Gaussian Diffusion Process (Ancestral Sampling)",
     "clicks": 2
   },
   {
-    "slide": 27,
+    "slide": 17,
     "frame": 18,
     "title": "Conditioned Reverse Distribution",
     "clicks": 1
   },
   {
-    "slide": 28,
+    "slide": 18,
     "frame": "extension: 18",
     "title": "Conditioned Reverse Distribution",
     "clicks": 1
   },
   {
-    "slide": 29,
+    "slide": 19,
     "frame": 19,
     "title": "Distribution Summary",
     "clicks": 2
   },
   {
-    "slide": 30,
+    "slide": 20,
     "frame": "auto: Gaussian Diffusion Model as VAE",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 31,
+    "slide": 21,
     "frame": 20,
     "title": "Gaussian Diffusion Model as VAE",
     "clicks": 2
   },
   {
-    "slide": 32,
+    "slide": 22,
     "frame": 21,
     "title": "Gaussian Diffusion Model as VAE",
     "clicks": 4
   },
   {
-    "slide": 33,
+    "slide": 23,
     "frame": "auto: Diffusion ELBO Derivation",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 34,
+    "slide": 24,
     "frame": 22,
     "title": "ELBO for Gaussian Diffusion Model",
     "clicks": 3
   },
   {
-    "slide": 35,
+    "slide": 25,
     "frame": 23,
     "title": "ELBO for Gaussian Diffusion Model",
     "clicks": 2
   },
   {
-    "slide": 36,
+    "slide": 26,
     "frame": "extension: 23",
     "title": "ELBO for Gaussian Diffusion Model",
     "clicks": 2
   },
   {
-    "slide": 37,
+    "slide": 27,
     "frame": 24,
     "title": "ELBO for Gaussian Diffusion Model",
     "clicks": 1
   },
   {
-    "slide": 38,
+    "slide": 28,
     "frame": "extension: 24",
     "title": "ELBO for Gaussian Diffusion Model",
     "clicks": 1
   },
   {
-    "slide": 39,
+    "slide": 29,
     "frame": 25,
     "title": "ELBO for Gaussian Diffusion Model",
     "clicks": 3
   },
   {
+    "slide": 30,
+    "frame": "imported: 8:9",
+    "title": "ELBO for Gaussian Diffusion Model",
+    "clicks": 0
+  },
+  {
+    "slide": 31,
+    "frame": "imported: 8:10",
+    "title": "ELBO for Gaussian Diffusion Model",
+    "clicks": 2
+  },
+  {
+    "slide": 32,
+    "frame": "extension: imported: 8:10",
+    "title": "ELBO for Gaussian Diffusion Model",
+    "clicks": 1
+  },
+  {
+    "slide": 33,
+    "frame": "imported: 8:11",
+    "title": "ELBO for Gaussian Diffusion Model",
+    "clicks": 1
+  },
+  {
+    "slide": 34,
+    "frame": "auto: Gaussian Diffusion Reparametrization",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 35,
+    "frame": "imported: 8:12",
+    "title": "Reparametrization of DDPM",
+    "clicks": 3
+  },
+  {
+    "slide": 36,
+    "frame": "extension: imported: 8:12",
+    "title": "Reparametrization of DDPM",
+    "clicks": 1
+  },
+  {
+    "slide": 37,
+    "frame": "imported: 8:13",
+    "title": "Reparametrization of DDPM",
+    "clicks": 1
+  },
+  {
+    "slide": 38,
+    "frame": "extension: imported: 8:13",
+    "title": "Reparametrization of DDPM",
+    "clicks": 2
+  },
+  {
+    "slide": 39,
+    "frame": "imported: 8:14",
+    "title": "Reparametrization of DDPM",
+    "clicks": 1
+  },
+  {
     "slide": 40,
+    "frame": "extension: imported: 8:14",
+    "title": "Reparametrization of DDPM",
+    "clicks": 0
+  },
+  {
+    "slide": 41,
+    "frame": "auto: Denoising Diffusion Probabilistic Model (DDPM)",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 42,
+    "frame": "imported: 8:15",
+    "title": "Generative Models Taxonomy",
+    "clicks": 0
+  },
+  {
+    "slide": 43,
+    "frame": "imported: 8:16",
+    "title": "Denoising Diffusion Probabilistic Model (DDPM)",
+    "clicks": 2
+  },
+  {
+    "slide": 44,
+    "frame": "imported: 8:17",
+    "title": "Denoising Diffusion Probabilistic Model (DDPM)",
+    "clicks": 1
+  },
+  {
+    "slide": 45,
     "frame": 26,
     "title": "Summary",
     "clicks": 0

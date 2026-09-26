@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
-import { lecturePaths, root, retainedSourceFrames, resolveImportedSourceFrames, retainedSourceSections, checkSectionSchedule, checkSourceCitations, matchesOriginalAsset } from './course.mjs'
+import { lecturePaths, root, retainedSourceFrames, resolveImportedSourceFrames, retainedSourceSections, checkFrameExtensions, checkSectionSchedule, checkSourceCitations, matchesOriginalAsset } from './course.mjs'
 
 test('approved omissions exclude only their own frame and citations', () => {
   const first = String.raw`\begin{frame}{First}\myfootnotewithlink{https://example.org/shared}{Shared}\end{frame}`
@@ -34,6 +34,20 @@ test('imports account for each declared foreign frame exactly once', () => {
   for (const id of ['imported: 4:1', 'imported:4:2', 'imported: 4:02'])
     assert.throws(() => resolveImportedSourceFrames({}, [id], 3, readLecture), /Undeclared imported/)
   assert.throws(() => resolveImportedSourceFrames({ 4: [1] }, ['imported: 4:1'], 3, () => { throw new Error('ENOENT') }), /Missing imported source lecture/)
+})
+
+test('split imported frames retain their declared origin and need a base slide', () => {
+  const imported = [{ id: 'imported: 7:10' }]
+  assert.doesNotThrow(() => checkFrameExtensions(['10', 'extension: 10']))
+  assert.doesNotThrow(() => checkFrameExtensions(['imported: 7:10', 'extension: imported: 7:10'], imported))
+  for (const ids of [
+    ['extension: imported: 7:10'],
+    ['imported: 7:10', 'extension: imported: 7:11'],
+    ['imported: 7:10', 'extension: extension: imported: 7:10'],
+    ['auto: Section', 'extension: auto: Section'],
+    ['extension: 10'],
+  ]) assert.throws(() => checkFrameExtensions(ids, imported), /Extension without source frame/)
+  assert.throws(() => checkFrameExtensions(['imported: 7:10', 'extension: imported: 7:10']), /Extension without source frame/)
 })
 
 test('imported citations are mandatory and unselected foreign frames stay excluded', () => {

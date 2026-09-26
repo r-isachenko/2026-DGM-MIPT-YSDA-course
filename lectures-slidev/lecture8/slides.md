@@ -21,6 +21,9 @@ download: false
 info: false
 favicon: "data:,"
 clicks: 0
+omittedSourceFrames: [2, 3, 4, 9, 10, 11, 12, 13, 14, 15, 16]
+omittedSourceSections: ["Diffusion ELBO Derivation (continued)", "Gaussian Diffusion Reparametrization"]
+sectionTitleOverrides: {"Denoising Diffusion Probabilistic Model (DDPM)": "DDPM as a Score-Based Generative Model"}
 sourceFrame: "1"
 class: cover
 ---
@@ -34,125 +37,6 @@ class: cover
 Roman Isachenko
 
 <div class="cover-institute">Moscow Institute of Physics and Technology<br>Yandex School of Data Analysis</div>
-
----
-clicks: 0
-sourceFrame: "2"
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Forward Gaussian Diffusion Process
-
-Let $\bx_0=\bx\sim\pd(\bx)$, $\beta_t\ll1$, $\alpha_t=1-\beta_t$ and $\bar{\alpha}_t=\prod_{s=1}^t\alpha_s$.
-
-$$
-\begin{aligned}
-\bx_t&=\sqrt{1-\beta_t}\cdot\bx_{t-1}+\sqrt{\beta_t}\cdot\bepsilon_t,\quad\text{where }\bepsilon_t\sim\cN(0,\bI);\\
-\bx_t&=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon,\quad\text{where }\bepsilon\sim\cN(0,\bI).
-\end{aligned}
-$$
-
-$$
-\begin{aligned}
-q(\bx_t|\bx_{t-1})&=\cN(\sqrt{1-\beta_t}\cdot\bx_{t-1},\beta_t\cdot\bI);\\
-q(\bx_t|\bx_0)&=\cN(\sqrt{\bar{\alpha}_t}\cdot\bx_0,(1-\bar{\alpha}_t)\cdot\bI).
-\end{aligned}
-$$
-
-</div>
-
-<img src="/figs/conditional_diffusion.png" alt="Conditional forward Gaussian diffusion" style="width:100%;height:180px;object-fit:contain" />
-
-<div class="source"><a href="https://arxiv.org/abs/2403.18103">Chan S. Tutorial on Diffusion Models for Imaging and Vision, 2024</a></div>
-
----
-clicks: 0
-sourceFrame: "3"
-class: theorems
----
-
-# Recap of Previous Lecture
-
-**Diffusion** describes the migration of particles from regions of high density to those of low density.
-
-<img src="/figs/diffusion_over_time.png" alt="Diffusion over time" style="width:100%;height:150px;object-fit:contain" />
-
-1. $\bx_0=\bx\sim\pd(\bx)$
-2. $\bx_t=\sqrt{1-\beta_t}\bx_{t-1}+\sqrt{\beta_t}\bepsilon_t$, $\bepsilon_t\sim\cN(0,\bI)$, $t\geq1$
-3. After $T\gg1$ steps: $\bx_T\sim p_\infty(\bx)=\cN(0,\bI)$
-
-If this process can be reversed, we can sample from $\pd(\bx)$ by starting from noise $p_\infty(\bx)=\cN(0,\bI)$.
-
-Our goal now becomes inverting this diffusion.
-
-<div class="source"><a href="https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html">Das A. An Introduction to Diffusion Probabilistic Models, blog post, 2021</a></div>
-
----
-clicks: 1
-sourceFrame: "4"
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## NCSN
-
-$$
-\begin{gathered}
-q(\bx_t|\bx_0)=\cN(\bx_0,\sigma_t^2\bI),\quad q(\bx_1)\approx\pd(\bx),\quad q(\bx_T)\approx\cN(0,\sigma_T^2\bI)\\
-\nabla_{\bx_t}\log q(\bx_t|\bx)=-\frac{\bx_t-\bx}{\sigma_t^2}
-\end{gathered}
-$$
-
-</div>
-<div class="block" v-click="1">
-
-## Gaussian Diffusion
-
-$$
-\begin{gathered}
-q(\bx_t|\bx_0)=\cN(\sqrt{\bar{\alpha}_t}\bx_0,(1-\bar{\alpha}_t)\bI),\quad q(\bx_1)\approx\pd(\bx),\quad q(\bx_T)\approx\cN(0,\bI)\\
-\nabla_{\bx_t}\log q(\bx_t|\bx_0)=-\frac{\bx_t-\sqrt{\bar{\alpha}_t}\bx_0}{1-\bar{\alpha}_t}
-\end{gathered}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/1907.05600">Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019</a></div>
-
----
-clicks: 1
-sourceFrame: "extension: 4"
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Theorem (Denoising Score Matching)
-
-$$
-\begin{aligned}
-&\bbE_{q(\bx_t)}\left\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t)\right\|_2^2\\
-&\quad=\bbE_{\pd(\bx)}\bbE_{q(\bx_t|\bx)}\left\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t|\bx)\right\|_2^2+\text{const}(\btheta)
-\end{aligned}
-$$
-
-</div>
-<div v-click="1">
-
-**Note:** Annealed Langevin dynamics applies to diffusion, too.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/1907.05600">Song Y. et al. Generative Modeling by Estimating Gradients of the Data Distribution, 2019</a></div>
 
 ---
 clicks: 0
@@ -296,390 +180,11 @@ $$
 
 ---
 clicks: 0
-sourceFrame: "8"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item "><span>01</span><div>Diffusion ELBO Derivation (continued)</div></div>
-<div class="outline-item "><span>02</span><div>Gaussian Diffusion Reparametrization</div></div>
-<div class="outline-item "><span>03</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item "><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
-
-</div>
-
----
-clicks: 0
-sourceFrame: "auto: Diffusion ELBO Derivation (continued)"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item current"><span>01</span><div>Diffusion ELBO Derivation (continued)</div></div>
-<div class="outline-item "><span>02</span><div>Gaussian Diffusion Reparametrization</div></div>
-<div class="outline-item "><span>03</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item "><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
-
-</div>
-
----
-clicks: 0
-sourceFrame: "9"
-class: theorems
----
-
-# ELBO for Gaussian Diffusion Model
-
-<img src="/figs/diffusion_objective.png" alt="Diffusion training objective" style="width:100%;height:205px;object-fit:contain" />
-
-$$
-\cL_t=\bbE_{q(\bx_t|\bx_0)}\KL\bigl(q(\bx_{t-1}|\bx_t,\bx_0)\|\pt(\bx_{t-1}|\bx_t)\bigr)
-$$
-
-$$
-\begin{aligned}
-q(\bx_{t-1}|\bx_t,\bx_0)&=\cN(\bx_{t-1}|\tilde{\bmu}_t(\bx_t,\bx_0),\tilde{\beta}_t\bI),\\
-\pt(\bx_{t-1}|\bx_t)&=\cN\bigl(\bx_{t-1}|\bmu_{\btheta,t}(\bx_t),\bsigma_{\btheta,t}^2(\bx_t)\bigr)
-\end{aligned}
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2208.11970">Luo C. Understanding Diffusion Models: A Unified Perspective, 2022</a></div>
-
----
-clicks: 2
-sourceFrame: "10"
-class: theorems
----
-
-# ELBO for Gaussian Diffusion Model
-
-$$
-\cL_t=\bbE_{q(\bx_t|\bx_0)}\KL\bigl(q(\bx_{t-1}|\bx_t,\bx_0)\|\pt(\bx_{t-1}|\bx_t)\bigr)
-$$
-
-$$
-\begin{aligned}
-q(\bx_{t-1}|\bx_t,\bx_0)&=\cN(\bx_{t-1}|\tilde{\bmu}_t(\bx_t,\bx_0),\tilde{\beta}_t\bI),\\
-\pt(\bx_{t-1}|\bx_t)&=\cN\bigl(\bx_{t-1}|\bmu_{\btheta,t}(\bx_t),{\color{#8854c0}\bsigma_{\btheta,t}^2(\bx_t)}\bigr)
-\end{aligned}
-$$
-
-<div v-click="1">
-
-Let's assume that
-
-$$
-\begin{gathered}
-{\color{#8854c0}\bsigma_{\btheta,t}^2(\bx_t)=\tilde{\beta}_t\bI}\\
-\Rightarrow\quad\pt(\bx_{t-1}|\bx_t)=\cN\bigl(\bx_{t-1}|\bmu_{\btheta,t}(\bx_t),{\color{#8854c0}\tilde{\beta}_t\bI}\bigr).
-\end{gathered}
-$$
-
-</div>
-<div v-click="2">
-
-Theoretically, the optimal $\bsigma_{\btheta,t}^2(\bx_t)$ lies in $[\tilde{\beta}_t,\beta_t]$:
-
-- $\beta_t$ is optimal for $\bx_0\sim\cN(0,\bI)$;
-- $\tilde{\beta}_t$ is optimal for $\bx_0\sim\delta(\bx_0-\bx^*)$.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 1
-sourceFrame: "extension: 10"
-class: derivation
----
-
-# ELBO for Gaussian Diffusion Model
-
-$$ {1-2|all} {at:1}
-\begin{aligned}
-\cL_t&=\bbE_{q(\bx_t|\bx_0)}\KL\bigl(\cN\bigl(\tilde{\bmu}_t(\bx_t,\bx_0),\tilde{\beta}_t\bI\bigr)\\
-&\hspace{42mm}\|\cN\bigl(\bmu_{\btheta,t}(\bx_t),\tilde{\beta}_t\bI\bigr)\bigr)\\
-&=\bbE_{q(\bx_t|\bx_0)}\left[\frac{1}{2\tilde{\beta}_t}\bigl\|\tilde{\bmu}_t(\bx_t,\bx_0)-\bmu_{\btheta,t}(\bx_t)\bigr\|^2\right]
-\end{aligned}
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 1
-sourceFrame: "11"
-class: theorems
----
-
-# ELBO for Gaussian Diffusion Model
-
-<div class="block">
-
-## Training
-
-1. Sample $\bx_0\sim\pd(\bx)$, $\bepsilon\sim\cN(0,\bI)$.
-2. Compute noisy image $\bx_t=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon$.
-3. Compute the ELBO:
-
-$$
-\begin{aligned}
-\cL_{\bphi,\btheta}(\bx)&={\color{olive}\bbE_{q(\bx_1|\bx_0)}\log\pt(\bx_0|\bx_1)}-{\color{#8854c0}\KL\bigl(q(\bx_T|\bx_0)\|p(\bx_T)\bigr)}\\
-&\quad-{\color{teal}\sum_{t=2}^T\underbrace{\bbE_{q(\bx_t|\bx_0)}\left[\frac{1}{2\tilde{\beta}_t}\bigl\|\tilde{\bmu}_t(\bx_t,\bx_0)-\bmu_{\btheta,t}(\bx_t)\bigr\|^2\right]}_{\cL_t}}.
-\end{aligned}
-$$
-
-</div>
-<div class="block" v-click="1">
-
-## Sampling
-
-1. Sample $\bx_T\sim\cN(0,\bI)$.
-2. Denoise $\bx_{t-1}=\bmu_{\btheta,t}(\bx_t)+\sqrt{\tilde{\beta}_t}\cdot\bepsilon$, $\bepsilon\sim\cN(0,\bI)$.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 0
-sourceFrame: "auto: Gaussian Diffusion Reparametrization"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item "><span>01</span><div>Diffusion ELBO Derivation (continued)</div></div>
-<div class="outline-item current"><span>02</span><div>Gaussian Diffusion Reparametrization</div></div>
-<div class="outline-item "><span>03</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item "><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
-
-</div>
-
----
-clicks: 3
-sourceFrame: "12"
-class: theorems
----
-
-# Reparametrization of DDPM
-
-$$
-\cL_t=\bbE_{q(\bx_t|\bx_0)}\left[\frac{1}{2\tilde{\beta}_t}\bigl\|\tilde{\bmu}_t(\bx_t,\bx_0)-\bmu_{\btheta,t}(\bx_t)\bigr\|^2\right]
-$$
-
-$$
-\tilde{\bmu}_t(\bx_t,\bx_0)=\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{1-\bar{\alpha}_t}\cdot\bx_t+\frac{\sqrt{\bar{\alpha}_{t-1}}(1-\alpha_t)}{1-\bar{\alpha}_t}\cdot{\color{olive}\bx_0}
-$$
-
-<div class="math-chain" v-click="1">
-
-$\displaystyle\bx_t=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon$
-<span v-click="2">$\displaystyle\quad\Rightarrow\quad{\color{olive}\bx_0}=\frac{\bx_t-\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon}{\sqrt{\bar{\alpha}_t}}$</span>
-
-</div>
-<div v-click="3">
-
-- There is a linear relationship between $\bepsilon$, $\bx_t$, and $\bx_0$.
-- Let's try to rewrite this mean using only $\bx_t$ and $\bepsilon$.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 1
-sourceFrame: "extension: 12"
-class: derivation
----
-
-# Reparametrization of DDPM
-
-$$ {1-2|all} {at:1}
-\begin{aligned}
-\tilde{\bmu}_t(\bx_t,\bepsilon)&=\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{1-\bar{\alpha}_t}\cdot\bx_t\\
-&\quad+\frac{\sqrt{\bar{\alpha}_{t-1}}(1-\alpha_t)}{1-\bar{\alpha}_t}\cdot{\color{olive}\left(\frac{\bx_t-\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon}{\sqrt{\bar{\alpha}_t}}\right)}\\
-&=\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}\cdot\bepsilon
-\end{aligned}
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 1
-sourceFrame: "13"
-class: theorems
----
-
-# Reparametrization of DDPM
-
-$$
-\cL_t=\bbE_{{\color{#8854c0}q(\bx_t|\bx_0)}}\left[{\color{olive}\frac{1}{2\tilde{\beta}_t}}\bigl\|\tilde{\bmu}_t(\bx_t,\bx_0)-\bmu_{\btheta,t}(\bx_t)\bigr\|^2\right]
-$$
-
-<div class="block">
-
-## Reparametrization
-
-$$ {1|all} {at:1}
-\begin{aligned}
-\tilde{\bmu}_t(\bx_t,\bx_0)&=\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}\cdot\bepsilon\\
-\bmu_{\btheta,t}(\bx_t)&=\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-{\color{teal}\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}}\cdot\bepsilon_{\btheta,t}(\bx_t)
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 2
-sourceFrame: "extension: 13"
-class: derivation
----
-
-# Reparametrization of DDPM
-
-$$ {1|all} {at:1}
-\begin{aligned}
-\cL_t&=\bbE_{{\color{#8854c0}\bepsilon\sim\cN(0,\bI)}}\left[\frac{{\color{teal}(1-\alpha_t)^2}}{{\color{olive}2\tilde{\beta}_t}{\color{teal}\alpha_t(1-\bar{\alpha}_t)}}\bigl\|\bepsilon-\bepsilon_{\btheta,t}({\color{#8854c0}\bx_t})\bigr\|^2\right]\\
-&=\bbE_{{\color{#8854c0}\bepsilon\sim\cN(0,\bI)}}\left[\frac{(1-\alpha_t)^2}{2\tilde{\beta}_t\alpha_t(1-\bar{\alpha}_t)}\Bigl\|\bepsilon-\bepsilon_{\btheta,t}\bigl({\color{#8854c0}\sqrt{\bar{\alpha}_t}\bx_0+\sqrt{1-\bar{\alpha}_t}\bepsilon}\bigr)\Bigr\|^2\right]
-\end{aligned}
-$$
-
-<div v-click="2">
-
-At every step of the reverse process, we attempt to predict the noise $\bepsilon$ that was used in the forward diffusion process!
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 1
-sourceFrame: "14"
-class: theorems
----
-
-# Reparametrization of DDPM
-
-$$
-\begin{aligned}
-\cL_{\bphi,\btheta}(\bx)&={\color{olive}\bbE_{q(\bx_1|\bx_0)}\log\pt(\bx_0|\bx_1)}-{\color{#8854c0}\KL\bigl(q(\bx_T|\bx_0)\|p(\bx_T)\bigr)}\\
-&\quad-\sum_{t=2}^T\underbrace{\bbE_{q(\bx_t|\bx_0)}\KL\bigl(q(\bx_{t-1}|\bx_t,\bx_0)\|\pt(\bx_{t-1}|\bx_t)\bigr)}_{\cL_t}
-\end{aligned}
-$$
-
-<div v-click="1">
-
-$$
-\cL_t=\bbE_{\bepsilon\sim\cN(0,\bI)}\left[\frac{(1-\alpha_t)^2}{2\tilde{\beta}_t\alpha_t(1-\bar{\alpha}_t)}\Bigl\|\bepsilon-\bepsilon_{\btheta,t}\bigl(\sqrt{\bar{\alpha}_t}\bx_0+\sqrt{1-\bar{\alpha}_t}\bepsilon\bigr)\Bigr\|^2\right]
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 0
-sourceFrame: "extension: 14"
-class: theorems
----
-
-# Reparametrization of DDPM
-
-Let's drop the scaling coefficient; the reconstruction term ($t=1$) has the same form.
-
-<div class="block">
-
-## Simplified Objective
-
-$$
-\cL_{\text{simple}}=\bbE_{t\sim U\{1,T\}}\bbE_{\bepsilon\sim\cN(0,\bI)}\Bigl\|\bepsilon-\bepsilon_{\btheta,t}\bigl(\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon\bigr)\Bigr\|^2
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 0
-sourceFrame: "auto: Denoising Diffusion Probabilistic Model (DDPM)"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item "><span>01</span><div>Diffusion ELBO Derivation (continued)</div></div>
-<div class="outline-item "><span>02</span><div>Gaussian Diffusion Reparametrization</div></div>
-<div class="outline-item current"><span>03</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item "><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
-
-</div>
-
----
-clicks: 0
-sourceFrame: "15"
-class: figure-slide
----
-
-# Generative Models Taxonomy
-
-<TaxonomyDiagram class="taxonomy" denoising-diffusion />
-
----
-clicks: 2
-sourceFrame: "16"
-class: theorems
----
-
-# Denoising Diffusion Probabilistic Model (DDPM)
-
-<div class="block">
-
-## DDPM is a VAE Model
-
-- The encoder is a fixed Gaussian Markov chain $q(\bx_1,\dots,\bx_T|\bx_0)$.
-- The latent variable is hierarchical (at each step, its dimension equals the input's).
-- The decoder is a simple Gaussian model $\pt(\bx_0|\bx_1)$.
-- The prior distribution is given by a parametric Gaussian Markov chain $\pt(\bx_{t-1}|\bx_t)$.
-
-</div>
-<div class="columns">
-<div class="block" v-click="1">
-
-## Forward Process
-
-1. $\bx_0=\bx\sim\pd(\bx)$;
-2. $\bx_t=\sqrt{1-\beta_t}\cdot\bx_{t-1}+\sqrt{\beta_t}\cdot\bepsilon_t$;
-3. $\bx_T\sim p_\infty(\bx)=\cN(0,\bI)$.
-
-</div>
-<div class="block" v-click="2">
-
-## Reverse Process
-
-1. $\bx_T\sim p_\infty(\bx)=\cN(0,\bI)$;
-2. $\bx_{t-1}=\bsigma_{\btheta,t}(\bx_t)\cdot\bepsilon+\bmu_{\btheta,t}(\bx_t)$;
-3. $\bx_0=\bx\sim\pd(\bx)$.
-
-</div>
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 1
 sourceFrame: "17"
 class: theorems
 ---
 
-# Denoising Diffusion Probabilistic Model (DDPM)
+# Recap of Previous Lecture
 
 <div class="block">
 
@@ -690,7 +195,7 @@ class: theorems
 3. Compute loss $\cL_{\text{simple}}=\|\bepsilon-\bepsilon_{\btheta,t}(\bx_t)\|^2$.
 
 </div>
-<div class="block" v-click="1">
+<div class="block">
 
 ## Sampling (Ancestral)
 
@@ -706,6 +211,34 @@ $$
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
+
+---
+clicks: 0
+sourceFrame: "8"
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item"><span>01</span><div>DDPM as a Score-Based Generative Model</div></div>
+<div class="outline-item"><span>02</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
+
+</div>
+
+---
+clicks: 0
+sourceFrame: "auto: DDPM as a Score-Based Generative Model"
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item current"><span>01</span><div>DDPM as a Score-Based Generative Model</div></div>
+<div class="outline-item"><span>02</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
+
+</div>
 
 ---
 clicks: 3
@@ -911,10 +444,8 @@ sourceFrame: "auto: Model Guidance"
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Diffusion ELBO Derivation (continued)</div></div>
-<div class="outline-item "><span>02</span><div>Gaussian Diffusion Reparametrization</div></div>
-<div class="outline-item "><span>03</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item current"><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
+<div class="outline-item"><span>01</span><div>DDPM as a Score-Based Generative Model</div></div>
+<div class="outline-item current"><span>02</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
 
 </div>
 
@@ -1043,10 +574,8 @@ sourceFrame: "auto: Classifier Guidance"
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Diffusion ELBO Derivation (continued)</div></div>
-<div class="outline-item "><span>02</span><div>Gaussian Diffusion Reparametrization</div></div>
-<div class="outline-item "><span>03</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item current"><span>04</span><div>Model Guidance<div class="outline-sub"><strong>Classifier Guidance</strong><br>Classifier-Free Guidance</div></div></div>
+<div class="outline-item"><span>01</span><div>DDPM as a Score-Based Generative Model</div></div>
+<div class="outline-item current"><span>02</span><div>Model Guidance<div class="outline-sub"><b>Classifier Guidance</b><br>Classifier-Free Guidance</div></div></div>
 
 </div>
 
@@ -1276,10 +805,8 @@ sourceFrame: "auto: Classifier-Free Guidance"
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Diffusion ELBO Derivation (continued)</div></div>
-<div class="outline-item "><span>02</span><div>Gaussian Diffusion Reparametrization</div></div>
-<div class="outline-item "><span>03</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item current"><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br><strong>Classifier-Free Guidance</strong></div></div></div>
+<div class="outline-item"><span>01</span><div>DDPM as a Score-Based Generative Model</div></div>
+<div class="outline-item current"><span>02</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br><b>Classifier-Free Guidance</b></div></div></div>
 
 </div>
 
@@ -1441,9 +968,8 @@ class: summary
 
 # Summary
 
-- At each step, DDPM predicts the noise that was injected in the forward process.
-- DDPMs are quite slow, since the model must be applied $T$ times for sampling.
 - DDPM and NCSN are intimately connected at the objective level.
-- Guidance technique allows to make controllable generation via conditioning on labels or text prompts.
+- DDPM uses ancestral sampling, while NCSN uses annealed Langevin dynamics.
+- Guidance makes generation controllable through labels or text prompts.
 - Classifier guidance turns an unconditional model into a conditional one by training an auxiliary classifier on noisy data.
-- Classifier-free guidance removes the need for such a classifier, yielding a practical recipe now widely used.
+- Classifier-free guidance removes the need for an auxiliary classifier.

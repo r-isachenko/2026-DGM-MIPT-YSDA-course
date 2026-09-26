@@ -2,7 +2,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolve } from 'node:path'
 import { execFileSync } from 'node:child_process'
-import { lecturePaths, root, retainedSourceFrames, resolveImportedSourceFrames, retainedSourceSections, checkSectionSchedule, checkSourceCitations, matchesOriginalAsset } from './course.mjs'
+import { lecturePaths, root, retainedSourceFrames, resolveImportedSourceFrames, retainedSourceSections, checkFrameExtensions, checkSectionSchedule, checkSourceCitations, matchesOriginalAsset } from './course.mjs'
 const paths = lecturePaths(process.argv[2])
 const lecture = paths.number
 const md = readFileSync(paths.entry, 'utf8')
@@ -32,12 +32,10 @@ const mappedMerged = map.flatMap(s => s.mergedFrames || [])
 if (JSON.stringify(merged) !== JSON.stringify(mappedMerged)) fail('Stale merged-frame map')
 for (const frame of merged) if (frame < 1 || frame > frames.length) fail(`Unknown merged frame ${frame}`)
 for (let i=1;i<=frames.length;i++) if (ids.filter(x=>x===String(i)).length + merged.filter(x=>x===i).length + omitted.filter(x=>x===i).length !== 1) fail(`Frame ${i} missing or duplicated`)
+checkFrameExtensions(ids, imported)
 for (const id of ids) {
   if (/^\d+$/.test(id) && (+id < 1 || +id > frames.length)) fail(`Unknown source frame ${id}`)
-  if (id.startsWith('extension: ')) {
-    const source = id.slice('extension: '.length)
-    if (!/^\d+$/.test(source) || !ids.includes(source)) fail(`Extension without source frame: ${id}`)
-  } else if (!/^\d+$/.test(id) && !id.startsWith('auto: ') && !imported.some(frame => frame.id === id)) fail(`Unknown frame ID: ${id}`)
+  if (!id.startsWith('extension: ') && !/^\d+$/.test(id) && !id.startsWith('auto: ') && !imported.some(frame => frame.id === id)) fail(`Unknown frame ID: ${id}`)
 }
 map.forEach((s,i)=> { if (String(s.frame)!==ids[i] || s.clicks!==counts[i] || s.slide!==i+1) fail(`Stale map at slide ${i+1}`) })
 const readme=readFileSync(resolve(root, '../README.md'),'utf8').split('\n').find(l=>l.includes(`<b>Lecture ${lecture}:</b>`))

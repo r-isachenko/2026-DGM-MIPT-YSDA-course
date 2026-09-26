@@ -1,5 +1,23 @@
 # Lecture 8: migration to Slidev
 
+## Boundary update for the redistribution through Lecture 7, 2026-09-26
+
+The author-approved redistribution moves the ELBO completion, Gaussian diffusion reparametrization, and the final DDPM algorithm to Slidev L7: source frames 9–17, including continuations of frames 10/12/13/14. L8 retains frame 17 as a static `Recap of Previous Lecture`, exactly matching the imported L7 Training/Sampling algorithm. The earlier forward-process and DSM recap frames 2–4 now belong to L6 and are omitted here; the reverse-process/VAE recap frames 5–7 and their continuations remain unchanged. Declared omitted frames are 2/3/4/9–16; frame 17 remains covered by its recap.
+
+The two transferred ELBO/reparametrization sections are declared in `omittedSourceSections`. The remaining DDPM section is named `DDPM as a Score-Based Generative Model`, using `sectionTitleOverrides` for the original Beamer title. Its body frames 18–21 and all guidance frames 22–34, including their continuations, are unchanged. Outline slides reflect these two remaining sections and the two guidance subsections. The five static Summary bullets now cover the DDPM/NCSN objectives and sampling, conditional generation, classifier guidance, and classifier-free guidance. No topics from Lecture 9 or later are imported.
+
+Baseline `slides.md` SHA-256: `ee1f2946edb310a6ea18938d879aee24f8683670c7484cab29573401a323b960`. The updated map contains **34 logical slides / 76 states**. Source comparison confirmed exact preservation of all 21 remaining body slides and the five retained recap slides, plus the new static DDPM recap's match with L7. Both maps, click counts, and local image paths are consistent. Beamer, shared styling/macros, and `lectures/merged/` are unchanged.
+
+Проверки текущей редакции завершены: README/Outline, входящий и исходящий Recap, Summary, карты, формулы, раскрытия, ссылки и локальные рисунки согласованы с новыми границами. `check-source` проходит для всех 14 лекций; добавлена проверка продолжений импортированных frames без ослабления собственного покрытия. `finalize 8` (Node 24.19.0) прошёл: **19 тестов**, web build и оба PDF. Сборки и экспорты выполнены последовательно в изолированной копии с физически отдельными зависимостями; работающие серверы исходного проекта сохранены.
+
+Просмотрены все **34 страниц раздатки и 76 страниц PDF с раскрытиями**, плотные выводы и новые блоки дополнительно при ширине 1280 px. Все страницы раздатки попиксельно совпадают с соответствующими финальными состояниями. Браузерный инспектор прошёл все **34 слайдов / 76 состояний**: геометрия стабильна, клики содержательны, обратные шаги воспроизводятся, формулы и изображения загружены, переполнений и HTTP/JS ошибок нет. Стиль сравнен с утверждённой L1: в PDF L7 33/44 и L1 35, в браузере L4 33 и L1 35; Arial/KaTeX, bold vectors/parameters, KL/expectations, заголовки и цвета согласованы. Общая тема и макросы в этой задаче не менялись.
+
+Артефакты QA: `../output/qa/through-lecture7-2026-09-26/`. Физическое перо и проектор повторно не проверялись. Исторические результаты ниже относятся к прежним редакциям.
+
+SHA-256 текущей редакции: slides.md `4e91f44e9251cdc46c107e0afa12f05e2195c5abd2bae7eead3e4d3cfa6816ba`; slide-map.json `a68861a4c5a4f53bf2d993d0a493d51ce5c467dc45c01f673b9baa4a4370d134`; Lecture8.pdf `6f17d3f5a14ae4c0a5619567215a4599de1257303fbe7a525e4ca74d1ce5bc0a`; Lecture8-handout.pdf `c59bf31ded3bb7fc1d24dfb895a6dbd4ae38f3ca6d48e4b7e310b1625f236a5b`.
+
+L9–L14 не изменялись: начальные ELBO/reparametrization recap-слайды L9 теперь повторяют материал L7. Это сохранённая граница задачи «дальше оставить как есть», математических расхождений нет.
+
 Completed on **2026-09-15**. Course workflow: [MIGRATION.md](../MIGRATION.md).
 The final source and both reviewed PDFs preserve the Beamer material in the
 approved Lecture 1 style. No lecture-specific font sizes, scaling, macro overrides,

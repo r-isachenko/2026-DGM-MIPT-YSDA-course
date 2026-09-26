@@ -7,204 +7,258 @@
   },
   {
     "slide": 2,
-    "frame": 2,
-    "title": "Recap of Previous Lecture",
-    "clicks": 0
-  },
-  {
-    "slide": 3,
     "frame": 3,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 4,
+    "slide": 3,
     "frame": 4,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 5,
+    "slide": 4,
     "frame": 5,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 6,
+    "slide": 5,
     "frame": 6,
     "title": "Recap of Previous Lecture",
     "clicks": 1
   },
   {
-    "slide": 7,
+    "slide": 6,
     "frame": 7,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 8,
+    "slide": 7,
     "frame": 8,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 9,
+    "slide": 8,
     "frame": 9,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 10,
+    "slide": 9,
     "frame": 10,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 11,
+    "slide": 10,
     "frame": 11,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
+    "slide": 11,
+    "frame": 13,
+    "title": "Recap of Previous Lecture",
+    "clicks": 2
+  },
+  {
     "slide": 12,
+    "frame": 14,
+    "title": "Recap of Previous Lecture",
+    "clicks": 1
+  },
+  {
+    "slide": 13,
     "frame": 12,
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 13,
-    "frame": "auto: Langevin Dynamics",
-    "title": "Outline",
-    "clicks": 0
-  },
-  {
     "slide": 14,
-    "frame": 13,
-    "title": "Energy-Based Models",
-    "clicks": 2
-  },
-  {
-    "slide": 15,
-    "frame": 14,
-    "title": "Langevin Dynamics",
-    "clicks": 1
-  },
-  {
-    "slide": 16,
     "frame": "auto: Score Matching",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 17,
+    "slide": 15,
     "frame": 15,
     "title": "Generative Models Taxonomy",
     "clicks": 0
   },
   {
-    "slide": 18,
+    "slide": 16,
     "frame": 16,
     "title": "Score Function",
     "clicks": 1
   },
   {
-    "slide": 19,
+    "slide": 17,
     "frame": 17,
     "title": "Score Matching",
     "clicks": 2
   },
   {
-    "slide": 20,
+    "slide": 18,
     "frame": 18,
     "title": "Why Is the Score Function Better than the Density?",
     "clicks": 1
   },
   {
-    "slide": 21,
+    "slide": 19,
     "frame": "auto: Denoising Score Matching",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 22,
+    "slide": 20,
     "frame": 19,
     "title": "Denoising Score Matching",
     "clicks": 3
   },
   {
-    "slide": 23,
+    "slide": 21,
     "frame": 20,
     "title": "Denoising Score Matching",
     "clicks": 3
   },
   {
-    "slide": 24,
+    "slide": 22,
     "frame": 21,
     "title": "Denoising Score Matching",
     "clicks": 3
   },
   {
-    "slide": 25,
+    "slide": 23,
     "frame": 22,
     "title": "Denoising Score Matching",
     "clicks": 4
   },
   {
-    "slide": 26,
+    "slide": 24,
     "frame": 23,
     "title": "Denoising Score Matching",
     "clicks": 5
   },
   {
-    "slide": 27,
+    "slide": 25,
     "frame": 24,
     "title": "Denoising Score Matching",
     "clicks": 3
   },
   {
-    "slide": 28,
+    "slide": 26,
     "frame": 25,
     "title": "Denoising Score Matching",
     "clicks": 5
   },
   {
-    "slide": 29,
+    "slide": 27,
     "frame": 26,
     "title": "Denoising Score Matching",
     "clicks": 4
   },
   {
-    "slide": 30,
+    "slide": 28,
     "frame": "auto: Noise-Conditioned Score Network (NCSN)",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 31,
+    "slide": 29,
     "frame": 27,
     "title": "Denoising Score Matching",
     "clicks": 0
   },
   {
-    "slide": 32,
+    "slide": 30,
     "frame": 28,
     "title": "Noise-Conditioned Score Network (NCSN)",
     "clicks": 1
   },
   {
-    "slide": 33,
+    "slide": 31,
     "frame": 29,
     "title": "Noise-Conditioned Score Network (NCSN)",
     "clicks": 3
   },
   {
-    "slide": 34,
+    "slide": 32,
     "frame": 30,
     "title": "Noise-Conditioned Score Network (NCSN)",
     "clicks": 1
   },
   {
+    "slide": 33,
+    "frame": "auto: Forward Gaussian Diffusion Process",
+    "title": "Outline",
+    "clicks": 0
+  },
+  {
+    "slide": 34,
+    "frame": "imported: 7:9",
+    "title": "Generative Models Taxonomy",
+    "clicks": 0
+  },
+  {
     "slide": 35,
+    "frame": "imported: 7:10",
+    "title": "Forward Gaussian Diffusion Process",
+    "clicks": 2
+  },
+  {
+    "slide": 36,
+    "frame": "extension: imported: 7:10",
+    "title": "Forward Gaussian Diffusion Process",
+    "clicks": 1
+  },
+  {
+    "slide": 37,
+    "frame": "imported: 7:11",
+    "title": "Forward Gaussian Diffusion Process",
+    "clicks": 1
+  },
+  {
+    "slide": 38,
+    "frame": "extension: imported: 7:11",
+    "title": "Forward Gaussian Diffusion Process",
+    "clicks": 4
+  },
+  {
+    "slide": 39,
+    "frame": "imported: 7:12",
+    "title": "Forward Gaussian Diffusion Process",
+    "clicks": 0
+  },
+  {
+    "slide": 40,
+    "frame": "extension: imported: 7:12",
+    "title": "Forward Gaussian Diffusion Process",
+    "clicks": 2
+  },
+  {
+    "slide": 41,
+    "frame": "imported: 7:13",
+    "title": "Forward Gaussian Diffusion Process",
+    "clicks": 2
+  },
+  {
+    "slide": 42,
+    "frame": "imported: 7:14",
+    "title": "Denoising Score Matching",
+    "clicks": 1
+  },
+  {
+    "slide": 43,
+    "frame": "extension: imported: 7:14",
+    "title": "Denoising Score Matching",
+    "clicks": 1
+  },
+  {
+    "slide": 44,
     "frame": 31,
     "title": "Summary",
     "clicks": 0

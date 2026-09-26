@@ -53,6 +53,14 @@ export function retainedSourceSections(sections, omitted = []) {
   return sections.filter(title => !omitted.includes(title))
 }
 
+export function checkFrameExtensions(ids, imported = []) {
+  for (const id of ids.filter(value => value.startsWith('extension: '))) {
+    const source = id.slice('extension: '.length)
+    const isSource = /^\d+$/.test(source) || imported.some(frame => frame.id === source)
+    if (!isSource || !ids.includes(source)) throw new Error(`Extension without source frame: ${id}`)
+  }
+}
+
 export function checkSectionSchedule(sections, ids, md, readme) {
   const outlines = ids.filter(id => id.startsWith('auto: ')).map(id => id.slice('auto: '.length))
   for (const section of new Set([...sections, ...outlines])) {

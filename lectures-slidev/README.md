@@ -212,9 +212,9 @@ Slidev пишет общие generated-файлы внутри установл�
 
 ## Интерактивная Lecture 5
 
-- Слайд 17: одна Gaussian-модель для смеси двух Gaussians — ползунки Mean / Std. deviation,
+- Слайд 13: одна Gaussian-модель для смеси двух Gaussians — ползунки Mean / Std. deviation,
   Fit forward KL, Fit reverse KL: left / right, Reset.
-- Демо продолжает исходное сравнение Jensen–Shannon и KL на слайде 16;
+- Демо продолжает исходное сравнение Jensen–Shannon и KL на слайде 12;
   иллюстрация JSD сохранена. Reverse-KL fitting не отождествляется с GAN training.
 - В PDF показаны оба подготовленных решения: forward KL и один симметричный минимум reverse KL.
   Состояние ползунков сохраняется при возврате на слайд; управлять демо в выводимом
