@@ -368,7 +368,7 @@ class: theorems derivation
 
 ## Theorem
 
-If every $\{\bff_k\}_{k=1}^K$ satisfies the conditions of the change-of-variables theorem, then the composition $\bff(\bx)=\bff_K\circ\ldots\circ\bff_1(\bx)$ also satisfies them.
+If every $\{\bff_k\}_{k=1}^K$ satisfies the conditions of the change-of-variables theorem, then the composition <span style="white-space: nowrap">$\bff(\bx)=\bff_K\circ\ldots\circ\bff_1(\bx)$</span> also satisfies them.
 
 </div>
 <div class="math-chain" v-click="1">
@@ -845,7 +845,7 @@ class: theorems
 
 # TarFlow: Autoregression over Patches
 
-<div class="columns" style="align-items: start">
+<div class="columns" style="align-items: start; margin-bottom: 24px">
 <div class="block" style="margin: 0">
 
 ## Gaussian AR NF: Autoregression
@@ -1247,7 +1247,7 @@ class: summary
 - Change of variables computes exact continuous densities under invertible transformations.
 - Normalizing flows use invertible maps with tractable Jacobians; CNF and Flow Matching extend this view of transporting distributions.
 - Linear NFs use structured matrix factors to simplify determinant and inverse calculations.
-- TarFlow uses Transformers to scale Gaussian AR flows with triangular Jacobians.
 - RealNVP coupling is a special case of AR NF with fast density evaluation and sampling.
+- TarFlow uses Transformers to scale Gaussian AR flows with triangular Jacobians.
 - Uniform dequantization gives a lower bound on discrete image log-likelihood.
 - LVMs combine a decoder $\pt(\bx|\bz)$ and prior $p(\bz)$; marginalization makes $\pt(\bx)$ harder to evaluate.

@@ -805,3 +805,35 @@ Final SHA-256:
 - `slides.md`: `3a076c6b5ca110f12c24f9259407b86fd31e3ae1a5cb0b5e2024b34d68f41738`.
 - `Lecture2.pdf`: `6e86256d2e13b90691c19e981abd12f91c88235adcd3435dfec35fc6ce579de1`.
 - `Lecture2-handout.pdf`: `51cc295205928a93ea530989d88231dc2178a375517c3d3e04b430938f515aba`.
+
+## 2026-09-26 — Composition wrapping, TarFlow spacing and Summary order
+
+- Keep the entire inline composition on one line in slide 12's theorem using a
+  local nowrap span. The request named slide 2; the observed split composition
+  is on slide 12, while slide 2 is the unchanged opening recap.
+- Add 24 px below slide 26's upper pair of blocks, separating the TarFlow block
+  without changing fonts, shared styles, formulas or its two reveals.
+- Put RealNVP before TarFlow in Summary, matching the teaching sequence. Preserve
+  all seven takeaway texts and the static presentation.
+- Source/map/citation/macro checks, all 14 existing tests and the production build
+  pass with Node 24.19.0. Build, export and dev run sequentially in an isolated
+  temporary installation. Both PDFs are regenerated: 35 handout / 84 reveal pages.
+- Render all PDF pages and inspect all changed page appearances at 1280 x 720.
+  The other 32 handout pages and 76 reveal pages are pixel-identical to the reviewed
+  baseline; their prior evidence remains applicable. The corrected composition
+  fits, TarFlow has clearance, and Summary ordering is consistent.
+- Browser inspection passes all eight states of slides 12, 26 and 35: stable
+  geometry, forward/backward reveals, no overflow or math errors. Verify returns
+  from neighboring slides, one-line composition geometry and the 24 px margin.
+  A fresh slide 12 capture after initial style generation is clean.
+- Independently review the three source changes and verify 68 build inputs match
+  the isolated copy before copying the PDFs back. Shared style, notation and demo
+  behavior are unchanged; their previous Lecture 1 comparison remains applicable.
+  Evidence is in ignored `output/qa/lecture2/layout-20260926-final/`. This is a
+  scoped layout check, not a new full content or physical-device audit.
+
+Final SHA-256:
+
+- `slides.md`: `3e4f906705019b19059d236935b0119064e448745c1fd631a3221f83dbe81f84`.
+- `Lecture2.pdf`: `eb8a2d1dbfc13fee97645fe010aa1149cd145cf1931f68b9766750d82d8a99d5`.
+- `Lecture2-handout.pdf`: `1903c9c0fae313dcdd99c3a1c5c04551062bdca93c371e420f6cbd2ee3657c15`.
