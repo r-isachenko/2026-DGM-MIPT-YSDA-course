@@ -51,7 +51,10 @@ const fmt = (value: number) => (Math.abs(value) < .0005 ? 0 : value).toFixed(3)
         <span>ELBO {{ fmt(elboTerms(p.mean,p.sigma).elbo) }}</span><span>KL {{ fmt(elboTerms(p.mean,p.sigma).gap) }}</span>
       </div>
     </div>
-    <div class="demo-note">{{ isPrintMode ? `log p(x) = ${fmt(logEvidence)} stays fixed. The exact posterior closes the gap.` : 'Moving q changes the bound; log p(x) stays fixed. Values are in nats.' }}</div>
+    <div class="demo-note">
+      <template v-if="isPrintMode">log p(x) = {{ fmt(logEvidence) }} stays fixed. The exact posterior closes the gap.</template>
+      <template v-else>Moving q changes the bound; log p(x) stays fixed.<br />Logarithms use base e (nats).</template>
+    </div>
     </div>
     </div>
   </DemoPanel>

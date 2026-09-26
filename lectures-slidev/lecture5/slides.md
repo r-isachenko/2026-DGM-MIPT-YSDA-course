@@ -20,6 +20,7 @@ drawings:
 download: false
 info: false
 favicon: "data:,"
+omittedSourceFrames: [2]
 clicks: 0
 sourceFrame: "1"
 class: cover
@@ -34,41 +35,6 @@ class: cover
 Roman Isachenko
 
 <div class="cover-institute">Moscow Institute of Physics and Technology<br>Yandex School of Data Analysis</div>
-
----
-clicks: 0
-sourceFrame: "2"
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Training
-
-1. Sample $\bx \sim \pd(\bx)$, $\bepsilon \sim p(\bepsilon)$.
-2. Reparametrize $\bz = \bg_{\bphi}(\bx, \bepsilon)$.
-3. Compute the ELBO:
-
-$$
-\cL_{\bphi,\btheta}(\bx)\approx\log\pt(\bx|\bz)-\KL(q_{\bphi}(\bz|\bx)\|p(\bz)).
-$$
-
-4. Update $\bphi$, $\btheta$ via stochastic gradient ascent.
-
-</div>
-
-<div class="block">
-
-## Sampling
-
-1. Sample $\bz \sim p(\bz)=\cN(0,\bI)$.
-2. Sample $\bx \sim \pt(\bx|\bz)$.
-
-</div>
-
-**Note:** The encoder $q_{\bphi}(\bz|\bx)$ isn't needed during sampling.
 
 ---
 clicks: 0

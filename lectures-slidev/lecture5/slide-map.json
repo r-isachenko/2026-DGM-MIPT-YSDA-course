@@ -7,258 +7,252 @@
   },
   {
     "slide": 2,
-    "frame": 2,
-    "title": "Recap of Previous Lecture",
-    "clicks": 0
-  },
-  {
-    "slide": 3,
     "frame": 3,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 4,
+    "slide": 3,
     "frame": 4,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 5,
+    "slide": 4,
     "frame": 5,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 6,
+    "slide": 5,
     "frame": 6,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 7,
+    "slide": 6,
     "frame": 7,
     "title": "Recap of Previous Lecture",
     "clicks": 0
   },
   {
-    "slide": 8,
+    "slide": 7,
     "frame": 8,
     "title": "Recap of Previous Lecture",
     "clicks": 3
   },
   {
-    "slide": 9,
+    "slide": 8,
     "frame": 9,
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 10,
+    "slide": 9,
     "frame": "auto: Generative Adversarial Networks (GAN)",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 11,
+    "slide": 10,
     "frame": 10,
     "title": "Generative Models Taxonomy",
     "clicks": 0
   },
   {
-    "slide": 12,
+    "slide": 11,
     "frame": 11,
     "title": "GAN Optimality",
     "clicks": 3
   },
   {
-    "slide": 13,
+    "slide": 12,
     "frame": 12,
     "title": "GAN Optimality",
     "clicks": 4
   },
   {
-    "slide": 14,
+    "slide": 13,
     "frame": 13,
     "title": "GAN Optimality",
     "clicks": 1
   },
   {
-    "slide": 15,
+    "slide": 14,
     "frame": 14,
     "title": "GAN Training",
     "clicks": 2
   },
   {
-    "slide": 16,
+    "slide": 15,
     "frame": 15,
     "title": "Mode Collapse",
     "clicks": 1
   },
   {
-    "slide": 17,
+    "slide": 16,
     "frame": 16,
     "title": "Jensen-Shannon vs Kullback-Leibler Divergences",
     "clicks": 1
   },
   {
-    "slide": 18,
+    "slide": 17,
     "frame": "extension: 16",
     "title": "Mode Covering vs. Mode Seeking",
     "clicks": 0
   },
   {
-    "slide": 19,
+    "slide": 18,
     "frame": "auto: Wasserstein Distance",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 20,
+    "slide": 19,
     "frame": 17,
     "title": "Theoretical Results",
     "clicks": 3
   },
   {
-    "slide": 21,
+    "slide": 20,
     "frame": 18,
     "title": "Wasserstein Distance (Discrete)",
     "clicks": 0
   },
   {
-    "slide": 22,
+    "slide": 21,
     "frame": 19,
     "title": "Wasserstein Distance (Continuous)",
     "clicks": 1
   },
   {
-    "slide": 23,
+    "slide": 22,
     "frame": 20,
     "title": "Wasserstein Distance vs KL vs JSD",
     "clicks": 4
   },
   {
-    "slide": 24,
+    "slide": 23,
     "frame": 21,
     "title": "Wasserstein Distance vs KL vs JSD",
     "clicks": 1
   },
   {
-    "slide": 25,
+    "slide": 24,
     "frame": "auto: Wasserstein GAN (WGAN)",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 26,
+    "slide": 25,
     "frame": 22,
     "title": "Wasserstein GAN",
     "clicks": 3
   },
   {
-    "slide": 27,
+    "slide": 26,
     "frame": 23,
     "title": "Wasserstein GAN",
     "clicks": 1
   },
   {
-    "slide": 28,
+    "slide": 27,
     "frame": 24,
     "title": "Wasserstein GAN",
     "clicks": 1
   },
   {
-    "slide": 29,
+    "slide": 28,
     "frame": 25,
     "title": "Wasserstein GAN",
     "clicks": 0
   },
   {
-    "slide": 30,
+    "slide": 29,
     "frame": "auto: Evaluation of Likelihood-Free Models",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 31,
+    "slide": 30,
     "frame": 26,
     "title": "Evaluation of Likelihood-Free Models",
     "clicks": 3
   },
   {
-    "slide": 32,
+    "slide": 31,
     "frame": "auto: Frechet Inception Distance (FID)",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 33,
+    "slide": 32,
     "frame": 27,
     "title": "Wasserstein Metric",
     "clicks": 3
   },
   {
-    "slide": 34,
+    "slide": 33,
     "frame": 28,
     "title": "Frechet Inception Distance (FID)",
     "clicks": 1
   },
   {
-    "slide": 35,
+    "slide": 34,
     "frame": 29,
     "title": "Frechet Inception Distance (FID)",
     "clicks": 1
   },
   {
-    "slide": 36,
+    "slide": 35,
     "frame": "auto: Precision-Recall",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 37,
+    "slide": 36,
     "frame": 30,
     "title": "Precision-Recall",
     "clicks": 1
   },
   {
-    "slide": 38,
+    "slide": 37,
     "frame": 31,
     "title": "Precision-Recall",
     "clicks": 4
   },
   {
-    "slide": 39,
+    "slide": 38,
     "frame": 32,
     "title": "Precision-Recall",
     "clicks": 1
   },
   {
-    "slide": 40,
+    "slide": 39,
     "frame": "auto: CLIP Score",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 41,
+    "slide": 40,
     "frame": 33,
     "title": "CLIP Score",
     "clicks": 2
   },
   {
-    "slide": 42,
+    "slide": 41,
     "frame": "auto: Human Eval",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 43,
+    "slide": 42,
     "frame": 34,
     "title": "Human Evaluation",
     "clicks": 1
   },
   {
-    "slide": 44,
+    "slide": 43,
     "frame": 35,
     "title": "Summary",
     "clicks": 0

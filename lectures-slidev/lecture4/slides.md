@@ -21,6 +21,8 @@ download: false
 info: false
 favicon: "data:,"
 clicks: 0
+omittedSourceFrames: [7, 9, 10, 11]
+omittedSourceSections: ["Variational Autoencoder (VAE)"]
 sourceFrame: "1"
 class: cover
 ---
@@ -225,56 +227,11 @@ $$
 
 ---
 clicks: 0
-sourceFrame: "6"
-class: theorems
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item"><span>01</span><div>Variational Autoencoder (VAE)</div></div>
-<div class="outline-item"><span>02</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>03</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>04</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>05</span><div>Likelihood-Free Learning</div></div>
-
-</div>
-
----
-clicks: 0
-sourceFrame: "auto: Variational Autoencoder (VAE)"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item current"><span>01</span><div>Variational Autoencoder (VAE)</div></div>
-<div class="outline-item"><span>02</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>03</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>04</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>05</span><div>Likelihood-Free Learning</div></div>
-
-</div>
-
----
-clicks: 0
-sourceFrame: "7"
-class: theorems
----
-
-# Generative Models Taxonomy
-
-<TaxonomyDiagram variational-autoencoder class="taxonomy" />
-
----
-clicks: 2
 sourceFrame: "8"
 class: theorems
 ---
 
-# Variational Autoencoder (VAE)
+# Recap of Previous Lecture
 
 <div class="block">
 
@@ -307,7 +264,7 @@ Update $\bphi$, $\btheta$ via stochastic gradient ascent.
 </li>
 </ol>
 </div>
-<div class="block" v-click="1">
+<div class="block">
 
 ## Sampling
 
@@ -315,7 +272,7 @@ Update $\bphi$, $\btheta$ via stochastic gradient ascent.
 2. Sample $\bx\sim\pt(\bx|\bz)$.
 
 </div>
-<div v-click="2">
+<div>
 
 **Note:** The encoder $q_{\bphi}(\bz|\bx)$ isn't needed during generation.
 
@@ -324,73 +281,21 @@ Update $\bphi$, $\btheta$ via stochastic gradient ascent.
 <div class="source"><a href="https://arxiv.org/abs/1312.6114">Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013</a></div>
 
 ---
-clicks: 1
-sourceFrame: "9"
-class: theorems
----
-
-# Variational Autoencoder
-
-$$
-\cL_{\bphi,\btheta}(\bx)=\bbE_q\log\pt(\bx|\bz)-\KL(q_{\bphi}(\bz|\bx)\|p(\bz))
-$$
-
-<div class="columns balanced" style="grid-template-columns: 3fr 2fr; gap: 28px; margin: 22px 0">
-<img src="/figs/VAE.png" alt="Variational autoencoder with stochastic encoder and decoder" class="wide-figure" style="height: 280px; margin: 0" />
-<img src="/figs/vae_scheme.png" alt="Probabilistic graphical model for the variational autoencoder" class="wide-figure" style="height: 280px; margin: 0" />
-</div>
-<div v-click="1">
-
-VAEs are widely used as a preliminary stage of projecting data onto low-dimensional space.
-
-</div>
-
-<div class="source"><a href="http://ijdykeman.github.io/ml/2016/12/21/cvae.html">image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html</a><br><a href="https://arxiv.org/abs/1906.02691">Kingma D. P., Welling M., An Introduction to Variational Autoencoders, 2019</a></div>
-
----
 clicks: 0
-sourceFrame: "10"
+sourceFrame: "6"
 class: theorems
 ---
 
-# Variational Autoencoder
+# Outline
 
-- The encoder $q_{\bphi}(\bz|\bx)=\NN_{e,\bphi}(\bx)$ outputs $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$.
-- The decoder $\pt(\bx|\bz)=\NN_{d,\btheta}(\bz)$ outputs parameters of the observed data distribution.
+<div class="course-outline">
 
-<img src="/figs/vae-encoder.png" alt="Encoder predicts a Gaussian distribution in latent space" class="wide-figure" style="height: 170px; margin: 14px auto" />
-<img src="/figs/vae-decoder.png" alt="Decoder predicts the parameters of the observed data distribution" class="wide-figure" style="height: 190px; margin: 14px auto" />
-
-<div class="source"><a href="https://arxiv.org/abs/2403.18103">Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024</a></div>
-
----
-clicks: 1
-sourceFrame: "11"
-class: theorems
----
-
-# VAE vs Normalizing Flows
-
-|  | VAE | NF |
-|---|---|---|
-| Objective | ELBO $\cL$ | Forward KL/MLE |
-| Encoder | stochastic<br>$\bz\sim q_{\bphi}(\bz\vert \bx)$ | deterministic<br>$\bz=\bff_{\btheta}(\bx)$<br>$q_{\btheta}(\bz\vert \bx)=\delta(\bz-\bff_{\btheta}(\bx))$ |
-| Decoder | stochastic<br>$\bx\sim\pt(\bx\vert \bz)$ | deterministic<br>$\bx=\bff^{-1}_{\btheta}(\bz)$<br>$\pt(\bx\vert \bz)=\delta(\bx-\bff^{-1}_{\btheta}(\bz))$ |
-| Parameters | $\bphi,\btheta$ | $\btheta\equiv\bphi$ |
-
-<div class="block" v-click="1">
-
-## Theorem
-
-MLE for a normalizing flow is equivalent to maximizing the ELBO for a VAE where:
-
-$$
-\pt(\bx|\bz)=\delta(\bx-\bff^{-1}_{\btheta}(\bz));\quad q_{\btheta}(\bz|\bx)=\delta(\bz-\bff_{\btheta}(\bx)).
-$$
+<div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
+<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
+<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
+<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
 
 </div>
-
-<div class="source"><a href="https://arxiv.org/abs/2007.02731">Nielsen D., et al., SurVAE Flows: Surjections to Bridge the Gap Between VAEs and Flows, 2020</a></div>
 
 ---
 clicks: 0
@@ -401,11 +306,10 @@ sourceFrame: "auto: ELBO Surgery and Optimal VAE Prior"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Variational Autoencoder (VAE)</div></div>
-<div class="outline-item current"><span>02</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>03</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>04</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>05</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item current"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
+<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
+<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
+<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
 
 </div>
 
@@ -586,11 +490,10 @@ sourceFrame: "auto: Discrete VAE Latent Representations"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Variational Autoencoder (VAE)</div></div>
-<div class="outline-item"><span>02</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item current"><span>03</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>04</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>05</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
+<div class="outline-item current"><span>02</span><div>Discrete VAE Latent Representations</div></div>
+<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
+<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
 
 </div>
 
@@ -707,11 +610,10 @@ sourceFrame: "auto: Vector Quantized VAE (VQ-VAE)"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Variational Autoencoder (VAE)</div></div>
-<div class="outline-item"><span>02</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>03</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item current"><span>04</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item"><span>05</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
+<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
+<div class="outline-item current"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
+<div class="outline-item"><span>04</span><div>Likelihood-Free Learning</div></div>
 
 </div>
 
@@ -990,11 +892,10 @@ sourceFrame: "auto: Likelihood-Free Learning"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Variational Autoencoder (VAE)</div></div>
-<div class="outline-item"><span>02</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
-<div class="outline-item"><span>03</span><div>Discrete VAE Latent Representations</div></div>
-<div class="outline-item"><span>04</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
-<div class="outline-item current"><span>05</span><div>Likelihood-Free Learning</div></div>
+<div class="outline-item"><span>01</span><div>ELBO Surgery and Optimal VAE Prior</div></div>
+<div class="outline-item"><span>02</span><div>Discrete VAE Latent Representations</div></div>
+<div class="outline-item"><span>03</span><div>Vector Quantized VAE (VQ-VAE)</div></div>
+<div class="outline-item current"><span>04</span><div>Likelihood-Free Learning</div></div>
 
 </div>
 
@@ -1173,11 +1074,6 @@ class: summary
 # Summary
 
 <ul>
-<li style="margin: 2px 0">
-
-The VAE model is a latent variable model parameterized by two neural networks: a stochastic encoder $q_{\bphi}(\bz|\bx)$ and a stochastic decoder $\pt(\bx|\bz)$.
-
-</li>
 <li style="margin: 2px 0">
 
 ELBO surgery gives insights into the prior's influence in VAEs; the optimal prior is the aggregated variational posterior.

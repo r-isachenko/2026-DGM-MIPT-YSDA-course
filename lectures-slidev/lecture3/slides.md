@@ -21,6 +21,7 @@ download: false
 info: false
 favicon: "data:,"
 clicks: 0
+importedSourceFrames: {"4": [7, 8, 9, 10, 11]}
 sourceFrame: "1"
 class: cover
 ---
@@ -120,12 +121,11 @@ where $\bJ_{\bff_k}=\frac{\partial\bff_k}{\partial\bff_{k-1}}$.
 ---
 clicks: 0
 sourceFrame: "4"
-class: theorems
 ---
 
 # Recap of Previous Lecture
 
-<div class="block">
+<div class="block" style="margin-bottom: 32px">
 
 ## NF Log-Likelihood
 
@@ -141,11 +141,13 @@ $$
 \bz=\bff_{\btheta}(\bx)=\bW\bx,\quad\bW\in\bbR^{m\times m},\quad\bJ_\bff=\bW
 $$
 
-<div class="block">
+<div class="block" style="margin-top: 32px">
 
 ## Structured Factors
 
-Structured factorizations (e.g. LU or QR) simplify determinant and inverse calculations. Keep triangular diagonals nonzero to preserve invertibility.
+Structured factorizations (e.g. LU or QR) simplify determinant and inverse calculations.
+
+Keep triangular diagonals nonzero to preserve invertibility.
 
 **Learn the factors directly** during training.
 
@@ -298,6 +300,7 @@ sourceFrame: "8"
 <div class="outline-item"><span>02</span><div>Variational Evidence Lower Bound (ELBO)</div></div>
 <div class="outline-item"><span>03</span><div>Amortized Inference</div></div>
 <div class="outline-item"><span>04</span><div>ELBO Gradients, Reparametrization Trick</div></div>
+<div class="outline-item"><span>05</span><div>Variational Autoencoder (VAE)</div></div>
 
 </div>
 
@@ -314,6 +317,7 @@ sourceFrame: "auto: Latent Variable Models (LVM) (continued)"
 <div class="outline-item"><span>02</span><div>Variational Evidence Lower Bound (ELBO)</div></div>
 <div class="outline-item"><span>03</span><div>Amortized Inference</div></div>
 <div class="outline-item"><span>04</span><div>ELBO Gradients, Reparametrization Trick</div></div>
+<div class="outline-item"><span>05</span><div>Variational Autoencoder (VAE)</div></div>
 
 </div>
 
@@ -329,11 +333,11 @@ $$
 \sum_{i=1}^n\log\pt(\bx_i)=\sum_{i=1}^n\log\int\pt(\bx_i|\bz_i)p(\bz_i)d\bz_i\rightarrow\max_{\btheta}.
 $$
 
-<img v-click="1" src="/figs/lvm_diagram.png" alt="A latent prior and decoder generate observations from latent samples" class="figure-top" style="height: 210px" />
+<img v-click="1" src="/figs/lvm_diagram.png" alt="A latent prior and decoder generate observations from latent samples" class="figure-top" style="height: 170px" />
 
 <div class="block" v-click="2">
 
-## Naive Monte Carlo Estimation
+## A Naive Lower Bound
 
 $$
 \log\pt(\bx)=\log\bbE_{p(\bz)}\pt(\bx|\bz)\geq\bbE_{p(\bz)}\log\pt(\bx|\bz)\approx\frac{1}{K}\sum_{k=1}^K\log\pt(\bx|\bz_k),
@@ -343,7 +347,8 @@ where $\bz_k\sim p(\bz)$.
 
 <div v-click="3">
 
-**Challenge:** As the dimensionality of $\bz$ increases, the number of samples needed to adequately cover the latent space grows exponentially.
+- **Observation-independent samples:** the prior does not adapt to $\bx$.
+- **Potentially loose bound:** more samples reduce noise, but do not tighten the bound.
 
 </div>
 </div>
@@ -363,13 +368,14 @@ sourceFrame: "auto: Variational Evidence Lower Bound (ELBO)"
 <div class="outline-item current"><span>02</span><div>Variational Evidence Lower Bound (ELBO)</div></div>
 <div class="outline-item"><span>03</span><div>Amortized Inference</div></div>
 <div class="outline-item"><span>04</span><div>ELBO Gradients, Reparametrization Trick</div></div>
+<div class="outline-item"><span>05</span><div>Variational Autoencoder (VAE)</div></div>
 
 </div>
 
 ---
 clicks: 5
 sourceFrame: "10"
-class: theorems derivation
+class: theorems
 ---
 
 # ELBO Derivation I
@@ -383,60 +389,72 @@ $$
 $$
 
 </div>
-<div class="block" v-click="1">
+<div v-click="1" style="margin-top: 24px">
 
-## Log likelihood
+Introduce an auxiliary distribution $q(\bz)$ to build a more flexible family of lower bounds.
 
-<div class="math-chain">
-
-$\displaystyle\log\pt(\bx)=\int q(\bz)\log\pt(\bx)d\bz$
-<span v-click="2">$\displaystyle=\bbE_q\log\left[\frac{\pt(\bx,\bz)}{\pt(\bz|\bx)}\right]$</span>
-</div>
-<div v-click="3">
+<div style="color: var(--muted)">
 
 $$
-\phantom{\log\pt(\bx)}=\bbE_q\log\left[\frac{\pt(\bx,\bz){\color{teal}q(\bz)}}{\pt(\bz|\bx){\color{teal}q(\bz)}}\right]
-$$
-
-</div>
-<div v-click="4">
-
-$$
-\phantom{\log\pt(\bx)}=\bbE_q\log\frac{\pt(\bx,\bz)}{q(\bz)}+\bbE_q\log\frac{q(\bz)}{\pt(\bz|\bx)}
+\int q(\bz)d\bz=1,\qquad\supp(q(\bz))=\supp(\pt(\bz|\bx))=\bbR^d.
 $$
 
 </div>
 </div>
+<div class="block" v-click="2" style="margin-top: 24px">
+
+## Split the logarithm
+
+<div style="margin: 16px 0; text-align: center; white-space: nowrap">
+
+<span>$\displaystyle\log\pt(\bx)=\log\left[\frac{\pt(\bx,\bz)}{{\color{teal}q(\bz)}}\cdot\frac{{\color{teal}q(\bz)}}{\pt(\bz|\bx)}\right]$</span>
+<span v-click="3">$\displaystyle=\log\frac{\pt(\bx,\bz)}{{\color{teal}q(\bz)}}+\log\frac{{\color{teal}q(\bz)}}{\pt(\bz|\bx)}.$</span>
+
+</div>
+</div>
+<div class="block" v-click="4" style="margin-top: 24px">
+
+## Average over $\bz\sim q$
+
+Since $\log\pt(\bx)$ does not depend on $\bz$:
+
 <div v-click="5">
 
-- Here, $q(\bz)$ is any distribution such that $\int q(\bz)d\bz=1$.
-- <span style="color: var(--muted)">We assume that $\supp(q(\bz))=\supp(\pt(\bz|\bx))=\bbR^d$.</span>
+$$
+\boxed{\log\pt(\bx)=\bbE_q\log\frac{\pt(\bx,\bz)}{q(\bz)}+\bbE_q\log\frac{q(\bz)}{\pt(\bz|\bx)}}.
+$$
 
+</div>
 </div>
 
 ---
 clicks: 6
 sourceFrame: "11"
-class: theorems derivation
+class: theorems
 ---
 
 # ELBO Derivation II
 
 <div class="block">
 
-## Variational Decomposition
-
 $$
 \log\pt(\bx)=\bbE_q\log\frac{\pt(\bx,\bz)}{q(\bz)}+\bbE_q\log\frac{q(\bz)}{\pt(\bz|\bx)}
 $$
 
-<div class="math-chain" v-click="1">
+<div v-click="1">
 
-$\displaystyle\phantom{\log\pt(\bx)}=\cL_{q,\btheta}(\bx)+{\color{#8854c0}\KL(q(\bz)\|\pt(\bz|\bx))}$
-<span v-click="2">$\displaystyle\geq\cL_{q,\btheta}(\bx)$</span>
+$$
+\log\pt(\bx)={\color{teal}\cL_{q,\btheta}(\bx)}+{\color{#8854c0}\underbrace{\KL(q(\bz)\|\pt(\bz|\bx))}_{\geq 0}}
+$$
+
+</div>
+<div v-click="2">
+
+The KL term is the **exact gap** between log-likelihood and ELBO.
+
 </div>
 </div>
-<div class="block" v-click="3">
+<div class="takeaway" v-click="3">
 
 ## Variational Evidence Lower Bound (ELBO)
 
@@ -444,54 +462,50 @@ $$
 \cL_{q,\btheta}(\bx)=\bbE_q\log\frac{\pt(\bx,\bz)}{q(\bz)}\leq\log\pt(\bx)
 $$
 
+<div v-click="4">
+
+The bound holds for any admissible $q(\bz)$.
+
 </div>
-<ul>
-<li v-click="4">
+</div>
+<div v-click="5" style="margin-top: 24px">
 
-This inequality holds for any choice of $q(\bz)$.
-
-</li>
-<li v-click="5">
-
-Instead of maximizing the likelihood, maximize the ELBO:
+Maximize the ELBO as a surrogate for log-likelihood:
 
 $$
-\max_{\btheta}\pt(\bx)\quad\rightarrow\quad\max_{q,\btheta}\cL_{q,\btheta}(\bx)
+\max_{\btheta}\log\pt(\bx)\quad\longrightarrow\quad\max_{q,\btheta}\cL_{q,\btheta}(\bx)
 $$
 
-</li>
-<li v-click="6">
+</div>
+<div v-click="6">
 
-Distribution $q(\bz)$ is treated as **variational** parameter.
+For fixed $\btheta$, the **variational parameter** $q$ controls the tightness of the bound.
 
-</li>
-</ul>
+</div>
 
 ---
 clicks: 5
 sourceFrame: "12"
-class: theorems interactive-slide derivation
+class: theorems interactive-slide
 ---
 
 # Variational Evidence Lower Bound (ELBO)
+
+<div style="margin: 20px 0 24px">
 
 $$
 \log\pt(\bx)=\cL_{q,\btheta}(\bx)+\KL(q(\bz)\|\pt(\bz|\bx))
 $$
 
+</div>
+
 What is the optimal distribution $q^*(\bz)$ given fixed $\btheta^*$?
 
-<div v-click="1">
+<div v-click="1" style="margin: 24px 0; text-align: center; white-space: nowrap">
 
-$$
-q^*(\bz)=\argmax_q\cL_{q,\btheta^*}(\bx)
-$$
-
-<div class="math-chain" v-click="2">
-
-$\displaystyle\phantom{q^*(\bz)}=\argmin_q\KL(q(\bz)\|p_{\btheta^*}(\bz|\bx))$
-<span v-click="3">$\displaystyle=p_{\btheta^*}(\bz|\bx).$</span>
-</div>
+<span>$\displaystyle q^*(\bz)=\argmax_q\cL_{q,\btheta^*}(\bx)$</span>
+<span v-click="2">$\displaystyle{}=\argmin_q\KL(q(\bz)\|p_{\btheta^*}(\bz|\bx))$</span>
+<span v-click="3">$\displaystyle{}=p_{\btheta^*}(\bz|\bx).$</span>
 </div>
 <div v-click="4">
 
@@ -503,12 +517,14 @@ Here we got the intuition about variational distribution $q(\bz)$: it estimates 
 <div class="source">Bishop C. Pattern Recognition and Machine Learning, 2006</div>
 
 ---
-clicks: 6
+clicks: 7
 sourceFrame: "13"
-class: theorems derivation
+class: theorems
 ---
 
 # Variational Evidence Lower Bound (ELBO)
+
+Factor the joint distribution to separate reconstruction from the prior penalty.
 
 $$ {1|1-2|all} {at:1}
 \begin{aligned}
@@ -521,6 +537,8 @@ $$
 <div class="block" v-click="3">
 
 ## Log-Likelihood Decomposition
+
+Substitute this form into the earlier identity. The KL to the posterior remains the ELBO gap.
 
 $$ {1|all} {at:4}
 \begin{aligned}
@@ -543,6 +561,59 @@ What do we have in the term $\bbE_q\log\pt(\bx|\bz)$ in the case of Normal distr
 </li>
 </ul>
 
+<div class="takeaway" v-click="7">
+
+**ELBO = reconstruction − regularization:** explain $\bx$ well; penalize deviations of $q$ from the prior.
+
+</div>
+
+---
+clicks: 0
+sourceFrame: "extension: 13"
+class: theorems
+---
+
+# ELBO: Key Takeaways
+
+<div class="block">
+
+## A lower bound for any admissible $q$
+
+$$
+\cL_{q,\btheta}(\bx)=\bbE_q\log\frac{\pt(\bx,\bz)}{q(\bz)}\leq\log\pt(\bx)
+$$
+
+</div>
+<div class="block">
+
+## An exact gap
+
+$$
+\log\pt(\bx)-\cL_{q,\btheta}(\bx)=\KL(q(\bz)\|\pt(\bz|\bx))\geq 0
+$$
+
+For fixed $\btheta$, the bound is tight when $q(\bz)=\pt(\bz|\bx)$.
+
+</div>
+<div class="block">
+
+## Reconstruction − regularization
+
+$$
+\cL_{q,\btheta}(\bx)=\underbrace{{\color{#8854c0}\bbE_q\log\pt(\bx|\bz)}}_{\text{Reconstruction}}-\underbrace{{\color{teal}\KL(q(\bz)\|p(\bz))}}_{\text{Regularization}}
+$$
+
+</div>
+<div class="block">
+
+## Joint optimization
+
+$$
+\max_{\btheta,q}\cL_{q,\btheta}(\bx)
+$$
+
+</div>
+
 ---
 clicks: 0
 sourceFrame: "auto: Amortized Inference"
@@ -556,6 +627,7 @@ sourceFrame: "auto: Amortized Inference"
 <div class="outline-item"><span>02</span><div>Variational Evidence Lower Bound (ELBO)</div></div>
 <div class="outline-item current"><span>03</span><div>Amortized Inference</div></div>
 <div class="outline-item"><span>04</span><div>ELBO Gradients, Reparametrization Trick</div></div>
+<div class="outline-item"><span>05</span><div>Variational Autoencoder (VAE)</div></div>
 
 </div>
 
@@ -623,7 +695,7 @@ class: theorems
 </section>
 <section>
 <h2 v-click="1">Learn one shared mapping</h2>
-<div class="amort-inputs"><span><L3Math formula="\bx_1" /></span><span><L3Math formula="\bx_2" /></span><span><L3Math formula="\bx_3" /></span></div>
+<div v-click="1" class="amort-inputs"><span><L3Math formula="\bx_1" /></span><span><L3Math formula="\bx_2" /></span><span><L3Math formula="\bx_3" /></span></div>
 <div v-click="1" class="amort-network">
 <div class="amort-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
 <div class="amort-encoder">Encoder with shared parameters <L3Math formula="\bphi" /></div>
@@ -677,7 +749,13 @@ $$
 
 </div>
 
-<img src="/figs/em_bishop4.png" alt="Joint updates of the variational and generative parameters improve the ELBO" class="wide-figure" style="height: 340px; margin-top: 24px" />
+<img src="/figs/em_bishop4.png" alt="Joint updates of the variational and generative parameters improve the ELBO" class="wide-figure" style="height: 340px; margin-top: 24px; margin-bottom: 12px" />
+
+<div style="text-align: center">
+
+For fixed $\btheta$, optimizing $\bphi$ within a restricted family need not close the KL gap.
+
+</div>
 
 <div class="source">Bishop C., Deep Learning: Foundations and Concepts, 2024</div>
 
@@ -714,8 +792,8 @@ $$
 \end{bmatrix}\right|_{(\bphi_{k-1},\btheta_{k-1})}
 $$
 
-- $\bphi$ denotes the parameters of the variational posterior $q_{\bphi}(\bz|\bx)$.
-- $\btheta$ represents the parameters of the generative model $\pt(\bx|\bz)$.
+- $\bphi$ denotes the parameters of the variational posterior $q_{\bphi}(\bz|\bx)$ (encoder).
+- $\btheta$ represents the parameters of the generative model $\pt(\bx|\bz)$ (decoder).
 
 </div>
 <div v-click="2">
@@ -737,13 +815,14 @@ sourceFrame: "auto: ELBO Gradients, Reparametrization Trick"
 <div class="outline-item"><span>02</span><div>Variational Evidence Lower Bound (ELBO)</div></div>
 <div class="outline-item"><span>03</span><div>Amortized Inference</div></div>
 <div class="outline-item current"><span>04</span><div>ELBO Gradients, Reparametrization Trick</div></div>
+<div class="outline-item"><span>05</span><div>Variational Autoencoder (VAE)</div></div>
 
 </div>
 
 ---
 clicks: 5
 sourceFrame: "17"
-class: theorems derivation
+class: theorems
 ---
 
 # ELBO Gradients: $\nabla_{\btheta}\cL_{\bphi,\btheta}(\bx)$
@@ -756,7 +835,7 @@ $$
 
 ## Gradient $\nabla_{\btheta}\cL_{\bphi,\btheta}(\bx)$
 
-<div class="gradient-cue"><span v-mark="{ at: 2, type: 'underline', color: '#007f82' }"><L3Math formula="q_{\bphi}(\bz|\bx)" /> is independent of <L3Math formula="\btheta" />.</span> Differentiate the decoder.</div>
+<div class="gradient-cue"><strong><L3Math formula="q_{\bphi}(\bz|\bx)" /> is independent of <L3Math formula="\btheta" />.</strong> Differentiate the decoder.</div>
 
 $$ {1|1-2|all} {at:2}
 \begin{aligned}
@@ -778,7 +857,7 @@ $$
 </div>
 <div v-click="5">
 
-The variational posterior $q_{\bphi}(\bz|\bx)$ typically concentrates more probability mass in a much smaller region than the prior $p(\bz)$.
+Prior samples do not depend on $\bx$ and may reconstruct it poorly. We train $q_{\bphi}(\bz|\bx)$ to favor latent values that reconstruct this particular observation.
 
 </div>
 
@@ -791,7 +870,7 @@ The variational posterior $q_{\bphi}(\bz|\bx)$ typically concentrates more proba
 ---
 clicks: 3
 sourceFrame: "18"
-class: theorems derivation
+class: theorems
 ---
 
 # ELBO Gradients: $\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)$
@@ -800,7 +879,7 @@ class: theorems derivation
 
 ## Gradient $\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)$
 
-Unlike the $\btheta$-gradient, the density <span v-mark="{ at: 1, type: 'underline', color: '#8854c0' }">$q_{\bphi}(\bz|\bx)$ now depends on $\bphi$</span>, so standard Monte Carlo estimation can't be applied:
+Unlike the $\btheta$-gradient, we must account for **the dependence of $q_{\bphi}(\bz|\bx)$ on $\bphi$**:
 
 $$ {1|all} {at:1}
 \begin{aligned}
@@ -812,17 +891,28 @@ $$
 </div>
 <div class="block" v-click="2">
 
-## Reparametrization Trick (LOTUS Trick)
+## Reparametrization: A Gaussian Example
 
-Assume $\bz\sim q_{\bphi}(\bz|\bx)$ is generated by a random variable $\bepsilon\sim p(\bepsilon)$ via a deterministic mapping $\bz=\bg_{\bphi}(\bx,\bepsilon)$. Then,
+Let the **encoder** predict the mean and standard deviation of a Gaussian:
 
 $$
-\bbE_{\bz\sim q_{\bphi}(\bz|\bx)}\bff(\bz)=\bbE_{\bepsilon\sim p(\bepsilon)}\bff(\bg_{\bphi}(\bx,\bepsilon))
+q_{\bphi}(\bz|\bx)=\cN(\bmu_{\bphi}(\bx),\bsigma^2_{\bphi}(\bx)).
 $$
+
+$$
+\bepsilon\sim\cN(0,\bI),\qquad\bz=\bmu_{\bphi}(\bx)+\bsigma_{\bphi}(\bx)\odot\bepsilon.
+$$
+
+Sample standard Gaussian noise, then **scale and shift it**.
 
 <div v-click="3">
 
-**Note:** The LHS expectation is with respect to the parametric distribution $q_{\bphi}(\bz|\bx)$, while the RHS uses <span v-mark="{ at: 3, type: 'underline', color: '#007f82' }">$p(\bepsilon)$</span>, which does not depend on $\bphi$.
+Average the reconstruction term over noise whose distribution **does not depend on $\bphi$**:
+
+$$
+\bbE_{\bz\sim q_{\bphi}(\bz|\bx)}\log\pt(\bx|\bz)
+=\bbE_{\bepsilon\sim\cN(0,\bI)}\log\pt\left(\bx|\bmu_{\bphi}(\bx)+\bsigma_{\bphi}(\bx)\odot\bepsilon\right).
+$$
 
 </div>
 </div>
@@ -830,47 +920,46 @@ $$
 <div class="source"><a href="https://arxiv.org/abs/1312.6114">Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013</a></div>
 
 ---
-clicks: 2
+clicks: 3
 sourceFrame: "19"
-class: theorems derivation
+class: theorems
 ---
 
-# ELBO Gradients: $\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)$
+# Reparametrization Trick
 
 <div class="block">
 
-## Reparametrization Trick (LOTUS Trick)
+## From the Gaussian Example to a General Transformation
+
+Write the previous scale and shift as $\bz=\bg_{\bphi}(\bx,\bepsilon)$. More generally, let a **differentiable** $\bg_{\bphi}$ transform noise $\bepsilon\sim p(\bepsilon)$ into samples $\bz\sim q_{\bphi}(\bz|\bx)$, with $p(\bepsilon)$ independent of $\bphi$.
+
+The expectation is unchanged (LOTUS):
 
 $$
-\nabla_{\bphi}\int q_{\bphi}(\bz|\bx)\bff(\bz)d\bz={\color{olive}\nabla_{\bphi}}\int p(\bepsilon)\bff({\color{#8854c0}\bg_{\bphi}(\bx,\bepsilon)})d\bepsilon
+\bbE_{\bz\sim q_{\bphi}(\bz|\bx)}\bff(\bz)=\bbE_{\bepsilon\sim p(\bepsilon)}\bff(\bg_{\bphi}(\bx,\bepsilon)).
 $$
 
-<div v-click="1">
+</div>
+<div class="block" v-click="1">
 
+## Differentiate through the Transformation
+
+$$ {1|all} {at:2}
+\begin{aligned}
+\nabla_{\bphi}\int q_{\bphi}(\bz|\bx)\bff(\bz)d\bz&={\color{olive}\nabla_{\bphi}}\int p(\bepsilon)\bff({\color{#8854c0}\bg_{\bphi}(\bx,\bepsilon)})d\bepsilon\\
+&=\int p(\bepsilon){\color{olive}\nabla_{\bphi}}\bff({\color{#8854c0}\bg_{\bphi}(\bx,\bepsilon)})d\bepsilon\approx\nabla_{\bphi}\bff(\bg_{\bphi}(\bx,\bepsilon^*)),
+\end{aligned}
 $$
-\phantom{\nabla_{\bphi}\int q_{\bphi}(\bz|\bx)\bff(\bz)d\bz}
-=\int p(\bepsilon){\color{olive}\nabla_{\bphi}}\bff({\color{#8854c0}\bg_{\bphi}(\bx,\bepsilon)})d\bepsilon\approx\nabla_{\bphi}\bff(\bg_{\bphi}(\bx,\bepsilon^*)),
-$$
+
+<div v-click="2">
 
 where $\bepsilon^*\sim p(\bepsilon)$.
 
 </div>
 </div>
-<div class="block" v-click="2">
+<div class="takeaway" v-click="3">
 
-## Variational Assumption
-
-$$
-p(\bepsilon)=\cN(0,\bI);\quad\bz=\bg_{\bphi}(\bx,\bepsilon)=\bsigma_{\bphi}(\bx)\odot\bepsilon+\bmu_{\bphi}(\bx);
-$$
-
-$$
-q_{\bphi}(\bz|\bx)=\cN(\bmu_{\bphi}(\bx),\bsigma^2_{\bphi}(\bx)).
-$$
-
-Here, $\bmu_{\bphi}(\cdot)$ and $\bsigma_{\bphi}(\cdot)$ are <span v-mark="{ at: 2, type: 'underline', color: '#8854c0' }">parameterized functions</span> (outputs of a neural network).
-
-Thus, we can write $q_{\bphi}(\bz|\bx)=\NN_{e,\bphi}(\bx)$, the **encoder**.
+During backpropagation, **keep $\bepsilon^*$ fixed** and differentiate through $\bg_{\bphi}(\bx,\bepsilon^*)$.
 
 </div>
 
@@ -879,10 +968,10 @@ Thus, we can write $q_{\bphi}(\bz|\bx)=\NN_{e,\bphi}(\bx)$, the **encoder**.
 ---
 clicks: 4
 sourceFrame: "20"
-class: theorems derivation
+class: theorems
 ---
 
-# ELBO Gradient: $\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)$
+# ELBO Gradients: $\nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)$
 
 $$
 \nabla_{\bphi}\cL_{\bphi,\btheta}(\bx)
@@ -892,7 +981,7 @@ $$
 
 <div class="block" v-click="1">
 
-## Reconstruction Term
+## Reconstruction Term (Reparametrization Trick)
 
 $$
 \begin{aligned}
@@ -902,12 +991,12 @@ $$
 \end{aligned}
 $$
 
-where $\bepsilon^*\sim\cN(0,\bI)$; <span v-mark="{ at: 2, type: 'underline', color: '#8854c0' }">differentiate through $\bg_{\bphi}(\bx,\bepsilon^*)$</span>.
+where $\bepsilon^*\sim\cN(0,\bI)$; **differentiate through $\bg_{\bphi}(\bx,\bepsilon^*)$**.
 
 <div v-click="2">
 
-The generative distribution $\pt(\bx|\bz)$ can be implemented as a neural network.<br>
-We may write $\pt(\bx|\bz)=\NN_{d,\btheta}(\bz)$, called the **decoder**.
+The **encoder** predicts $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$; the **decoder** defines $\pt(\bx|\bz)$.<br>
+To update $\bphi$, backpropagate $\log\pt(\bx|\bz)$ through $\bz$, keeping $\btheta$ fixed.
 
 </div>
 </div>
@@ -931,6 +1020,157 @@ This expression admits a closed-form analytic solution.
 
 ---
 clicks: 0
+sourceFrame: "auto: Variational Autoencoder (VAE)"
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item"><span>01</span><div>Latent Variable Models (LVM) (continued)</div></div>
+<div class="outline-item"><span>02</span><div>Variational Evidence Lower Bound (ELBO)</div></div>
+<div class="outline-item"><span>03</span><div>Amortized Inference</div></div>
+<div class="outline-item"><span>04</span><div>ELBO Gradients, Reparametrization Trick</div></div>
+<div class="outline-item current"><span>05</span><div>Variational Autoencoder (VAE)</div></div>
+
+</div>
+
+---
+clicks: 0
+sourceFrame: "imported: 4:7"
+class: theorems
+---
+
+# Generative Models Taxonomy
+
+<TaxonomyDiagram variational-autoencoder class="taxonomy" />
+
+---
+clicks: 2
+sourceFrame: "imported: 4:8"
+class: theorems
+---
+
+# Variational Autoencoder (VAE)
+
+<div class="block">
+
+## Training
+
+<ol>
+<li>
+
+Sample $\bx\sim\pd(\bx)$, $\bepsilon\sim p(\bepsilon)$.
+
+</li>
+<li>
+
+Reparametrize $\bz=\bg_{\bphi}(\bx,\bepsilon)$.
+
+</li>
+<li>
+
+Compute the ELBO:
+
+$$
+\cL_{\bphi,\btheta}(\bx)\approx\log\pt(\bx|\bz)-\KL(q_{\bphi}(\bz|\bx)\|p(\bz)).
+$$
+
+</li>
+<li>
+
+Update $\bphi$, $\btheta$ via stochastic gradient ascent.
+
+</li>
+</ol>
+</div>
+<div class="block" v-click="1">
+
+## Sampling
+
+1. Sample $\bz\sim p(\bz)=\cN(0,\bI)$.
+2. Sample $\bx\sim\pt(\bx|\bz)$.
+
+</div>
+<div v-click="2">
+
+**Note:** The encoder $q_{\bphi}(\bz|\bx)$ isn't needed during generation.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/1312.6114">Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013</a></div>
+
+---
+clicks: 1
+sourceFrame: "imported: 4:9"
+class: theorems
+---
+
+# Variational Autoencoder
+
+$$
+\cL_{\bphi,\btheta}(\bx)=\bbE_q\log\pt(\bx|\bz)-\KL(q_{\bphi}(\bz|\bx)\|p(\bz))
+$$
+
+<div class="columns balanced" style="grid-template-columns: 3fr 2fr; gap: 28px; margin: 22px 0">
+<img src="/figs/VAE.png" alt="Variational autoencoder with stochastic encoder and decoder" class="wide-figure" style="height: 280px; margin: 0" />
+<img src="/figs/vae_scheme.png" alt="Probabilistic graphical model for the variational autoencoder" class="wide-figure" style="height: 280px; margin: 0" />
+</div>
+<div v-click="1">
+
+VAEs are widely used as a preliminary stage of projecting data onto low-dimensional space.
+
+</div>
+
+<div class="source"><a href="http://ijdykeman.github.io/ml/2016/12/21/cvae.html">image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html</a><br><a href="https://arxiv.org/abs/1906.02691">Kingma D. P., Welling M., An Introduction to Variational Autoencoders, 2019</a></div>
+
+---
+clicks: 0
+sourceFrame: "imported: 4:10"
+class: theorems
+---
+
+# Variational Autoencoder
+
+- The **encoder** predicts $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$, which parameterize $q_{\bphi}(\bz|\bx)$.
+- The **decoder** predicts the parameters of the observed data distribution $\pt(\bx|\bz)$.
+
+<img src="/figs/vae-encoder.png" alt="Encoder predicts a Gaussian distribution in latent space" class="wide-figure" style="height: 170px; margin: 14px auto" />
+<img src="/figs/vae-decoder.png" alt="Decoder predicts the parameters of the observed data distribution" class="wide-figure" style="height: 190px; margin: 14px auto" />
+
+<div class="source"><a href="https://arxiv.org/abs/2403.18103">Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024</a></div>
+
+---
+clicks: 1
+sourceFrame: "imported: 4:11"
+class: theorems
+---
+
+# VAE vs Normalizing Flows
+
+|  | VAE | NF |
+|---|---|---|
+| Objective | ELBO $\cL$ | Forward KL/MLE |
+| Encoder | stochastic<br>$\bz\sim q_{\bphi}(\bz\vert \bx)$ | deterministic<br>$\bz=\bff_{\btheta}(\bx)$<br>$q_{\btheta}(\bz\vert \bx)=\delta(\bz-\bff_{\btheta}(\bx))$ |
+| Decoder | stochastic<br>$\bx\sim\pt(\bx\vert \bz)$ | deterministic<br>$\bx=\bff^{-1}_{\btheta}(\bz)$<br>$\pt(\bx\vert \bz)=\delta(\bx-\bff^{-1}_{\btheta}(\bz))$ |
+| Parameters | $\bphi,\btheta$ | $\btheta\equiv\bphi$ |
+
+<div class="block" v-click="1">
+
+## Theorem
+
+MLE for a normalizing flow is equivalent to maximizing the ELBO for a VAE where:
+
+$$
+\pt(\bx|\bz)=\delta(\bx-\bff^{-1}_{\btheta}(\bz));\quad q_{\btheta}(\bz|\bx)=\delta(\bz-\bff_{\btheta}(\bx)).
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2007.02731">Nielsen D., et al., SurVAE Flows: Surjections to Bridge the Gap Between VAEs and Flows, 2020</a></div>
+
+---
+clicks: 0
 sourceFrame: "21"
 class: summary
 ---
@@ -940,3 +1180,5 @@ class: summary
 - LVMs maximize the variational evidence lower bound (ELBO) to obtain maximum likelihood estimates for the parameters.
 - Parametric posterior distribution $q_{\bphi}(\bz|\bx)$ makes the method scalable.
 - The reparametrization trick provides unbiased gradients with respect to the variational posterior $q_{\bphi}(\bz|\bx)$.
+- A VAE combines a stochastic encoder $q_{\bphi}(\bz|\bx)$ with a stochastic decoder $\pt(\bx|\bz)$.
+- Sampling uses the prior and decoder; the encoder is not needed.

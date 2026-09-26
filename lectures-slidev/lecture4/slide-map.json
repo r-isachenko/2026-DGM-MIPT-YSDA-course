@@ -31,180 +31,150 @@
   },
   {
     "slide": 6,
+    "frame": 8,
+    "title": "Recap of Previous Lecture",
+    "clicks": 0
+  },
+  {
+    "slide": 7,
     "frame": 6,
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 7,
-    "frame": "auto: Variational Autoencoder (VAE)",
-    "title": "Outline",
-    "clicks": 0
-  },
-  {
     "slide": 8,
-    "frame": 7,
-    "title": "Generative Models Taxonomy",
-    "clicks": 0
-  },
-  {
-    "slide": 9,
-    "frame": 8,
-    "title": "Variational Autoencoder (VAE)",
-    "clicks": 2
-  },
-  {
-    "slide": 10,
-    "frame": 9,
-    "title": "Variational Autoencoder",
-    "clicks": 1
-  },
-  {
-    "slide": 11,
-    "frame": 10,
-    "title": "Variational Autoencoder",
-    "clicks": 0
-  },
-  {
-    "slide": 12,
-    "frame": 11,
-    "title": "VAE vs Normalizing Flows",
-    "clicks": 1
-  },
-  {
-    "slide": 13,
     "frame": "auto: ELBO Surgery and Optimal VAE Prior",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 14,
+    "slide": 9,
     "frame": 12,
     "title": "ELBO Surgery",
     "clicks": 2
   },
   {
-    "slide": 15,
+    "slide": 10,
     "frame": 13,
     "title": "ELBO Surgery",
     "clicks": 4
   },
   {
-    "slide": 16,
+    "slide": 11,
     "frame": 14,
     "title": "ELBO Surgery",
     "clicks": 4
   },
   {
-    "slide": 17,
+    "slide": 12,
     "frame": 15,
     "title": "Marginal KL",
     "clicks": 1
   },
   {
-    "slide": 18,
+    "slide": 13,
     "frame": 16,
     "title": "Why are VAE Generations Blurry?",
     "clicks": 2
   },
   {
-    "slide": 19,
+    "slide": 14,
     "frame": "auto: Discrete VAE Latent Representations",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 20,
+    "slide": 15,
     "frame": 17,
     "title": "Discrete VAE Latents",
     "clicks": 2
   },
   {
-    "slide": 21,
+    "slide": 16,
     "frame": 18,
     "title": "Discrete VAE Latents",
     "clicks": 3
   },
   {
-    "slide": 22,
+    "slide": 17,
     "frame": 19,
     "title": "Discrete VAE Latents",
     "clicks": 1
   },
   {
-    "slide": 23,
+    "slide": 18,
     "frame": "auto: Vector Quantized VAE (VQ-VAE)",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 24,
+    "slide": 19,
     "frame": 20,
     "title": "Vector Quantization",
     "clicks": 2
   },
   {
-    "slide": 25,
+    "slide": 20,
     "frame": 21,
     "title": "Vector Quantized VAE (VQ-VAE)",
     "clicks": 3
   },
   {
-    "slide": 26,
+    "slide": 21,
     "frame": 22,
     "title": "Vector Quantized VAE (VQ-VAE): Forward",
     "clicks": 4
   },
   {
-    "slide": 27,
+    "slide": 22,
     "frame": 23,
     "title": "Vector Quantized VAE (VQ-VAE): Backward",
     "clicks": 4
   },
   {
-    "slide": 28,
+    "slide": 23,
     "frame": 24,
     "title": "Vector Quantized VAE-2 (VQ-VAE-2)",
     "clicks": 0
   },
   {
-    "slide": 29,
+    "slide": 24,
     "frame": 25,
     "title": "Vector Quantized VAE (VQ-VAE): Final algorithm",
     "clicks": 1
   },
   {
-    "slide": 30,
+    "slide": 25,
     "frame": "auto: Likelihood-Free Learning",
     "title": "Outline",
     "clicks": 0
   },
   {
-    "slide": 31,
+    "slide": 26,
     "frame": 26,
     "title": "Likelihood-Based Models",
     "clicks": 2
   },
   {
-    "slide": 32,
+    "slide": 27,
     "frame": 27,
     "title": "Likelihood-Free Learning",
     "clicks": 3
   },
   {
-    "slide": 33,
+    "slide": 28,
     "frame": 28,
     "title": "Generative Adversarial Networks (GAN)",
     "clicks": 2
   },
   {
-    "slide": 34,
+    "slide": 29,
     "frame": 29,
     "title": "Generative Adversarial Networks (GAN)",
     "clicks": 3
   },
   {
-    "slide": 35,
+    "slide": 30,
     "frame": 30,
     "title": "Summary",
     "clicks": 0
