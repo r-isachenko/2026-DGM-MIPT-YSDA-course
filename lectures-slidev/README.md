@@ -212,6 +212,29 @@ generated-файлы и кэш Vite в `lectureN/node_modules/.vite`, задан
 Два численных теста входят в `npm run test:demos` и `npm run finalize -- 3`.
 Подробности и проверенные ограничения: [журнал Lecture 3](lecture3/migration.md).
 
+## Интерактивная Lecture 4
+
+- Слайд 14: фиксированный encoder, Gaussian / Matched prior; Marginal KL,
+  mutual information и средний conditional KL. Смена prior сохраняет MI.
+- Слайд 23: определение quantization и интерактивная двумерная схема:
+  восемь нерегулярно расположенных кодов, границы Voronoi и перемещаемая точка.
+  Кнопок и настроек нет; для клавиатуры доступны стрелки и Home на выбранной точке.
+- Слайд 26: путь forward и копирование градиента в straight-through estimator
+  раскрываются штатными кликами вместе с существующим выводом.
+- Слайд 37: Gaussian data/model densities и точный оптимальный discriminator;
+  ползунок среднего generator, Separated / Overlap / Matched и Reset.
+
+PDF содержит сравнения prior и discriminator и фиксированную схему quantization. Состояние
+управления сохраняется при возврате на слайд. Управлять в выводимом на экран
+окне; синхронизация компонентов между presenter/viewer не реализована.
+При включённом пере график квантования остаётся доступен для пометок,
+а перетаскивание точки отключено.
+
+Численные проверки: `node --test tools/test-latent-demos.mjs` (также входят
+в `npm run test:demos` и `finalize`). Браузерные сценарии:
+`node tools/inspect-latent-demos.mjs` при работающей Lecture 4.
+Проверенные сценарии и ограничения: [журнал Lecture 4](lecture4/migration.md).
+
 ## Интерактивная Lecture 5
 
 - Слайд 13: одна Gaussian-модель для смеси двух Gaussians — ползунки Mean / Std. deviation,

@@ -524,6 +524,118 @@ The decoder receives $\bz\sim p(\bz)$, then generates $\bx\sim\pt(\bx|\bz)$.
 <div class="source"><a href="https://arxiv.org/abs/1505.05770">Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015</a></div>
 
 ---
+clicks: 0
+sourceFrame: "extension: 15"
+class: interactive-slide
+---
+
+<script setup>
+import MarginalKLDemo from './components/MarginalKLDemo.vue'
+</script>
+
+# Matching the Prior: Which KL Vanishes?
+
+$$
+\frac{1}{n}\sum_{i=1}^n\KL(q_{\bphi}(\bz|\bx_i)\|p(\bz))={\color{#8854c0}\KL(\qagg(\bz)\|p(\bz))}+{\color{teal}\bbI_q[\bx,\bz]}.
+$$
+
+<MarginalKLDemo />
+
+<div class="source"><a href="http://approximateinference.org/accepted/HoffmanJohnson2016.pdf">Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016</a></div>
+
+<!-- Keep the encoder fixed. Ask which term vanishes when the prior becomes the aggregated posterior, then select Matched prior. The mutual information stays unchanged; the average conditional KL equals it. The curves are an original one-dimensional illustration of the identity. -->
+
+---
+clicks: 2
+sourceFrame: "extension: 15"
+class: theorems
+---
+
+# ELBO Surgery in Modern Latent Models
+
+Jointly learn an **autoencoder** and a **generative prior**.
+
+$$
+\text{Average conditional KL}={\color{#8854c0}\text{Marginal KL}}+{\color{teal}\text{Mutual Information}}.
+$$
+
+<div v-click="1" style="margin-top: 24px">
+<div role="group" aria-label="Input through encoder, latent code and decoder to output. A learned prior supplies latent codes for generation. Reconstruction needs informative codes; generation needs a prior that models the aggregated posterior." style="display: grid; grid-template-columns: 120px 44px 200px 44px 180px 44px 200px 44px 160px; grid-template-rows: 86px 42px 82px; align-items: center; text-align: center; width: 1036px; margin: 0 auto">
+
+<div>
+
+Input<br />$\bx$
+
+</div>
+<div aria-hidden="true">→</div>
+<div style="border: 1px solid #dae3e9; padding: 12px 8px">
+
+<strong>Encoder</strong><br />$q_{\bphi}(\bz|\bx)$
+
+</div>
+<div aria-hidden="true">→</div>
+<div style="border: 1px solid #dae3e9; padding: 12px 8px">
+
+<strong>Latent code</strong><br />$\bz$
+
+</div>
+<div aria-hidden="true">→</div>
+<div style="border: 1px solid #dae3e9; padding: 12px 8px">
+
+<strong>Decoder</strong><br />$\pt(\bx|\bz)$
+
+</div>
+<div aria-hidden="true">→</div>
+<div>
+
+Output<br />$\hat{\bx}$
+
+</div>
+
+<div style="grid-column: 5; grid-row: 2; color: #8854c0">↑ Sampling</div>
+<div style="grid-column: 5; grid-row: 3; border: 1px solid #8854c0; padding: 10px 8px">
+
+<span style="color: #8854c0">Learned prior</span><br />$p(\bz)$
+
+</div>
+<div style="grid-column: 1 / 4; grid-row: 2 / 4; padding-right: 20px; color: teal">Reconstruction needs<br />informative latent codes.</div>
+<div style="grid-column: 7 / 10; grid-row: 2 / 4; padding-left: 20px; color: #8854c0">
+
+Generation needs a prior<br />that models $\qagg(\bz)$.
+
+</div>
+
+</div>
+
+<div class="takeaway" style="margin-top: 20px">
+
+Latents that **reconstruct well** may be **hard for the prior to model**.
+
+</div>
+
+</div>
+<div class="block" v-click="2" style="margin-top: 20px">
+
+**GenFirst (2026)** studies this balance when the autoencoder and generative prior are trained jointly.
+
+</div>
+
+<div class="source"><a href="http://approximateinference.org/accepted/HoffmanJohnson2016.pdf">Hoffman M. D., Johnson M. J. ELBO Surgery, 2016.</a><br /><a href="https://arxiv.org/abs/2608.29335">Zheng G. et al. GenFirst: Generation Before Reconstruction for Stable End-to-End Latent Generative Modeling, 2026.</a></div>
+
+<!--
+Recall the preceding ELBO surgery identity: average the conditional KL over the
+data. Reconstruction requires information about x in z, while the KL regularizer
+penalizes both mutual information and the mismatch between q_agg and the prior.
+The prior arrow denotes sampling; during training, its target is the distribution
+of latent codes. The diagram is an original illustration of these two requirements.
+GenFirst motivates joint training because reconstruction-oriented latents can be
+difficult to generate. This is a conceptual connection, not a claim that GenFirst
+optimizes the two surgery terms separately or that its collapse mechanism is
+caused by the mutual-information penalty. Do not introduce posterior entropy or
+the detailed training schedule on this slide.
+-->
+
+---
 clicks: 2
 sourceFrame: "16"
 class: theorems
@@ -742,6 +854,10 @@ sourceFrame: "20"
 class: theorems
 ---
 
+<script setup>
+import VectorQuantizationDemo from './components/VectorQuantizationDemo.vue'
+</script>
+
 # Vector Quantization
 
 Define the codebook (dictionary) space $\{\be_k\}_{k=1}^K$ with $\be_k\in\bbR^L$ and $K$ the number of codebook entries.
@@ -757,19 +873,23 @@ $$
 $$
 
 </div>
-<div class="block" v-click="2">
+<div class="columns" style="grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center; margin-top: 8px">
+<div class="block" v-click="2" style="margin: 0">
 
 ## Quantization Procedure
 
 If the encoded tensor has spatial dimensions, quantization is independently applied to each of the $W\times H$ locations.
 
-<div class="columns balanced" style="grid-template-columns: 13fr 7fr; gap: 20px">
-<img src="/figs/fqgan_cnn.png" alt="Feature tensor produced by a convolutional encoder" class="wide-figure" style="height: 195px; margin: 0" />
-<img src="/figs/fqgan_lookup.png" alt="Nearest-neighbor lookup in the codebook" class="wide-figure" style="height: 195px; margin: 0" />
+<img src="/figs/fqgan_cnn.png" alt="Feature tensor produced by a convolutional encoder" class="wide-figure" style="height: 175px; margin: 8px 0 0" />
+</div>
+<div v-click="1">
+<VectorQuantizationDemo />
 </div>
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2004.02088">Zhao Y. et al. Feature Quantization Improves GAN Training, 2020</a></div>
+
+<!-- Drag the orange point across the irregular Voronoi boundaries. Each latent vector selects its nearest codebook entry. The same lookup is applied independently at every spatial location. Arrow keys move the focused point; Home restores its initial position. -->
 
 ---
 clicks: 3
@@ -869,6 +989,10 @@ sourceFrame: "23"
 class: derivation theorems
 ---
 
+<script setup>
+import VqGradientPath from './components/VqGradientPath.vue'
+</script>
+
 # Vector Quantized VAE (VQ-VAE): Backward
 
 <div class="block">
@@ -880,7 +1004,7 @@ $$
 $$
 
 </div>
-<img v-click="1" src="/figs/vqvae.png" alt="Quantization between the encoder output and decoder input" class="wide-figure" style="height: 170px; margin: 12px auto" />
+<VqGradientPath v-click="1" :backward="$clicks >= 2" style="height: 170px; margin: 12px auto" />
 <div class="block" v-click="2">
 
 ## Straight-Through Gradient Estimator
@@ -1256,6 +1380,28 @@ $$
 
 
 <div class="source"><a href="https://arxiv.org/abs/1406.2661">Goodfellow I. J. et al. Generative Adversarial Networks, 2014</a></div>
+
+---
+clicks: 0
+sourceFrame: "extension: imported: 5:11"
+class: interactive-slide
+---
+
+<script setup>
+import OptimalDiscriminatorDemo from './components/OptimalDiscriminatorDemo.vue'
+</script>
+
+# The Optimal Discriminator Responds to the Densities
+
+$$
+D^*(x)=\frac{\pd(x)}{\pd(x)+\pt(x)},\qquad\pd(x)=\cN(0,1),\quad\pt(x)=\cN(\mu,1).
+$$
+
+<OptimalDiscriminatorDemo />
+
+<div class="source"><a href="https://arxiv.org/abs/1406.2661">Goodfellow I. J. et al. Generative Adversarial Networks, 2014</a></div>
+
+<!-- This is the optimal discriminator for each chosen generator density, not a simulation of alternating GAN training. Move the generator mean towards zero. Where data has more density, D* is above one half; matching both densities gives D*=1/2 everywhere. -->
 
 ---
 clicks: 4
