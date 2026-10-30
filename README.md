@@ -45,9 +45,9 @@ The course is supported by seminars and hands-on assignments that help build int
 |  | October, 15 | <b>Seminar 4:</b> Vanilla GAN in 1D and 2D. Mode collapse and vanishing gradients. Non-saturating GAN. Wasserstein GAN (WGAN) and WGAN-GP. | [notebook](seminars/seminar4/seminar4_wgan.ipynb) |
 |  | October, 15 | <b>Seminar 5:</b> Progressive Growing GAN. StyleGAN: mapping network, noise injection, AdaIN, style mixing and interpolation. | [notebook](seminars/seminar5/seminar5_stylegan.ipynb) |
 | 6 | October, 22 | <b>Lecture 6:</b><ul><li>Langevin Dynamics</li><li>Score Matching<ul><li>Denoising Score Matching</li><li>Noise-Conditioned Score Network (NCSN)</li></ul></li></ul> | [PDF](lectures/lecture6/Lecture6.pdf) |
+|  | October, 29 | <b>Seminar 6:</b> Score matching and Langevin dynamics. Noise-Conditioned Score Network (NCSN). A simple denoising model on MNIST. | [Overview](seminars/seminar6/seminar6.ipynb) · [NCSN](seminars/seminar6/ncsn.ipynb) · [Denoising model](seminars/seminar6/denoising_model.ipynb) |
 <!---
 | 7 | October, 29 | <b>Lecture 7:</b><ul><li>Forward Gaussian Diffusion Process</li><li>Reverse Gaussian Diffusion Process</li><li>Gaussian Diffusion Model as VAE</li><li>Diffusion ELBO Derivation</li></ul> | [PDF](lectures/lecture7/Lecture7.pdf) |
-|  |  | <b>Seminar 7:</b> Noise Conditioned Score Network (NCSN). Heuristic diffusion model. | [slides](seminars/seminar7/) |
 | 8 | November, 5 | <b>Lecture 8:</b><ul><li>Diffusion Parameterizations</li><li>Denoising Diffusion Probabilistic Model (DDPM)</li><li>From DDPM to DDIM</li><li>Model Guidance<ul><li>Classifier Guidance</li><li>Classifier-Free Guidance</li></ul></li></ul> | [PDF](lectures/lecture8/Lecture8.pdf) |
 |  |  | <b>Seminar 8:</b> Guidance. CLIP, GLIDE, DALL-E 2, Imagen. | [slides](seminars/seminar8/) |
 | 9 | November, 12 | <b>Lecture 9:</b><ul><li>Continuous-Time Normalizing Flows (CNF)</li><li>Continuity Equation for CNF Log-Likelihood</li><li>SDE Basics</li></ul> | [PDF](lectures/lecture9/Lecture9.pdf) |
