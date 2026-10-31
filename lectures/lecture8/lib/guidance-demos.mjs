@@ -7,9 +7,6 @@ export const modes = [
   { label: 1, weight: .6, mean: [2, .5] },
 ]
 export const colors = { unconditional: '#8854c0', classifier: '#007f82', guided: '#b58a25' }
-export const initialPoint = { x: 1, y: 0 }
-export const bounds = { xmin: -1.7, xmax: 1.7, ymin: -.8, ymax: .8 }
-export const arrowBounds = { xmin: -3.2, xmax: 3.2, ymin: -1.8, ymax: 1.8 }
 export const gammaPresets = [0, 1, 3, 7]
 export const domain = [-5, 5]
 const logSum = values => {
@@ -33,22 +30,6 @@ export function guidanceAt(point, label = 1, gamma = 3) {
   const guided = unconditional.score.map((value, i) => value + gamma * classifier[i])
   return { unconditional: unconditional.score, conditional: conditional.score, classifier, guided,
     probability: Math.exp(conditional.logDensity - unconditional.logDensity) * .5 }
-}
-export function guidanceScaleAt(point) {
-  // Fix the display scale for this observation across both classes and all gamma
-  // in [0, 7]. Each component is affine in gamma, so its endpoints bound the range.
-  const vectors = [mixtureAt(point).score]
-  for (const label of [0, 1]) {
-    const scores = guidanceAt(point, label, 7)
-    vectors.push(scores.classifier.map(value => 7 * value), scores.guided)
-  }
-  let scale = .55
-  for (const vector of vectors) for (const [axis, i] of [['x', 0], ['y', 1]]) {
-    if (Math.abs(vector[i]) < 1e-12) continue
-    const edge = arrowBounds[`${axis}${vector[i] > 0 ? 'max' : 'min'}`]
-    scale = Math.min(scale, (edge - point[axis]) / vector[i])
-  }
-  return scale
 }
 export function densityAt(gamma = 3, label = 1, count = 501) {
   const dx = (domain[1] - domain[0]) / (count - 1)

@@ -7,7 +7,7 @@
     "build": "node tools/run.mjs build",
     "export": "node tools/run.mjs export",
     "finalize": "node tools/run.mjs finalize",
-    "test:demos": "node --test tools/test-demos.mjs tools/test-flow-demos.mjs tools/test-course.mjs tools/test-variational-demos.mjs tools/test-latent-demos.mjs tools/test-lecture5-demos.mjs tools/test-score-demos.mjs tools/test-diffusion-demos.mjs tools/test-guidance-demos.mjs tools/test-dynamics-demos.mjs tools/test-process-demos.mjs tools/test-cfm-demos.mjs tools/test-conditioning-discrete-demos.mjs"
+    "test:demos": "node --test tools/test-demos.mjs tools/test-flow-demos.mjs tools/test-course.mjs tools/test-variational-demos.mjs tools/test-latent-demos.mjs tools/test-lecture5-demos.mjs tools/test-score-demos.mjs tools/test-diffusion-demos.mjs tools/test-guidance-demos.mjs tools/test-dynamics-demos.mjs tools/test-process-demos.mjs tools/test-cfm-demos.mjs tools/test-conditioning-discrete-demos.mjs tools/test-ddim-demo.mjs"
   },
   "devDependencies": {
     "@slidev/cli": "52.19.1",

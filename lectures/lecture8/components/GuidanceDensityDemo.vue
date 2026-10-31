@@ -43,7 +43,7 @@ function reset() { state.gamma = 1; state.label = 1 }
       </div>
     </div>
     <div class="demo-takeaway">Increasing γ shifts mass toward regions with higher classifier confidence.</div>
-    <div class="demo-note bottom-note">A 1D version of the Gaussian-mixture toy, at a fixed noise level. This plot describes a density at that level.</div>
+    <div class="demo-note bottom-note">A 1D Gaussian-mixture example at a fixed noise level. This plot describes a density at that level.</div>
   </DemoPanel>
 </template>
 <style scoped>

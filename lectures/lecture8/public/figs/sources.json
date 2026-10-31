@@ -37,5 +37,21 @@
     "asset_url": "https://arxiv.org/pdf/2404.07724v1",
     "source_pdf_sha256": "da759e2221efb747f58a0f31cbf04c2d17dd87d237a172446cddd65244fd1c88",
     "sha256": "5430a34d6df6d608c436a22017765b9f7b013788b0a357101868892cde5ad86f"
+  },
+  "flux2-cat-watermelon.png": {
+    "source": "https://docs.bfl.ai/guides/prompting_guide_flux2",
+    "description": "Unmodified official FLUX.2 example: black cat hiding behind a watermelon slice, studio photography with a red/turquoise backdrop. Slide caption paraphrases and abridges the text condition. Individual model variant, seed and guidance scale are not specified; the pair is not a controlled guidance comparison.",
+    "asset_url": "https://cdn.sanity.io/images/2gpum2i6/production/5e03a74ae6a124c0a98b8c2b5c9f1b58aee0a4a9-1888x1056.png",
+    "retrieved": "2026-10-31",
+    "license": "Not specified for documentation images; attribution retained.",
+    "sha256": "cc443ff7e550415087a5383e493aa678a40d7aed8c6fd94c730c4a5937591f84"
+  },
+  "flux2-open-sign.png": {
+    "source": "https://docs.bfl.ai/guides/prompting_guide_flux2",
+    "description": "Unmodified official FLUX.2 example: sushi restaurant entrance with a red OPEN neon sign above the door. Slide caption paraphrases and abridges the text condition. Individual model variant, seed and guidance scale are not specified; the pair is not a controlled guidance comparison.",
+    "asset_url": "https://cdn.sanity.io/images/2gpum2i6/production/324a5024e679ee8a693821fc5bbdedb2c3fde129-1888x1056.png",
+    "retrieved": "2026-10-31",
+    "license": "Not specified for documentation images; attribution retained.",
+    "sha256": "d9d4075932a30893aa5c6cbea17e667ffdd1884e279c80d106234bb5053c76b1"
   }
 }

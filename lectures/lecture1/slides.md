@@ -740,31 +740,83 @@ $$
 </div>
 
 ---
-clicks: 1
+clicks: 3
 id: conditional-models
-class: table-slide
+class: theorems
 ---
 
-# Conditional Models
+# Conditional Generation
 
-In practice, we're typically interested in learning conditional models (sampling from conditional distribution $\pd(\bx|\by)$).
+Given a condition $\by$, generate $\bx\sim\pt(\bx|\by)$ with model parameters $\btheta$.
 
-<div v-click="1">
+<table class="conditional-task-table">
+<colgroup><col style="width:32%"><col style="width:18%"><col style="width:50%"></colgroup>
+<thead>
+<tr>
+<th>
 
-| Condition $\by$ | Output $\bx$ | Model |
-| :-- | :-- | :-- |
-| $\emptyset$ | image | unconditional image model |
-| class label | image | class-conditional image model |
-| text prompt | image | text-to-image model |
-| image | image | image-to-image model |
-| image | text | image-to-text (image captioning) model |
-| English text | Russian text | sequence-to-sequence model (machine translation) |
-| sound | text | speech-to-text (automatic speech recognition) model |
-| text | sound | text-to-speech model |
+Condition $\by$
 
-</div>
+</th>
+<th>
 
-<!-- Click 1 reveals all eight examples together, as in Beamer. The list is arranged as a table; wording and condition/output pairs are retained. -->
+Generated $\bx$
+
+</th>
+<th>Tasks</th>
+</tr>
+</thead>
+<tbody v-click="1" class="image-tasks">
+<tr><td><p>Class label or text prompt</p></td><td><p>Image</p></td><td><p>Class-conditional / text-to-image</p></td></tr>
+<tr><td><p>Image (+ mask / instruction)</p></td><td><p>Image</p></td><td><p>Editing, inpainting, super-resolution</p></td></tr>
+<tr><td><p>Text (+ reference image)</p></td><td><p>Video</p></td><td><p>Text-to-video / image-to-video</p></td></tr>
+</tbody>
+<tbody v-click="2">
+<tr><td><p>Prompt + context</p></td><td><p>Text / code</p></td><td><p>Chat, translation, summarization, coding</p></td></tr>
+<tr><td><p>Image (+ question)</p></td><td><p>Text</p></td><td><p>Captioning / visual question answering</p></td></tr>
+<tr><td><p>Speech</p></td><td><p>Text</p></td><td><p>Speech recognition</p></td></tr>
+</tbody>
+<tbody v-click="3">
+<tr><td><p>Text</p></td><td><p>Audio</p></td><td><p>Speech synthesis, music, sound effects</p></td></tr>
+</tbody>
+</table>
+
+<div class="source"><a href="https://arxiv.org/abs/2203.02155">Ouyang L. et al. InstructGPT, 2022.</a> · <a href="https://arxiv.org/abs/2107.03374">Chen M. et al. Codex, 2021.</a> · <a href="https://arxiv.org/abs/2301.12597">Li J. et al. BLIP-2, 2023.</a> · <a href="https://arxiv.org/abs/2301.12503">Liu H. et al. AudioLDM, 2023.</a><br><a href="https://arxiv.org/abs/2211.09800">Brooks T. et al. InstructPix2Pix, 2023.</a> · <a href="https://arxiv.org/abs/2112.10752">Rombach R. et al. Latent Diffusion, 2022.</a> · <a href="https://arxiv.org/abs/2503.20314">Wan Team. Wan, 2025.</a></div>
+
+<style>
+.conditional-task-table { margin-top: 24px; table-layout: fixed; }
+.conditional-task-table th, .conditional-task-table td { padding-left: 20px; padding-right: 20px; }
+.slidev-layout .conditional-task-table tr { border: 0; }
+.slidev-layout .conditional-task-table td { border-bottom: 0; }
+.conditional-task-table p { margin: 0; }
+.conditional-task-table .image-tasks { background: #eaf5f4; }
+.conditional-task-table .image-tasks td:nth-child(2) { color: var(--teal); font-weight: 650; }
+.conditional-task-table tbody tr:first-child td { padding-top: 16px; }
+.conditional-task-table tbody tr:last-child td { padding-bottom: 16px; }
+.conditional-task-table tbody + tbody tr:first-child td { border-top: 1px solid #dce5eb; }
+</style>
+
+<!--
+Synchronized with the corresponding slide in Lectures 1 and 8. One overview
+slide groups applications with the same input/output types, retaining the
+practical examples without listing every task separately. The unconditional
+case has already been introduced. Parameters are named here because this is
+their first use in the introductory lecture.
+
+For image editing, the extra condition can be an instruction. Inpainting uses
+observed image pixels and their mask. Super-resolution uses a low-resolution
+input image; no extra text or mask is required. The optional reference image
+adds a visual condition to video generation. Prompt context can contain a
+conversation, document, source-language text, or code. A question is optional
+for captioning and is supplied for visual question answering. Text specifies
+words to speak in speech synthesis or describes music/sounds in text-to-audio.
+
+These are representative applications, not an exhaustive taxonomy or a claim
+about one universal model. Lecture 1 next returns to how distributions are
+learned; Lecture 8 develops label and text conditioning through image examples
+before deriving guidance. Reveal visual outputs, text outputs, then audio.
+-->
+
 
 ---
 clicks: 0

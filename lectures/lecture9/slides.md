@@ -220,7 +220,7 @@ class: theorems
 
 # Recap of Previous Lecture
 
-Write the conditional score error as
+For a chosen perturbation $q(\bx_t|\bx_0)$, define the conditional score error:
 
 $$
 \ell_{\btheta}(t)=\bbE_{\pd(\bx_0)}\bbE_{q(\bx_t|\bx_0)}\left\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t|\bx_0)\right\|^2.
@@ -228,21 +228,23 @@ $$
 
 <div class="block">
 
-## Same regression form, different weights
+## Same DSM form: compare weights and perturbations
 
 $$
-\cL=\bbE_{t\sim U\{1,T\}}\left[w_t\,\ell_{\btheta}(t)\right].
+\cL=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\left[w_t\,\ell_{\btheta}(t)\right].
 $$
 
-| Objective | Gaussian perturbation | Score-loss weight $w_t$ |
-| --- | --- | --- |
-| DDPM simple loss | $\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon$ | $1-\bar\alpha_t$ |
-| NCSN | $\bx_0+\sigma_t\bepsilon$ | $\sigma_t^2$ |
+| Objective | Gaussian perturbation | Conditional score target | Weight $w_t$ |
+| --- | --- | --- | --- |
+| DDPM simple loss | $\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon$ | $-\bepsilon/\sqrt{1-\bar\alpha_t}$ | $1-\bar\alpha_t$ |
+| NCSN | $\bx_0+\sigma_t\bepsilon$ | $-\bepsilon/\sigma_t$ | $\sigma_t^2$ |
+
+**Changing the perturbation changes the inputs, targets and $\ell_{\btheta}(t)$ itself.**
 
 </div>
 <div>
 
-The DDPM ELBO uses different weights. Replacing them changes the objective.
+For a fixed perturbation, replacing the DDPM ELBO weights also changes the objective.
 
 
 
@@ -260,21 +262,30 @@ class: theorems
 
 ## Loss Weighting and Time Sampling
 
-For fixed $w_t$ and expected per-step losses $\ell_{\btheta}(t)$:
+For a fixed perturbation and per-step loss $\ell_{\btheta}(t)$:
+
+$$
+\bbE_{t\sim r}[\ell_{\btheta}(t)]
+=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\!\left[T r_t\,\ell_{\btheta}(t)\right].
+$$
+
+**Sampling a noise level more often gives it more weight.**
+Choose $r_t=w_t/\sum_s w_s$, $w_t>0$, to absorb weights up to an overall loss scale.
+
+To change time sampling while preserving a chosen objective, compensate:
 
 $$
 \cL=\frac1T\sum_{t=1}^T w_t\ell_{\btheta}(t)
 =\bbE_{t\sim r}\left[\frac{w_t}{T r_t}\ell_{\btheta}(t)\right],\qquad r_t>0.
 $$
 
-- Loss weights determine which noise levels matter in the objective.
-- With the correction $1/(T r_t)$, changing the sampling probabilities preserves the objective.
-- Without correction, changing the probabilities changes the relative weights.
+- The objective stays the same; gradient variance can change.
 - Training-time sampling and the generation grid are separate choices.
 
 <div class="source"><a href="https://arxiv.org/abs/2303.00848">Kingma D., Gao R. Understanding Diffusion Objectives as the ELBO with Simple Data Augmentation, 2023</a></div>
 
-<!-- Coverage: this new main result from the preceding lecture needs its own recap because the objective-comparison slide already contains the score error, weighted objective and two-model table. The numerical two-level example is intentionally omitted. -->
+<!-- Coverage: recalls both directions of the weights/time-sampling equivalence and
+importance correction. -->
 
 ---
 clicks: 0
@@ -295,21 +306,26 @@ Gaussian perturbations:
 
 - DDPM: $\bx_t=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon$;
 - NCSN: $\bx_t=\bx_0+\sigma_t\cdot\bepsilon$.
-- Rescaling the DDPM state by $1/\sqrt{\bar{\alpha}_t}$ gives the NCSN noise form.
+- Use $\tilde\bx_t=\bx_t/\sqrt{\bar\alpha_t}$ and $\sigma_t^2=(1-\bar\alpha_t)/\bar\alpha_t$ to recover NCSN.
 
 </li>
 <li>
 
-Both use denoising score matching, with objective-specific noise-level weights.
+Scale target and model scores by $\sqrt{\bar\alpha_t}$ to obtain the rescaled DSM error:
+
+$$
+\tilde\ell_{\btheta}(t)=\bar\alpha_t\ell_{\btheta}(t),\qquad
+\sigma_t^2\tilde\ell_{\btheta}(t)=(1-\bar\alpha_t)\ell_{\btheta}(t).
+$$
 
 </li>
 <li>
 
-The sampling procedures differ:
+Equivalent training objectives do not fix the sampling rule:
 
-- Ancestral sampling in DDPM;
-- Annealed Langevin dynamics for NCSN;
-- Hybrid approaches that combine both updates are possible.
+- DDPM: one reverse transition per noise level;
+- NCSN: $L$ Langevin updates at each fixed noise level;
+- A trained score model can support different samplers.
 
 </li>
 </ul>
@@ -348,7 +364,7 @@ $$
 
 </div>
 
-**Deterministic limit:** fresh transition noise is zero ($\sigma_{t\to s}=0$); randomness comes from $\bx_T$.
+**Same training marginals, different joint:** shared-noise forward paths are non-Markovian. DDIM reuses the DDPM predictor; its sampler is Markovian and deterministic given $\bx_T$.
 
 **Fewer steps:** choose $K\ll T$; $K$ steps require $K$ network evaluations and no retraining.
 
@@ -366,34 +382,36 @@ class: theorems
 
 ## DDPM Sampling
 
-$$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{teal}\nabla_{\bx_t}\log\pt(\bx_t)}+\sigma_t\cdot\bepsilon
-$$
-
-</div>
-<div class="block">
-
-## Guided Generation
+Use $\bs_{\btheta,t}(\bx_t)=-\bepsilon_{\btheta,t}(\bx_t)/\sqrt{1-\bar\alpha_t}$.
 
 $$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot\nabla_{\bx_t}\log\pt(\bx_t|{\color{olive}\by})+\sigma_t\cdot\bepsilon
+\bx_{t-1}=\frac{\bx_t+\beta_t\,{\color{teal}\bs_{\btheta,t}(\bx_t)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t,\qquad t\ge2.
 $$
 
 </div>
 <div class="block">
 
 ## Guided Generation
+
+$$
+\bx_{t-1}=\frac{\bx_t+\beta_t\,{\color{olive}\bs_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t,\qquad t\ge2.
+$$
+
+</div>
+<div class="block">
+
+## Conditional Score and Its Estimate
 
 $$
 \begin{aligned}
-{\color{olive}\nabla_{\bx_t}\log\pt(\bx_t|\by)}&={\color{#8854c0}\nabla_{\bx_t}\log\pt(\bx_t)}+\nabla_{\bx_t}\log p(\by|\bx_t)\\
-&={\color{#8854c0}\bs_{\btheta,t}(\bx_t)}+{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}
+{\color{olive}\nabla_{\bx_t}\log q(\bx_t|\by)}&={\color{#8854c0}\nabla_{\bx_t}\log q(\bx_t)}+\nabla_{\bx_t}\log q(\by|\bx_t)\\
+&\approx{\color{#8854c0}\bs_{\btheta,t}(\bx_t)}+{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}=\bs_{\btheta,t}(\bx_t,\by).
 \end{aligned}
 $$
 
 </div>
 
-Here, $p(\by|\bx_t)$ denotes a classifier operating on noisy samples (which must be trained separately).
+Train $p(\by|\bx_t)\approx q(\by|\bx_t)$ separately; draw independent $\bepsilon_t\sim\cN(0,\bI)$.
 
 <div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a></div>
 
@@ -418,13 +436,13 @@ $$
 
 </div>
 
-**Note:** Increasing $\gamma$ sharpens $p(\by|\bx_t)$, increasing the contrast
+With exact scores, the interpretation at each fixed noise level is
 
 $$
-\hat p(\by|\bx_t)\propto p(\by|\bx_t)^\gamma.
+q_\gamma(\bx_t|\by)\propto q(\bx_t)\,q(\by|\bx_t)^\gamma.
 $$
 
-Very large $\gamma$ can reduce diversity and introduce artifacts.
+$\gamma=1$ gives the conditional score; very large $\gamma$ can reduce diversity and introduce artifacts.
 
 <div class="block">
 
@@ -457,11 +475,20 @@ class: theorems
 ## Sampling (Guided)
 
 1. Sample $\bx_T\sim\cN(0,\bI)$.
-2. Denoise with the scaled guided score function:
+2. For $t=T,\ldots,2$, compute the guided mean and sample the reverse step:
 
 $$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}+\sigma_t\cdot\bepsilon.
+\begin{aligned}
+\bmu^\gamma_{\btheta,t}(\bx_t,\by)&=\frac{\bx_t+\beta_t\,{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}},\\
+\bx_{t-1}&=\bmu^\gamma_{\btheta,t}(\bx_t,\by)+\sqrt{\tilde\beta_t}\,\bepsilon_t,\qquad\bepsilon_t\sim\cN(0,\bI).
+\end{aligned}
 $$
+
+<ol start="3"><li>
+
+Return the guided decoder mean $\hat\bx_0=\bmu^\gamma_{\btheta,1}(\bx_1,\by)$.
+
+</li></ol>
 
 </div>
 
@@ -475,19 +502,21 @@ class: theorems
 
 # Recap of Previous Lecture
 
-The previous method requires an additional classifier $p(\by|\bx_t)$ trained on noisy data. Let's try to avoid this requirement.
+Use Bayes' rule for the true noisy-data distributions to motivate classifier-free guidance:
 
 $$
-{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}=\nabla_{\bx_t}\log\pt(\bx_t|\by)-\nabla_{\bx_t}\log\pt(\bx_t)
+{\color{teal}\nabla_{\bx_t}\log q(\by|\bx_t)}=\nabla_{\bx_t}\log q(\bx_t|\by)-\nabla_{\bx_t}\log q(\bx_t).
 $$
 
 $$
 \begin{aligned}
-\nabla_{\bx_t}^\gamma\log\pt(\bx_t|\by)&=\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}\\
-&=\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot\bigl({\color{teal}\nabla_{\bx_t}\log\pt(\bx_t|\by)-\nabla_{\bx_t}\log\pt(\bx_t)}\bigr)\\
-&=(1-\gamma)\cdot\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot\nabla_{\bx_t}\log\pt(\bx_t|\by)
+\bs_t^\gamma(\bx_t,\by)&:=\nabla_{\bx_t}\log q_\gamma(\bx_t|\by)\\
+&=\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot{\color{teal}\nabla_{\bx_t}\log q(\by|\bx_t)}\\
+&=(1-\gamma)\cdot\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot\nabla_{\bx_t}\log q(\bx_t|\by).
 \end{aligned}
 $$
+
+Replace the two true scores with learned unconditional and conditional estimates.
 
 <div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a><br><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
 
@@ -514,9 +543,9 @@ $$
 ## CFG
 
 1. Introduce the "absence of conditioning" label $\by=\varnothing$.
-2. Identify the unguided score function $\bs_{\btheta,t}(\bx_t)=\bs_{\btheta,t}(\bx_t,\varnothing)$.
+2. Identify the unconditional score model $\bs_{\btheta,t}(\bx_t)=\bs_{\btheta,t}(\bx_t,\varnothing)$.
 3. Train a single model $\bs_{\btheta,t}(\bx_t,\by)$ on **supervised** data, dropping the label $\by$ with some fixed probability (simulating $\by=\varnothing$).
-4. At inference, evaluate the model twice to obtain $\bs_{\btheta,t}(\bx_t,\varnothing)$ and $\bs_{\btheta,t}(\bx_t,\by)$.
+4. Evaluate the model twice per sampling step: with $\by$ and with $\varnothing$.
 
 </div>
 

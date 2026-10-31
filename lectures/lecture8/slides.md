@@ -741,58 +741,56 @@ id: denoising-diffusion-as-a-score-based-generative-model
 class: theorems
 ---
 
-# Denoising Diffusion as a Score-Based Generative Model
+# From Denoising Score Matching to DDPM
 
-<div class="block">
+**DSM:** learn $\bs_{\btheta,t}(\bx_t)\approx\nabla_{\bx_t}\log q(\bx_t)$ using conditional targets:
 
-## DDPM Objective
+$$
+\ell_{\btheta}(t)=\bbE_{\pd(\bx_0)}\bbE_{q(\bx_t|\bx_0)}\left\|{\color{#8854c0}\bs_{\btheta,t}(\bx_t)}-{\color{teal}\nabla_{\bx_t}\log q(\bx_t|\bx_0)}\right\|_2^2.
+$$
 
-$$ {1|all} {at:1}
-\begin{aligned}
-\cL_t&=\bbE_{\bepsilon\sim\cN(0,\bI)}\left[C_{1,t}\cdot\left\|\bepsilon_{\btheta,t}(\bx_t)-\bepsilon\right\|_2^2\right]\\
-&=\bbE_{\bepsilon\sim\cN(0,\bI)}\left[C_{2,t}\cdot\Bigl\|{\color{#8854c0}\frac{\bepsilon_{\btheta,t}(\bx_t)}{\sqrt{1-\bar{\alpha}_t}}}-{\color{teal}\frac{\bepsilon}{\sqrt{1-\bar{\alpha}_t}}}\Bigr\|_2^2\right]
-\end{aligned}
+<div v-click="1" style="margin-top:28px">
+
+**Gaussian perturbation:** $\bx_t=\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon$, $\bepsilon\sim\cN(0,\bI)$.
+
+$$
+\nabla_{\bx_t}\log q(\bx_t|\bx_0)
+=-\frac{\bx_t-\sqrt{\bar\alpha_t}\bx_0}{1-\bar\alpha_t}
+={\color{teal}-\frac{\bepsilon}{\sqrt{1-\bar\alpha_t}}}.
 $$
 
 </div>
-<div v-click="2">
+<div v-click="2" style="margin-top:28px">
 
-$$ {1|all} {at:3}
-\begin{aligned}
-q(\bx_t|\bx_0)&=\cN(\sqrt{\bar{\alpha}_t}\cdot\bx_0,(1-\bar{\alpha}_t)\cdot\bI)\\
-\nabla_{\bx_t}\log q(\bx_t|\bx_0)&=-\frac{\bx_t-\sqrt{\bar{\alpha}_t}\cdot\bx_0}{1-\bar{\alpha}_t}={\color{teal}-\frac{\bepsilon}{\sqrt{1-\bar{\alpha}_t}}}.
-\end{aligned}
+**Parameterize the score through noise prediction and substitute into DSM:**
+
+$$
+{\color{#8854c0}\bs_{\btheta,t}(\bx_t)=-\frac{\bepsilon_{\btheta,t}(\bx_t)}{\sqrt{1-\bar\alpha_t}}}
+\quad\Longrightarrow\quad
+\ell_{\btheta}(t)=\frac{\bbE_{\bx_0,\bepsilon}\|{\color{#8854c0}\bepsilon_{\btheta,t}(\bx_t)}-{\color{teal}\bepsilon}\|_2^2}{1-\bar\alpha_t}.
 $$
 
 </div>
+<div class="block" v-click="3" style="margin-top:28px">
 
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 1
-id: denoising-diffusion-as-a-score-based-generative-model-2
-class: theorems
----
-
-# Denoising Diffusion as a Score-Based Generative Model
-
-We can reparameterize the model as:
+**We recover the DDPM simple loss**, with $t\sim\Uniform\{1,\ldots,T\}$:
 
 $$
-\bs_{\btheta,t}(\bx_t)={\color{#8854c0}-\frac{\bepsilon_{\btheta,t}(\bx_t)}{\sqrt{1-\bar{\alpha}_t}}}=\nabla_{\bx_t}\log\pt(\bx_t).
-$$
-
-This is the noise-to-score identity from **Tweedie's formula (Lecture 6)** at the MSE optimum.
-
-<div v-click="1">
-
-$$
-\cL_t=\bbE_{q(\bx_t|\bx_0)}\left[C_{2,t}\cdot\Bigl\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t|\bx_0)\Bigr\|_2^2\right]
+\bbE_t\!\left[(1-\bar\alpha_t)\,\ell_{\btheta}(t)\right]
+=\bbE_{t,\bx_0,\bepsilon}\|{\color{#8854c0}\bepsilon_{\btheta,t}(\bx_t)}-{\color{teal}\bepsilon}\|_2^2
+=\bbE[\cL_{\text{simple}}].
 $$
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
+<div class="source"><a href="http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf">Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010</a><br><a href="https://arxiv.org/abs/2006.11239">Ho J., et al. Denoising Diffusion Probabilistic Models, 2020</a></div>
+
+<!-- Narrative: after DDPM Training/Sampling, derive the same training objective
+from DSM. Differentiate the conditional Gaussian, substitute its score and the
+noise parameterization, then select the variance weight to recover the expected
+per-example DDPM simple loss. The DSM theorem supplies the marginal-score optimum;
+no denoiser/posterior-mean identity is needed. The data, time and standard Gaussian
+noise are sampled independently. The next slide compares DDPM and NCSN perturbations, targets and weights. -->
 
 ---
 clicks: 2
@@ -802,7 +800,7 @@ class: theorems
 
 # DDPM vs NCSN: Objectives
 
-Write the conditional score error as
+For a chosen perturbation $q(\bx_t|\bx_0)$, define the conditional score error:
 
 $$
 \ell_{\btheta}(t)=\bbE_{\pd(\bx_0)}\bbE_{q(\bx_t|\bx_0)}\left\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t|\bx_0)\right\|^2.
@@ -810,23 +808,25 @@ $$
 
 <div class="block" v-click="1">
 
-## Same regression form, different weights
+## Same DSM form: compare weights and perturbations
 
 $$
-\cL=\bbE_{t\sim U\{1,T\}}\left[w_t\,\ell_{\btheta}(t)\right].
+\cL=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\left[w_t\,\ell_{\btheta}(t)\right].
 $$
 
-| Objective | Gaussian perturbation | Score-loss weight $w_t$ |
-| --- | --- | --- |
-| DDPM simple loss | $\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon$ | $1-\bar\alpha_t$ |
-| NCSN | $\bx_0+\sigma_t\bepsilon$ | $\sigma_t^2$ |
+| Objective | Gaussian perturbation | Conditional score target | Weight $w_t$ |
+| --- | --- | --- | --- |
+| DDPM simple loss | $\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon$ | $-\bepsilon/\sqrt{1-\bar\alpha_t}$ | $1-\bar\alpha_t$ |
+| NCSN | $\bx_0+\sigma_t\bepsilon$ | $-\bepsilon/\sigma_t$ | $\sigma_t^2$ |
+
+**Changing the perturbation changes the inputs, targets and $\ell_{\btheta}(t)$ itself.**
 
 </div>
 <div v-click="2">
 
-The DDPM ELBO uses different weights. Replacing them changes the objective.
+For a fixed perturbation, replacing the DDPM ELBO weights also changes the objective.
 
-**How can we choose training times without changing these weights?**
+**First connect weights to time sampling; then connect the perturbations.**
 
 </div>
 
@@ -840,7 +840,7 @@ class: theorems
 
 # Loss Weighting and Time Sampling
 
-Let $\ell_{\btheta}(t)$ be the expected loss at step $t$, and fix weights $w_t$.
+Fix the perturbation and its per-step loss $\ell_{\btheta}(t)$; let $w_t>0$.
 
 $$
 \cL=\frac1T\sum_{t=1}^{T}w_t\ell_{\btheta}(t).
@@ -848,33 +848,38 @@ $$
 
 <div class="block" v-click="1">
 
-## Sample training times with probability $r_t>0$
+## Sampling a noise level more often gives it more weight
 
 $$
-\cL=\bbE_{t\sim r}\left[\frac{w_t}{T r_t}\ell_{\btheta}(t)\right].
+\bbE_{t\sim r}[\ell_{\btheta}(t)]
+=\sum_{t=1}^T r_t\ell_{\btheta}(t)
+=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\!\left[{\color{teal}T r_t}\,\ell_{\btheta}(t)\right].
 $$
 
-With the correction, the objective stays the same; gradient variance can change.
+Conversely, choose $r_t=w_t/\sum_s w_s$ to absorb the weights, up to an overall loss scale.
 
 </div>
 <div v-click="2">
 
-For two levels with $w_1=w_2=1$ and $(r_1,r_2)=(0.9,0.1)$:
+**To change time sampling while preserving a chosen objective, compensate:**
 
 $$
-0.9\frac{\ell_1}{2\cdot0.9}+0.1\frac{\ell_2}{2\cdot0.1}
-=\frac{\ell_1+\ell_2}{2}.
+\cL=\bbE_{t\sim r}\left[\frac{w_t}{T r_t}\ell_{\btheta}(t)\right],\qquad r_t>0.
 $$
 
-Without correction, $0.9\ell_1+0.1\ell_2$ is a **different objective**.
-
-These probabilities select training levels, not generation steps.
+The objective stays the same; gradient variance can change. These are **training** times.
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2303.00848">Kingma D., Gao R. Understanding Diffusion Objectives as the ELBO with Simple Data Augmentation, 2023</a></div>
 
-<!-- Narrative: the preceding comparison makes score-loss weights explicit. Here derive the unbiased time-sampling estimator, then contrast it with an uncorrected two-level example. The next slide compares the remaining difference: Gaussian noise coordinates. The identity assumes r_t>0 wherever a weighted term contributes; weights and sampling probabilities are independent of model parameters. Equal objectives do not imply equal stochastic gradient variance or optimization speed. The baseline 1/T normalization is retained; dropping a global constant would preserve minimizers but is not used in the equality. This concerns training-time sampling, not generation steps. -->
+<!-- Narrative: after identifying weights and perturbations as the two comparison axes,
+fix the perturbation. First show that sampling probabilities are effective loss
+weights under uniform time sampling. Conversely L=(sum_s w_s/T) E_r[ell] for r_t=w_t/sum_s w_s.
+Importance correction is then a consequence, preserving any chosen weighted objective.
+Weights/probabilities are independent of theta; equal objectives do not imply equal
+stochastic-gradient variance. These are training levels, not generation steps.
+Next connect the perturbations by changing coordinates. -->
 
 ---
 clicks: 2
@@ -901,55 +906,108 @@ $$
 \underbrace{\sqrt{\frac{1-\bar{\alpha}_t}{\bar{\alpha}_t}}}_{\displaystyle\sigma_t}\,\bepsilon.
 $$
 
-Here $\sigma_t$ measures additive noise in the rescaled state.
-
 </div>
 
 <div class="block" v-click="2">
 
-## Recover the NCSN noise form
+## Rescale the score and its loss
+
+Both the conditional score target and the model scale by $\sqrt{\bar\alpha_t}$:
 
 $$
-\tilde{\bx}_t=\bx_0+\sigma_t\bepsilon,
-\qquad q(\tilde{\bx}_t\mid\bx_0)=\cN(\bx_0,\sigma_t^2\bI).
+\tilde{\bs}_{\btheta,t}(\tilde{\bx}_t)
+=\sqrt{\bar\alpha_t}\,\bs_{\btheta,t}(\sqrt{\bar\alpha_t}\,\tilde{\bx}_t),
+\qquad \tilde\ell_{\btheta}(t)=\bar\alpha_t\,\ell_{\btheta}(t).
 $$
 
-As $\bar{\alpha}_t$ decreases, the noise level $\sigma_t$ increases.
+Here $\tilde\ell_{\btheta}(t)$ is the DSM error in the rescaled coordinates. Hence
 
-**The Gaussian perturbations are connected by rescaling.**
-Next, compare their sampling rules: ancestral updates and Langevin dynamics.
+$$
+{\color{teal}(1-\bar\alpha_t)\,\ell_{\btheta}(t)
+=\sigma_t^2\,\tilde\ell_{\btheta}(t)}.
+$$
+
+**The weighted losses agree at each matched noise level.**<br>
+Next, compare the sampling rules: ancestral updates and Langevin dynamics.
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a><br><a href="https://arxiv.org/abs/2011.13456">Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
 
-<!--
-Narrative: the preceding time-sampling slide separates objective weights from the choice of training times. The earlier DDPM/NCSN comparison displays both Gaussian perturbations and their score-matching weights. This slide explains the apparent difference in the perturbations themselves: DDPM scales the clean signal, so divide by that known coefficient to obtain additive Gaussian noise. Define tilde x and sigma inside the equality before reusing them. The resulting conditional Gaussian has the familiar NCSN form. This closes the comparison of noise coordinates and prepares the next pair of ancestral and annealed-Langevin sampling slides. No SDE terminology or ODE theory is required here.
-Assume alpha_bar_t>0; a standard decreasing DDPM cumulative schedule gives increasing sigma_t=sqrt((1-alpha_bar_t)/alpha_bar_t). Tilde x_t is the rescaled DDPM state, not an additional noisy sample. Sigma_t here denotes its total additive-noise standard deviation; the sigma_t multiplying fresh randomness in the following ancestral update denotes a reverse-transition standard deviation and is a different quantity. Do not identify them. The next two Sampling blocks keep their established conventions.
-The comparison is between Gaussian conditional marginals at matched noise levels. It does not assert that the original DDPM and NCSN samplers, all joint laws, arbitrary noise schedules, or training weightings coincide. A score also transforms under rescaling; converting a full training objective would require the corresponding factors. That derivation is not part of this slide. In later continuous-time language, VP state rescaling produces an additive-noise/VE coordinate; in the later DDIM-to-PF-ODE derivation exactly these definitions are recalled. DDIM Section 4.3 equations (13)-(14) uses alpha_t for the course's cumulative alpha_bar_t.
--->
+<!-- Narrative: the previous slide connects time sampling to weights for a fixed
+perturbation. Now keep the DDPM forward sample and divide by its positive signal
+coefficient. The conditional Gaussian becomes additive noise with sigma_t squared
+=(1-alpha_bar_t)/alpha_bar_t. Conditional and marginal scores transform by the same
+chain-rule factor sqrt(alpha_bar_t); transform the model input and output accordingly.
+Thus tilde ell=alpha_bar_t ell, and the variance-weighted errors agree exactly.
+With matched training-time probabilities this identifies the DDPM simple objective
+with the displayed NCSN objective. It does not identify arbitrary schedules, ELBO
+weights, independently parameterized networks, optimization dynamics, or samplers.
+Sigma_t is additive forward noise here. The next slide compares samplers, using
+tilde beta_t for the DDPM reverse-step variance to avoid overloading sigma_t.
+No SDE/ODE terminology is needed. DDIM Section 4.3 uses alpha_t for our alpha_bar_t. -->
 
 ---
-clicks: 0
-id: outline-2
-section: "From DDPM to DDIM"
+clicks: 3
+id: ddpm-reverse-mean-in-score-form
+class: [theorems, derivation]
 ---
 
-# Outline
+# DDPM: Reverse Mean in Score Form
 
-<div class="course-outline">
+To compare DDPM and Langevin updates, express the DDPM mean in terms of the score.
 
-<div class="outline-item"><span>01</span><div>Diffusion Parameterizations</div></div>
-<div class="outline-item"><span>02</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
-<div class="outline-item current"><span>03</span><div>From DDPM to DDIM</div></div>
-<div class="outline-item"><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
+$$
+\bmu_{\btheta,t}(\bx_t)=\frac{\bx_t}{\sqrt{\alpha_t}}-\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar\alpha_t)}}\bepsilon_{\btheta,t}(\bx_t).
+$$
+
+<div v-click="1">
+
+$$
+\bmu_{\btheta,t}(\bx_t)
+=\frac{\bx_t}{\sqrt{\alpha_t}}
++\frac{1-\alpha_t}{\sqrt{\alpha_t}}\,
+\underbrace{\left(-\frac{\bepsilon_{\btheta,t}(\bx_t)}{\sqrt{1-\bar\alpha_t}}\right)}_{{\color{teal}\bs_{\btheta,t}(\bx_t)}}.
+$$
 
 </div>
+<div v-click="2">
+
+$$
+\bmu_{\btheta,t}(\bx_t)
+=\frac{\bx_t+\beta_t\,{\color{teal}\bs_{\btheta,t}(\bx_t)}}{\sqrt{\alpha_t}},
+\qquad \beta_t=1-\alpha_t.
+$$
+
+</div>
+<div class="block" v-click="3">
+
+## Sampling (Ancestral)
+
+$$
+\bx_{t-1}=\bmu_{\btheta,t}(\bx_t)+\sqrt{\tilde\beta_t}\,\bepsilon_t,
+\qquad \bepsilon_t\sim\cN(0,\bI),\quad t\ge2.
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J., et al. Denoising Diffusion Probabilistic Models, 2020</a><br><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2021</a></div>
+
+<!-- Narrative: the previous slide reconciles DDPM and NCSN training losses by
+rescaling coordinates. To compare sampling next, start with the exact model-mean
+formula already displayed in the DDPM Sampling block. First factor the negative
+noise prediction and identify it as the model score; only then use beta_t=1-alpha_t
+and collect the common denominator. Reveal each algebraic step separately.
+The reverse sampling rule and its fixed tilde-beta variance are unchanged;
+t>=2 leaves the final decoder step to the complete algorithm. The next slide
+substitutes this score-form mean into that same rule and compares it with Langevin.
+The derivation has its own slide so the following comparison retains full-width
+formulas and the approved font sizes. -->
 
 ---
 clicks: 2
 id: ddpm-vs-ncsn-sampling
-class: derivation
+class: theorems
 ---
 
 # DDPM vs NCSN: Sampling
@@ -958,43 +1016,67 @@ class: derivation
 
 ## Sampling (Ancestral)
 
-$$ {1-2|1-3|all} {at:1}
-\begin{aligned}
-\bx_T&\sim\cN(0,\bI)\\
-\bx_{t-1}&={\color{teal}\bmu_{\btheta,t}(\bx_t)}+\sigma_t\cdot\bepsilon\\
-&={\color{teal}\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}\cdot\bepsilon_{\btheta,t}(\bx_t)}+\sigma_t\cdot\bepsilon\\
-&=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot\bs_{\btheta,t}(\bx_t)+\sigma_t\cdot\bepsilon
-\end{aligned}
+1. Compute **one DDPM transition** from $t$ to $t-1$ ($t\ge2$).
+
+$$
+\bx_{t-1}
+=\bmu_{\btheta,t}(\bx_t)+\sqrt{\tilde\beta_t}\,\bepsilon_t
+=\frac{\bx_t+\beta_t\,{\color{teal}\bs_{\btheta,t}(\bx_t)}}{\sqrt{\alpha_t}}
++\sqrt{\tilde\beta_t}\,\bepsilon_t.
 $$
 
 </div>
+<div class="block" v-click="1">
 
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
+## Sampling (Annealed Langevin)
 
----
-clicks: 0
-id: ddpm-vs-ncsn-sampling-2
-class: theorems
----
-
-# DDPM vs NCSN: Sampling
-
-<div class="block">
-
-## Sampling (Annealed Langevin Dynamics)
-
-1. Sample $\bx_T^0\sim\cN(0,\sigma_T^2\,\bI)\approx q(\bx_T)$.
-2. Update $\bx_t^l$ via $L$ steps of Langevin dynamics at each noise level $\sigma_t$:
+1. Run **$L$ NCSN updates at fixed $\sigma_t$**, $l=1,\ldots,L$.
 
 $$
-\bx_t^l=\bx_t^{l-1}+\frac{\eta_t}{2}\cdot\bs_{\btheta,\sigma_t}(\bx_t^{l-1})+\sqrt{\eta_t}\cdot\bepsilon_t^l.
+\bx_t^l=\bx_t^{l-1}
++\frac{\eta_t}{2}\,{\color{teal}\bs_{\btheta,\sigma_t}(\bx_t^{l-1})}
++\sqrt{\eta_t}\,\bepsilon_t^l.
 $$
 
-3. Update $\bx_{t-1}^0:=\bx_t^L$ and proceed to the next noise level $\sigma_{t-1}$.
+<ol start="2"><li>
+
+Set $\bx_{t-1}^0:=\bx_t^L$ and lower the noise level ($t>1$).
+
+</li></ol>
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
+<div v-click="1">
+
+All step noises are independent $\cN(0,\bI)$ samples.
+
+</div>
+
+<div class="takeaway" v-click="2">
+
+**DDPM:** ancestral transitions between noise levels.<br>
+**NCSN:** Langevin MCMC at each fixed noise level.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J., et al. Denoising Diffusion Probabilistic Models, 2020</a><br><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2021</a></div>
+
+<!-- Narrative: the previous slide derives the DDPM mean in score form from the
+previously taught noise-prediction mean. Substitute that result into the unchanged
+reverse step, displaying the intermediate mu term explicitly. Compare representative
+updates from top to bottom:
+one DDPM reverse transition changes the noise level; L Langevin steps target the
+fixed-level noisy marginal before lowering its noise. Finite Langevin steps need not
+reach equilibrium. Counts are per level/transition, not a global speed ranking.
+No new reverse update is introduced. The reverse kernel
+and its fixed tilde-beta variance are unchanged; t>=2 leaves the final decoder step to that
+complete algorithm. Initializations are also retained there and in the preceding
+NCSN material. Each algorithm reveals as a whole block. The final takeaway contrasts
+ancestral draws from successive reverse conditionals with Langevin MCMC targeting
+one noisy marginal at a time. Both algorithms are Markovian; fixed-step, finite-L
+unadjusted Langevin only approximately samples the target and need not equilibrate.
+This prepares the comparison summary and the subsequent DDIM section without
+introducing SDEs. -->
 
 ---
 clicks: 2
@@ -1015,21 +1097,26 @@ Gaussian perturbations:
 
 - DDPM: $\bx_t=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon$;
 - NCSN: $\bx_t=\bx_0+\sigma_t\cdot\bepsilon$.
-- Rescaling the DDPM state by $1/\sqrt{\bar{\alpha}_t}$ gives the NCSN noise form.
+- Use $\tilde\bx_t=\bx_t/\sqrt{\bar\alpha_t}$ and $\sigma_t^2=(1-\bar\alpha_t)/\bar\alpha_t$ to recover NCSN.
 
 </li>
 <li v-click="1">
 
-Both use denoising score matching, with objective-specific noise-level weights.
+Scale target and model scores by $\sqrt{\bar\alpha_t}$ to obtain the rescaled DSM error:
+
+$$
+\tilde\ell_{\btheta}(t)=\bar\alpha_t\ell_{\btheta}(t),\qquad
+\sigma_t^2\tilde\ell_{\btheta}(t)=(1-\bar\alpha_t)\ell_{\btheta}(t).
+$$
 
 </li>
 <li v-click="2">
 
-The sampling procedures differ:
+Equivalent training objectives do not fix the sampling rule:
 
-- Ancestral sampling in DDPM;
-- Annealed Langevin dynamics for NCSN;
-- Hybrid approaches that combine both updates are possible.
+- DDPM: one reverse transition per noise level;
+- NCSN: $L$ Langevin updates at each fixed noise level;
+- A trained score model can support different samplers.
 
 </li>
 </ul>
@@ -1038,148 +1125,265 @@ The sampling procedures differ:
 <div class="source"><a href="https://arxiv.org/abs/2107.00630">Kingma D. et al. Variational Diffusion Models, 2021</a><br><a href="https://arxiv.org/abs/2011.13456">Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
 
 ---
-clicks: 2
+clicks: 0
+id: outline-2
+section: "From DDPM to DDIM"
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item"><span>01</span><div>Diffusion Parameterizations</div></div>
+<div class="outline-item"><span>02</span><div>Denoising Diffusion Probabilistic Model (DDPM)</div></div>
+<div class="outline-item current"><span>03</span><div>From DDPM to DDIM</div></div>
+<div class="outline-item"><span>04</span><div>Model Guidance<div class="outline-sub">Classifier Guidance<br>Classifier-Free Guidance</div></div></div>
+
+</div>
+
+---
+clicks: 3
 id: ddim-from-noise-to-clean-data
 class: theorems
 ---
 
-# DDIM: From Noise to Clean Data
+# DDIM: One Noise, a Whole Trajectory
 
-**Can we change the sampler without retraining the DDPM network?**
-
-**Keep fixed:** $q(\bx_t\mid\bx_0)$ at every noise level — the same noise-MSE training.
-
-**Change:** the joint $q(\bx_{1:T}\mid\bx_0)$ and its transitions, using a non-Markovian forward process.
-
-At each noise level, the forward process gives:
+The simple loss uses **one noise level at a time**, not a complete path:
 
 $$
-\bx_t=\sqrt{\bar{\alpha}_t}\,\bx_0+\sqrt{1-\bar{\alpha}_t}\,\bepsilon.
+\cL_{\text{simple}}=\bbE_{\bx_0,t,\bepsilon}\left[\left\|\bepsilon-\bepsilon_{\btheta,t}(\bx_t)\right\|^2\right].
 $$
 
-<div v-click="1">
+<div class="block" v-click="1">
 
-Predict the noise with $\bepsilon_{\btheta,t}(\bx_t)$ and solve for the clean data:
+## Choose one noise vector for the whole path
+
+Draw $\bepsilon\sim\cN(0,\bI)$ once and use it at **every** noise level:
 
 $$
-\hat{\bx}_0=\frac{\bx_t-\sqrt{1-\bar{\alpha}_t}\,\bepsilon_{\btheta,t}(\bx_t)}{\sqrt{\bar{\alpha}_t}}.
+\bx_t=\sqrt{\bar{\alpha}_t}\,\bx_0+\sqrt{1-\bar{\alpha}_t}\,\bepsilon,
+\qquad t=1,\ldots,T.
 $$
+
+Same Gaussian marginals $q(\bx_t\mid\bx_0)$; a different joint $q(\bx_{1:T}\mid\bx_0)$.
 
 </div>
 <div v-click="2">
 
-These two estimates exactly reconstruct the current state:
+**DDPM:** the next state uses only $\bx_t$ and fresh noise; its origin no longer matters.
+
+</div>
+<div class="takeaway" v-click="3">
+
+**Why non-Markovian?** Different clean-image/noise pairs can give the same $\bx_t$ but different next states. Knowing $\bx_0$ identifies the pair and fixes the continuation.
 
 $$
-\bx_t=\sqrt{\bar{\alpha}_t}\,\hat{\bx}_0
-+\sqrt{1-\bar{\alpha}_t}\,\bepsilon_{\btheta,t}(\bx_t).
+q(\bx_{t+1}\mid\bx_t,\bx_0)\ne q(\bx_{t+1}\mid\bx_t),\qquad 1\le t<T.
 $$
-
-**DDIM idea:** keep both estimates fixed for one transition and change only the weights, from $t$ to $s<t$.
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a></div>
 
 <!--
-Bridge from the preceding comparison: similar training objectives can be paired
-with different sampling procedures. Ask whether the existing DDPM predictor can
-also support a different sampler. This is an explanatory construction, not a new
-Training/Sampling overview; the author explicitly requested removing the repeated
-Training block and the general stochastic family.
+Narrative: the preceding DDPM/NCSN comparison separates training from sampling.
+Here we construct a different joint across noise levels without changing the
+single-level Gaussian training pairs. The next slide derives a deterministic
+step along this shared-noise path, first for known clean data and then using the
+trained DDPM predictor. The following algorithm repeats the resulting step.
 
-Start with the familiar forward marginal. Replacing the unknown noise by the
-network prediction and rearranging gives a clean-data estimate. The network is
-called once: it predicts noise, and the clean estimate follows algebraically.
-The hat denotes an estimate, not the true clean sample. This is the same identity
-as the preceding clean/noise conversion, using full coefficients.
-The course keeps alpha_t = 1 - beta_t; the DDIM paper's alpha_t is our alpha_bar_t.
+The loss expectation uses the already taught independent samples x_0~p_data,
+t~Uniform{1,...,T}, epsilon~N(0,I); x_t is the Gaussian perturbation displayed
+below. Each loss evaluation uses one noise level. It never compares adjacent
+states of a sampled forward path, so changing their coupling leaves this simple
+objective unchanged. The displayed expectation is the population objective;
+the earlier Training block gives its per-example SGD estimator.
 
-Substituting the clean estimate back exactly reconstructs x_t, even with an
-imperfect predictor. The last sentence introduces the DDIM choice: keep the two
-estimates fixed within one transition and change only their weights to the next
-noise level. This new rule is not an algebraic consequence of the marginal alone.
-Its formal justification uses non-Markovian forward joints with the same Gaussian
-marginals q(x_t | x_0), so the same simple
-noise-MSE training objective can be reused. This does not mean that every sampler
-is valid, or that all weighted ELBOs and finite-capacity optima coincide. The
-paper's variational theorem assumes positive transition noise; deterministic
-DDIM is the zero-noise limit. The main slide now states the distinction between
-fixed marginals and changed paths; the full variational derivation remains here.
-An intuitive zero-noise forward construction uses the same standard Gaussian
-epsilon for every level of a given clean example. Every q(x_t | x_0) stays the
-same, while the joint path changes. Its transitions can depend on x_0 in addition
-to the adjacent state. The generative sampler replaces unknown clean data by an
-estimate and recomputes the estimates each step; it is itself a Markov map.
-This argument motivates the sampler, not exact finite-step marginal preservation
-under a learned predictor. Even an optimal denoiser does not make arbitrary
-coarse finite-step updates exact.
+Draw x_0 from the data and one independent standard Gaussian epsilon. The same
+epsilon is used at every t for this entire forward path. In the original DDPM
+chain, the accumulated normalized noise is correlated across levels but changes
+as new independent step noises are added. The marginal formula alone never said
+that DDPM uses a single common epsilon along a realized trajectory.
+
+For 1 <= t < T, solve epsilon=(x_t-sqrt(alpha_bar_t)x_0)/sqrt(1-alpha_bar_t)
+and substitute into x_{t+1}. The resulting deterministic transition retains a
+nonzero coefficient of x_0 under a strictly decreasing alpha_bar schedule.
+Thus in the full process the current noisy state does not screen off the initial
+clean state. Intuitively, two different clean-image/noise pairs can meet at the
+same noisy state yet require different continuations. Knowing x_0 selects the
+pair, while x_t alone does not. By contrast, a DDPM forward step only needs the
+current state and fresh independent noise, not knowledge of how it arrived there.
+The displayed inequality describes ordinary nondegenerate data;
+conditional on a fixed x_0 the path is deterministic after the first noise draw.
+Dependence of a reverse posterior on x_0 would not by itself prove non-Markovianity:
+the original DDPM posterior also conditions on x_0. We explicitly use a forward step.
+
+The common-noise construction is the zero-transition-noise DDIM limit. The paper's
+variational theorem assumes positive transition noise. Same simple noise-MSE
+training does not equate all weighted ELBOs or finite-capacity optima. The course
+keeps alpha_t=1-beta_t; the paper's alpha_t is our cumulative alpha_bar_t.
 -->
 
 ---
-clicks: 2
-id: ddim-same-marginals-different-transitions
-class: theorems
+clicks: 3
+id: ddim-vs-ddpm-reverse-step
+class: [theorems, derivation]
 ---
 
-# DDIM: Same Marginals, Different Transitions
+# DDIM: Moving Along the Shared-Noise Path
 
-Let $X\sim\cN(0,4)$ and $Z\sim\cN(0,1)$ be independent. Target: $Y\sim\cN(0,1)$.
-
-<div class="columns">
-<div class="block" style="margin:0">
-
-## Stochastic transition
+Two noise levels $s<t$, the **same clean image and noise**:
 
 $$
-Y=\frac{X}{4}+\frac{\sqrt{3}}{2}Z.
+\begin{aligned}
+\bx_t&=\sqrt{\bar\alpha_t}\,{\color{teal}\bx_0}
++\sqrt{1-\bar\alpha_t}\,{\color{#8854c0}\bepsilon},\\
+\bx_s&=\sqrt{\bar\alpha_s}\,{\color{teal}\bx_0}
++\sqrt{1-\bar\alpha_s}\,{\color{#8854c0}\bepsilon}.
+\end{aligned}
 $$
 
-Variance: $\displaystyle\frac{4}{16}+\frac{3}{4}=1$.
+<div v-click="1">
+
+**If $\bx_0$ were known:** eliminate $\bepsilon$ using the current $\bx_t$.
+
+$$
+\bx_s=\sqrt{\bar\alpha_s}\,\bx_0
++\sqrt{\frac{1-\bar\alpha_s}{1-\bar\alpha_t}}
+\left(\bx_t-\sqrt{\bar\alpha_t}\,\bx_0\right).
+$$
+
+Given $\bx_t$ and $\bx_0$, $\bx_s$ is fixed: **no new noise is needed**.
 
 </div>
-<div class="block" style="margin:0" v-click="1">
-
-## Deterministic transition
-
-$$
-Y=\frac{X}{2}.\vphantom{\frac{\sqrt{3}}{2}}
-$$
-
-Variance: $\displaystyle\frac{4}{4}=1$.
-
-</div>
-</div>
-
 <div v-click="2">
 
-**Both give the same distribution of $Y$, but different joint distributions of $(X,Y)$.**
+**During generation:** estimate the unknown pair with the trained DDPM predictor.
 
-The deterministic transition gets all its randomness from $X$.
+$$
+\hat{\bepsilon}=\bepsilon_{\btheta,t}(\bx_t),\qquad
+\hat{\bx}_0=\frac{\bx_t-\sqrt{1-\bar\alpha_t}\,\hat{\bepsilon}}{\sqrt{\bar\alpha_t}}.
+$$
 
-Simply deleting $Z$ from the first rule gives $Y=X/4\sim\cN(0,1/4)$: the wrong variance.
+</div>
+<div v-click="3">
+
+**Substitute the estimates** into the shared-noise path:
+
+$$
+\boxed{\bx_s=\sqrt{\bar\alpha_s}\,\hat{\bx}_0
++\sqrt{1-\bar\alpha_s}\,\hat{\bepsilon}.}
+$$
+
+The noise schedule is unchanged; the learned sampling step is approximate.
 
 </div>
 
-<div class="source">Illustrative Gaussian example.</div>
+<div class="source"><a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a></div>
 
 <!--
-Original explanatory example, not a formula copied from the DDIM paper.
-Both outputs are zero-mean Gaussian because they are linear combinations of
-independent Gaussians; the displayed variances therefore identify their laws.
-In the stochastic case, conditional on X=x, Y has mean x/4 and variance 3/4.
-In the deterministic case, conditional on X=x, Y=x/2 with zero conditional
-variance. Thus the two transitions have exactly the same chosen input/output
-marginals but different joints. This is a coupling illustration, not a literal
-DDPM/DDIM pair or a proof that finite DDIM steps preserve exact marginals.
+Narrative: the previous slide constructs a whole path from x_0 and one epsilon.
+Here we derive how to move to a less noisy state on that path. The next slide
+keeps the existing complete algorithm, recomputing both estimates at each step.
 
-The preceding slide concerns marginals conditioned on clean data x_0. In DDIM,
-these are kept fixed while changing the joint over noise levels. This toy strips
-away that conditioning only to make the distinction between marginal laws and
-transitions transparent. Removing the fresh Gaussian term from a transition
-without changing its deterministic term generally does not preserve the target
-law, as the last sentence demonstrates. Return to the explicit DDIM algorithm
-on the next slide: its initial random latent supplies the output variability.
+Start with two levels from the preceding construction, using the same true x_0
+and epsilon in both rows; the matching colors emphasize that coupling. Let
+0<=s<t<=T and retain the original positive noise schedule, with alpha_bar_0=1.
+If x_0 were known, solve the first row for
+epsilon=(x_t-sqrt(alpha_bar_t)x_0)/sqrt(1-alpha_bar_t), then substitute it into
+the second row. This gives the displayed exact deterministic transition for
+the chosen common-noise construction. Its determinism follows from that
+construction, not from deleting a term in the old ancestral update.
+
+During generation x_0 is unknown. The DDPM noise predictor and the familiar
+clean-data conversion supply epsilon_hat and xhat_0. Substituting xhat_0 into the
+known-clean transition makes the residual x_t-sqrt(alpha_bar_t)xhat_0 equal to
+sqrt(1-alpha_bar_t)epsilon_hat. The denominator cancels, yielding the boxed
+DDIM step. Call the predictor once and keep these estimates fixed within this
+transition only. Recompute them at the next state, as in the unchanged algorithm.
+
+The connection to DDPM is the same single-level training distributions, the same
+noise-prediction objective and the same trained network. For intermediate levels,
+the original DDPM conditional remains stochastic even if x_t and x_0 are known;
+our shared-noise construction makes it deterministic. Neither beta_t nor the
+schedule alpha_bar_t is set to zero. We changed the coupling between levels.
+
+Replacing the true pair by predictions gives an approximate generative sampler;
+even an optimal denoiser does not make arbitrary finite-step DDIM updates exact.
+It does not take the mean of each original DDPM reverse conditional. The forward
+construction is non-Markovian, while the learned sampler remains a Markov map.
+The general stochastic family and its interpolation parameter remain out of scope.
+-->
+
+---
+clicks: 0
+id: ddim-shared-paths-demo
+class: interactive-slide
+---
+
+# DDIM: Shared Paths and Deterministic Steps
+
+<DdimPathsDemo />
+
+<div class="source">Original two-point illustration. <a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a></div>
+
+<!--
+Narrative: the preceding slide derives a single deterministic transition from
+a shared-noise path and estimated clean/noise pair. This diagram connects the
+non-Markovian forward construction to that estimated local transition in one
+coordinate system. The following unchanged algorithm repeats the illustrated step.
+
+The scalar data distribution puts equal mass at x_0=-1 and x_0=+1. Define
+u=1-alpha_bar, so the forward noising marginal is
+x=sqrt(1-u)x_0+sqrt(u)epsilon with epsilon~N(0,1). The default observation is
+x=.35 at u=.5 and is fixed: changing it was not useful for this illustration.
+It is an intermediate noisy observation, not a full sampling run initialized
+from the terminal prior. Mode changes restart the explanation at this same
+observation; Reset restores unknown history and forward mode. The active stage
+and history selection persist when leaving and returning. Buttons also work
+with the pen enabled.
+
+Forward mode: conditioning on the observed x leaves two possible clean/noise
+pairs. Their Gaussian Bayes weights are (1-m)/2 and (1+m)/2, where
+m=tanh(sqrt(1-u)x/u). Both shared-noise paths pass through the same current point.
+Selecting a known clean origin only reveals information, keeping that observation
+fixed. The conditional distribution at the future u=.8 changes from the weighted
+pair of point masses to one point mass. Mere branching alone would not establish
+non-Markovianity; it is dependence on the extra history at fixed current state
+that matters. These are conditional paths, not samples claiming to illustrate
+the whole marginal distribution. The Gaussian conditional marginals q(x_u|x_0)
+match DDPM at each u; the unconditional marginal is a two-component mixture.
+
+DDIM mode explains ONE transition, separating five stages that were previously
+conflated by a single Step click:
+1. Predict noise and clean data from the current observation. The analytic
+   population MSE clean prediction is m, and predicted noise is the forward
+   residual divided by sqrt(u). At x=.35,u=.5 this gives xhat_0=.458156 and
+   epsilonhat=.036819. This is an estimate, not knowledge of the true origin.
+   The two possible true histories are faint; the teal estimated origin lies
+   between their clean endpoints. The notation epsilon_theta denotes the role
+   of the denoiser; this toy computes the optimal predictor analytically.
+2. Hold that estimated pair fixed and draw its shared-noise path through the
+   observation. The true candidate paths are removed to focus on this one curve.
+3. Choose the fixed lower level u_s=.1 and preview the unique point where that
+   vertical line meets the estimated path. Its value is x_s=.446288. Changing
+   the signal/noise weights constructs this point without a new random draw.
+4. Move the current orange point to x_s. The cached pair and entire dashed
+   guide remain unchanged during the move; this is the key visual invariant.
+5. Only now recompute from x_s,u_s. The new pair is approximately
+   (xhat_0,epsilonhat)=(.999580,-1.587453). The current point stays fixed, while
+   the clean estimate and guide change. Draw this new guide only toward lower
+   noise levels. The dark segment records the completed transition. The next
+   algorithm repeats these operations; this illustration does not run a loop.
+
+Back reverses explanation stages; Replay step returns to the initial estimate.
+No history selection from Forward mode enters the DDIM prediction. The toy
+predictor is exact, but a finite DDIM sampler is approximate; no exact finite-step
+marginal-preservation claim is made. PDF keeps unknown forward history and the
+completed single transition before recomputation, together with its fixed pair,
+numerical update and the five-stage explanation in the takeaway.
+
 -->
 
 ---
@@ -1214,22 +1418,22 @@ $$
 </div>
 <div v-click="1">
 
-**Deterministic limit:** fresh transition noise is zero ($\sigma_{t\to s}=0$); randomness comes from $\bx_T$.
+**Deterministic steps:** randomness comes from $\bx_T$; recompute both estimates at every step.
 
-**Original training schedule:** $s<t\Rightarrow\bar{\alpha}_s>\bar{\alpha}_t$: more signal, less noise.
+**Markov sampler:** the next state depends only on the current $\bx_t$ and the chosen times.
 
 </div>
 <div v-click="2">
 
-**Fewer steps:** choose $K\ll T$; $K$ steps require $K$ network evaluations and no retraining.
+**Fewer steps:** choose $K\ll T$ on the original schedule: $K$ network evaluations, no retraining.
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a></div>
 
 <!--
-The clean-estimate slide motivates the DDIM choice, and the Gaussian example
-illustrates why fixed marginal laws allow different transitions. Here the full
+The preceding comparison shows how both coefficients and transition noise change.
+Here the full
 sampling loop makes the deterministic rule executable. At iteration k, t=t_k is the current level and s=t_{k-1} is the next
 level. The three displayed assignments are ordered: call the noise predictor
 once, use its cached output epsilon_hat to compute xhat_0, then compute x_s.
@@ -1247,13 +1451,6 @@ Think of an ensemble of initial noise samples: deterministic motion can reshape
 their distribution without adding new random kicks. DDIM chooses different paths
 from stochastic DDPM; it does not reproduce each DDPM reverse conditional by its
 mean. A learned denoiser and a finite grid give an approximate generative model.
-
-The visible sigma_{t->s} denotes the standard deviation of fresh transition noise,
-not the forward marginal noise level sqrt(1-alpha_bar_s). In the general family,
-x_s = sqrt(alpha_bar_s) xhat_0
-    + sqrt(1-alpha_bar_s-sigma_{t->s}^2) epsilon_hat + sigma_{t->s} z.
-Setting sigma=0 gives exactly the displayed deterministic update. The stochastic
-family's interpolation parameter and variance formula remain out of scope.
 
 Indices decrease along the chosen grid. Each selected t is an original training
 noise level. alpha_bar_t = product_{i=1}^t (1-beta_i), with alpha_bar_0=1. Keep the
@@ -1296,40 +1493,141 @@ section: "Model Guidance"
 </div>
 
 ---
-clicks: 0
+clicks: 2
 id: guidance
 class: theorems
 ---
 
 # Guidance
 
-- Up to now, we have focused on **unconditional** generative models $\pt(\bx)$.
-- In practice, most generative models are **conditional** (in the diffusion era it is called guided): $\pt(\bx|\by)$.
-- Here, $\by$ might denote a class label or **text** (as in text-to-image tasks).
+<ul>
+<li>
 
-<div class="columns">
-<img src="/figs/shedevrum1.jpg" alt="Shedevrum text-conditioned image example 1" style="width:100%;height:280px;object-fit:contain" />
-<img src="/figs/shedevrum2.jpg" alt="Shedevrum text-conditioned image example 2" style="width:100%;height:280px;object-fit:contain" />
+**Unconditional generation:** $\pt(\bx)$. **Conditional generation:** $\pt(\bx|\by)$.
+
+</li>
+<li v-click="1">
+
+The condition $\by$ can be a class label, a text prompt, or reference images.
+
+</li>
+<li v-click="2">
+
+**Guidance** modifies sampling to strengthen the influence of $\by$.
+
+</li>
+</ul>
+
+<div class="columns" v-click="1" style="margin-top:18px;text-align:center">
+<div>
+<img src="/figs/flux2-cat-watermelon.png" alt="FLUX.2 generated studio image of a black cat behind a watermelon slice" style="width:100%;height:260px;object-fit:contain" />
+
+**FLUX.2** · Text prompt (abridged)<br>
+Black cat behind a watermelon.
+
+</div>
+<div>
+<img src="/figs/flux2-open-sign.png" alt="FLUX.2 generated sushi restaurant entrance with a red OPEN neon sign above the door" style="width:100%;height:260px;object-fit:contain" />
+
+**FLUX.2** · Text prompt (abridged)<br>
+Sushi restaurant with a red "OPEN" sign.
+
+</div>
 </div>
 
+<div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022.</a><br><a href="https://docs.bfl.ai/guides/prompting_guide_flux2">Black Forest Labs. FLUX.2 Prompting Guide. Published model outputs; text conditions abridged.</a></div>
+
+<!--
+Narrative: after changing the sampling rule with DDIM, introduce control through
+conditions and distinguish it from guidance. The next slide expands the range of
+conditional generation tasks. Guidance is a sampling intervention, not a synonym
+for a conditional model. Its strength can trade adherence/fidelity against
+diversity, as developed later in the classifier and classifier-free sections.
+
+The two unmodified FLUX.2 examples come from the official prompting guide. Their
+prompts differ; they do not isolate guidance strength or measure a quality gain.
+The guide does not specify each example's variant, seed or guidance scale.
+The captions paraphrase the conditions rather than quote the complete prompts.
+-->
+
 ---
-clicks: 0
+clicks: 3
 id: conditional-models
 class: theorems
 ---
 
-# Conditional Models
+# Conditional Generation
 
-In practice, we're typically interested in learning conditional models (sampling from conditional distribution $\pd(\bx|\by)$).
+Given a condition $\by$, generate $\bx\sim\pt(\bx|\by)$ with model parameters $\btheta$.
 
-- $\by=\emptyset$, $\bx$ = image $\quad\Rightarrow\quad$ unconditional image model
-- $\by$ = class label, $\bx$ = image $\quad\Rightarrow\quad$ class-conditional image model
-- $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow\quad$ text-to-image model
-- $\by$ = image, $\bx$ = image $\quad\Rightarrow\quad$ image-to-image model
-- $\by$ = image, $\bx$ = text $\quad\Rightarrow\quad$ image-to-text (image captioning) model
-- $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation)
-- $\by$ = sound, $\bx$ = text $\quad\Rightarrow\quad$ speech-to-text (automatic speech recognition) model
-- $\by$ = text, $\bx$ = sound $\quad\Rightarrow\quad$ text-to-speech model
+<table class="conditional-task-table">
+<colgroup><col style="width:32%"><col style="width:18%"><col style="width:50%"></colgroup>
+<thead>
+<tr>
+<th>
+
+Condition $\by$
+
+</th>
+<th>
+
+Generated $\bx$
+
+</th>
+<th>Tasks</th>
+</tr>
+</thead>
+<tbody v-click="1" class="image-tasks">
+<tr><td><p>Class label or text prompt</p></td><td><p>Image</p></td><td><p>Class-conditional / text-to-image</p></td></tr>
+<tr><td><p>Image (+ mask / instruction)</p></td><td><p>Image</p></td><td><p>Editing, inpainting, super-resolution</p></td></tr>
+<tr><td><p>Text (+ reference image)</p></td><td><p>Video</p></td><td><p>Text-to-video / image-to-video</p></td></tr>
+</tbody>
+<tbody v-click="2">
+<tr><td><p>Prompt + context</p></td><td><p>Text / code</p></td><td><p>Chat, translation, summarization, coding</p></td></tr>
+<tr><td><p>Image (+ question)</p></td><td><p>Text</p></td><td><p>Captioning / visual question answering</p></td></tr>
+<tr><td><p>Speech</p></td><td><p>Text</p></td><td><p>Speech recognition</p></td></tr>
+</tbody>
+<tbody v-click="3">
+<tr><td><p>Text</p></td><td><p>Audio</p></td><td><p>Speech synthesis, music, sound effects</p></td></tr>
+</tbody>
+</table>
+
+<div class="source"><a href="https://arxiv.org/abs/2203.02155">Ouyang L. et al. InstructGPT, 2022.</a> · <a href="https://arxiv.org/abs/2107.03374">Chen M. et al. Codex, 2021.</a> · <a href="https://arxiv.org/abs/2301.12597">Li J. et al. BLIP-2, 2023.</a> · <a href="https://arxiv.org/abs/2301.12503">Liu H. et al. AudioLDM, 2023.</a><br><a href="https://arxiv.org/abs/2211.09800">Brooks T. et al. InstructPix2Pix, 2023.</a> · <a href="https://arxiv.org/abs/2112.10752">Rombach R. et al. Latent Diffusion, 2022.</a> · <a href="https://arxiv.org/abs/2503.20314">Wan Team. Wan, 2025.</a></div>
+
+<style>
+.conditional-task-table { margin-top: 24px; table-layout: fixed; }
+.conditional-task-table th, .conditional-task-table td { padding-left: 20px; padding-right: 20px; }
+.slidev-layout .conditional-task-table tr { border: 0; }
+.slidev-layout .conditional-task-table td { border-bottom: 0; }
+.conditional-task-table p { margin: 0; }
+.conditional-task-table .image-tasks { background: #eaf5f4; }
+.conditional-task-table .image-tasks td:nth-child(2) { color: var(--teal); font-weight: 650; }
+.conditional-task-table tbody tr:first-child td { padding-top: 16px; }
+.conditional-task-table tbody tr:last-child td { padding-bottom: 16px; }
+.conditional-task-table tbody + tbody tr:first-child td { border-top: 1px solid #dce5eb; }
+</style>
+
+<!--
+Synchronized with the corresponding slide in Lectures 1 and 8. One overview
+slide groups applications with the same input/output types, retaining the
+practical examples without listing every task separately. The unconditional
+case has already been introduced. Parameters are named here because this is
+their first use in the introductory lecture.
+
+For image editing, the extra condition can be an instruction. Inpainting uses
+observed image pixels and their mask. Super-resolution uses a low-resolution
+input image; no extra text or mask is required. The optional reference image
+adds a visual condition to video generation. Prompt context can contain a
+conversation, document, source-language text, or code. A question is optional
+for captioning and is supplied for visual question answering. Text specifies
+words to speak in speech synthesis or describes music/sounds in text-to-audio.
+
+These are representative applications, not an exhaustive taxonomy or a claim
+about one universal model. Lecture 1 next returns to how distributions are
+learned; Lecture 8 develops label and text conditioning through image examples
+before deriving guidance. Reveal visual outputs, text outputs, then audio.
+-->
+
 
 ---
 clicks: 0
@@ -1404,7 +1702,7 @@ class: theorems
 
 <div class="block">
 
-## How to make a guided model?
+## How to make a conditional model?
 
 Instead of sampling from $\pt(\bx)$, we sample from $\pt(\bx|\by)$.
 
@@ -1472,127 +1770,90 @@ class: theorems
 
 <div class="block">
 
-## DDPM Sampling
+## Sampling (Ancestral)
 
-1. Sample $\bx_T\sim\cN(0,\bI)$.
-2. Denoise the image (unconditional generation):
+1. Sample fresh $\bepsilon_t\sim\cN(0,\bI)$ and update ($t\ge2$).
 
-$$ {1|all} {at:1}
-\begin{aligned}
-\bx_{t-1}&=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{teal}\bs_{\btheta,t}(\bx_t)}+\sigma_t\cdot\bepsilon\\
-&=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{teal}\nabla_{\bx_t}\log\pt(\bx_t)}+\sigma_t\cdot\bepsilon
-\end{aligned}
+$$
+\bx_{t-1}=\frac{\bx_t+\beta_t{\color{teal}\bs_{\btheta,t}(\bx_t)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t.
+$$
+
+</div>
+<div v-click="1">
+
+The noise predictor defines an **estimate** of the noisy-data score:
+
+$$
+{\color{teal}\bs_{\btheta,t}(\bx_t)}=-\frac{\bepsilon_{\btheta,t}(\bx_t)}{\sqrt{1-\bar\alpha_t}}
+\approx\nabla_{\bx_t}\log q(\bx_t).
 $$
 
 </div>
 <div class="block" v-click="2">
 
-## Guided Generation
+## Conditional Generation
+
+Use $\bs_{\btheta,t}(\bx_t,\by)\approx\nabla_{\bx_t}\log q(\bx_t|\by)$ in the same step:
 
 $$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot\nabla_{\bx_t}\log\pt(\bx_t|{\color{olive}\by})+\sigma_t\cdot\bepsilon
+\bx_{t-1}=\frac{\bx_t+\beta_t{\color{olive}\bs_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t.
 $$
 
 </div>
 <div v-click="3">
 
-What is the link between $\nabla_{\bx_t}\log\pt(\bx_t)$ and $\nabla_{\bx_t}\log\pt(\bx_t|{\color{olive}\by})$?
+How can we relate $q(\bx_t)$ and $q(\bx_t|\by)$?
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a></div>
 
 ---
-clicks: 3
+clicks: 4
 id: classifier-guidance-guided-score-function
 class: theorems
 ---
 
 # Classifier Guidance: Guided Score Function
 
-<div class="block">
-
-## Guided Generation
+For now, restrict $\by$ to **class labels**. By Bayes' theorem,
 
 $$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{olive}\nabla_{\bx_t}\log\pt(\bx_t|\by)}+\sigma_t\cdot\bepsilon
+q(\bx_t|\by)=\frac{q(\bx_t)q(\by|\bx_t)}{q(\by)}.
 $$
 
-</div>
-<div class="block" v-click="1">
-
-## Guided Generation
-
-$$ {1|1-2|all} {at:2}
-\begin{aligned}
-{\color{olive}\nabla_{\bx_t}\log\pt(\bx_t|\by)}&=\nabla_{\bx_t}\log\left(\frac{\pt(\bx_t)p(\by|\bx_t)}{p(\by)}\right)\\
-&={\color{#8854c0}\nabla_{\bx_t}\log\pt(\bx_t)}+\nabla_{\bx_t}\log p(\by|\bx_t)\\
-&={\color{#8854c0}\bs_{\btheta,t}(\bx_t)}+{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}={\color{olive}\bs_{\btheta,t}(\bx_t,\by)}
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a></div>
-
----
-clicks: 0
-id: classifier-guidance-which-way-does-it-push
-class: interactive-slide
----
-
-<script setup>
-import GuidanceGeometryDemo from './components/GuidanceGeometryDemo.vue'
-</script>
-
-# Classifier Guidance: Which Way Does It Push?
-
-Four Gaussian components, two classes, one fixed noise level.
-
-<GuidanceGeometryDemo />
-
-<div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a></div>
-
-<!-- Original analytic toy example. Exact analytic mixture scores. The classifier contribution is gamma times the log-posterior gradient. All three arrows share one display scale, fixed at the current observation across gamma in [0, 7] and both classes. Drag bounds keep vectors in the plot. No particle dynamics or trained network is simulated. PDF fixes the observation, class B and gamma = 3. -->
-
----
-clicks: 3
-id: classifier-guidance-guidance-scale
-class: theorems
----
-
-# Classifier Guidance: Guidance Scale
-
-<div class="block">
-
-## Guided Score Function
-
-$$
-{\color{olive}\bs_{\btheta,t}(\bx_t,\by)}=\bs_{\btheta,t}(\bx_t)+\nabla_{\bx_t}\log p(\by|\bx_t)
-$$
-
-</div>
 <div v-click="1">
 
-- Let us assume $\by$ is a class label.
-- $p(\by|\bx_t)$ is a classifier for noisy inputs.
-- $p(\by|\bx_t)$ is responsible for model guidance.
+$$
+\nabla_{\bx_t}\log q(\bx_t|\by)
+=\nabla_{\bx_t}\log q(\bx_t)+\nabla_{\bx_t}\log q(\by|\bx_t).
+$$
 
 </div>
 <div class="block" v-click="2">
 
+## Classifier-Guided Estimate
+
+Train a noisy-data classifier $p(\by|\bx_t)\approx q(\by|\bx_t)$ at every noise level, providing $t$ as an input.
+
+$$
+{\color{olive}\bs_{\btheta,t}(\bx_t,\by)}
+:=\bs_{\btheta,t}(\bx_t)+{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}
+\approx\nabla_{\bx_t}\log q(\bx_t|\by).
+$$
+
+</div>
+<div class="block" v-click="3">
+
 ## Guidance Scale
 
-It is a natural idea to scale up the contribution of the guidance
-
 $$
-{\color{#8854c0}\bs^\gamma_{\btheta,t}(\bx_t,\by)}=\bs_{\btheta,t}(\bx_t)+{\color{teal}\gamma}\cdot\nabla_{\bx_t}\log p(\by|\bx_t)
+{\color{#8854c0}\bs^\gamma_{\btheta,t}(\bx_t,\by)}:=\bs_{\btheta,t}(\bx_t)+{\color{teal}\gamma}\cdot\nabla_{\bx_t}\log p(\by|\bx_t).
 $$
 
-<div v-click="3">
+<div v-click="4">
 
-- The <span style="color:teal">guidance scale $\gamma$</span> adjusts the strength of classifier guidance.
-- ${\color{#8854c0}\bs^\gamma_{\btheta,t}(\bx_t,\by)}$ is not the true guided score function ${\color{olive}\bs_{\btheta,t}(\bx_t,\by)}$.
+$\gamma$ controls guidance strength: $\gamma=0$ gives the unconditional estimate; $\gamma=1$ gives the conditional estimate.
 
 </div>
 </div>
@@ -1609,35 +1870,33 @@ class: theorems
 
 <div class="block">
 
-## Scaled Guided Score Function
+## Scaled Guided Score Estimate
 
 $$
-{\color{#8854c0}\bs^\gamma_{\btheta,t}(\bx_t,\by)}=\bs_{\btheta,t}(\bx_t)+{\color{teal}\gamma}\cdot\nabla_{\bx_t}\log p(\by|\bx_t)
+{\color{#8854c0}\bs^\gamma_{\btheta,t}(\bx_t,\by)}
+=\bs_{\btheta,t}(\bx_t)+{\color{teal}\gamma}\,\nabla_{\bx_t}\log p(\by|\bx_t).
 $$
 
 </div>
 <div class="block" v-click="1">
 
-## Scaled Conditional Distribution at a Fixed Noise Level
+## Exact Scores at a Fixed Noise Level
 
 $$ {1|1-2|all} {at:2}
 \begin{aligned}
-{\color{#8854c0}\nabla_{\bx_t}^\gamma\log\pt(\bx_t|\by)}&=\nabla_{\bx_t}\log\pt(\bx_t)+{\color{teal}\gamma}\cdot\nabla_{\bx_t}\log p(\by|\bx_t)\\
-&=\nabla_{\bx_t}\log\pt(\bx_t)+\nabla_{\bx_t}\log p(\by|\bx_t)^{{\color{teal}\gamma}}\\
-&=\nabla_{\bx_t}\log\left(\frac{\pt(\bx_t)p(\by|\bx_t)^\gamma}{Z}\right)
+{\color{#8854c0}\bs_t^\gamma(\bx_t,\by)}
+&:=\nabla_{\bx_t}\log q(\bx_t)+{\color{teal}\gamma}\,\nabla_{\bx_t}\log q(\by|\bx_t)\\
+&=\nabla_{\bx_t}\log q_\gamma(\bx_t|\by),\\
+q_\gamma(\bx_t|\by)&:=\frac{q(\bx_t)q(\by|\bx_t)^\gamma}{Z_t(\by,\gamma)}.
 \end{aligned}
 $$
 
 </div>
 <div v-click="4">
 
-**Note:** Increasing $\gamma$ sharpens $p(\by|\bx_t)$, increasing the contrast
+Larger $\gamma$ favors samples with higher class probability; very large values can reduce diversity and introduce artifacts.
 
-$$
-\hat p(\by|\bx_t)\propto p(\by|\bx_t)^\gamma.
-$$
-
-Very large $\gamma$ can reduce diversity and introduce artifacts.
+**This fixed-level identity does not specify the final distribution of the guided sampler.**
 
 </div>
 
@@ -1656,14 +1915,14 @@ import GuidanceDensityDemo from './components/GuidanceDensityDemo.vue'
 # Guidance Scale Changes the Density
 
 $$
-q_\gamma(x_t|y)\propto q(x_t)\,p(y|x_t)^\gamma\qquad\text{at a fixed noise level.}
+q_\gamma(x_t|y)\propto q(x_t)\,q(y|x_t)^\gamma\qquad\text{at a fixed noise level.}
 $$
 
 <GuidanceDensityDemo />
 
 <div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a></div>
 
-<!-- Original analytic toy example. This is a one-dimensional version of the toy, with the same Gaussian component x-means and weights as the preceding geometry. Its classifier uses only the scalar observation. Tilting this marginal is not claimed to equal marginalizing the guided two-dimensional distribution. The normalizing constant is computed numerically on [-5, 5]. This fixed-level identity does not identify the final distribution of the complete guided sampler. PDF shows gamma = 0, 1, 3, 7 for class B. -->
+<!-- Original analytic one-dimensional Gaussian-mixture example. Its classifier uses only the scalar observation. The normalizing constant is computed numerically on [-5, 5]. This fixed-level identity does not identify the final distribution of the complete guided sampler. PDF shows gamma = 0, 1, 3, 7 for class B. -->
 
 ---
 clicks: 1
@@ -1686,11 +1945,20 @@ class: theorems
 ## Sampling (Guided)
 
 1. Sample $\bx_T\sim\cN(0,\bI)$.
-2. Denoise with the scaled guided score function:
+2. For $t=T,\ldots,2$, compute the guided mean and sample the reverse step:
 
 $$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}+\sigma_t\cdot\bepsilon.
+\begin{aligned}
+\bmu^\gamma_{\btheta,t}(\bx_t,\by)&=\frac{\bx_t+\beta_t\,{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}},\\
+\bx_{t-1}&=\bmu^\gamma_{\btheta,t}(\bx_t,\by)+\sqrt{\tilde\beta_t}\,\bepsilon_t,\qquad\bepsilon_t\sim\cN(0,\bI).
+\end{aligned}
 $$
+
+<ol start="3"><li>
+
+Return the guided decoder mean $\hat\bx_0=\bmu^\gamma_{\btheta,1}(\bx_1,\by)$.
+
+</li></ol>
 
 </div>
 
@@ -1714,57 +1982,45 @@ section: "Classifier-Free Guidance"
 </div>
 
 ---
-clicks: 3
+clicks: 6
 id: classifier-free-guidance
 class: theorems
 ---
 
 # Classifier-Free Guidance
 
-- The previous approach relies on training an additional classifier $p(\by|\bx_t)$ for noisy images.
-- We now introduce a method to sidestep this requirement.
+We want guidance without training an additional noisy-data classifier $p(\by|\bx_t)$.
 
-<div v-click="1">
+<div class="block" v-click="1">
 
-$$
-\nabla_{\bx_t}^\gamma\log\pt(\bx_t|\by)=\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}
-$$
+## Bayes Theorem
 
-</div>
-<div class="block" v-click="2">
-
-## Bayes theorem
-
-$$ {1|all} {at:3}
+$$ {1|all} {at:2}
 \begin{aligned}
-{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}&=\nabla_{\bx_t}\log\left(\frac{\pt(\bx_t|\by)p(\by)}{\pt(\bx_t)}\right)\\
-&=\nabla_{\bx_t}\log\pt(\bx_t|\by)-\nabla_{\bx_t}\log\pt(\bx_t)
+{\color{teal}\nabla_{\bx_t}\log q(\by|\bx_t)}&=\nabla_{\bx_t}\log\left(\frac{q(\bx_t|\by)q(\by)}{q(\bx_t)}\right)\\
+&=\nabla_{\bx_t}\log q(\bx_t|\by)-\nabla_{\bx_t}\log q(\bx_t)
 \end{aligned}
 $$
 
 </div>
-
-<div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a></div>
-
----
-clicks: 2
-id: classifier-free-guidance-2
-class: derivation
----
-
-# Classifier-Free Guidance
-
-<div class="block">
+<div class="block" v-click="3">
 
 ## Scaled Guided Score Function
 
-$$ {1|1-2|all} {at:1}
+$$ {1|1-2|all} {at:4}
 \begin{aligned}
-\nabla_{\bx_t}^\gamma\log\pt(\bx_t|\by)&=\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}\\
-&=\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot\bigl({\color{teal}\nabla_{\bx_t}\log\pt(\bx_t|\by)-\nabla_{\bx_t}\log\pt(\bx_t)}\bigr)\\
-&=(1-\gamma)\cdot\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot\nabla_{\bx_t}\log\pt(\bx_t|\by)
+\bs_t^\gamma(\bx_t,\by)&=\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot{\color{teal}\nabla_{\bx_t}\log q(\by|\bx_t)}\\
+&=\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot\bigl({\color{teal}\nabla_{\bx_t}\log q(\bx_t|\by)-\nabla_{\bx_t}\log q(\bx_t)}\bigr)\\
+&=(1-\gamma)\cdot\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot\nabla_{\bx_t}\log q(\bx_t|\by)
 \end{aligned}
 $$
+
+</div>
+
+<div class="takeaway" v-click="6">
+
+The gradient of the class log-probability is the difference between conditional and unconditional scores.
+**Learn both scores and combine their estimates; no separate classifier is needed.**
 
 </div>
 
@@ -1783,10 +2039,12 @@ class: theorems
 ## Scaled Guided Score Function
 
 $$
-\nabla_{\bx_t}^\gamma\log\pt(\bx_t|\by)=(1-\gamma)\cdot\nabla_{\bx_t}\log\pt(\bx_t)+\gamma\cdot\nabla_{\bx_t}\log\pt(\bx_t|\by)
+\bs_t^\gamma(\bx_t,\by)=(1-\gamma)\cdot\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot\nabla_{\bx_t}\log q(\bx_t|\by)
 $$
 
 <div v-click="1">
+
+Replace the exact scores by their learned estimates:
 
 $$
 \bs^\gamma_{\btheta,t}(\bx_t,\by)=(1-\gamma)\cdot\bs_{\btheta,t}(\bx_t)+\gamma\cdot\bs_{\btheta,t}(\bx_t,\by)
@@ -1801,23 +2059,24 @@ $$
 <ul>
 <li>
 
-Train an unguided score function model $\bs_{\btheta,t}(\bx_t)$.
+Train an unconditional score model $\bs_{\btheta,t}(\bx_t)$.
 
 </li>
 <li>
 
-Train a guided score function model $\bs_{\btheta,t}(\bx_t,\by)$.
+Train a conditional score model $\bs_{\btheta,t}(\bx_t,\by)$.
 
 </li>
-<li v-click="3">Use their affine combination at inference.</li>
 </ul>
 </div>
 <div class="block" v-click="3">
 
 ## Sampling (Guided)
 
+Compute a guided DDPM step ($t\ge2$).
+
 $$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}+\sigma_t\cdot\bepsilon
+\bx_{t-1}=\frac{\bx_t+\beta_t{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t
 $$
 
 </div>
@@ -1842,14 +2101,14 @@ import CfgExtrapolationDemo from './components/CfgExtrapolationDemo.vue'
 # CFG: Interpolation and Extrapolation
 
 $$
-\bs^\gamma_{\btheta,t}=\bs_{\btheta,t}(\bx_t,\varnothing)+\gamma\bigl(\bs_{\btheta,t}(\bx_t,\by)-\bs_{\btheta,t}(\bx_t,\varnothing)\bigr)
+\bs^\gamma_t=\bs_t(\bx_t,\varnothing)+\gamma\bigl(\bs_t(\bx_t,\by)-\bs_t(\bx_t,\varnothing)\bigr)
 $$
 
 <CfgExtrapolationDemo />
 
 <div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a></div>
 
-<!-- Original analytic toy example. Scores are evaluated at one fixed observation of the same analytic two-dimensional toy; vectors use a common fixed display scale. Gamma = 0 selects unconditional, gamma = 1 selects conditional, 0 < gamma < 1 interpolates, gamma > 1 extrapolates. PDF simultaneously shows gamma = 0, 1, 3. This is score-space geometry, not a sampling trajectory. -->
+<!-- Original analytic toy example. Scores are evaluated at one fixed observation of an analytic two-dimensional Gaussian mixture; vectors use a common fixed display scale. Gamma = 0 selects unconditional, gamma = 1 selects conditional, 0 < gamma < 1 interpolates, gamma > 1 extrapolates. PDF simultaneously shows gamma = 0, 1, 3. This is score-space geometry, not a sampling trajectory. -->
 
 ---
 clicks: 1
@@ -1868,18 +2127,26 @@ $$
 ## CFG
 
 1. Introduce the "absence of conditioning" label $\by=\varnothing$.
-2. Identify the unguided score function $\bs_{\btheta,t}(\bx_t)=\bs_{\btheta,t}(\bx_t,\varnothing)$.
-3. Train a single model $\bs_{\btheta,t}(\bx_t,\by)$ on **supervised** data, dropping the label $\by$ with some fixed probability (simulating $\by=\varnothing$).
-4. At inference, evaluate the model twice to obtain $\bs_{\btheta,t}(\bx_t,\varnothing)$ and $\bs_{\btheta,t}(\bx_t,\by)$.
+2. Identify the unconditional score model $\bs_{\btheta,t}(\bx_t)=\bs_{\btheta,t}(\bx_t,\varnothing)$.
+3. Train one model on paired data, replacing $\by$ with $\varnothing$ with fixed probability.
+4. Evaluate the model twice per sampling step: with $\by$ and with $\varnothing$.
 
 </div>
 <div class="block" v-click="1">
 
 ## Sampling (Guided)
 
+1. Update with fresh $\bepsilon_t\sim\cN(0,\bI)$ for $t=T,\ldots,2$.
+
 $$
-\bx_{t-1}=\frac{1}{\sqrt{1-\beta_t}}\cdot\bx_t+\frac{\beta_t}{\sqrt{1-\beta_t}}\cdot{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}+\sigma_t\cdot\bepsilon.
+\bx_{t-1}=\frac{\bx_t+\beta_t{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t.
 $$
+
+<ol start="2"><li>
+
+Return $\hat\bx_0=\bmu^\gamma_{\btheta,1}(\bx_1,\by)$, as before.
+
+</li></ol>
 
 </div>
 
@@ -2022,8 +2289,8 @@ class: summary
 
 - Reverse-mean, clean-data and noise predictions are convertible; unweighted losses assign different weights to noise levels.
 - DDPM replaces ELBO weights with a simple noise-prediction loss and generates through Gaussian reverse steps.
-- DDPM and NCSN are weighted denoising score matching in rescaled noise coordinates; corrected time sampling preserves a chosen objective.
-- DDPM and NCSN use different samplers; DDIM reuses the DDPM network on a shorter sampling grid.
+- DDPM simple loss and NCSN agree at matched noise levels with rescaled scores; loss weights can be absorbed into training-time sampling.
+- DDIM reuses the DDPM network: same training marginals, deterministic sampling, fewer steps.
 - Guidance makes generation controllable through labels or text prompts.
 - Classifier guidance uses an auxiliary noisy-data classifier; classifier-free guidance does not.
 - Guidance intervals can improve the quality-diversity trade-off; guidance distillation reduces evaluations per step.

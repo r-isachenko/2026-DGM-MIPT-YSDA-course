@@ -1,22 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mixtureAt, guidanceAt, guidanceScaleAt, bounds, arrowBounds, densityAt, cfgAt, modes, variance } from '../lecture8/lib/guidance-demos.mjs'
+import { mixtureAt, guidanceAt, densityAt, cfgAt, modes, variance } from '../lecture8/lib/guidance-demos.mjs'
 const close = (a, b, tolerance = 1e-8) => assert.ok(Math.abs(a - b) < tolerance, `${a} != ${b}`)
-test('fixed geometry scale keeps every class and guidance strength inside the plot', () => {
-  for (let ix = 0; ix <= 20; ix++) for (let iy = 0; iy <= 10; iy++) {
-    const point = { x: bounds.xmin + ix / 20 * (bounds.xmax - bounds.xmin), y: bounds.ymin + iy / 10 * (bounds.ymax - bounds.ymin) }
-    const scale = guidanceScaleAt(point), unconditional = mixtureAt(point).score
-    assert.ok(scale > 0 && scale <= .55)
-    for (const label of [0, 1]) for (const gamma of [0, .5, 1, 3, 7]) {
-      const scores = guidanceAt(point, label, gamma)
-      assert.deepEqual(scores.unconditional, unconditional)
-      for (const vector of [scores.unconditional, scores.classifier.map(v => gamma * v), scores.guided]) {
-        const end = { x: point.x + scale * vector[0], y: point.y + scale * vector[1] }
-        for (const axis of ['x', 'y']) assert.ok(end[axis] >= arrowBounds[`${axis}min`] - 1e-9 && end[axis] <= arrowBounds[`${axis}max`] + 1e-9)
-      }
-    }
-  }
-})
 test('analytic mixture and classifier scores equal finite-difference log gradients', () => {
   const h = 1e-5
   for (const point of [{ x: -.2, y: .3 }, { x: -1.7, y: -.8 }, { x: 1.7, y: .8 }]) {

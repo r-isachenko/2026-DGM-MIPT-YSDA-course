@@ -1395,29 +1395,19 @@ $$
 </div>
 </div>
 
-The reverse model can learn both the **mean** and the **covariance**.
+<div class="block" v-click="1">
 
-<div class="columns" style="margin: 16px 0" v-click="1">
-<div>
+## Fix the Covariance, Learn the Mean
 
-## Simplify Learning
-
-Learn the mean; fix the covariance at each timestep.
+Using the known target covariance simplifies learning: the network only needs to predict the mean.
 
 <div v-click="2">
 
 $$
-\text{Choose }\bsigma_{\btheta,t}^2(\bx_t)={\color{#8854c0}\tilde{\beta}_t\bI},\qquad t\geq2.
+\bsigma_{\btheta,t}^2(\bx_t)={\color{#8854c0}\tilde{\beta}_t\bI},\qquad t\geq2.
 $$
 
-</div>
-</div>
-<div>
-
-## Fixed Covariance Choices
-
-- $\tilde{\beta}_t\bI$: exact when $\bx_0=\bx^*$ is fixed.
-- $\beta_t\bI$: exact when $\bx_0\sim\cN(0,\bI)$.
+The noise schedule fixes $\tilde{\beta}_t$; the network predicts the mean.
 
 </div>
 </div>
@@ -1427,7 +1417,7 @@ $$
 $$ {1|all} {at:4}
 \begin{aligned}
 \cL_t&=\bbE_{q(\bx_t|\bx_0)}\KL\bigl(\cN\bigl(\tilde{\bmu}_t(\bx_t,\bx_0),{\color{#8854c0}\tilde{\beta}_t\bI}\bigr)\|\cN\bigl(\bmu_{\btheta,t}(\bx_t),{\color{#8854c0}\tilde{\beta}_t\bI}\bigr)\bigr)\\
-&=\bbE_{q(\bx_t|\bx_0)}\left[\frac{1}{2\tilde{\beta}_t}\bigl\|\tilde{\bmu}_t(\bx_t,\bx_0)-\bmu_{\btheta,t}(\bx_t)\bigr\|^2\right].
+&=\bbE_{q(\bx_t|\bx_0)}\left[\frac{1}{2\tilde{\beta}_t}\Bigl\|\underbrace{\tilde{\bmu}_t(\bx_t,\bx_0)}_{\text{known target}}-\underbrace{\bmu_{\btheta,t}(\bx_t)}_{\text{network prediction}}\Bigr\|^2\right].
 \end{aligned}
 $$
 
@@ -1443,13 +1433,18 @@ $$
 <!--
 Previous slide: both terms in the intermediate KL are Gaussian. Start with the
 general reverse model, which could learn both mean and covariance. Motivate a
-simpler parameterization that learns only the mean, discuss fixed variance
-choices, then choose the target covariance for t >= 2 and reduce the Gaussian
-KL to a weighted squared mean error. The next slide uses this loss in Training.
-The two reference cases explain the standard fixed variance choices in Ho et al.,
-Section 3.2. They are not a claim that every input-dependent optimal covariance
-lies pointwise between these scalar multiples of I. The target covariance
-is fixed by the noise schedule; only the model mean remains trainable here.
+simpler parameterization that learns only the mean: choose the target covariance
+for t >= 2 and reduce the Gaussian KL to a weighted squared mean error. The labels
+identify the known regression target and the network prediction. The next slide
+uses this loss in Training. The target covariance is fixed by the noise schedule;
+only the model mean remains trainable here. This is a modeling choice, not a claim
+that the target covariance is optimal for arbitrary data distributions.
+
+Optional background for questions (Ho et al., Section 3.2): the exact marginal
+reverse covariance is tilde_beta_t I for point-mass data x_0 = x*, and beta_t I
+for standard Gaussian data x_0 ~ N(0, I). These reference cases are omitted from
+the visible slide to keep the Gaussian-KL-to-regression argument focused. They
+do not imply pointwise bounds on every input-dependent optimal covariance.
 -->
 
 ---
