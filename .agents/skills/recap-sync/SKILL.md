@@ -6,9 +6,10 @@ description: Check both coverage of new lecture material in the next Recap and f
 # Recap sync
 
 Read [shared context](../lecture-audit/references/formats.md)
-first. Recap elements mirror the relevant body definitions, equations, block titles,
-algorithms, figures, and sources. Existing concise recap wording is not a reason to
-expand it into the entire original slide.
+first. Build each Recap by selecting the main blocks, statements and formulas
+from the previous lecture’s slides. Copy each excerpt verbatim. Omit intermediate
+derivations, explanations and secondary details. Keep the original assumptions,
+definitions and citations needed to understand the selected result.
 
 ## Select the pair
 
@@ -52,13 +53,14 @@ all existing formulas match.
 1. Find the actual `Recap of Previous Lecture` slides near the start. Use
    Slidev headings/frontmatter, not a generic slice that also treats
    every Outline or introductory remark as recap content.
-2. For each block or standalone equation, locate its source in the previous body.
-   Start with an exact title/LHS match, then inspect context and approved renames.
-   A title that is not found verbatim is not yet proof of an orphan block.
-3. Compare formulas, assumptions, indices, parameters, operators, block/algorithm
-   names, and the associated source citation. Normalize only harmless markup and
-   whitespace; do not normalize away signs, subscripts, conditioning, or scope.
-   Account for equivalent TeX/KaTeX layout and the approved terminology policy.
+2. Locate the exact passage for every retained heading, statement, algorithm
+   step and formula in the previous lecture’s visible content, including its
+   Summary and any displayed component used as a source.
+3. Compare the wording and the complete formula with that passage. Flag
+   paraphrases, newly written transitions and algebraically equivalent rewrites.
+   Allow presentation-only changes such as whitespace, line breaks, heading
+   levels and removal of reveal directives. Preserve notation, conditioning,
+   indices, signs and the source citation.
 4. Compare figures by content/provenance (hashes for unchanged copies), not only
    filename. Recap assets belong in its own local directory or in the shared theme.
 5. A new recap item with no matching body content is an orphan; a real equation or
@@ -81,8 +83,7 @@ When fixing coverage, prefer adding the missing result to an existing recap slid
 on the same topic. Add a new slide only when the existing slide has no readable
 space or the addition would mix distinct topics. Preserve complete formulas and
 the approved font sizes; do not cram content or broadly reorganize recaps just to
-meet a slide count. There is no numeric cap. A recap summarizes the previous
-lecture rather than repeating its proofs and examples. For any added slide, record
+meet a slide count. There is no numeric cap. For any added slide, record
 why extending an existing one was unsuitable. Author decision, 2026-10-11.
 
 For every mismatch give both absolute source locations and the concrete difference.

@@ -37,139 +37,63 @@ Roman Isachenko
 
 ---
 clicks: 0
-id: recap-of-previous-lecture
-class: theorems
----
-
-# Recap of Previous Lecture
-
-$\alpha_t=1-\beta_t$, $\bar\alpha_t=\prod_{s=1}^t\alpha_s$, $\bar\alpha_0=1$; $\tilde\beta_t=\beta_t(1-\bar\alpha_{t-1})/(1-\bar\alpha_t)$.
-
-<div class="block">
-
-## ELBO for Gaussian Diffusion Model
-
-$$
-\begin{aligned}
-\cL_{\bphi,\btheta}(\bx)&={\color{olive}\bbE_{q(\bx_1|\bx_0)}\log\pt(\bx_0|\bx_1)}-{\color{#8854c0}\KL\bigl(q(\bx_T|\bx_0)\|p(\bx_T)\bigr)}\\
-&\quad-\sum_{t=2}^T\underbrace{\bbE_{q(\bx_t|\bx_0)}\KL\bigl(q(\bx_{t-1}|\bx_t,\bx_0)\|\pt(\bx_{t-1}|\bx_t)\bigr)}_{\cL_t}
-\end{aligned}
-$$
-
-</div>
-
-$$
-\begin{aligned}
-q(\bx_{t-1}|\bx_t,\bx_0)&=\cN(\tilde{\bmu}_t(\bx_t,\bx_0),\tilde{\beta}_t\bI),\\
-\pt(\bx_{t-1}|\bx_t)&=\cN\bigl(\bmu_{\btheta,t}(\bx_t),{\color{#8854c0}\bsigma_{\btheta,t}^2(\bx_t)}\bigr)
-\end{aligned}
-$$
-
-For $t\ge2$, fix ${\color{#8854c0}\bsigma_{\btheta,t}^2(\bx_t)=\tilde{\beta}_t\bI}$.
-
-$$
-\cL_t=\bbE_{q(\bx_t|\bx_0)}\left[\frac{1}{2\tilde{\beta}_t}\bigl\|\tilde{\bmu}_t(\bx_t,\bx_0)-\bmu_{\btheta,t}(\bx_t)\bigr\|^2\right]
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-2
-class: theorems
----
-
-# Recap of Previous Lecture
-
-For intermediate steps $t\ge2$:
-
-$$
-\cL_t=\bbE_{{\color{#8854c0}q(\bx_t|\bx_0)}}\left[{\color{olive}\frac{1}{2\tilde{\beta}_t}}\bigl\|\tilde{\bmu}_t(\bx_t,\bx_0)-\bmu_{\btheta,t}(\bx_t)\bigr\|^2\right]
-$$
-
-<div class="block">
-
-## Reparametrization
-
-$$
-\begin{aligned}
-\tilde{\bmu}_t(\bx_t,\bx_0)&=\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}\cdot\bepsilon\\
-\bmu_{\btheta,t}(\bx_t)&=\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-{\color{teal}\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}}\cdot\bepsilon_{\btheta,t}(\bx_t)
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
-
----
-clicks: 0
 id: recap-diffusion-parameterizations
 class: theorems
 ---
 
 # Recap of Previous Lecture
 
-## Same Predictions, Different Losses
+## Reparametrization of DDPM
 
-At fixed $\bx_t,t$, with $0<\bar{\alpha}_t<1$, a noise prediction defines a clean-data estimate:
+Let $\alpha_t=1-\beta_t$ and $\bar{\alpha}_t=\prod_{s=1}^t\alpha_s=\prod_{s=1}^t(1-\beta_s)$.
 
-$$
-\hat{\bx}_{\btheta,t}(\bx_t)=\frac{\bx_t-\sqrt{1-\bar{\alpha}_t}\,\bepsilon_{\btheta,t}(\bx_t)}{\sqrt{\bar{\alpha}_t}}.
-$$
+<div class="columns">
+<div>
 
-<div class="block">
-
-## Noise MSE vs Clean-Data MSE
-
-For these linked predictions:
+## Forward Noising
 
 $$
-\bigl\|\bepsilon-\bepsilon_{\btheta,t}(\bx_t)\bigr\|^2
-={\color{teal}\frac{\bar{\alpha}_t}{1-\bar{\alpha}_t}}\,
-\bigl\|\bx_0-\hat{\bx}_{\btheta,t}(\bx_t)\bigr\|^2.
+\bx_t=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon
 $$
 
 </div>
-<div class="takeaway">
+<div>
 
-**Same predictions, different loss weights.** The factor depends on $t$, so unweighted MSEs define different training objectives.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2202.00512">Salimans T., Ho J. Progressive Distillation for Fast Sampling of Diffusion Models, 2022</a></div>
-
-<!-- Recalls the clean/noise conversion and loss-weighting identity from the
-previous lecture. Reverse-mean conversion is on the preceding recap slide;
-score matching is recalled separately. Keep this slide fully visible. -->
-
----
-clicks: 0
-id: recap-of-previous-lecture-3
-class: theorems
----
-
-# Recap of Previous Lecture
-
-For intermediate steps $t\ge2$:
+## Recover Clean Data
 
 $$
-\cL_t=\bbE_{{\color{#8854c0}\bepsilon\sim\cN(0,\bI)}}\left[\frac{(1-\alpha_t)^2}{2\tilde{\beta}_t\alpha_t(1-\bar{\alpha}_t)}\Bigl\|\bepsilon-\bepsilon_{\btheta,t}\bigl({\color{teal}\sqrt{\bar{\alpha}_t}\bx_0+\sqrt{1-\bar{\alpha}_t}\bepsilon}\bigr)\Bigr\|^2\right]
-$$
-
-Predict the added noise. Dropping the time-dependent ELBO coefficient changes the relative weights of the training levels. The simple loss also includes reconstruction at $t=1$.
-
-<div class="block">
-
-## Simplified Objective
-
-$$
-\cL_{\text{simple}}=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\bbE_{\bepsilon\sim\cN(0,\bI)}\Bigl\|\bepsilon-\bepsilon_{\btheta,t}\bigl(\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon\bigr)\Bigr\|^2
+{\color{olive}\bx_0}=\frac{\bx_t-\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon}{\sqrt{\bar{\alpha}_t}}
 $$
 
 </div>
+</div>
 
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. Denoising Diffusion Probabilistic Models, 2020</a></div>
+**Why reparametrize?** Predict the Gaussian noise we add ourselves during training; compute the reverse mean analytically from this prediction.
+
+<div class="columns">
+<div>
+
+## Target Mean
+
+$$
+\tilde{\bmu}_t(\bx_t,\bx_0)=\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-{\color{teal}\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}}\cdot\bepsilon
+$$
+
+</div>
+<div>
+
+## Model Mean
+
+$$
+\bmu_{\btheta,t}(\bx_t)=\frac{1}{\sqrt{\alpha_t}}\cdot\bx_t-{\color{teal}\frac{1-\alpha_t}{\sqrt{\alpha_t(1-\bar{\alpha}_t)}}}\cdot\bepsilon_{\btheta,t}(\bx_t)
+$$
+
+</div>
+</div>
+
+Reverse-mean, clean-data and noise predictions are convertible; unweighted losses assign different weights to noise levels.
+
+<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J. et al. Denoising Diffusion Probabilistic Models, 2020</a><br><a href="https://arxiv.org/abs/2202.00512">Salimans T., Ho J. Progressive Distillation for Fast Sampling of Diffusion Models, 2022</a></div>
 
 ---
 clicks: 0
@@ -220,37 +144,35 @@ class: theorems
 
 # Recap of Previous Lecture
 
-For a chosen perturbation $q(\bx_t|\bx_0)$, define the conditional score error:
+## DDPM vs NCSN: Summary
+
+**DSM:** learn $\bs_{\btheta,t}(\bx_t)\approx\nabla_{\bx_t}\log q(\bx_t)$ using conditional targets:
 
 $$
-\ell_{\btheta}(t)=\bbE_{\pd(\bx_0)}\bbE_{q(\bx_t|\bx_0)}\left\|\bs_{\btheta,t}(\bx_t)-\nabla_{\bx_t}\log q(\bx_t|\bx_0)\right\|^2.
+\ell_{\btheta}(t)=\bbE_{\pd(\bx_0)}\bbE_{q(\bx_t|\bx_0)}\left\|{\color{#8854c0}\bs_{\btheta,t}(\bx_t)}-{\color{teal}\nabla_{\bx_t}\log q(\bx_t|\bx_0)}\right\|_2^2.
+$$
+
+Gaussian perturbations:
+
+- DDPM: $\bx_t=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon$;
+- NCSN: $\bx_t=\bx_0+\sigma_t\cdot\bepsilon$.
+- Use $\tilde\bx_t=\bx_t/\sqrt{\bar\alpha_t}$ and $\sigma_t^2=(1-\bar\alpha_t)/\bar\alpha_t$ to recover NCSN.
+
+Scale target and model scores by $\sqrt{\bar\alpha_t}$ to obtain the rescaled DSM error:
+
+$$
+\tilde\ell_{\btheta}(t)=\bar\alpha_t\ell_{\btheta}(t),\qquad
+\sigma_t^2\tilde\ell_{\btheta}(t)=(1-\bar\alpha_t)\ell_{\btheta}(t).
 $$
 
 <div class="block">
 
-## Same DSM form: compare weights and perturbations
-
-$$
-\cL=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\left[w_t\,\ell_{\btheta}(t)\right].
-$$
-
-| Objective | Gaussian perturbation | Conditional score target | Weight $w_t$ |
-| --- | --- | --- | --- |
-| DDPM simple loss | $\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon$ | $-\bepsilon/\sqrt{1-\bar\alpha_t}$ | $1-\bar\alpha_t$ |
-| NCSN | $\bx_0+\sigma_t\bepsilon$ | $-\bepsilon/\sigma_t$ | $\sigma_t^2$ |
-
-**Changing the perturbation changes the inputs, targets and $\ell_{\btheta}(t)$ itself.**
-
-</div>
-<div>
-
-For a fixed perturbation, replacing the DDPM ELBO weights also changes the objective.
-
-
+**DDPM:** ancestral transitions between noise levels.<br>
+**NCSN:** Langevin MCMC at each fixed noise level.
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2006.11239">Ho J., et al. Denoising Diffusion Probabilistic Models, 2020</a><br><a href="https://arxiv.org/abs/1907.05600">Song Y., Ermon S. Generative Modeling by Estimating Gradients of the Data Distribution, 2019</a></div>
+<div class="source"><a href="http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf">Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010</a><br><a href="https://arxiv.org/abs/2006.11239">Ho J., et al. Denoising Diffusion Probabilistic Models, 2020</a><br><a href="https://arxiv.org/abs/2107.00630">Kingma D. et al. Variational Diffusion Models, 2021</a><br><a href="https://arxiv.org/abs/2011.13456">Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
 
 ---
 clicks: 0
@@ -262,76 +184,37 @@ class: theorems
 
 ## Loss Weighting and Time Sampling
 
-For a fixed perturbation and per-step loss $\ell_{\btheta}(t)$:
+DDPM replaces ELBO weights with a simple noise-prediction loss and generates through Gaussian reverse steps.
+
+Fix the perturbation and its per-step loss $\ell_{\btheta}(t)$; let $w_t>0$.
 
 $$
-\bbE_{t\sim r}[\ell_{\btheta}(t)]
-=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\!\left[T r_t\,\ell_{\btheta}(t)\right].
+\cL=\frac1T\sum_{t=1}^{T}w_t\ell_{\btheta}(t).
 $$
-
-**Sampling a noise level more often gives it more weight.**
-Choose $r_t=w_t/\sum_s w_s$, $w_t>0$, to absorb weights up to an overall loss scale.
-
-To change time sampling while preserving a chosen objective, compensate:
-
-$$
-\cL=\frac1T\sum_{t=1}^T w_t\ell_{\btheta}(t)
-=\bbE_{t\sim r}\left[\frac{w_t}{T r_t}\ell_{\btheta}(t)\right],\qquad r_t>0.
-$$
-
-- The objective stays the same; gradient variance can change.
-- Training-time sampling and the generation grid are separate choices.
-
-<div class="source"><a href="https://arxiv.org/abs/2303.00848">Kingma D., Gao R. Understanding Diffusion Objectives as the ELBO with Simple Data Augmentation, 2023</a></div>
-
-<!-- Coverage: recalls both directions of the weights/time-sampling equivalence and
-importance correction. -->
-
----
-clicks: 0
-id: recap-of-previous-lecture-6
-class: theorems
----
-
-# Recap of Previous Lecture
 
 <div class="block">
 
-## Summary
-
-<ul>
-<li>
-
-Gaussian perturbations:
-
-- DDPM: $\bx_t=\sqrt{\bar{\alpha}_t}\cdot\bx_0+\sqrt{1-\bar{\alpha}_t}\cdot\bepsilon$;
-- NCSN: $\bx_t=\bx_0+\sigma_t\cdot\bepsilon$.
-- Use $\tilde\bx_t=\bx_t/\sqrt{\bar\alpha_t}$ and $\sigma_t^2=(1-\bar\alpha_t)/\bar\alpha_t$ to recover NCSN.
-
-</li>
-<li>
-
-Scale target and model scores by $\sqrt{\bar\alpha_t}$ to obtain the rescaled DSM error:
+## Sampling a noise level more often gives it more weight
 
 $$
-\tilde\ell_{\btheta}(t)=\bar\alpha_t\ell_{\btheta}(t),\qquad
-\sigma_t^2\tilde\ell_{\btheta}(t)=(1-\bar\alpha_t)\ell_{\btheta}(t).
+\bbE_{t\sim r}[\ell_{\btheta}(t)]
+=\sum_{t=1}^T r_t\ell_{\btheta}(t)
+=\bbE_{t\sim\Uniform\{1,\ldots,T\}}\!\left[{\color{teal}T r_t}\,\ell_{\btheta}(t)\right].
 $$
 
-</li>
-<li>
+Conversely, choose $r_t=w_t/\sum_s w_s$ to absorb the weights, up to an overall loss scale.
 
-Equivalent training objectives do not fix the sampling rule:
-
-- DDPM: one reverse transition per noise level;
-- NCSN: $L$ Langevin updates at each fixed noise level;
-- A trained score model can support different samplers.
-
-</li>
-</ul>
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2107.00630">Kingma D. et al. Variational Diffusion Models, 2021</a><br><a href="https://arxiv.org/abs/2011.13456">Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
+**To change time sampling while preserving a chosen objective, compensate:**
+
+$$
+\cL=\bbE_{t\sim r}\left[\frac{w_t}{T r_t}\ell_{\btheta}(t)\right],\qquad r_t>0.
+$$
+
+The objective stays the same; gradient variance can change. These are **training** times.
+
+<div class="source"><a href="https://arxiv.org/abs/2303.00848">Kingma D., Gao R. Understanding Diffusion Objectives as the ELBO with Simple Data Augmentation, 2023</a></div>
 
 ---
 clicks: 0
@@ -364,56 +247,13 @@ $$
 
 </div>
 
-**Same training marginals, different joint:** shared-noise forward paths are non-Markovian. DDIM reuses the DDPM predictor; its sampler is Markovian and deterministic given $\bx_T$.
+Same Gaussian marginals $q(\bx_t\mid\bx_0)$; a different joint $q(\bx_{1:T}\mid\bx_0)$.
 
-**Fewer steps:** choose $K\ll T$; $K$ steps require $K$ network evaluations and no retraining.
+**Deterministic steps:** randomness comes from $\bx_T$; recompute both estimates at every step.
+
+**Fewer steps:** choose $K\ll T$ on the original schedule: $K$ network evaluations, no retraining.
 
 <div class="source"><a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-8
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## DDPM Sampling
-
-Use $\bs_{\btheta,t}(\bx_t)=-\bepsilon_{\btheta,t}(\bx_t)/\sqrt{1-\bar\alpha_t}$.
-
-$$
-\bx_{t-1}=\frac{\bx_t+\beta_t\,{\color{teal}\bs_{\btheta,t}(\bx_t)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t,\qquad t\ge2.
-$$
-
-</div>
-<div class="block">
-
-## Guided Generation
-
-$$
-\bx_{t-1}=\frac{\bx_t+\beta_t\,{\color{olive}\bs_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}}+\sqrt{\tilde\beta_t}\,\bepsilon_t,\qquad t\ge2.
-$$
-
-</div>
-<div class="block">
-
-## Conditional Score and Its Estimate
-
-$$
-\begin{aligned}
-{\color{olive}\nabla_{\bx_t}\log q(\bx_t|\by)}&={\color{#8854c0}\nabla_{\bx_t}\log q(\bx_t)}+\nabla_{\bx_t}\log q(\by|\bx_t)\\
-&\approx{\color{#8854c0}\bs_{\btheta,t}(\bx_t)}+{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}=\bs_{\btheta,t}(\bx_t,\by).
-\end{aligned}
-$$
-
-</div>
-
-Train $p(\by|\bx_t)\approx q(\by|\bx_t)$ separately; draw independent $\bepsilon_t\sim\cN(0,\bI)$.
-
-<div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a></div>
 
 ---
 clicks: 0
@@ -423,102 +263,41 @@ class: theorems
 
 # Recap of Previous Lecture
 
+The condition $\by$ can be a class label, a text prompt, or reference images.
+
+**Guidance** modifies sampling to strengthen the influence of $\by$.
+
 <div class="block">
 
-## Guided Score Function
+## Classifier-Guided Estimate
+
+For now, restrict $\by$ to **class labels**.
+
+Train a noisy-data classifier $p(\by|\bx_t)\approx q(\by|\bx_t)$ at every noise level, providing $t$ as an input.
 
 $$
-\begin{aligned}
-\bs_{\btheta,t}(\bx_t,\by)&=\bs_{\btheta,t}(\bx_t)+\nabla_{\bx_t}\log p(\by|\bx_t)\\
-{\color{#8854c0}\bs^\gamma_{\btheta,t}(\bx_t,\by)}&=\bs_{\btheta,t}(\bx_t)+{\color{teal}\gamma}\cdot\nabla_{\bx_t}\log p(\by|\bx_t)
-\end{aligned}
+{\color{olive}\bs_{\btheta,t}(\bx_t,\by)}
+:=\bs_{\btheta,t}(\bx_t)+{\color{teal}\nabla_{\bx_t}\log p(\by|\bx_t)}
+\approx\nabla_{\bx_t}\log q(\bx_t|\by).
 $$
 
 </div>
 
-With exact scores, the interpretation at each fixed noise level is
-
-$$
-q_\gamma(\bx_t|\by)\propto q(\bx_t)\,q(\by|\bx_t)^\gamma.
-$$
-
-$\gamma=1$ gives the conditional score; very large $\gamma$ can reduce diversity and introduce artifacts.
-
 <div class="block">
 
-## Guidance Interval
+## Guidance Scale
 
-Apply extra guidance only at intermediate noise levels. Outside the interval, $\gamma_t=1$: **conditioning remains**.
+$$
+{\color{#8854c0}\bs^\gamma_{\btheta,t}(\bx_t,\by)}:=\bs_{\btheta,t}(\bx_t)+{\color{teal}\gamma}\cdot\nabla_{\bx_t}\log p(\by|\bx_t).
+$$
+
+$\gamma$ controls guidance strength: $\gamma=0$ gives the unconditional estimate; $\gamma=1$ gives the conditional estimate.
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a><br><a href="https://arxiv.org/abs/2404.07724">Kynkäänniemi T. et al. Applying Guidance in a Limited Interval Improves Sample and Distribution Quality in Diffusion Models, 2024</a> · <a href="https://arxiv.org/abs/2410.02416">Sadat S. et al. Eliminating Oversaturation and Artifacts of High Guidance Scales in Diffusion Models, 2025</a></div>
+Larger $\gamma$ favors samples with higher class probability; very large values can reduce diversity and introduce artifacts.
 
----
-clicks: 0
-id: recap-of-previous-lecture-10
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Training
-
-1. Train the DDPM as before.
-2. Train an additional classifier $p(\by|\bx_t)$ on noisy data (time-dependent).
-
-</div>
-<div class="block">
-
-## Sampling (Guided)
-
-1. Sample $\bx_T\sim\cN(0,\bI)$.
-2. For $t=T,\ldots,2$, compute the guided mean and sample the reverse step:
-
-$$
-\begin{aligned}
-\bmu^\gamma_{\btheta,t}(\bx_t,\by)&=\frac{\bx_t+\beta_t\,{\color{olive}\bs^\gamma_{\btheta,t}(\bx_t,\by)}}{\sqrt{\alpha_t}},\\
-\bx_{t-1}&=\bmu^\gamma_{\btheta,t}(\bx_t,\by)+\sqrt{\tilde\beta_t}\,\bepsilon_t,\qquad\bepsilon_t\sim\cN(0,\bI).
-\end{aligned}
-$$
-
-<ol start="3"><li>
-
-Return the guided decoder mean $\hat\bx_0=\bmu^\gamma_{\btheta,1}(\bx_1,\by)$.
-
-</li></ol>
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-11
-class: theorems
----
-
-# Recap of Previous Lecture
-
-Use Bayes' rule for the true noisy-data distributions to motivate classifier-free guidance:
-
-$$
-{\color{teal}\nabla_{\bx_t}\log q(\by|\bx_t)}=\nabla_{\bx_t}\log q(\bx_t|\by)-\nabla_{\bx_t}\log q(\bx_t).
-$$
-
-$$
-\begin{aligned}
-\bs_t^\gamma(\bx_t,\by)&:=\nabla_{\bx_t}\log q_\gamma(\bx_t|\by)\\
-&=\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot{\color{teal}\nabla_{\bx_t}\log q(\by|\bx_t)}\\
-&=(1-\gamma)\cdot\nabla_{\bx_t}\log q(\bx_t)+\gamma\cdot\nabla_{\bx_t}\log q(\bx_t|\by).
-\end{aligned}
-$$
-
-Replace the two true scores with learned unconditional and conditional estimates.
-
-<div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a><br><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2105.05233">Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021</a><br><a href="https://arxiv.org/abs/2410.02416">Sadat S. et al. Eliminating Oversaturation and Artifacts of High Guidance Scales in Diffusion Models, 2025</a></div>
 
 ---
 clicks: 0
@@ -528,15 +307,11 @@ class: theorems
 
 # Recap of Previous Lecture
 
-<div class="block">
-
-## Scaled Guided Score Function
+## Classifier-Free Guidance
 
 $$
 \bs^\gamma_{\btheta,t}(\bx_t,\by)=(1-\gamma)\cdot\bs_{\btheta,t}(\bx_t)+\gamma\cdot\bs_{\btheta,t}(\bx_t,\by)
 $$
-
-</div>
 
 <div class="block">
 
@@ -544,21 +319,12 @@ $$
 
 1. Introduce the "absence of conditioning" label $\by=\varnothing$.
 2. Identify the unconditional score model $\bs_{\btheta,t}(\bx_t)=\bs_{\btheta,t}(\bx_t,\varnothing)$.
-3. Train a single model $\bs_{\btheta,t}(\bx_t,\by)$ on **supervised** data, dropping the label $\by$ with some fixed probability (simulating $\by=\varnothing$).
+3. Train one model on paired data, replacing $\by$ with $\varnothing$ with fixed probability.
 4. Evaluate the model twice per sampling step: with $\by$ and with $\varnothing$.
 
 </div>
 
-**Guidance distillation:** train a student to match the fixed teacher's guided prediction:
-
-$$
-\bs_{\bphi,t}(\bx_t,\by,\gamma)\approx
-(1-\gamma)\bs_{\btheta,t}(\bx_t,\varnothing)+\gamma\bs_{\btheta,t}(\bx_t,\by).
-$$
-
-Evaluate the student **once per step**; keep the sampler and step count.
-
-<div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a><br><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025</a><br><a href="https://arxiv.org/abs/2210.03142">Meng C. et al. On Distillation of Guided Diffusion Models, 2023</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a><br><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
 
 ---
 clicks: 0
@@ -572,6 +338,7 @@ id: outline
 <div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item "><span>03</span><div>SDE Basics</div></div>
+<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
@@ -588,6 +355,7 @@ section: "Continuous-Time Normalizing Flows (CNF)"
 <div class="outline-item current"><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item "><span>03</span><div>SDE Basics</div></div>
+<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
@@ -606,16 +374,13 @@ class: theorems
 Let $\bx$ be a random variable with density $p(\bx)$, and let $\bff:\bbR^m\rightarrow\bbR^m$ be a differentiable and **invertible** transformation. If $\bz=\bff(\bx)$, $\bx=\bff^{-1}(\bz)=\bg(\bz)$, then
 
 $$
-\begin{aligned}
-p(\bx)&=p(\bz)|\det(\bJ_{\bff})|=p(\bz)\left|\det\left(\frac{\partial\bz}{\partial\bx}\right)\right|\\
-&=p(\bff(\bx))\left|\det\left(\frac{\partial\bff(\bx)}{\partial\bx}\right)\right|
-\end{aligned}
+p(\bx)=p(\bz)|\det(\bJ_{\bff})|=p(\bz)\left|\det\left(\frac{\partial\bz}{\partial\bx}\right)\right|=p(\bff(\bx))\left|\det\left(\frac{\partial\bff(\bx)}{\partial\bx}\right)\right|
 $$
 
 </div>
 <div v-click="1">
 
-<img src="/figs/normalizing-flow.png" alt="Composition of invertible transformations in a normalizing flow" style="width:100%;height:140px;object-fit:contain" />
+<img src="/figs/normalizing-flow.png" alt="Composition of invertible transformations in a normalizing flow" style="width:100%;height:245px;object-fit:contain" />
 
 $$
 \log\pt(\bx)=\log p(\bff_K\circ\dots\circ\bff_1(\bx))+\sum_{k=1}^K\log\left|\det\left(\frac{\partial\bff_k}{\partial\bff_{k-1}}\right)\right|.
@@ -795,46 +560,69 @@ Euler drops the higher-order terms: the **local error is $\cO(h^2)$**.
 <div class="source"><a href="https://en.wikipedia.org/wiki/Euler_method">Euler method; original one-step illustration</a><br><a href="https://fncbook.com/rk/">Driscoll T. A., Braun R. J. Fundamentals of Numerical Computation: Runge–Kutta methods</a></div>
 
 ---
-clicks: 0
-id: numerical-solution-of-odes-euler-and-heun
-class: interactive-slide
----
-
-# Numerical Solution of ODEs: Euler and Heun
-
-<OdeSolverDemo />
-
-<div class="source"><a href="https://en.wikipedia.org/wiki/Heun's_method">Heun's method; original rotation example</a></div>
-
----
 clicks: 1
-id: ode-solvers-accuracy-and-cost
+id: numerical-solution-of-odes-euler-and-heun
 class: theorems
+---
+
+# Numerical Solution of ODEs: Heun
+
+<div class="columns">
+<div class="block">
+
+## Predict the endpoint
+
+Evaluate the velocity at the start and take an Euler step of size $h$.
+
+$$
+\bv_0=\bv_{\btheta}(\bx_n,t_n),\qquad
+\widetilde{\bx}_{n+1}=\bx_n+h\,\bv_0.
+$$
+
+</div>
+<EulerStepPlot heun />
+</div>
+
+<div class="block" v-click="1">
+
+## Correct the step
+
+Evaluate the velocity at the predicted endpoint. Advance from $\bx_n$ using the **average of the two velocities**.
+
+$$
+\bv_1=\bv_{\btheta}(\widetilde{\bx}_{n+1},t_n+h),\qquad
+\bx_{n+1}=\bx_n+\frac{h}{2}(\bv_0+\bv_1).
+$$
+
+</div>
+
+<div class="source"><a href="https://fncbook.com/rk/">Driscoll T. A., Braun R. J. Fundamentals of Numerical Computation: Runge–Kutta methods</a></div>
+
+---
+clicks: 0
+id: ode-solvers-accuracy-and-cost
+class: interactive-slide
 ---
 
 # ODE Solvers: Accuracy and Cost
 
-For a sufficiently smooth velocity field on a fixed interval $[0,T]$:
+<OdeSolverDemo>
+
+For a smooth field on a fixed interval $[0,T]$, the **global error** after $N$ steps of size $h=T/N$ is
 
 $$
-\|\widehat{\bx}_N-\bx(T)\|=\cO(h^p),\qquad h=T/N.
+\|\widehat{\bx}_N-\bx(T)\|=\cO(h^p).
 $$
 
-This is the **global error** after $N$ steps.
-
-| Method | Global error | Velocity evaluations / step |
+| Method | Global error | NFE per step |
 |---|---|---|
 | Euler | $\cO(h)$ | 1 |
 | Heun | $\cO(h^2)$ | 2 |
 | RK4 | $\cO(h^4)$ | 4 |
 
-<div v-click="1">
+**NFE** counts calls to the velocity field. Halving $h$ doubles the NFE needed to reach $T$.
 
-- **One-step error** from an exact starting point is $\cO(h^{p+1})$.
-- For small $h$, halving the step roughly reduces global error by **2 / 4 / 16**, but doubles the number of steps.
-- Compare computational cost by **NFE**: the number of velocity-network evaluations.
-
-</div>
+</OdeSolverDemo>
 
 <div class="source"><a href="https://fncbook.com/rk/">Driscoll T. A., Braun R. J. Fundamentals of Numerical Computation: Runge–Kutta methods</a></div>
 
@@ -854,65 +642,29 @@ id: continuous-time-normalizing-flows-neural-ode
 class: theorems
 ---
 
-# Continuous-Time Normalizing Flows: Neural ODE
+# From ODE Trajectories to a Probability Path
 
-<div class="block">
-
-## Neural ODE
+Sampling the initial point selects an entire trajectory of the neural ODE.
 
 $$
-\frac{d\bx(t)}{dt}=\bv_{\btheta}(\bx(t),t);\quad\text{with initial condition }\bx(t_0)=\bx_0
+\bx(0)\sim p_0,\qquad \bx(t)=\bpsi_t(\bx(0)),\qquad 0\le t\le 1.
 $$
-
-</div>
-
-<div class="block" v-click="1">
-
-## Euler $\ODESolve$
-
-$$
-\bx(t+h)=\bx(t)+h\cdot\bv_{\btheta}(\bx(t),t)
-$$
-
-</div>
-
-<div v-click="2">
-
-- Consider $[t_0,t_1]=[0,1]$ for simplicity.
-- If $\bx(0)$ is a random variable with density $p_0(\bx)$,
-- Then, for any $t$, $\bx(t)$ is a random variable with density $p_t(\bx)$.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a></div>
-
----
-clicks: 2
-id: continuous-time-normalizing-flows-intuition
-class: theorems
----
-
-# Continuous-Time Normalizing Flows: Intuition
-
-$$
-\frac{d\bx(t)}{dt}=\bv_{\btheta}(\bx(t),t);\quad\text{with initial condition }\bx(t_0)=\bx_0
-$$
-
 
 <div v-click="1">
 
-- $p_t(\bx)=p(\bx,t)$ describes the **probability path** interpolating between $p_0(\bx)$ and $p_1(\bx)$.
-- <span style="color:gray">What is the difference between $p_t(\bx(t))$ and $p_t(\bx)$?</span>
+- Suppose $\bx(0)$ is a random variable with density $p_0(\bx)$.
+- Then, $\bx(t)$ is a random variable with density $p_t(\bx)$.
+- $p_t(\bx) = p(\bx, t)$ describes the **probability path** between $p_0(\bx)$ and $p_1(\bx)$.
 
 </div>
 
 <div v-click="2">
 
-<img src="/figs/cnf_flow.png" alt="A continuous flow of samples and the corresponding probability path" style="width:100%;height:260px;object-fit:contain" />
+<img src="/figs/cnf_flow.png" alt="Particle trajectories over a density heatmap, with the initial and final densities on either side" style="width:100%;height:260px;object-fit:contain" />
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/1810.01367">Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018</a></div>
+<div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a><br><a href="https://arxiv.org/abs/1810.01367">Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018</a></div>
 
 ---
 clicks: 3
@@ -948,9 +700,11 @@ $$
 
 **Note:** Unlike discrete-time flows, $\bv$ need not be invertible (uniqueness ensures bijection).
 
+To approximate the inverse flow with **Euler or Heun**, start at $\bx(1)$ and take steps with $h<0$ toward $t=0$. The recovered point has discretization error.
+
 </div>
 
-<div v-click="3">
+<div class="takeaway" v-click="3">
 
 How can we compute $p_t(\bx)$ at arbitrary $t$?
 
@@ -971,6 +725,7 @@ section: "Continuity Equation for CNF Log-Likelihood"
 <div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item current"><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item "><span>03</span><div>SDE Basics</div></div>
+<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
@@ -996,7 +751,7 @@ $$
 
 <div v-click="1">
 
-Integrating gives the density **along the trajectory**:
+Integrating gives the density **along the trajectory**.
 
 <div class="block">
 
@@ -1025,18 +780,6 @@ $$
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a><br><a href="https://arxiv.org/abs/1810.01367">Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018</a></div>
-
----
-clicks: 0
-id: divergence-where-does-the-density-go
-class: interactive-slide
----
-
-# Divergence: Where Does the Density Go?
-
-<DivergenceDemo />
-
-<div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a></div>
 
 ---
 clicks: 2
@@ -1114,16 +857,19 @@ section: "SDE Basics"
 <div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item current"><span>03</span><div>SDE Basics</div></div>
+<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
 ---
 clicks: 1
 id: stochastic-differential-equation-sde
-class: theorems
+class: theorems interactive-slide
 ---
 
 # Stochastic Differential Equation (SDE)
+
+In a CNF, fixing the initial point fixes the entire trajectory. What if noise also acts throughout the motion?
 
 <div class="block">
 
@@ -1135,14 +881,15 @@ $\bw(t)$ is the standard Wiener process (Brownian motion), defined by:
 <div>
 
 1. $\bw(0)=0$ (almost surely);
-2. $\bw(t)$ has independent increments;
+2. $\bw(t)$ has independent increments. For $s<t<u$,<br>
+   $\bigl(\bw(t)-\bw(s)\bigr)\perp\bigl(\bw(u)-\bw(t)\bigr)$.
 3. $\bw(t)$ trajectories are continuous;
 4. $\bw(t)-\bw(s)\sim\cN(0,(t-s)\bI)$ for $t>s$;
 
 </div>
 <div>
 
-<img src="/figs/brownian_motion.png" alt="Sample trajectories of Brownian motion" style="width:100%;height:245px;object-fit:contain" />
+<BrownianMotionPlot />
 
 </div>
 </div>
@@ -1152,8 +899,10 @@ $\bw(t)$ is the standard Wiener process (Brownian motion), defined by:
 <div v-click="1">
 
 $$
-d\bw=\bw(t+dt)-\bw(t)=\cN(0,\bI\cdot dt)=\bepsilon\cdot\sqrt{dt},\quad\text{where }\bepsilon\sim\cN(0,\bI).
+\Delta\bw=\bw(t+\Delta t)-\bw(t)\sim\cN(0,\Delta t\,\bI),\qquad \Delta t>0.
 $$
+
+Here $d\bw$ is **informal shorthand** for a small Brownian increment, modeled as $\sqrt{dt}\,\bepsilon$ with $\bepsilon\sim\cN(0,\bI)$.
 
 </div>
 
@@ -1167,27 +916,22 @@ class: theorems
 
 # Stochastic Differential Equation (SDE)
 
-$$
-\frac{d\bx}{dt}=\bv(\bx,t)\quad\Rightarrow\quad d\bx=\bv(\bx,t)\,dt
-$$
+An SDE generalizes the dynamics of a CNF by adding Brownian noise to the motion induced by the velocity field.
 
+$$
+d\bx=\bff(\bx,t)\,dt+{\color{#8854c0}g(t)\,d\bw},\qquad \bx(0)\sim p_0.
+$$
 
 <div v-click="1">
 
-Let's define a stochastic process $\bx(t)$ with initial condition $\bx(0)\sim p_0(\bx)=\pd(\bx)$:
-
-$$
-d\bx=\bff(\bx,t)\,dt+{\color{#8854c0}g(t)\,d\bw}
-$$
+- $\bff:\bbR^m\times[0,1]\to\bbR^m$ is the **drift** vector field.
+- $g:[0,1]\to\bbR$ is the **diffusion** coefficient. It scales the noise from the standard Wiener process $\bw(t)$.
 
 </div>
 
-<div v-click="2">
+<div class="takeaway" v-click="2">
 
-- $\bff(\bx,t):\bbR^m\times[0,1]\rightarrow\bbR^m$ is the **drift** term (vector field).
-- $g(t):\bbR\rightarrow\bbR$ is the **diffusion** term (if $g(t)=0$, we recover the standard ODE).
-- $\bw(t)$ is the standard Wiener process ($d\bw=\bepsilon\cdot\sqrt{dt}$).
-- We do not have the flow $\bpsi_t(\bx_0)$ notion anymore, since trajectories are stochastic.
+Setting $g(t)=0$ and $\bff=\bv_{\btheta}$ recovers the CNF dynamics.
 
 </div>
 
@@ -1226,12 +970,16 @@ $$
 <div class="source"><a href="https://arxiv.org/abs/2510.21890">Lai C. et al. The Principles of Diffusion Models, 2025</a></div>
 
 ---
-clicks: 1
+clicks: 3
 id: stochastic-differential-equation-sde-3
 class: theorems
 ---
 
-# Stochastic Differential Equation (SDE)
+<script setup>
+import PathwiseUniquenessPlot from './components/PathwiseUniquenessPlot.vue'
+</script>
+
+# What Determines an SDE Trajectory?
 
 $$
 d\bx=\bff(\bx,t)\,dt+g(t)\,d\bw
@@ -1240,18 +988,39 @@ $$
 
 <div class="block">
 
-## Theorem
+## Existence and Uniqueness
 
-If $\bff$ is continuously differentiable with a bounded derivative in $\bx$ and continuous in $t$ and $g(t)$ is continuous then the SDE has the solution given by unique process $\bx(t)$.
+If $\bff$ is continuous in $t$ and continuously differentiable in $\bx$ with bounded derivative, and $g$ is continuous, then the SDE has a unique strong solution for a given initial condition and Wiener process.
 
 </div>
 
+<div class="block">
+
+## Two Sources of Randomness
+
+For $dx=\tfrac12\,dt+dw$, we can vary the initial draw $x_0\sim p_0$ or the Brownian path $w(t)$.
+
+<div class="columns">
 <div v-click="1">
 
-- Unlike ODEs, the initial condition $\bx(0)$ doesn't uniquely determine the trajectory.
-- There are two sources of randomness:
-  - the initial distribution $p_0(\bx)$;
-  - the Wiener process $\bw(t)$.
+**Different Brownian paths**, same $x_0=0$
+
+<PathwiseUniquenessPlot />
+
+</div>
+<div v-click="2">
+
+**Same Brownian path**, $x_0=0$ and $x_0=-1$
+
+<PathwiseUniquenessPlot shared />
+
+</div>
+</div>
+</div>
+
+<div class="takeaway" v-click="3">
+
+Fixing both the **initial point** and the **Brownian path** determines the trajectory almost surely.
 
 </div>
 
@@ -1292,7 +1061,12 @@ $$
 
 - At any time $t$, the process has density $p_t(\bx)=p(\bx,t)$.
 - $p:\bbR^m\times[0,1]\rightarrow\bbR_+$ specifies a **probability path** from $p_0(\bx)$ to $p_1(\bx)$.
-- How can we obtain the probability path $p_t(\bx)$ for $\bx(t)$?
+
+<div class="takeaway">
+
+How can we obtain the probability path $p_t(\bx)$ for $\bx(t)$?
+
+</div>
 
 </div>
 
@@ -1319,26 +1093,36 @@ $$
 \frac{\partial p_t(\bx)}{\partial t}=-\diver\left(\bff(\bx,t)p_t(\bx)\right)+\frac12 g^2(t)\Delta_{\bx}p_t(\bx)
 $$
 
-<div v-click="1">
+</div>
 
-Here,
+<div class="takeaway columns" v-click="1">
+<section>
+
+## Divergence
 
 $$
 \diver(\bv)=\sum_{i=1}^m\frac{\partial v_i(\bx)}{\partial x_i}=\tr\left(\frac{\partial\bv(\bx)}{\partial\bx}\right)
 $$
 
+</section>
+<section>
+
+## Laplacian
+
 $$
 \Delta_{\bx}p_t(\bx)=\sum_{i=1}^m\frac{\partial^2p_t(\bx)}{\partial x_i^2}=\tr\left(\frac{\partial^2p_t(\bx)}{\partial\bx^2}\right)
 $$
 
+</section>
 </div>
-<div v-click="2">
+
+<div class="block" v-click="2">
+
+## Trace form of the Fokker–Planck equation
 
 $$
 \frac{\partial p_t(\bx)}{\partial t}=\tr\left(-\frac{\partial}{\partial\bx}\bigl[\bff(\bx,t)p_t(\bx)\bigr]+\frac12g^2(t)\frac{\partial^2p_t(\bx)}{\partial\bx^2}\right)
 $$
-
-</div>
 
 </div>
 
@@ -1385,48 +1169,50 @@ $$
 </div>
 
 ---
-clicks: 4
+clicks: 3
 id: langevin-sde-special-case
 class: theorems
 ---
 
-# Langevin SDE (Special Case)
+# A Langevin Drift That Preserves the Target Density
+
+We want a positive target density to stay stationary. The Fokker–Planck condition is
 
 $$
 \frac{\partial p_t(\bx)}{\partial t}=0\quad\Leftrightarrow\quad\tr\left(-\frac{\partial}{\partial\bx}\bigl[\bff(\bx,t)p_t(\bx)\bigr]+\frac12g^2(t)\frac{\partial^2p_t(\bx)}{\partial\bx^2}\right)=0
 $$
 
+<div class="block" v-click="1">
 
-<div v-click="1">
+## Rewrite the trace as a divergence
 
-$$
-\frac{\partial}{\partial\bx}\bigl[\bff(\bx,t)p_t(\bx)\bigr]=\frac12g^2(t)\frac{\partial^2p_t(\bx)}{\partial\bx^2}
-$$
-
-</div>
-
-<div v-click="2">
+Use $\tr(\partial\bv/\partial\bx)=\diver(\bv)$ for both $\bv=\bff\,p_t$ and $\bv=\nabla_{\bx}p_t$.
 
 $$
-\bff(\bx,t)p_t(\bx)=\frac12g^2(t)\frac{\partial p_t(\bx)}{\partial\bx}
+0=-\diver\!\left(\underbrace{\bff(\bx,t)\,p_t(\bx)}_{\text{drift flux}}
+\;\underbrace{-\tfrac12 g^2(t)\nabla_{\bx}p_t(\bx)}_{\text{diffusion flux}}\right).
 $$
 
 </div>
 
-<div v-click="3">
+<div class="block" v-click="2">
+
+## Choose the drift so the two fluxes cancel
 
 $$
-\bff(\bx,t)=\frac12g^2(t)\frac{1}{p_t(\bx)}\frac{\partial p_t(\bx)}{\partial\bx}=\frac12g^2(t)\frac{\partial}{\partial\bx}\log p_t(\bx)
+\bff(\bx,t)\,p_t(\bx)=\tfrac12 g^2(t)\nabla_{\bx}p_t(\bx)
+\quad\Longrightarrow\quad
+\bff(\bx,t)=\tfrac12 g^2(t)\nabla_{\bx}\log p_t(\bx).
 $$
 
 </div>
 
-<div v-click="4">
+<div class="block" v-click="3">
 
-Let ${\color{olive}g(t)=1}$, then ${\color{#8854c0}\bff(\bx,t)=\frac12\frac{\partial}{\partial\bx}\log p_t(\bx)}$.
+## With $g(t)=1$, the Langevin drift is half the score
 
 $$
-d\bx={\color{#8854c0}\frac12\frac{\partial}{\partial\bx}\log p_t(\bx)\,dt}+{\color{olive}1}\cdot d\bw
+d\bx={\color{#8854c0}\tfrac12\nabla_{\bx}\log p_t(\bx)\,dt}+{\color{olive}d\bw}.
 $$
 
 </div>
@@ -1491,6 +1277,301 @@ class: interactive-slide
 
 ---
 clicks: 0
+id: outline-ve-vp
+section: "Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)"
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
+<div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
+<div class="outline-item "><span>03</span><div>SDE Basics</div></div>
+<div class="outline-item current"><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
+
+</div>
+
+---
+clicks: 4
+id: score-matching-sde
+class: theorems derivation
+---
+
+# Score Matching SDE
+
+<div class="columns">
+<div>
+
+## Two consecutive noise levels
+
+$$
+\begin{aligned}
+\bx_{k-1} &= \bx + \sigma_{k-1} \bepsilon_{k-1} \\
+\bx_k &= \bx + \sigma_k \bepsilon_k
+\end{aligned}
+$$
+
+$$
+q(\bx_j \mid \bx) = \cN(\bx, \sigma_j^2 \bI),
+\quad j \in \{k-1,k\}.
+$$
+
+</div>
+<div v-click="1">
+
+## Markov step from $k-1$ to $k$
+
+$$
+\begin{aligned}
+\bx_k &= \bx_{k-1} + \sqrt{\sigma_k^2 - \sigma_{k-1}^2}\,\bepsilon \\
+q(\bx_k \mid \bx_{k-1}) &= \cN\!\left(\bx_{k-1}, (\sigma_k^2 - \sigma_{k-1}^2)\bI\right)
+\end{aligned}
+$$
+
+</div>
+</div>
+
+<div class="block" v-click="2">
+
+## From a finite step to continuous time
+
+$$ {1|all} {at:3}
+\begin{aligned}
+\bx(t)-\bx(t-\Delta t)
+&= \sqrt{\sigma^2(t)-\sigma^2(t-\Delta t)}\,\bepsilon \\
+&= {\color{teal}\sqrt{\frac{\sigma^2(t)-\sigma^2(t-\Delta t)}{\Delta t}}}\;
+   \underbrace{{\color{#8854c0}\sqrt{\Delta t}\,\bepsilon}}_{{\color{#8854c0}\Delta\bw}}
+\end{aligned}
+$$
+
+</div>
+
+<div class="takeaway" v-click="4">
+
+As $\Delta t \to 0$, the variance rate sets the diffusion coefficient:
+
+$$
+d\bx = {\color{teal}\sqrt{\frac{d[\sigma^2(t)]}{dt}}}\;{\color{#8854c0}d\bw}.
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
+
+---
+clicks: 2
+id: score-matching-sde-2
+class: theorems
+---
+
+# Variance Exploding SDE
+
+$$
+d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw
+$$
+
+<div class="block" v-click="1">
+
+## Drift and diffusion
+
+$$
+d\bx = \bff(\bx, t) dt + g(t) d \bw
+$$
+
+$$
+\bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}}
+$$
+
+</div>
+
+<div class="block" v-click="2">
+
+## Why the variance grows
+
+$\sigma(t)$ is a monotonically increasing function.
+From time $s$ to $t$, independent noise increments add variance in each coordinate:
+
+$$
+\int_s^t g^2(u)\,du = \sigma^2(t)-\sigma^2(s).
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
+
+---
+clicks: 3
+id: diffusion-sde
+class: theorems derivation
+---
+
+# Diffusion SDE
+
+## One DDPM step
+
+$$
+\bx_k = \sqrt{1-\beta_k}\,\bx_{k-1} + \sqrt{\beta_k}\,\bepsilon_k,
+\qquad q(\bx_k \mid \bx_{k-1}) = \cN\!\left(\sqrt{1-\beta_k}\,\bx_{k-1},\,\beta_k\bI\right).
+$$
+
+<div class="block" v-click="1">
+
+## From variance per step to variance per unit time
+
+Split $[0,1]$ into $T$ steps of length $\Delta t=1/T$. Step $k$ ends at $t_k=k/T$.
+
+$$
+\underbrace{\beta_k}_{\text{noise variance per step}}
+= \underbrace{\beta(t_k)}_{\text{noise variance rate}}\;\cdot\;
+  \underbrace{\Delta t}_{\text{step length}}.
+$$
+
+At a constant rate, doubling $T$ halves the noise variance added at each step.
+
+</div>
+
+<div class="block" v-click="2">
+
+## Substitute into the update at $t=t_k$
+
+$$ {1|all} {at:3}
+\begin{aligned}
+\bx(t) &= \sqrt{1-\beta(t)\Delta t}\,\bx(t-\Delta t)
+         + \sqrt{\beta(t)\Delta t}\,\bepsilon_k \\
+\bx(t)-\bx(t-\Delta t)
+&\approx -\tfrac12\beta(t)\bx(t-\Delta t)\,\Delta t
+         + \sqrt{\beta(t)}\,\underbrace{{\color{#8854c0}\sqrt{\Delta t}\,\bepsilon_k}}_{{\color{#8854c0}\Delta\bw}} .
+\end{aligned}
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
+
+---
+clicks: 1
+id: diffusion-sde-2
+class: theorems derivation
+---
+
+# Diffusion SDE
+
+## DDPM increment at $t=t_k$
+
+$$
+\bx(t)-\bx(t-\Delta t)
+\approx -\tfrac12\beta(t)\bx(t-\Delta t)\,\Delta t
+        + \sqrt{\beta(t)}\,{\color{#8854c0}\Delta\bw}.
+$$
+
+Here $\Delta t=1/T$ and $\Delta\bw=\bw(t)-\bw(t-\Delta t)=\sqrt{\Delta t}\,\bepsilon_k$.
+
+<div class="block" v-click="1">
+
+## Variance Preserving SDE
+
+As $\Delta t \to 0$, the DDPM update gives the continuous-time dynamics
+
+$$
+d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw
+$$
+
+$$
+\bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t) , \quad g(t) = \sqrt{\beta(t)}
+$$
+
+Variance is preserved as long as $\bx(0)$ has unit variance.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
+
+---
+clicks: 4
+id: diffusion-sde-3
+class: theorems
+---
+
+# From Score Matching and Gaussian Diffusion to SDEs
+
+<div class="columns">
+<div>
+
+## Score matching → NCSN
+
+Fit one denoising score network across noise levels.
+
+$$
+\bx_t=\bx_0+\sigma_t\bepsilon.
+$$
+
+</div>
+<div v-click="1">
+
+## Gaussian diffusion → DDPM
+
+Predict the added noise to learn the reverse chain.
+
+$$
+\bx_t=\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon.
+$$
+
+</div>
+</div>
+
+<div class="takeaway" v-click="2">
+
+**Weighted score matching → noise-prediction MSE.** Let $r_t$ be the noise standard deviation.
+
+$$
+r_t^2\bigl\|\bs_{\btheta,t}(\bx_t)+\bepsilon/r_t\bigr\|^2
+=\bigl\|\bepsilon_{\btheta,t}(\bx_t)-\bepsilon\bigr\|^2,\qquad \bepsilon_{\btheta,t}=-r_t\bs_{\btheta,t}.
+$$
+
+</div>
+
+<div class="block" v-click="3">
+
+## ODE → SDE
+
+$$
+d\bx={\color{teal}\bff(\bx,t)}\,dt
+\quad\xrightarrow{\text{add Brownian noise}}\quad
+d\bx={\color{teal}\bff(\bx,t)}\,dt+{\color{#8854c0}g(t)}\,d\bw.
+$$
+
+</div>
+
+<div class="columns" v-click="4">
+<div>
+
+## Variance Exploding SDE (NCSN)
+
+This process matches the NCSN noise levels.
+
+$$
+d\bx={\color{#8854c0}\sqrt{\tfrac{d[\sigma^2(t)]}{dt}}}\,d\bw.
+$$
+
+</div>
+<div>
+
+## Variance Preserving SDE (DDPM)
+
+This is the small-step limit of the DDPM forward chain.
+
+$$
+d\bx={\color{teal}-\tfrac12\beta(t)\bx(t)}\,dt+{\color{#8854c0}\sqrt{\beta(t)}}\,d\bw.
+$$
+
+</div>
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/1907.05600">Song &amp; Ermon, Generative Modeling by Estimating Gradients of the Data Distribution, 2019</a> · <a href="https://arxiv.org/abs/2006.11239">Ho et al., Denoising Diffusion Probabilistic Models, 2020</a><br><a href="https://arxiv.org/abs/2011.13456">Song et al., Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
+
+---
+clicks: 0
 id: summary
 class: summary
 ---
@@ -1502,3 +1583,4 @@ class: summary
 - An SDE defines a stochastic process with drift and diffusion terms; ODEs are a special case of SDEs.
 - The KFP equation describes the probability dynamics of an SDE.
 - The Langevin SDE preserves a constant probability path.
+- The VE-SDE matches the Gaussian perturbations used by NCSN. The VP-SDE is the continuous-time limit of the DDPM forward chain.

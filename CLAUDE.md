@@ -86,18 +86,19 @@ sufficient. After substantive changes, review all bullets together: consolidate,
 replace or remove stale takeaways rather than continually appending new ones.
 Typos alone do not require a Summary rewrite.
 
-Each lecture after the first opens with Recap slides. Check both incoming and
-outgoing Recaps after substantive changes. Existing repeated definitions, formulas,
-notation, algorithms, block titles and source citations must faithfully match the
-previous lecture. Check coverage of its new main results separately from fidelity
-of existing recap text: matching formulas does not prove adequate coverage.
+Each lecture after the first opens with a Recap assembled from the previous
+lecture’s main blocks, statements and formulas. Copy the selected material
+verbatim, including the assumptions needed to use each result, its notation
+and its source citations. Shorten by omitting intermediate derivations,
+explanations and secondary details. Any accompanying text must also come
+from the previous lecture. After substantive changes, check both incoming
+and outgoing Recaps for coverage of the main results and fidelity of each excerpt.
 
 Every Recap uses `clicks: 0`, with no reveal directives or click-dependent visibility.
 Prefer adding a missing result to an existing slide on the same topic. Add a slide
 only when space or topic coherence requires it. Do not shrink fonts, compress
 formulas or broadly reorganize Recaps to meet a numeric cap; there is no such cap.
-Recaps summarize results rather than full proofs/examples. Unresolved choices of
-emphasis are editorial questions, not permission to invent author approval.
+Refer unresolved choices of emphasis to the author.
 
 ## Validation and presentation
 

@@ -12,7 +12,7 @@ const errors=[],http=[],external=[],states=[]
 page.on('pageerror',e=>errors.push(String(e)));page.on('response',r=>{if(r.status()>=400)http.push([r.status(),r.url()])})
 await context.route('**/*',route=>{const url=new URL(route.request().url());if(['http:','https:'].includes(url.protocol)&&url.origin!==new URL(base).origin){external.push(url.href);return route.abort()}return route.continue()})
 const slide=title=>map.find(s=>s.title===title)
-const selected=[slide('Numerical Solution of ODEs: Euler and Heun'),slide('Divergence: Where Does the Density Go?'),slide('Langevin: Moving Particles, Stationary Density')]
+const selected=[slide('ODE Solvers: Accuracy and Cost'),slide('Langevin: Moving Particles, Stationary Density')]
 const data=demo=>demo.evaluate(el=>({...el.dataset}))
 async function go(s,query=''){await page.goto(`${base}/${s.slide}${query}`,{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);return page.locator('[data-demo]:visible')}
 async function snapshot(name){
@@ -34,8 +34,7 @@ try{
     await demo.getByRole('button',{name:String(n),exact:true}).click();await demo.getByRole('button',{name:'Complete',exact:true}).click();assert.equal(+(await data(demo)).count,n);await snapshot(`solver-${n}`)
   }
   await demo.getByRole('button',{name:'Reset',exact:true}).click();await demo.getByRole('button',{name:'One step',exact:true}).click();assert.equal(+(await data(demo)).count,2);await reentry(demo,selected[0])
-  demo=await go(selected[1]);for(const mode of ['Expansion','Contraction','Shear']){await demo.getByRole('button',{name:mode,exact:true}).click();for(const t of ['0','0.75','1.5']){await demo.getByRole('slider').fill(t);await snapshot(`patch-${mode}-${t}`)}}await reentry(demo,selected[1])
-  demo=await go(selected[2]);for(const mode of ['Drift only','Diffusion only','Both']){await demo.getByRole('button',{name:mode,exact:true}).click();for(const step of ['0','60','120']){await demo.getByRole('slider').fill(step);await snapshot(`stationary-${mode.replaceAll(' ','-')}-${step}`)}}await reentry(demo,selected[2])
+  demo=await go(selected[1]);for(const mode of ['Drift only','Diffusion only','Both']){await demo.getByRole('button',{name:mode,exact:true}).click();for(const step of ['0','60','120']){await demo.getByRole('slider').fill(step);await snapshot(`stationary-${mode.replaceAll(' ','-')}-${step}`)}}await reentry(demo,selected[1])
   await demo.getByRole('button',{name:'Reset',exact:true}).click();await demo.getByRole('button',{name:'Step',exact:true}).click();assert.equal(+(await data(demo)).step,1);await demo.getByRole('button',{name:'Run',exact:true}).click();await page.waitForFunction(()=>+document.querySelector('[data-demo="stationary-langevin"]').dataset.step>3);await page.locator('.slidev-layout:visible h1').click();await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowLeft');assert.equal((await data(demo)).running,'false')
   for(const s of selected){
     demo=await go(s,'?tools');const slider=demo.getByRole('slider')
@@ -46,6 +45,65 @@ try{
     await cdp.detach();await snapshot(`pen-${s.slide}`);await pen.click()
     await go(s,'?print');assert.equal(await page.locator('[data-demo]:visible .demo-controls').count(),0);await snapshot(`print-${s.slide}`)
   }
+  const wienerSlide = map.find(s => s.id === 'stochastic-differential-equation-sde')
+  demo = await go(wienerSlide)
+  const time = demo.getByRole('slider', { name: 'Brownian motion time' })
+  const paths = () => demo.locator('svg g path').evaluateAll(lines => lines.map(line => line.getAttribute('d')))
+  await time.fill('5')
+  const fullPaths = await paths()
+  assert.equal(new Set(fullPaths).size, 5)
+  await time.fill('2.5')
+  const halfPaths = await paths()
+  halfPaths.forEach((line, i) => assert.ok(fullPaths[i].startsWith(line) && fullPaths[i].length > line.length))
+  await time.fill('0')
+  const origins = await paths()
+  assert.equal(new Set(origins).size, 1)
+  assert.ok(!origins[0].includes('L'))
+  await time.focus()
+  await page.keyboard.press('ArrowRight')
+  assert.equal(await time.inputValue(), '0.01')
+  await time.fill('2.5')
+  assert.deepEqual(await paths(), halfPaths)
+  await snapshot('wiener-half')
+  await page.locator('.slidev-layout:visible h1').click()
+  await page.keyboard.press('ArrowDown')
+  await page.waitForURL(new RegExp(`/${wienerSlide.slide + 1}(?:\\?|$)`))
+  await page.keyboard.press('ArrowUp')
+  await time.waitFor({ state: 'visible' })
+  assert.equal(await time.inputValue(), '2.5')
+  demo = await go(wienerSlide, '?print')
+  assert.equal(await demo.getByRole('slider').count(), 0)
+  assert.deepEqual(await paths(), fullPaths)
+  await snapshot('wiener-print')
+  const trajectorySlide = map.find(s => s.id === 'stochastic-differential-equation-sde-3')
+  await go(trajectorySlide)
+  const plots = page.locator('.slidev-layout:visible svg.trajectory-plot')
+  assert.equal(await plots.count(), 2, 'Both trajectory plots must render in the browser')
+  for (const expected of [0, 1, 2]) {
+    if (expected) await page.keyboard.press('ArrowRight')
+    await page.waitForFunction(count => {
+      const layout = [...document.querySelectorAll('.slidev-layout')].find(el => el.getBoundingClientRect().width > 0)
+      return [...layout.querySelectorAll('svg.trajectory-plot')].filter(el => el.checkVisibility({opacityProperty: true, visibilityProperty: true})).length === count
+    }, expected)
+  }
+  const pairs = await plots.evaluateAll(figures => figures.map(svg =>
+    [...svg.querySelectorAll('g path')].map(line => {
+      if (line.getTotalLength() <= 0) throw new Error('Empty trajectory curve')
+      return line.getAttribute('d')
+    })
+  ))
+  assert.deepEqual(pairs.map(pair => pair.length), [2, 2])
+  assert.notEqual(pairs[0][0], pairs[0][1])
+  assert.equal(pairs[0][0], pairs[1][0])
+  const vertices = d => [...d.matchAll(/[ML](-?[\d.]+),(-?[\d.]+)/g)].map(([, x, y]) => [Number(x), Number(y)])
+  const [upper, lower] = pairs[1].map(vertices)
+  const gap = lower[0][1] - upper[0][1]
+  assert.ok(gap > 0, 'The shared-noise solutions must start at different heights')
+  assert.equal(lower.length, upper.length)
+  upper.forEach(([x, y], i) => {
+    assert.equal(lower[i][0], x)
+    assert.ok(Math.abs(lower[i][1] - y - gap) < 1e-6, 'Brownian increments must match')
+  })
   assert.deepEqual(errors,[]);assert.deepEqual(http,[]);assert.deepEqual(external,[])
   console.log(`Lecture 9: ${states.length} states passed; presets, endpoints, step/run/pause, reentry, keyboard, offline, print, synthetic pen.`)
 }finally{writeFileSync(resolve(qa,'report.json'),JSON.stringify({states,errors,http,external},null,2));await browser.close()}

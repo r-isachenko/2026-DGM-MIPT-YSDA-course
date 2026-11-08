@@ -37,46 +37,6 @@ Roman Isachenko
 
 ---
 clicks: 0
-id: recap-of-previous-lecture
-class: theorems
----
-
-# Recap of Previous Lecture
-
-$$
-d\bx=\bff(\bx,t)dt+g(t)d\bw
-$$
-
-<div class="block">
-
-## Variance Exploding SDE (NCSN)
-
-$$
-d\bx=\sqrt{\frac{d[\sigma^2(t)]}{dt}}\cdot d\bw,\quad\bff(\bx,t)=0,\quad g(t)=\sqrt{\frac{d[\sigma^2(t)]}{dt}}
-$$
-
-The variance grows since $\sigma(t)$ is a monotonically increasing function.
-
-</div>
-<div class="block">
-
-## Variance Preserving SDE (DDPM)
-
-$$
-\begin{aligned}
-d\bx&=-\frac12\beta(t)\bx(t)dt+\sqrt{\beta(t)}\cdot d\bw\\
-\bff(\bx,t)&=-\frac12\beta(t)\bx(t),\quad g(t)=\sqrt{\beta(t)}
-\end{aligned}
-$$
-
-The variance is preserved if $\bx(0)$ has unit variance.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 0
 id: recap-of-previous-lecture-2
 class: theorems
 ---

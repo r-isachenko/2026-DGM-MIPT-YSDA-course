@@ -10,6 +10,8 @@ Before editing, read `CLAUDE.md` for shared course conventions and
 - Use `.agents/skills/lecture-audit` for a full audit and the notation-lint,
   recap-sync, summary-sync and readme-sync skills for focused checks.
   Read the selected skill and shared context before checking.
+- Build every Recap from the previous lecture’s main blocks and formulas.
+  Copy them verbatim and omit intermediate derivations and secondary details.
 - For a topic move, use recap-sync and its topic-transfer procedure before
   declaring the move complete; include dependent lectures even if not named
   in the request. Preserve source-only or report-only limits.

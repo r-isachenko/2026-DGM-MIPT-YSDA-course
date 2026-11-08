@@ -900,7 +900,7 @@ $\lambda_t<0$: noise dominates.
 
 <NoiseScheduleDemo />
 
-**Same timestep, different noise level.**
+Linear $\beta_t$ or cosine-squared $\bar{\alpha}_t$.
 
 </div>
 </div>

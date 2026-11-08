@@ -88,9 +88,7 @@ For a smooth field on a fixed interval, compare global error and **NFE** (veloci
 - **Heun:** $\cO(h^2)$ global error, **2** evaluations per step, averaging the current and predicted endpoint velocities.
 
 <!--
-Recap keeps the global-error/NFE comparison needed by the solver discussion. The
-previous lecture also distinguishes one-step error from an exact starting point,
-O(h^{p+1}) for global order p; that secondary qualification is not repeated here.
+Recap keeps the global-error/NFE comparison needed by the solver discussion.
 Euler and Heun's displayed global orders assume a smooth field on a fixed interval.
 -->
 
@@ -369,219 +367,35 @@ $$
 
 ---
 clicks: 0
-id: outline
+id: recap-ve-vp-sdes
 class: theorems
 ---
 
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item"><span>01</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-<div class="outline-item"><span>02</span><div>Probability Flow ODE</div></div>
-<div class="outline-item"><span>03</span><div>Reverse SDE</div></div>
-<div class="outline-item"><span>04</span><div>Score-Based Generative Models Through SDEs</div></div>
-<div class="outline-item"><span>05</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>06</span><div>Flow Matching (FM)</div></div>
-
-</div>
-
----
-clicks: 0
-id: outline-2
-section: "Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)"
-class: theorems
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item current"><span>01</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-<div class="outline-item"><span>02</span><div>Probability Flow ODE</div></div>
-<div class="outline-item"><span>03</span><div>Reverse SDE</div></div>
-<div class="outline-item"><span>04</span><div>Score-Based Generative Models Through SDEs</div></div>
-<div class="outline-item"><span>05</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>06</span><div>Flow Matching (FM)</div></div>
-
-</div>
-
----
-clicks: 4
-id: score-matching-sde
-class: theorems
----
-
-# Score Matching SDE
-
-<div class="block">
-
-## Denoising Score Matching
-
-$$
-\begin{aligned}
-\bx_t &= \bx + \sigma_t \cdot \bepsilon_t, & q(\bx_t | \bx) &= \cN(\bx, \sigma_t^2 \cdot \bI) \\
-			\bx_{t-1} &= \bx + \sigma_{t-1} \cdot \bepsilon_{t-1}, & q(\bx_{t-1} | \bx) &= \cN(\bx, \sigma_{t-1}^2 \cdot \bI)
-\end{aligned}
-$$
-
-</div>
-
-<div v-click="1">
-
-$$
-\bx_t = \bx_{t - 1} + \sqrt{\sigma^2_t - \sigma^2_{t-1}} \cdot \bepsilon, \quad q(\bx_{t} | \bx_{t-1}) = \cN(\bx_{t-1}, (\sigma_t^2 - \sigma_{t-1}^2) \cdot \bI)
-$$
-
-</div>
-
-<div v-click="2">
-
-Let's transform this Markov chain into the continuous stochastic process $\bx(t)$ by letting $T \rightarrow \infty$:
-
-</div>
-
-<div v-click="2">
-
-$$ {1|1-2|all} {at:3}
-\begin{aligned}
-\bx(t) &= \bx(t - dt) + \sqrt{\sigma^2(t) - \sigma^2(t - dt)} \cdot {\color{#8854c0}\bepsilon}
-\\ &= \bx(t - dt) + \sqrt{\frac{\sigma^2(t) - \sigma^2(t - dt)}{dt} {\color{#8854c0}dt}} \cdot {\color{#8854c0}\bepsilon}
-\\ &= \bx(t - dt) + \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot {\color{#8854c0}d \bw}
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 2
-id: score-matching-sde-2
-class: theorems
----
-
-# Score Matching SDE
-
-$$
-\bx(t) = \bx(t - dt) + \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw
-$$
-
-$$
-d\bx = \bx(t) - \bx(t - dt)
-$$
-
-<div class="block" v-click="1">
-
-## Variance Exploding SDE
-
-<div v-click="1">
-
-$$
-d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw
-$$
-
-</div>
-
-<div v-click="1">
-
-$\sigma(t)$ is a monotonically increasing function.
-
-</div>
-
-</div>
-
-<div v-click="2">
+# Recap of Previous Lecture
 
 $$
 d\bx = \bff(\bx, t) dt + g(t) d \bw
 $$
 
-</div>
+<div class="block">
 
-<div v-click="2">
+## Variance Exploding SDE (NCSN)
 
 $$
-\bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}}
+d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw, \qquad \bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}}
 $$
 
+$\sigma(t)$ is a monotonically increasing function.
+
 </div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 3
-id: diffusion-sde
-class: theorems
----
-
-# Diffusion SDE
 
 <div class="block">
 
-## Denoising Diffusion
+## Variance Preserving SDE (DDPM)
 
 $$
-\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon_t, \quad q(\bx_t | \bx_{t-1}) = \cN(\sqrt{1 - \beta_t} \cdot \bx_{t-1}, \beta_t \cdot \bI)
+d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw, \qquad \bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t) , \quad g(t) = \sqrt{\beta(t)}
 $$
-
-</div>
-
-<div v-click="1">
-
-Let's turn this Markov chain into a continuous stochastic process by letting $T \rightarrow \infty$ and setting $\beta_t = \beta(\frac{t}{T}) \cdot \frac{1}{T}$ (where $dt = \frac{1}{T}$):
-
-</div>
-
-<div v-click="1">
-
-$$ {1|1-2|all} {at:2}
-\begin{aligned}
-{\color{teal}\bx(t)} &= \sqrt{1 - \beta(t) dt} \cdot \bx(t - dt) + \sqrt{\beta(t)dt} \cdot \bepsilon\\
-&\approx \left(1 - \frac{1}{2} \beta(t) dt\right) \cdot \bx(t - dt) + \sqrt{\beta(t){\color{#8854c0}dt}} \cdot {\color{#8854c0}\bepsilon}\\
-&= {\color{teal}\bx(t - dt)} - \frac{1}{2} \beta(t) \bx(t - dt) dt  + \sqrt{\beta(t)} \cdot {\color{#8854c0}d \bw}
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 1
-id: diffusion-sde-2
-class: theorems
----
-
-# Diffusion SDE
-
-$$
-\bx(t) = \bx(t - dt) - \frac{1}{2} \beta(t) \bx(t - dt) dt  + \sqrt{\beta(t)} \cdot {\color{#8854c0}d \bw}
-$$
-
-<div class="block" v-click="1">
-
-## Variance Preserving SDE
-
-<div v-click="1">
-
-$$
-d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw
-$$
-
-</div>
-
-<div v-click="1">
-
-$$
-\bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t) , \quad g(t) = \sqrt{\beta(t)}
-$$
-
-</div>
-
-</div>
-
-<div v-click="1">
 
 Variance is preserved as long as $\bx(0)$ has unit variance.
 
@@ -590,52 +404,22 @@ Variance is preserved as long as $\bx(0)$ has unit variance.
 <div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
 
 ---
-clicks: 1
-id: diffusion-sde-3
+clicks: 0
+id: outline
 class: theorems
 ---
 
-# Diffusion SDE
+# Outline
 
-$$
-d\bx = {\color{teal}\bff(\bx, t)} dt + {\color{#8854c0}g(t)} d \bw
-$$
+<div class="course-outline">
 
-<div class="block" v-click="1">
-
-## Variance Exploding SDE (NCSN)
-
-<div v-click="1">
-
-$$
-d \bx = {\color{#8854c0}\sqrt{\frac{ d [\sigma^2(t)]}{dt}}} \cdot d \bw
-$$
+<div class="outline-item"><span>01</span><div>Probability Flow ODE</div></div>
+<div class="outline-item"><span>02</span><div>Reverse SDE</div></div>
+<div class="outline-item"><span>03</span><div>Score-Based Generative Models Through SDEs</div></div>
+<div class="outline-item"><span>04</span><div>Denoiser Parameterization and Sampling</div></div>
+<div class="outline-item"><span>05</span><div>Flow Matching (FM)</div></div>
 
 </div>
-
-</div>
-
-<div class="block" v-click="1">
-
-## Variance Preserving SDE (DDPM)
-
-<div v-click="1">
-
-$$
-d \bx = {\color{teal}- \frac{1}{2} \beta(t) \bx(t)} dt + {\color{#8854c0}\sqrt{\beta(t)}} \cdot d \bw
-$$
-
-</div>
-
-</div>
-
-<div v-click="1">
-
-We treat the discrete-time methods (NCSN, DDPM) as a special case of the continuous-time methods (VE-SDE, VP-SDE).
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2206.00927">Lu C. et al. Dpm-solver: A fast ode solver for diffusion probabilistic model sampling in around 10 steps, 2022</a></div>
 
 ---
 clicks: 0
@@ -648,12 +432,11 @@ class: theorems
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-<div class="outline-item current"><span>02</span><div>Probability Flow ODE</div></div>
-<div class="outline-item"><span>03</span><div>Reverse SDE</div></div>
-<div class="outline-item"><span>04</span><div>Score-Based Generative Models Through SDEs</div></div>
-<div class="outline-item"><span>05</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>06</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item current"><span>01</span><div>Probability Flow ODE</div></div>
+<div class="outline-item"><span>02</span><div>Reverse SDE</div></div>
+<div class="outline-item"><span>03</span><div>Score-Based Generative Models Through SDEs</div></div>
+<div class="outline-item"><span>04</span><div>Denoiser Parameterization and Sampling</div></div>
+<div class="outline-item"><span>05</span><div>Flow Matching (FM)</div></div>
 
 </div>
 
@@ -1080,12 +863,11 @@ class: theorems
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-<div class="outline-item"><span>02</span><div>Probability Flow ODE</div></div>
-<div class="outline-item current"><span>03</span><div>Reverse SDE</div></div>
-<div class="outline-item"><span>04</span><div>Score-Based Generative Models Through SDEs</div></div>
-<div class="outline-item"><span>05</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>06</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item"><span>01</span><div>Probability Flow ODE</div></div>
+<div class="outline-item current"><span>02</span><div>Reverse SDE</div></div>
+<div class="outline-item"><span>03</span><div>Score-Based Generative Models Through SDEs</div></div>
+<div class="outline-item"><span>04</span><div>Denoiser Parameterization and Sampling</div></div>
+<div class="outline-item"><span>05</span><div>Flow Matching (FM)</div></div>
 
 </div>
 
@@ -1502,12 +1284,11 @@ class: theorems
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-<div class="outline-item"><span>02</span><div>Probability Flow ODE</div></div>
-<div class="outline-item"><span>03</span><div>Reverse SDE</div></div>
-<div class="outline-item current"><span>04</span><div>Score-Based Generative Models Through SDEs</div></div>
-<div class="outline-item"><span>05</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>06</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item"><span>01</span><div>Probability Flow ODE</div></div>
+<div class="outline-item"><span>02</span><div>Reverse SDE</div></div>
+<div class="outline-item current"><span>03</span><div>Score-Based Generative Models Through SDEs</div></div>
+<div class="outline-item"><span>04</span><div>Denoiser Parameterization and Sampling</div></div>
+<div class="outline-item"><span>05</span><div>Flow Matching (FM)</div></div>
 
 </div>
 
@@ -1915,12 +1696,11 @@ class: theorems
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-<div class="outline-item"><span>02</span><div>Probability Flow ODE</div></div>
-<div class="outline-item"><span>03</span><div>Reverse SDE</div></div>
-<div class="outline-item"><span>04</span><div>Score-Based Generative Models Through SDEs</div></div>
-<div class="outline-item current"><span>05</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>06</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item"><span>01</span><div>Probability Flow ODE</div></div>
+<div class="outline-item"><span>02</span><div>Reverse SDE</div></div>
+<div class="outline-item"><span>03</span><div>Score-Based Generative Models Through SDEs</div></div>
+<div class="outline-item current"><span>04</span><div>Denoiser Parameterization and Sampling</div></div>
+<div class="outline-item"><span>05</span><div>Flow Matching (FM)</div></div>
 
 </div>
 
@@ -2244,12 +2024,11 @@ class: theorems
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-<div class="outline-item"><span>02</span><div>Probability Flow ODE</div></div>
-<div class="outline-item"><span>03</span><div>Reverse SDE</div></div>
-<div class="outline-item"><span>04</span><div>Score-Based Generative Models Through SDEs</div></div>
-<div class="outline-item"><span>05</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item current"><span>06</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item"><span>01</span><div>Probability Flow ODE</div></div>
+<div class="outline-item"><span>02</span><div>Reverse SDE</div></div>
+<div class="outline-item"><span>03</span><div>Score-Based Generative Models Through SDEs</div></div>
+<div class="outline-item"><span>04</span><div>Denoiser Parameterization and Sampling</div></div>
+<div class="outline-item current"><span>05</span><div>Flow Matching (FM)</div></div>
 
 </div>
 
@@ -2490,12 +2269,6 @@ class: summary
 # Summary
 
 <ul>
-
-<li>
-
-Score matching (NCSN) and diffusion models (DDPM) are discretizations of SDEs (variance exploding and variance preserving).
-
-</li>
 
 <li>
 
