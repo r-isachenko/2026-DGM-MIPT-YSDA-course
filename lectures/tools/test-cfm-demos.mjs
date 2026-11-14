@@ -1,5 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { denoiser, denoiserStep } from '../lecture11/lib/denoiser.mjs'
+import { transport } from '../lecture11/lib/transport.mjs'
 import {conditionalVelocities,averageVelocity,cloudDensity,cloudSigma,posteriorWeight,particles,endpoint,interpolate,density} from '../lecture11/lib/cfm-demos.mjs'
 const close=(a,b,tol=1e-7)=>assert.ok(Math.abs(a-b)<tol,`${a} != ${b}`)
 test('posterior mean minimizes the conditional squared error',()=>{
@@ -70,4 +72,15 @@ test('integrated marginal ODE preserves quantiles and particle order',async()=>{
  const final=odePaths.map(p=>p.at(-1)),target=trainingPairs.map(p=>p.x1).sort((a,b)=>a-b)
  final.forEach((x,i)=>close(x,target[i],2e-6))
  assert.ok(odePaths.some(p=>Math.abs(p[integrationSteps/2]-(p[0]+p.at(-1))/2)>.2),'sampling trajectories should visibly curve')
+})
+
+test('Transport flows share endpoints, stay invertible, and have distinct intermediate paths',()=>{
+ for(const z of [[0,0],[1,2],[-2,1]])for(const mode of ['Detour','Rotation'])for(const t of [0,1])transport(z,t,mode).forEach((v,i)=>close(v,transport(z,t)[i]));
+ for(const t of [0,.2,.5,.8,1])for(const mode of ['Direct','Detour','Rotation']){const origin=transport([0,0],t,mode),a=transport([1,0],t,mode).map((v,i)=>v-origin[i]),b=transport([0,1],t,mode).map((v,i)=>v-origin[i]);close(a[0]*b[1]-a[1]*b[0],(1-.45*t)*(1-.2*t))}
+ assert.notDeepEqual(transport([1,0],.5),transport([1,0],.5,'Rotation'));assert.notDeepEqual(transport([0,0],.5),transport([0,0],.5,'Detour'))
+})
+
+test('Denoiser Euler step is interpolation and terminates safely at zero noise',()=>{
+ for(const x of [[0,2.4],[-3,1.5],[3,2]])for(const sigma of [.01,.5,2.5])for(const r of [0,.25,.9,1]){const d=denoiser(x,sigma),actual=denoiserStep(x,sigma,r*sigma);actual.forEach((a,i)=>close(a,x[i]+(r*sigma-sigma)*(x[i]-d[i])/sigma));if(r===0)assert.deepEqual(actual,d)}
+ assert.deepEqual(denoiserStep([1,2],0,0),[1,2])
 })

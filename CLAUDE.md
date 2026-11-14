@@ -23,6 +23,8 @@ or handwritten `D_{KL}`. Search current lectures before adding new notation.
 Examples: `\bx`, `\bz`, `\btheta`, `\bepsilon`, `\cN`, `\bbE`, `\KL`, `\pt`, `\qagg`.
 Add missing macros to `theme/setup/macros.json`, never local lecture definitions.
 Keep parameters, indices, conditioning and operators consistent across lectures.
+Use lowercase letters for random variables, including scalar processes such as
+$x_t$ and Wiener noise $w_t$. Use the shared lowercase bold macros for random vectors.
 
 Every paper-derived result, figure or claim needs a visible `.source` block with
 its original link and short author/title/year citation. Prefer canonical arXiv
@@ -30,13 +32,48 @@ its original link and short author/title/year citation. Prefer canonical arXiv
 assets are imported by theme components. Record new image provenance and hashes
 in `public/figs/sources.json`. Resources and fonts must work without network access.
 
-## Narrative and structure
+## Author's slide style
+
+- **Build on what the audience already knows.** Introduce a method through
+  the problem it solves. Return to that problem when the result answers it.
+  When continuing a derivation, start from the equation in the form students
+  actually saw and show the change of form. Describe each step using terms
+  already defined for the audience. Choose examples students can
+  follow with the tools introduced so far. When proposing or
+  reviewing a new slide, identify what leads into it, the step it contributes
+  and what follows. Check the neighbors across Outline transitions too.
+- **Make the reasoning readable aloud.** Keep the precise statement and its
+  assumptions visible. Group equations by mathematical operation and explain
+  the step a student would otherwise have to guess. Give the result a brief
+  interpretation where it is used. Leave further commentary to the lecturer.
+  For a comparison, put the two expressions or diagrams in view together
+  when possible. Align corresponding terms, identify what stays the same,
+  and say what the difference means in practice.
+- **Give the audience a clear place to look.** Center standalone equations
+  in their available space. Keep related expressions together and leave
+  breathing room between stages of the argument. Give the main figure room
+  at projection size. When a diagram recurs, preserve its scale so changes
+  are easy to see. Use the established blocks and colors to signal each
+  element's role. Match highlighted symbols to the quantities in the plot
+  and place the labels or formula needed to read it nearby.
+- **Make a demonstration answer a specific question.** Choose an initial
+  state that already shows the comparison. Each control should change a
+  quantity students can identify, with the relevant reference held fixed.
+  Check that the visible behavior agrees with the mathematics. For example,
+  animating a parallel computation one item at a time can teach the wrong
+  dependency. Use a static figure when it already shows the whole point.
+- **Give each idea the space it earns.** In a revision, preserve the parts
+  of the existing explanation that already work. If adjacent slides lead to
+  the same takeaway, combine them and keep the formula or figure that makes it clear.
+  If compression hides a necessary step, use the next slide and carry the
+  starting equation or diagram across. A variant that adds one observation
+  can often fit beside the method it qualifies. In a Recap, select the exact
+  results students need to recall. In a Summary, synthesize related results.
+
+## Course structure and terminology
 
 - Lecture content is English. Refer to earlier concepts by topic, not lecture number.
-- Every new slide must follow the previous idea, prepare the next idea, and develop
-  its own argument step by step. Check actual neighbors, including across Outline
-  transitions. Move or split a slide when its narrative links are weak; record the
-  three links when proposing/reviewing new slides.
+- Place a topic where its prerequisites are available and its result will be used.
 - Outline slides contain only the agenda, never definitions or teaching content.
 - Root `README.md` is the schedule: Materials bullets mirror ordered sections and
   subsections. Update it with section changes, preserving dates and publication

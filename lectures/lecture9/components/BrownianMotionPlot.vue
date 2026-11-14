@@ -5,7 +5,9 @@ import { wienerState } from '../lib/demo-state'
 import { colors, normalGenerator, path } from '../lib/dynamics-demos.mjs'
 import '../lib/demos.css'
 
+const props = defineProps<{ staticView?: boolean }>()
 const { isPrintMode } = useNav()
+const showFullPaths = computed(() => props.staticView || isPrintMode.value)
 const duration = 5
 const steps = 500
 const dt = duration / steps
@@ -26,7 +28,7 @@ const paths = lineColors.map(() => {
 const limit = Math.ceil(Math.max(...paths.flat().map(([, value]) => Math.abs(value))))
 const px = (time: number) => 48 + 480 * time / duration
 const py = (value: number) => 120 - 96 * value / limit
-const step = computed(() => isPrintMode.value ? steps : Math.round(wienerState.time / dt))
+const step = computed(() => showFullPaths.value ? steps : Math.round(wienerState.time / dt))
 const time = computed(() => step.value * dt)
 const curves = computed(() => paths.map(points => ({
   d: path(points.slice(0, step.value + 1), px, py),
@@ -48,14 +50,14 @@ const curves = computed(() => paths.map(points => ({
         <text :x="px(tick)" y="239" text-anchor="middle">{{ tick }}</text>
       </g>
       <text x="548" y="239" font-style="italic">t</text>
-      <line v-if="!isPrintMode" :x1="px(time)" :x2="px(time)" y1="24" y2="216"
+      <line v-if="!showFullPaths" :x1="px(time)" :x2="px(time)" y1="24" y2="216"
         :stroke="colors.muted" stroke-dasharray="4 5" />
       <g v-for="(curve, i) in curves" :key="i" :stroke="lineColors[i]">
         <path :d="curve.d" fill="none" stroke-width="1.9" stroke-linejoin="round" />
         <circle :cx="px(time)" :cy="curve.y" r="3.1" :fill="lineColors[i]" />
       </g>
     </svg>
-    <div v-if="!isPrintMode" class="demo-controls">
+    <div v-if="!showFullPaths" class="demo-controls">
       <label>Time <input v-model.number="wienerState.time" type="range"
         min="0" :max="duration" :step="dt" aria-label="Brownian motion time" />
         <output>{{ time.toFixed(2) }}</output>

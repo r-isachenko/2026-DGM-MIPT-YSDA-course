@@ -3,6 +3,27 @@
 Before editing, read `CLAUDE.md` for shared course conventions and
 `.codex/project-context.md` for the author's later decisions.
 
+## Learning from slide edits
+
+Use [the author's slide style](CLAUDE.md#authors-slide-style) when drafting
+slides, proposing revisions or acting on critique. During an iteration,
+apply the author's latest correction to the slide at hand. When the author
+states a general preference, or the same reason explains corrections across
+slides, update the relevant principle in `CLAUDE.md` as part of that task.
+Use the author's feedback and accepted revisions as evidence.
+Read the surrounding principles together and merge or replace overlapping
+wording. A single local choice of size, color or detail stays with its slide
+unless the author gives it wider scope.
+
+If two directions appear to conflict, check which slide role, audience
+prerequisite or presentation state each serves. If both apply in the same
+situation and imply different edits, tell the author what each would mean
+for that slide and ask which should guide future work. Revise the shared
+principle once that choice is clear. Briefly mention any change to
+the style guide when reporting the slide edit.
+
+## Working on the course
+
 - Slidev sources in `lectures/lectureN/slides.md` are authoritative.
   Each lecture has one fully revealed `LectureN.pdf`; keep browser reveals.
 - All lectures share the approved Slidev Lecture 1 style. Commands and artifact

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useNav } from '@slidev/client'
-import L10Math from './L10Math.vue'
-import { denoiser, denoiserStep, cleanCenters } from '../lib/process-demos.mjs'
+import L11Math from './L11Math.vue'
+import { denoiser, denoiserStep, cleanCenters } from '../lib/denoiser.mjs'
 import { denoiserState as state } from '../lib/demo-state'
-import '../lib/demos.css'
 const {isPrintMode}=useNav()
 const current=computed(()=>isPrintMode.value?{x:[0,2.4],sigma:2.5,ratio:.5,history:[[0,2.4]],n:0}:state)
 const d=computed(()=>denoiser(current.value.x,current.value.sigma)),next=computed(()=>denoiserStep(current.value.x,current.value.sigma,current.value.sigma*current.value.ratio))
@@ -15,8 +14,8 @@ function step(){if(state.sigma<=0||state.n>=12)return;state.x=[...next.value];st
 const path=computed(()=>current.value.history.map((p,i)=>`${i?'L':'M'}${px(p[0])},${py(p[1])}`).join(' '))
 </script>
 <template>
-<DemoPanel class="l10-demo" data-demo="denoiser-step" :data-sigma="state.sigma" :data-ratio="state.ratio" :data-n="state.n" :data-x="state.x.join(',')">
-<div class="formula"><L10Math formula="\bx_{\mathrm{next}}=r\bx+(1-r)D_{\btheta}(\bx,\sigma),\qquad r=\sigma_{\mathrm{next}}/\sigma" /></div>
+<DemoPanel class="denoiser-demo" data-demo="denoiser-step" :data-sigma="state.sigma" :data-ratio="state.ratio" :data-n="state.n" :data-x="state.x.join(',')">
+<div class="formula"><L11Math formula="\bx_{\mathrm{next}}=r\bx+(1-r)D_{\btheta}(\bx,\sigma),\qquad r=\sigma_{\mathrm{next}}/\sigma" /></div>
 <div v-if="!isPrintMode" class="demo-controls"><button v-for="p in presets" :key="p.name" @click="reset(p.x)">{{p.name}}</button><label>r <input type="range" min="0" max=".9" step=".05" v-model.number="state.ratio" aria-label="Noise ratio"/><output>{{state.ratio.toFixed(2)}}</output></label><button class="primary" @click="step" :disabled="state.sigma===0||state.n===12">Step</button><button class="demo-reset" @click="reset()">Reset</button></div>
 <div v-else class="print-label">One Euler step: σ = 2.5 → 1.25. The next state lies halfway to the current denoiser prediction.</div>
 <div class="denoiser-body"><svg viewBox="0 0 600 350" role="img" aria-label="An Euler step towards the denoiser prediction">
@@ -35,5 +34,17 @@ const path=computed(()=>current.value.history.map((p,i)=>`${i?'L':'M'}${px(p[0])
 </DemoPanel>
 </template>
 <style scoped>
-.denoiser-body{display:grid;grid-template-columns:1.3fr 1fr;gap:30px}.denoiser-body svg{height:280px}.readouts{padding-top:20px;line-height:1.5}.readouts b{display:block;color:#007f82}.readouts p{margin:12px 0}.demo-controls input{width:110px}
+.formula { text-align: center; min-height: 36px; }
+.demo-controls { gap: 12px; margin: 10px 0 14px; }
+label { display: flex; align-items: center; gap: 10px; }
+.demo-controls input { width: 110px; min-height: 44px; accent-color: #007f82; }
+output { min-width: 44px; font-variant-numeric: tabular-nums; }
+.denoiser-body { display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; }
+.denoiser-body svg { display: block; width: 100%; height: 280px; }
+svg text { font: 18px Arial; fill: #587083; }
+.readouts { padding-top: 20px; line-height: 1.5; }
+.readouts b { display: block; color: #007f82; }
+.readouts p { margin: 12px 0; }
+.print-label { text-align: center; color: #587083; margin: 14px 0; }
+.demo-note { text-align: center; margin-top: 10px; }
 </style>

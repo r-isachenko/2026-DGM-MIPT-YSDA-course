@@ -1,8 +1,9 @@
+import { normal, rng } from './random.mjs'
+export { normal, rng } from './random.mjs'
+
 // Analytic Gaussian-mixture examples; no learned network or external data.
 export const T = 2, steps = 60, count = 384
 export const means = [-1.8, 1.8], cleanVariance = .25
-export function rng(seed=42) { let s=seed>>>0; return ()=>{s=(1664525*s+1013904223)>>>0;return (s+.5)/4294967296} }
-export function normal(random) {return Math.sqrt(-2*Math.log(random()))*Math.cos(2*Math.PI*random())}
 export function gaussian(x,m,v){return Math.exp(-((x-m)**2)/(2*v))/Math.sqrt(2*Math.PI*v)}
 export function density(x,t){return means.reduce((s,m)=>s+.5*gaussian(x,m,cleanVariance+2*t),0)}
 export function score(x,t){const v=cleanVariance+2*t, a=means.map(m=>gaussian(x,m,v));return a.reduce((s,w,i)=>s+w*(means[i]-x)/v,0)/(a[0]+a[1])}
@@ -19,8 +20,3 @@ export function simulation(reverse=false,seed=42){const key=`${reverse}-${seed}`
 for(let j=1;j<=steps;j++){const t=T-(j-1)*h;sde.push(sde[j-1].map(x=>reverse?reverseTransition(x,t,h,random):x+Math.sqrt(2*h)*normal(random)))}
 const result={sde,pf:reverse?[...pf].reverse():pf};caches.set(key,result);if(caches.size>8)caches.delete(caches.keys().next().value);return result}
 export function histogram(xs,min=-9,max=9,n=48){const bins=Array(n).fill(0),w=(max-min)/n;for(const x of xs){const k=Math.floor((x-min)/w);if(k>=0&&k<n)bins[k]++}return bins.map((v,i)=>({x:min+i*w,w,y:v/(xs.length*w)}))}
-export const cleanCenters=[[-2,-.8],[1.6,1]]
-export function denoiser(x,sigma){const v=.12+sigma*sigma,logw=cleanCenters.map(m=>-((x[0]-m[0])**2+(x[1]-m[1])**2)/(2*v)),max=Math.max(...logw),w=logw.map(l=>Math.exp(l-max)),sum=w[0]+w[1];return [0,1].map(d=>cleanCenters.reduce((s,m,i)=>s+w[i]/sum*(m[d]+.12/v*(x[d]-m[d])),0))}
-export function denoiserStep(x,sigma,next){if(sigma===0)return [...x];const d=denoiser(x,sigma),r=next/sigma;return x.map((v,i)=>r*v+(1-r)*d[i])}
-export function transport(z,t,mode='Direct'){const angle=mode==='Rotation'?1.3*Math.sin(Math.PI*t):0,c=Math.cos(angle),s=Math.sin(angle),a=1-.45*t,b=1-.2*t,mu=[-2+4*t,mode==='Detour'?1.6*Math.sin(Math.PI*t):0];return [mu[0]+a*(c*z[0]-s*z[1]),mu[1]+b*(s*z[0]+c*z[1])]}
-export const transportPoints=(()=>{const r=rng(77);return Array.from({length:96},()=>[normal(r),normal(r)])})()

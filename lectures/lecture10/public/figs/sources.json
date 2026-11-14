@@ -1,7 +1,1 @@
-{
-  "training-time-log-snr.svg": {
-    "source": "https://arxiv.org/abs/2303.00848",
-    "description": "Original analytic diagram. Uniform t in (0,1), lambda=log((1-t)/t), induced logistic density p(lambda)=t(1-t); dots show equally spaced t, not random samples. Generated from formulas for this course.",
-    "sha256": "9e7c89993998c4f07caedac5716453c5f87f6e8cb0294b5434855cc678f000c6"
-  }
-}
+{}

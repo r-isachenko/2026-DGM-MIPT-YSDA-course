@@ -2,7 +2,6 @@
 .l10-demo label { display:flex; align-items:center; gap:10px; }
 .l10-demo input { width:170px; min-height:44px; accent-color:#007f82; }
 .l10-demo output { min-width:44px; font-variant-numeric:tabular-nums; }
-.l10-demo .l10-heading { text-align:center; font-weight:650; color:#17324d; margin-bottom:6px; }
 .l10-demo .l10-legend { display:flex; justify-content:center; gap:24px; font-size:18px; margin:8px 0; }
 .l10-demo svg { display:block; width:100%; }
 .l10-demo svg text { font:18px Arial; fill:#587083; }
@@ -10,4 +9,3 @@
 .l10-demo .print-label { text-align:center; color:#587083; margin:14px 0; }
 .l10-demo .formula { text-align:center; min-height:36px; }
 .l10-demo .panels { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px; }
-.l10-demo .panels.three { grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
