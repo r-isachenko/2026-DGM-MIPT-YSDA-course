@@ -338,7 +338,6 @@ id: outline
 <div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item "><span>03</span><div>SDE Basics</div></div>
-<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
@@ -355,7 +354,6 @@ section: "Continuous-Time Normalizing Flows (CNF)"
 <div class="outline-item current"><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item "><span>03</span><div>SDE Basics</div></div>
-<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
@@ -725,7 +723,6 @@ section: "Continuity Equation for CNF Log-Likelihood"
 <div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item current"><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item "><span>03</span><div>SDE Basics</div></div>
-<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
@@ -857,7 +854,6 @@ section: "SDE Basics"
 <div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
 <div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
 <div class="outline-item current"><span>03</span><div>SDE Basics</div></div>
-<div class="outline-item "><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
 
 </div>
 
@@ -1118,13 +1114,15 @@ $$
 
 <div class="block" v-click="2">
 
-## Trace form of the Fokker–Planck equation
+## Equivalent trace form of the Fokker–Planck equation
 
 $$
 \frac{\partial p_t(\bx)}{\partial t}=\tr\left(-\frac{\partial}{\partial\bx}\bigl[\bff(\bx,t)p_t(\bx)\bigr]+\frac12g^2(t)\frac{\partial^2p_t(\bx)}{\partial\bx^2}\right)
 $$
 
 </div>
+
+<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025, §3.3</a></div>
 
 ---
 clicks: 2
@@ -1132,41 +1130,40 @@ id: stochastic-differential-equation-sde-6
 class: theorems
 ---
 
-# Stochastic Differential Equation (SDE)
-
-<div class="block">
-
-## Theorem (Kolmogorov-Fokker-Planck)
+# From the Fokker–Planck Equation to Probability Flux
 
 $$
-\frac{\partial p_t(\bx)}{\partial t}=\tr\left(-\frac{\partial}{\partial\bx}\bigl[\bff(\bx,t)p_t(\bx)\bigr]+\frac12g^2(t)\frac{\partial^2p_t(\bx)}{\partial\bx^2}\right)
-$$
-
-</div>
-
-
-- The KFP theorem is a necessary and sufficient condition (it uniquely defines $p_t(\bx)$).
-- This generalizes the continuity equation for continuous-time NF:
-
-$$
-\frac{d\log p_t(\bx(t))}{dt}=-\tr\left(\frac{\partial\bv(\bx(t),t)}{\partial\bx(t)}\right).
+\frac{\partial p_t(\bx)}{\partial t}=-\diver\left(\bff(\bx,t)p_t(\bx)\right)+\frac12 g^2(t)\Delta_{\bx}p_t(\bx)
 $$
 
 <div class="block" v-click="1">
 
-## Special Case: constant density $p_t(\bx)$
+## Combine drift and diffusion into one flux
 
-Let's find the SDE for which $p_t(\bx)=\text{const}$ (i.e., if $\bx(0)\sim p_0(\bx)$, then $\bx(t)\sim p_0(\bx)$.).
-
-<div v-click="2">
+Since $\Delta_{\bx}p_t=\diver(\nabla_{\bx}p_t)$ and $g(t)$ is independent of $\bx$,
 
 $$
-\frac{\partial p_t(\bx)}{\partial t}=0\quad\Leftrightarrow\quad\tr\left(-\frac{\partial}{\partial\bx}\bigl[\bff(\bx,t)p_t(\bx)\bigr]+\frac12g^2(t)\frac{\partial^2p_t(\bx)}{\partial\bx^2}\right)=0
+\frac{\partial p_t(\bx)}{\partial t}
+=-\diver\!\left(\underbrace{\bff(\bx,t)p_t(\bx)-\tfrac12 g^2(t)\nabla_{\bx}p_t(\bx)}_{\text{probability flux}}\right).
+$$
+
+With $g(t)=0$, only the drift flux remains. This gives the continuity equation for a CNF.
+
+</div>
+
+<div class="block" v-click="2">
+
+## When is the density stationary?
+
+We want $p_t(\bx)=p_0(\bx)$ for every $t$. At each $\bx$, the density must have zero time derivative:
+
+$$
+0=-\diver\!\left(\bff(\bx,t)p_0(\bx)-\tfrac12 g^2(t)\nabla_{\bx}p_0(\bx)\right).
 $$
 
 </div>
 
-</div>
+<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025, §3.3</a></div>
 
 ---
 clicks: 3
@@ -1176,33 +1173,31 @@ class: theorems
 
 # A Langevin Drift That Preserves the Target Density
 
-We want a positive target density to stay stationary. The Fokker–Planck condition is
+For a smooth target density $p_0(\bx)>0$, stationarity requires
 
 $$
-\frac{\partial p_t(\bx)}{\partial t}=0\quad\Leftrightarrow\quad\tr\left(-\frac{\partial}{\partial\bx}\bigl[\bff(\bx,t)p_t(\bx)\bigr]+\frac12g^2(t)\frac{\partial^2p_t(\bx)}{\partial\bx^2}\right)=0
+0=-\diver\!\left(\bff(\bx,t)p_0(\bx)-\tfrac12 g^2(t)\nabla_{\bx}p_0(\bx)\right).
 $$
 
 <div class="block" v-click="1">
 
-## Rewrite the trace as a divergence
+## Choose a drift that makes the flux zero
 
-Use $\tr(\partial\bv/\partial\bx)=\diver(\bv)$ for both $\bv=\bff\,p_t$ and $\bv=\nabla_{\bx}p_t$.
+One way to get zero divergence is to cancel the drift and diffusion fluxes at every $\bx$:
 
 $$
-0=-\diver\!\left(\underbrace{\bff(\bx,t)\,p_t(\bx)}_{\text{drift flux}}
-\;\underbrace{-\tfrac12 g^2(t)\nabla_{\bx}p_t(\bx)}_{\text{diffusion flux}}\right).
+\bff(\bx,t)p_0(\bx)=\tfrac12 g^2(t)\nabla_{\bx}p_0(\bx).
 $$
 
 </div>
 
 <div class="block" v-click="2">
 
-## Choose the drift so the two fluxes cancel
+## Divide by the target density to obtain the score
 
 $$
-\bff(\bx,t)\,p_t(\bx)=\tfrac12 g^2(t)\nabla_{\bx}p_t(\bx)
-\quad\Longrightarrow\quad
-\bff(\bx,t)=\tfrac12 g^2(t)\nabla_{\bx}\log p_t(\bx).
+\bff(\bx,t)=\tfrac12 g^2(t)\frac{\nabla_{\bx}p_0(\bx)}{p_0(\bx)}
+=\tfrac12 g^2(t)\nabla_{\bx}\log p_0(\bx).
 $$
 
 </div>
@@ -1212,10 +1207,14 @@ $$
 ## With $g(t)=1$, the Langevin drift is half the score
 
 $$
-d\bx={\color{#8854c0}\tfrac12\nabla_{\bx}\log p_t(\bx)\,dt}+{\color{olive}d\bw}.
+d\bx={\color{#8854c0}\tfrac12\nabla_{\bx}\log p_0(\bx)\,dt}+{\color{olive}d\bw}.
 $$
 
+If $\bx(0)\sim p_0$, then $\bx(t)\sim p_0$ for every $t$.
+
 </div>
+
+<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025, §3.3</a></div>
 
 ---
 clicks: 2
@@ -1225,43 +1224,45 @@ class: theorems
 
 # Langevin SDE (Special Case)
 
-Let's find the SDE for which $p_t(\bx)=\text{const}$ (i.e., if $\bx(0)\sim p_0(\bx)$, then $\bx(t)\sim p_0(\bx)$.).
-
-
 $$
-d\bx={\color{#8854c0}\frac12\frac{\partial}{\partial\bx}\log p_t(\bx)\,dt}+{\color{olive}1}\cdot d\bw
+d\bx={\color{#8854c0}\tfrac12\nabla_{\bx}\log p_0(\bx)\,dt}+{\color{olive}d\bw}.
 $$
 
+If $\bx(0)\sim p_0$, then $\bx(t)\sim p_0$ for every $t$.
 
 <div class="block" v-click="1">
 
 ## Discretized Langevin SDE
 
+For a step of length $\eta$, Euler–Maruyama gives
+
 $$
-\bx_{t+1}-\bx_t=\frac\eta2\cdot\frac{\partial}{\partial\bx}\log p_t(\bx)+\sqrt\eta\cdot\bepsilon,\quad\eta\approx dt.
+\bx_{k+1}-\bx_k=\frac{\eta}{2}\nabla_{\bx_k}\log p_0(\bx_k)+\sqrt{\eta}\,\bepsilon_k,
+\qquad \bepsilon_k\sim\cN(0,\bI).
 $$
 
 </div>
 
 <div v-click="2">
 
-Setting the stationary density to the model distribution, $p_t(\bx)=\pt(\bx)$ for all $t$:
+Set the target density to the model density, $p_0(\bx)=\pt(\bx)$.
 
 <div class="block">
 
-## Langevin Dynamic
+## Langevin Dynamics
 
 $$
-\bx_{t+1}=\bx_t+\frac\eta2\cdot\nabla_{\bx}\log\pt(\bx)+\sqrt\eta\cdot\bepsilon,\quad\eta\approx dt.
+\bx_{k+1}=\bx_k+\frac{\eta}{2}\nabla_{\bx_k}\log\pt(\bx_k)+\sqrt{\eta}\,\bepsilon_k,
+\qquad \bepsilon_k\sim\cN(0,\bI).
 $$
 
 </div>
 
-We (partially) explained, why Langevin dynamics is working.
+For a finite step size, this update approximates the continuous-time Langevin SDE.
 
 </div>
 
-<div class="source"><a href="https://www.stats.ox.ac.uk/~teh/research/compstats/WelTeh2011a.pdf">Welling M. Bayesian Learning via Stochastic Gradient Langevin Dynamics, 2011</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025, §3.3</a><br><a href="https://www.stats.ox.ac.uk/~teh/research/compstats/WelTeh2011a.pdf">Welling M. Bayesian Learning via Stochastic Gradient Langevin Dynamics, 2011</a></div>
 
 ---
 clicks: 0
@@ -1277,301 +1278,6 @@ class: interactive-slide
 
 ---
 clicks: 0
-id: outline-ve-vp
-section: "Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item "><span>01</span><div>Continuous-Time Normalizing Flows (CNF)</div></div>
-<div class="outline-item "><span>02</span><div>Continuity Equation for CNF Log-Likelihood</div></div>
-<div class="outline-item "><span>03</span><div>SDE Basics</div></div>
-<div class="outline-item current"><span>04</span><div>Diffusion and Score Matching SDEs (VP-SDE / VE-SDE)</div></div>
-
-</div>
-
----
-clicks: 4
-id: score-matching-sde
-class: theorems derivation
----
-
-# Score Matching SDE
-
-<div class="columns">
-<div>
-
-## Two consecutive noise levels
-
-$$
-\begin{aligned}
-\bx_{k-1} &= \bx + \sigma_{k-1} \bepsilon_{k-1} \\
-\bx_k &= \bx + \sigma_k \bepsilon_k
-\end{aligned}
-$$
-
-$$
-q(\bx_j \mid \bx) = \cN(\bx, \sigma_j^2 \bI),
-\quad j \in \{k-1,k\}.
-$$
-
-</div>
-<div v-click="1">
-
-## Markov step from $k-1$ to $k$
-
-$$
-\begin{aligned}
-\bx_k &= \bx_{k-1} + \sqrt{\sigma_k^2 - \sigma_{k-1}^2}\,\bepsilon \\
-q(\bx_k \mid \bx_{k-1}) &= \cN\!\left(\bx_{k-1}, (\sigma_k^2 - \sigma_{k-1}^2)\bI\right)
-\end{aligned}
-$$
-
-</div>
-</div>
-
-<div class="block" v-click="2">
-
-## From a finite step to continuous time
-
-$$ {1|all} {at:3}
-\begin{aligned}
-\bx(t)-\bx(t-\Delta t)
-&= \sqrt{\sigma^2(t)-\sigma^2(t-\Delta t)}\,\bepsilon \\
-&= {\color{teal}\sqrt{\frac{\sigma^2(t)-\sigma^2(t-\Delta t)}{\Delta t}}}\;
-   \underbrace{{\color{#8854c0}\sqrt{\Delta t}\,\bepsilon}}_{{\color{#8854c0}\Delta\bw}}
-\end{aligned}
-$$
-
-</div>
-
-<div class="takeaway" v-click="4">
-
-As $\Delta t \to 0$, the variance rate sets the diffusion coefficient:
-
-$$
-d\bx = {\color{teal}\sqrt{\frac{d[\sigma^2(t)]}{dt}}}\;{\color{#8854c0}d\bw}.
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 2
-id: score-matching-sde-2
-class: theorems
----
-
-# Variance Exploding SDE
-
-$$
-d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw
-$$
-
-<div class="block" v-click="1">
-
-## Drift and diffusion
-
-$$
-d\bx = \bff(\bx, t) dt + g(t) d \bw
-$$
-
-$$
-\bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}}
-$$
-
-</div>
-
-<div class="block" v-click="2">
-
-## Why the variance grows
-
-$\sigma(t)$ is a monotonically increasing function.
-From time $s$ to $t$, independent noise increments add variance in each coordinate:
-
-$$
-\int_s^t g^2(u)\,du = \sigma^2(t)-\sigma^2(s).
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 3
-id: diffusion-sde
-class: theorems derivation
----
-
-# Diffusion SDE
-
-## One DDPM step
-
-$$
-\bx_k = \sqrt{1-\beta_k}\,\bx_{k-1} + \sqrt{\beta_k}\,\bepsilon_k,
-\qquad q(\bx_k \mid \bx_{k-1}) = \cN\!\left(\sqrt{1-\beta_k}\,\bx_{k-1},\,\beta_k\bI\right).
-$$
-
-<div class="block" v-click="1">
-
-## From variance per step to variance per unit time
-
-Split $[0,1]$ into $T$ steps of length $\Delta t=1/T$. Step $k$ ends at $t_k=k/T$.
-
-$$
-\underbrace{\beta_k}_{\text{noise variance per step}}
-= \underbrace{\beta(t_k)}_{\text{noise variance rate}}\;\cdot\;
-  \underbrace{\Delta t}_{\text{step length}}.
-$$
-
-At a constant rate, doubling $T$ halves the noise variance added at each step.
-
-</div>
-
-<div class="block" v-click="2">
-
-## Substitute into the update at $t=t_k$
-
-$$ {1|all} {at:3}
-\begin{aligned}
-\bx(t) &= \sqrt{1-\beta(t)\Delta t}\,\bx(t-\Delta t)
-         + \sqrt{\beta(t)\Delta t}\,\bepsilon_k \\
-\bx(t)-\bx(t-\Delta t)
-&\approx -\tfrac12\beta(t)\bx(t-\Delta t)\,\Delta t
-         + \sqrt{\beta(t)}\,\underbrace{{\color{#8854c0}\sqrt{\Delta t}\,\bepsilon_k}}_{{\color{#8854c0}\Delta\bw}} .
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 1
-id: diffusion-sde-2
-class: theorems derivation
----
-
-# Diffusion SDE
-
-## DDPM increment at $t=t_k$
-
-$$
-\bx(t)-\bx(t-\Delta t)
-\approx -\tfrac12\beta(t)\bx(t-\Delta t)\,\Delta t
-        + \sqrt{\beta(t)}\,{\color{#8854c0}\Delta\bw}.
-$$
-
-Here $\Delta t=1/T$ and $\Delta\bw=\bw(t)-\bw(t-\Delta t)=\sqrt{\Delta t}\,\bepsilon_k$.
-
-<div class="block" v-click="1">
-
-## Variance Preserving SDE
-
-As $\Delta t \to 0$, the DDPM update gives the continuous-time dynamics
-
-$$
-d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw
-$$
-
-$$
-\bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t) , \quad g(t) = \sqrt{\beta(t)}
-$$
-
-Variance is preserved as long as $\bx(0)$ has unit variance.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 4
-id: diffusion-sde-3
-class: theorems
----
-
-# From Score Matching and Gaussian Diffusion to SDEs
-
-<div class="columns">
-<div>
-
-## Score matching → NCSN
-
-Fit one denoising score network across noise levels.
-
-$$
-\bx_t=\bx_0+\sigma_t\bepsilon.
-$$
-
-</div>
-<div v-click="1">
-
-## Gaussian diffusion → DDPM
-
-Predict the added noise to learn the reverse chain.
-
-$$
-\bx_t=\sqrt{\bar\alpha_t}\bx_0+\sqrt{1-\bar\alpha_t}\bepsilon.
-$$
-
-</div>
-</div>
-
-<div class="takeaway" v-click="2">
-
-**Weighted score matching → noise-prediction MSE.** Let $r_t$ be the noise standard deviation.
-
-$$
-r_t^2\bigl\|\bs_{\btheta,t}(\bx_t)+\bepsilon/r_t\bigr\|^2
-=\bigl\|\bepsilon_{\btheta,t}(\bx_t)-\bepsilon\bigr\|^2,\qquad \bepsilon_{\btheta,t}=-r_t\bs_{\btheta,t}.
-$$
-
-</div>
-
-<div class="block" v-click="3">
-
-## ODE → SDE
-
-$$
-d\bx={\color{teal}\bff(\bx,t)}\,dt
-\quad\xrightarrow{\text{add Brownian noise}}\quad
-d\bx={\color{teal}\bff(\bx,t)}\,dt+{\color{#8854c0}g(t)}\,d\bw.
-$$
-
-</div>
-
-<div class="columns" v-click="4">
-<div>
-
-## Variance Exploding SDE (NCSN)
-
-This process matches the NCSN noise levels.
-
-$$
-d\bx={\color{#8854c0}\sqrt{\tfrac{d[\sigma^2(t)]}{dt}}}\,d\bw.
-$$
-
-</div>
-<div>
-
-## Variance Preserving SDE (DDPM)
-
-This is the small-step limit of the DDPM forward chain.
-
-$$
-d\bx={\color{teal}-\tfrac12\beta(t)\bx(t)}\,dt+{\color{#8854c0}\sqrt{\beta(t)}}\,d\bw.
-$$
-
-</div>
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/1907.05600">Song &amp; Ermon, Generative Modeling by Estimating Gradients of the Data Distribution, 2019</a> · <a href="https://arxiv.org/abs/2006.11239">Ho et al., Denoising Diffusion Probabilistic Models, 2020</a><br><a href="https://arxiv.org/abs/2011.13456">Song et al., Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 0
 id: summary
 class: summary
 ---
@@ -1582,5 +1288,4 @@ class: summary
 - If $\bx_0$ is a random variable, this yields a **probability path** $p_t(\bx)$ as time evolves. The continuity equation describes the evolution of $\log p(\bx,t)$ over time.
 - An SDE defines a stochastic process with drift and diffusion terms; ODEs are a special case of SDEs.
 - The KFP equation describes the probability dynamics of an SDE.
-- The Langevin SDE preserves a constant probability path.
-- The VE-SDE matches the Gaussian perturbations used by NCSN. The VP-SDE is the continuous-time limit of the DDPM forward chain.
+- With unit diffusion, a drift of half the target score makes the probability flux zero and keeps the target density stationary.

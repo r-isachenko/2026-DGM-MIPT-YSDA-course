@@ -37,6 +37,44 @@ Roman Isachenko
 
 ---
 clicks: 0
+id: recap-ve-vp-sdes
+class: theorems
+---
+
+# Recap of Previous Lecture
+
+$$
+d\bx = \bff(\bx, t) dt + g(t) d \bw
+$$
+
+<div class="block">
+
+## Variance Exploding SDE (NCSN)
+
+$$
+d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw, \qquad \bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}}
+$$
+
+This process matches the NCSN noise levels. $\sigma(t)$ is a monotonically increasing function.
+
+</div>
+
+<div class="block">
+
+## Variance Preserving SDE (DDPM)
+
+$$
+d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw, \qquad \bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t) , \quad g(t) = \sqrt{\beta(t)}
+$$
+
+This is the small-step limit of the DDPM forward chain. Variance is preserved as long as $\bx(0)$ has unit variance.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
+
+---
+clicks: 0
 id: recap-of-previous-lecture-2
 class: theorems
 ---
