@@ -37,112 +37,31 @@ Roman Isachenko
 
 ---
 clicks: 0
-id: recap-continuous-time-normalizing-flows
-class: theorems
----
-
-# Recap of Previous Lecture
-
-## Continuous-Time Normalizing Flows
-
-Recall $\bx_t=\bx(t)$ for $t\in[0,1]$:
-
-$$
-\bx_0 \sim p_0(\bx) = p(\bx), \quad \bx_1 \sim p_1(\bx) =  \pd(\bx)
-$$
-
-**Time convention:** unlike the diffusion sections, here $t=0$ denotes noise and $t=1$ denotes data.
-
-$$
-\frac{d \bx_t}{dt} = \bv (\bx_t, t),  \quad \text{with initial condition } \bx(0) = \bx_0.
-$$
-
-The velocity $\bv$ determines a flow $\bpsi_t$: $\bx_t = \bpsi_t(\bx_0)$.
-
-<div class="block">
-
-## KFP Theorem (Continuity Equation)
-
-$$
-\frac{\partial p_t(\bx)}{\partial t} = - \diver\left(\bv(\bx, t) p_t(\bx)\right) \Leftrightarrow \frac{d \log p_t(\bx(t))}{d t} = - \tr \left( \frac{\partial \bv(\bx(t), t)}{\partial \bx(t)} \right)
-$$
-
-</div>
-
-- Likelihood-based CNF training requires ODE solves and Jacobian trace evaluations.
-- The adjoint method computes gradients through the ODE solution; repeated solves can be costly.
-
-<div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a></div>
-
----
-clicks: 0
 id: recap-of-previous-lecture
 class: theorems
 ---
 
 # Recap of Previous Lecture
 
-## Flow Matching
+## Flow Matching (FM)
+
+The path starts at a Gaussian noise sample $\bx_0\sim\cN(0,\bI)$ and ends at a data point $\bx_1\sim\pd$.
+
+$$
+\frac{d \bx_t}{dt} = \bv (\bx_t, t),  \quad \text{with initial condition } \bx(0) = \bx_0.
+$$
+
+Many velocity fields connect the same endpoints. FM fits a chosen field by regression, without ODE solves or Jacobian traces during training.
 
 $$
 \bbE_{t \sim U[0, 1]} \bbE_{\bx \sim p_t(\bx)}\left\| \bv(\bx, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
 $$
 
-Flow matching fits velocities by regression, without model ODE solves or trace evaluations during training.
-
-<div class="block">
-
-## Training
-
-1. Sample $t \sim U[0, 1]$, $\bx_t \sim p_t(\bx)$.
-2. Compute loss $\cL = \left\| \bv(\bx_t, t) - \bv_{\btheta}(\bx_t, t) \right\|^2$.
-
-</div>
-
-<div class="block">
-
-## Sampling
-
-1. Sample $\bx_0 \sim \cN(0, \bI)$.
-2. Solve the ODE to obtain $\bx_1$:
-
-$$
-\bx_1 = \bpsi_1(\bx_0) = \ODESolve_v(\bx_0, \btheta, t_0=0, t_1=1).
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-2
-class: theorems
----
-
-# Recap of Previous Lecture
-
 **Problem:** The true vector field $\bv(\bx, t)$ is **unknown**.
 
-Many velocity fields connect the same endpoints.
+For each $\bz\sim p(\bz)$, choose a **conditional probability path** $p_t(\bx|\bz)$ with a known velocity field.
 
-For each $\bz\sim p(\bz)$, choose a **conditional probability path** $p_t(\bx|\bz)$ with a known velocity field. Mixing the conditional densities gives the marginal density at time $t$.
-
-$$
-p_t(\bx)=\int p_t(\bx|\bz)p(\bz)\,d\bz.
-$$
-
-At fixed $\bz$, the particle ODE and the continuity equation use the same **conditional vector field** $\bv(\bx,\bz,t)$.
-
-$$
-\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right).
-$$
-
-$$
-\frac{d\bx_t}{dt}=\bv(\bx_t,t)\quad\Rightarrow\quad\frac{d\bx_t}{dt}=\bv(\bx_t,\bz,t).
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
+<div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a><br><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
 
 ---
 clicks: 0
@@ -152,9 +71,13 @@ class: theorems
 
 # Recap of Previous Lecture
 
-<div class="block">
+## From Marginal to Conditional Paths
 
-## Theorem
+$$
+p_t(\bx)=\int p_t(\bx|\bz)p(\bz)\,d\bz.
+$$
+
+<div class="block">
 
 If $\bv(\bx,\bz,t)$ generates $p_t(\bx|\bz)$ for each $\bz$, its posterior mean generates the mixture $p_t(\bx)$.
 
@@ -167,7 +90,9 @@ $$
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
+<CfmRecapDiagram kind="construction" />
+
+<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a><br><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a> · <a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">Diagram adapted from A Visual Dive into Conditional Flow Matching</a></div>
 
 ---
 clicks: 0
@@ -179,112 +104,37 @@ class: theorems
 
 <div class="block">
 
+## Flow Matching (FM)
+
+$$
+\bbE_{t\sim U[0,1]}\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
+$$
+
+</div>
+<div class="block">
+
 ## Conditional Flow Matching (CFM)
 
 $$
 \bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
 $$
 
+$$
+\underbrace{(\bx_t,t)}_{\text{network input}}
+\qquad\qquad
+\underbrace{\bv(\bx_t,\bz,t)}_{\text{velocity target}}
+$$
+
+</div>
+<div class="block">
+
+## Theorem
+
 If $p_t(\bx)>0$ for all $\bx\in\bbR^m$ and $0\le t<1$, the FM and CFM objectives differ by a constant independent of $\btheta$, so they have the same minimizers.
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-4
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Training
-
-1. Sample $t\sim U[0,1]$, $\bz\sim p(\bz)$, $\bx_t\sim p_t(\bx|\bz)$.
-2. Compute loss $\cL=\left\|\bv(\bx_t,\bz,t)-\bv_{\btheta}(\bx_t,t)\right\|^2$.
-
-</div>
-<div class="block">
-
-## Sampling
-
-1. Sample $\bx_0\sim\cN(0,\bI)$.
-2. Solve the ODE to obtain $\bx_1$:
-
-$$
-\bx_1=\bpsi_1(\bx_0)=\ODESolve_v(\bx_0,\btheta,t_0=0,t_1=1).
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-5
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<CfmRecapDiagram kind="construction" />
-
-<div class="block">
-
-## Where we stand
-
-<ul>
-<li>
-
-Set up the MSE for fitting $\bv_{\btheta}(\bx,t)$ to the marginal velocity $\bv(\bx,t)$.
-
-$$
-\bbE_{t\sim U[0,1]}\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
-$$
-
-</li>
-<li>
-
-Used the FM–CFM theorem to switch to the conditional MSE with the same minimizers.
-
-$$
-\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
-$$
-
-</li>
-</ul>
-
-</div>
-
-<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">Diagram adapted from A Visual Dive into Conditional Flow Matching</a><br><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-6
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Gaussian Conditional Probability Path
-
-On the interval considered, assume $\bmu_t(\bz)$ and $\bsigma_t(\bz)$ are differentiable in $t$, with $\bsigma_t(\bz)>0$ componentwise.
-
-$$
-\begin{aligned}
-p_t(\bx|\bz)&=\cN\left(\bmu_t(\bz),\bsigma_t^2(\bz)\right);\\
-\bx_t&=\bpsi_t(\bx_0,\bz)=\bmu_t(\bz)+\bsigma_t(\bz)\odot\bepsilon
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">image credit: A Visual Dive into Conditional Flow Matching</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a><br><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
 
 ---
 clicks: 0
@@ -298,7 +148,7 @@ class: theorems
 
 ## Gaussian Conditional Probability Path
 
-On the interval considered, assume $\bmu_t(\bz)$ and $\bsigma_t(\bz)$ are differentiable in $t$, with $\bsigma_t(\bz)>0$ componentwise.
+Choose an affine flow. Along each trajectory, keep the same Gaussian noise $\bepsilon$ and vary the mean and scale.
 
 $$
 \begin{aligned}
@@ -308,51 +158,19 @@ p_t(\bx|\bz)&=\cN\left(\bmu_t(\bz),\bsigma_t^2(\bz)\right);\\
 $$
 
 </div>
-
-$$
-\boxed{\begin{aligned}
-\bv(\bx_t,\bz,t)&=\bpsi_t'\left(\bpsi_t(\bx_t,\bz)^{-1},\bz\right)\\
-&=\bmu_t'(\bz)+\frac{\bsigma_t'(\bz)}{\bsigma_t(\bz)}\odot(\bx_t-\bmu_t(\bz))
-\end{aligned}}
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-8
-class: theorems
----
-
-# Recap of Previous Lecture
-
 <div class="block">
 
-## Endpoint Conditioning
+## Gaussian Conditional Vector Field
 
-Let us choose $\bz=\bx_1$. Then $p(\bz)=p_1(\bx_1)$.
+On the interval considered, assume $\bmu_t(\bz)$ and $\bsigma_t(\bz)$ are differentiable in $t$, with $\bsigma_t(\bz)>0$ componentwise.
 
 $$
-p_t(\bx)=\int p_t(\bx|\bx_1)p_1(\bx_1)d\bx_1
+\boxed{\bv(\bx_t,\bz,t)=\bpsi_t'\left(\bpsi_t(\bx_t,\bz)^{-1},\bz\right)=\bmu_t'(\bz)+\frac{\bsigma_t'(\bz)}{\bsigma_t(\bz)}\odot(\bx_t-\bmu_t(\bz))}
 $$
 
 </div>
 
-**At $t=0$**, draw the noise $\bx_0$ independently of $\bx_1$. Every conditional path starts from the same Gaussian.
-
-$$
-p_0(\bx|\bx_1)=\cN(0,\bI),\qquad
-p_0(\bx)=\bbE_{\bx_1\sim\pd}\!\left[p_0(\bx|\bx_1)\right]=\cN(0,\bI).
-$$
-
-**At $t=1$**, every trajectory ends at its chosen $\bx_1$. Mixing these point masses recovers the data distribution.
-
-$$
-p_1(\bx|\bx_1)=\delta(\bx-\bx_1),\qquad
-p_1(\bx)=\int\delta(\bx-\bx_1)\pd(\bx_1)\,d\bx_1=\pd(\bx).
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
 
 ---
 clicks: 0
@@ -362,79 +180,25 @@ class: theorems
 
 # Recap of Previous Lecture
 
+## One-Sided Conditioning
+
+Let us choose $\bz=\bx_1$. Then $p(\bz)=p_1(\bx_1)$.
+
+**At $t=0$**, draw the noise $\bx_0$ independently of $\bx_1$.
+
 $$
 p_0(\bx|\bx_1)=\cN(0,\bI);\quad p_1(\bx|\bx_1)=\delta(\bx-\bx_1)
 $$
 
-<div class="block">
-
-## Gaussian Conditional Probability Path
-
 $$
-\begin{aligned}
-p_t(\bx|\bx_1)&=\cN\left(\bmu_t(\bx_1),\bsigma_t^2(\bx_1)\right);\\
-\bx_t&=\bmu_t(\bx_1)+\bsigma_t(\bx_1)\odot{\color{olive}\bepsilon}
-\end{aligned}
-$$
-
-</div>
-
-Let's consider straight conditional paths:
-
-$$
-\begin{cases}
-\bmu_t(\bx_1)=t\bx_1\\
-\bsigma_t(\bx_1)=1-t
-\end{cases}
+\begin{cases}\bmu_t(\bx_1)=t\bx_1\\\bsigma_t(\bx_1)=1-t\end{cases}
 \quad\Rightarrow\quad
-\begin{cases}
-p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\cdot\bI\right)\\
-\bx_t=t\bx_1+(1-t){\color{olive}\bx_0}
-\end{cases}
+\begin{cases}p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\cdot\bI\right)\\\bx_t=t\bx_1+(1-t){\color{olive}\bx_0}\end{cases}
 $$
-
-<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">image credit: A Visual Dive into Conditional Flow Matching</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-10
-class: figure-slide
----
-
-# Recap of Previous Lecture
 
 <CfmRecapDiagram kind="cones" />
 
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-11
-class: theorems
----
-
-# Recap of Previous Lecture
-
-## Rectified Flow Objective
-
-$$
-p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\bI\right);\quad{\color{teal}\bx_t=t\bx_1+(1-t)\bx_0}
-$$
-
-$$
-\bv(\bx_t,\bx_1,t)=\frac{\bx_1-\bx_t}{1-t}=\bx_1-\bx_0,\qquad t<1
-$$
-
-$$
-\begin{aligned}
-&\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2\\
-&=\bbE_{t\sim U[0,1]}\bbE_{\bx_1\sim\pd(\bx)}\bbE_{\bx_0\sim\cN(0,\bI)}\left\|(\bx_1-\bx_0)-\bv_{\btheta}\left(t\bx_1+(1-t)\bx_0,t\right)\right\|^2
-\end{aligned}
-$$
-
-At $t=1$, the quotient is undefined. Use the simplified training target $\bx_1-\bx_0$, which contains no division.
-
-<div class="source"><a href="https://mlg.eng.cam.ac.uk/blog/2024/01/20/flow-matching.html">image credit: https://mlg.eng.cam.ac.uk/blog/2024/01/20/flow-matching.html</a><br><a href="https://arxiv.org/abs/2209.03003">Liu X., Gong C., Liu Q. Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow, 2022</a></div>
 
 ---
 clicks: 0
@@ -444,35 +208,19 @@ class: theorems
 
 # Recap of Previous Lecture
 
-- $\bv(\bx_t,\bx_1,t)$ defines straight lines between $\pd(\bx)$ and $\cN(0,\bI)$.
-- **Straight training paths do not imply straight sampling trajectories.**
+## Rectified Flow
+
+Regressing on $\bx_1-\bx_0$ along $\bx_t=(1-t)\bx_0+t\bx_1$ gives the **rectified flow objective**.
+
+$$
+\bv_{\btheta^*}(\bx,t)=\bbE\left[\bx_1-\bx_0\mid\bx_t=\bx\right].
+$$
+
+**Straight training paths do not imply straight sampling trajectories.**
 
 <CfmRecapDiagram kind="comparison" />
 
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://arxiv.org/abs/2209.03003">Liu X., Gong C., Liu Q. Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow, 2022</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-14
-class: theorems
----
-
-# Recap of Previous Lecture
-
-$$
-p_t(\bx)=\bbE_{\bx_1\sim\pd}\!\left[p_t(\bx|\bx_1)\right].
-$$
-
-<img src="/figs/cond_marg_paths.png" alt="A Gaussian cloud shrinks to one endpoint in the top row. The mixture over endpoints forms a checkerboard in the bottom row." style="width:100%;height:315px;object-fit:contain" />
-
-<div>
-
-- **Top row.** Fix $\bz=\bx_1$. The Gaussian cloud shrinks to the data point marked by the red star.
-- **Bottom row.** Mixing over $\bx_1\sim\pd$ recovers the checkerboard distribution at $t=1$.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P. and Erives E., et al. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
 
 ---
 clicks: 0
@@ -481,6 +229,8 @@ class: theorems
 ---
 
 # Recap of Previous Lecture
+
+## Rectified Flow: Training and Sampling
 
 $$
 \bbE_{t\sim U[0,1]}\bbE_{\bx_1\sim\pd(\bx)}\bbE_{\bx_0\sim\cN(0,\bI)}\left\|(\bx_1-\bx_0)-\bv_{\btheta}(\bx_t,t)\right\|^2\rightarrow\min_{\btheta}
@@ -508,102 +258,9 @@ $$
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://arxiv.org/abs/2209.03003">Liu X., Gong C., Liu Q. Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow, 2022</a></div>
 
----
-clicks: 0
-id: recap-rectified-flow-training-times
-class: theorems
----
-
-# Recap of Previous Lecture
-
-## Rectified Flow: Sampling Training Times
-
-For $\bx_t=(1-t)\bx_0+t\bx_1$, let $\ell_{\btheta}(t)=\bbE\|\bv_{\btheta}(\bx_t,t)-(\bx_1-\bx_0)\|^2$.
-
-Let $r(t)$ be the training-time density. Without importance correction, it weights the velocity MSE.
-
-$$
-\bbE_{t\sim r}\ell_{\btheta}(t)
-=\bbE_{t\sim U[0,1]}\left[r(t)\ell_{\btheta}(t)\right].
-$$
-
-**SD3 example.** Choose a logit-normal density $r(t)$ by drawing a Gaussian logit $u$.
-
-$$
-u\sim\cN(\mu,s^2),\qquad t=\operatorname{sigmoid}(u),\qquad \log\frac{t}{1-t}=u.
-$$
-
-$$
-\log\SNR(t)=\log\frac{t^2}{(1-t)^2}=2\log\frac{t}{1-t}=2u\sim\cN(2\mu,4s^2).
-$$
-
-Sampling more often near $t=1/2$ gives more examples with comparable signal and noise ($\log\SNR\approx0$).
-
-<div class="source"><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
-
-<!--
-To preserve uniform-time training, use $\ell_{\btheta}(t)/r(t)$ with $t\sim r$. Time $t=0$ is noise and $t=1$ is data. This choice does not prescribe the ODE grid.
-
-Coverage: a separate static recap follows the complete RF Training/Sampling slide, which has no room for the new objective identity and log-SNR relation. The density plot and parameter illustration are intentionally omitted. This recalls the unshifted straight-path example, not all SD3 training details.
--->
-
----
-clicks: 0
-id: recap-classifier-free-guidance-velocity
-class: theorems
----
-
-# Recap of Previous Lecture
-
-## Classifier-Free Guidance for Velocity Fields
-
-Here $\by$ is a label or text prompt, distinct from the CFM latent $\bz$.
-
-<div class="block">
-
-$$
-\bv_{\btheta}^{\gamma}(\bx,t,\by)
-=\bv_{\btheta}(\bx,t,\varnothing)
-+\gamma\left[\bv_{\btheta}(\bx,t,\by)-\bv_{\btheta}(\bx,t,\varnothing)\right].
-$$
-
-$\gamma=0$: unconditional; $\gamma=1$: conditional; $\gamma>1$: extrapolation.
-
-</div>
-<div class="columns">
-<div>
-
-## Training
-
-1. Sample paired data $(\bx_1,\by)\sim\pd$ and form the rectified-flow sample $\bx_t$ as before.
-2. Set $\tilde\by=\varnothing$ with fixed probability; otherwise set $\tilde\by=\by$.
-3. Minimize the same velocity loss:
-
-$$
-\cL=\left\|\bv_{\btheta}(\bx_t,t,\tilde\by)-(\bx_1-\bx_0)\right\|^2.
-$$
-
-</div>
-<div>
-
-## Sampling
-
-1. Sample $\bx_0\sim\cN(0,\bI)$ and choose $\by,\gamma$.
-2. Evaluate both predictions to form $\bv_{\btheta}^{\gamma}$ at each solver evaluation.
-3. Solve the guided ODE from $t=0$ to $t=1$:
-
-$$
-\frac{d\bx_t}{dt}=\bv_{\btheta}^{\gamma}(\bx_t,t,\by).
-$$
-
-</div>
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a><br><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
-
-<!-- Coverage: the new CFG result follows the RF recap. Existing RF Training/Sampling and time-distribution slides are full and teach different choices; this separate static recap preserves the guidance convention and complete Training/Sampling blocks. The class/text condition y remains distinct from the CFM auxiliary latent z. -->
+<!-- The recap ends with the one-sided algorithm used for comparison with pair conditioning. The author chose to omit training-time distributions and velocity CFG from this recap. -->
 
 ---
 clicks: 0
@@ -614,43 +271,33 @@ id: outline
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Two-Sided Conditioning</div></div>
-<div class="outline-item "><span>02</span><div>Link between Flow Matching and Score-Based Models</div></div>
-<div class="outline-item "><span>03</span><div>Discrete Diffusion Models</div></div>
-<div class="outline-item "><span>04</span><div>Forward Discrete Process</div></div>
-<div class="outline-item "><span>05</span><div>Reverse Diffusion Process</div></div>
-<div class="outline-item "><span>06</span><div>From Token To Sequence</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
+<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
 
 </div>
 
 ---
 clicks: 0
 id: outline-2
-section: "Two-Sided Conditioning"
+section: "Flow Matching"
 ---
 
 # Outline
 
 <div class="course-outline">
 
-<div class="outline-item current"><span>01</span><div>Two-Sided Conditioning</div></div>
-<div class="outline-item "><span>02</span><div>Link between Flow Matching and Score-Based Models</div></div>
-<div class="outline-item "><span>03</span><div>Discrete Diffusion Models</div></div>
-<div class="outline-item "><span>04</span><div>Forward Discrete Process</div></div>
-<div class="outline-item "><span>05</span><div>Reverse Diffusion Process</div></div>
-<div class="outline-item "><span>06</span><div>From Token To Sequence</div></div>
+<div class="outline-item current"><span>01</span><div>Flow Matching<div class="outline-sub"><strong>Two-Sided Conditioning</strong><br>Link between Flow Matching and Score-Based Models</div></div></div>
+<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
 
 </div>
 
 ---
-clicks: 0
+clicks: 4
 id: pair-conditioning
 class: theorems
 ---
 
 # Pair Conditioning
-
-In image-to-image transport, both the source $p_0$ and the target $p_1$ are image distributions.
 
 <div class="block">
 
@@ -661,7 +308,10 @@ $$
 $$
 
 </div>
-<div class="block">
+
+In image-to-image transport, both the source $p_0$ and the target $p_1$ are image distributions.
+
+<div class="block" v-click="1">
 
 ## Conditioning on Both Endpoints
 
@@ -672,43 +322,38 @@ p_t(\bx)=\int p_t(\bx|\bx_0,\bx_1)p_0(\bx_0)p_1(\bx_1)d\bx_0d\bx_1
 $$
 
 </div>
+<div v-click="2">
 
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+What are the endpoint distributions $p_0(\bx|\bx_0,\bx_1)$ and $p_1(\bx|\bx_0,\bx_1)$ for a fixed pair $(\bx_0,\bx_1)$?
 
----
-clicks: 1
-id: pair-conditioning-2
-class: theorems
----
-
-# Pair Conditioning
-
-We must enforce boundary constraints:
-
-<div class="math-chain" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:40px">
-<span>
-
-$\displaystyle\begin{cases}p_0(\bx)=\bbE_{p(\bz)}p_0(\bx|\bz);\\p_1(\bx)=\bbE_{p(\bz)}p_1(\bx|\bz)\end{cases}$
-
-</span>
-<span v-click="1">
-
-$\displaystyle\Leftarrow\quad\begin{cases}p_0(\bx|\bx_0,\bx_1)=\delta(\bx-\bx_0)\\p_1(\bx|\bx_0,\bx_1)=\delta(\bx-\bx_1)\end{cases}$
-
-</span>
 </div>
+<div v-click="3">
 
-<div v-click="1">
+**At $t=0$**, the path starts at $\bx_0$. Mixing these point masses over source images recovers $p_0$.
 
-Choosing these Dirac endpoints is sufficient to satisfy the boundary constraints.
-Gaussian smoothing recovers them in the zero-variance limit.
+$$
+p_0(\bx|\bx_0,\bx_1)=\delta(\bx-\bx_0),\qquad
+\bbE_{\bz\sim p(\bz)}\!\left[p_0(\bx|\bz)\right]
+=\bbE_{\bx_0\sim p_0}\!\left[\delta(\bx-\bx_0)\right]=p_0(\bx).
+$$
+
+</div>
+<div v-click="4">
+
+**At $t=1$**, the path ends at $\bx_1$. Mixing these point masses over target images recovers $p_1$.
+
+$$
+p_1(\bx|\bx_0,\bx_1)=\delta(\bx-\bx_1),\qquad
+\bbE_{\bz\sim p(\bz)}\!\left[p_1(\bx|\bz)\right]
+=\bbE_{\bx_1\sim p_1}\!\left[\delta(\bx-\bx_1)\right]=p_1(\bx).
+$$
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a> · <a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
 
 ---
-clicks: 0
+clicks: 2
 id: two-sided-conditioning
 class: theorems
 ---
@@ -737,10 +382,30 @@ $$
 Here $\bepsilon\sim\cN(\bzero,\bI)$. Positive Gaussian scales give smooth densities;
 the desired Dirac endpoints require the endpoint scales to vanish.
 
-<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">image credit: A Visual Dive into Conditional Flow Matching</a></div>
+<div class="block" v-click="1">
+
+## Straight Paths with Constant Gaussian Smoothing
+
+$$
+\bmu_t=t\bx_1+(1-t)\bx_0,\qquad p_t^\sigma(\bx|\bx_0,\bx_1)=\cN(\bmu_t,\sigma^2\bI),\qquad \sigma>0.
+$$
+
+</div>
+<div v-click="2">
+
+$$
+p_i^\sigma(\bx|\bx_0,\bx_1)=\cN(\bx_i,\sigma^2\bI)
+\xrightarrow[\sigma\to0]{\text{weakly}}\delta(\bx-\bx_i),\qquad i\in\{0,1\}.
+$$
+
+For $\sigma>0$, the marginal endpoints are Gaussian-smoothed versions of $p_0$ and $p_1$.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A. et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023.</a> · <a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">A Visual Dive into Conditional Flow Matching</a></div>
 
 ---
-clicks: 2
+clicks: 1
 id: two-sided-conditioning-2
 class: theorems interactive-slide
 ---
@@ -753,18 +418,17 @@ $$
 \bmu_t=t\bx_1+(1-t)\bx_0,\qquad p_t^\sigma(\bx|\bx_0,\bx_1)=\cN(\bmu_t,\sigma^2\bI).
 $$
 
+$$
+\bx_t=\bmu_t+\sigma\bepsilon,\qquad \bepsilon\sim\cN(\bzero,\bI).
+$$
+
+<ConditioningDemo v-click="1" />
+
 <div v-click="1">
 
-$$
-p_i^\sigma(\bx|\bx_0,\bx_1)=\cN(\bx_i,\sigma^2\bI)
-\xrightarrow[\sigma\to0]{\text{weakly}}\delta(\bx-\bx_i),\qquad i\in\{0,1\}.
-$$
-
-For $\sigma>0$, the marginal endpoints are Gaussian-smoothed versions of $p_0$ and $p_1$.
+At $\sigma=0$, the particles for each pair coincide at $\bmu_t$. Their conditional law is the Dirac mass $\delta(\bx-\bmu_t)$.
 
 </div>
-
-<ConditioningDemo v-click="2" />
 
 <div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A. et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023.</a></div>
 
@@ -776,31 +440,12 @@ class: theorems interactive-slide
 
 # Flow Matching: One-Sided vs. Two-Sided Conditioning
 
-<div class="columns" style="gap:26px">
-<div>
+| Conditioning | Independent noise | Distribution of $\bx_t\mid\bz$ | Sample $\bx_t$ |
+| :--- | :---: | :---: | :---: |
+| **One-sided** · $\bz=\bx_1$ | $\bx_0\sim\cN(\bzero,\bI)$ | $\cN\!\left(t\bx_1,{\color{teal}(1-t)^2}\bI\right)$ | $t\bx_1+{\color{teal}(1-t)}\bx_0$ |
+| **Two-sided** · $\bz=(\bx_0,\bx_1)$ | $\bepsilon\sim\cN(\bzero,\bI)$ | $\cN\!\left(t\bx_1+(1-t)\bx_0,{\color{teal}\sigma^2}\bI\right)$ | $t\bx_1+(1-t)\bx_0+{\color{teal}\sigma}\bepsilon$ |
 
-$$
-\begin{aligned}
-\bz&=\bx_1\\
-p_t(\bx|\bx_1)&=\cN\left(t\bx_1,(1-t)^2\bI\right)\\
-\bx_t&=t\bx_1+(1-t)\bx_0
-\end{aligned}
-$$
-
-</div><div>
-
-$$
-\begin{aligned}
-\bz&=(\bx_0,\bx_1)\\
-p_t^\sigma(\bx|\bx_0,\bx_1)&=\cN\left(t\bx_1+(1-t)\bx_0,\sigma^2\bI\right)\\
-\bx_t&=t\bx_1+(1-t)\bx_0+\sigma\bepsilon
-\end{aligned}
-$$
-
-</div>
-</div>
-
-$\sigma>0$ is the smoothing scale; $\bepsilon\sim\cN(\bzero,\bI)$ is independent Gaussian noise.
+The one-sided standard deviation shrinks to zero at $t=1$. The two-sided standard deviation stays at $\sigma>0$.
 
 <ConditioningDemo v-click="1" compare />
 
@@ -849,7 +494,7 @@ The resulting target also applies in the deterministic limit.
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y. et al. Flow Matching for Generative Modeling, 2022.</a><br><a href="https://arxiv.org/abs/2302.00482">Tong A. et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023.</a></div>
 
 ---
-clicks: 1
+clicks: 2
 id: two-sided-conditioning-vector-field-and-objective-2
 class: theorems
 ---
@@ -866,15 +511,16 @@ $$
 
 ## Conditional Flow Matching
 
-$$
+$$ {1-2|all} {at:1}
 \begin{aligned}
 &\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2\\
+&=\bbE_{t\sim U[0,1]}\bbE_{(\bx_0,\bx_1)\sim p(\bx_0,\bx_1)}\bbE_{\bx\sim\delta(\cdot-\bx_t)}\left\|(\bx_1-\bx_0)-\bv_{\btheta}(\bx,t)\right\|^2\\
 &=\bbE_{t\sim U[0,1]}\bbE_{(\bx_0,\bx_1)\sim p(\bx_0,\bx_1)}\left\|(\bx_1-\bx_0)-\bv_{\btheta}(\bx_t,t)\right\|^2
 \end{aligned}
 $$
 
 </div>
-<div v-click="1">
+<div v-click="2">
 
 - With independent $\bx_0\sim\cN(\bzero,\bI)$, this recovers the one-sided training procedure.
 - Now, we do not require that $p_0(\bx)$ is necessarily $\cN(0,\bI)$.
@@ -884,41 +530,31 @@ $$
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y. et al. Flow Matching for Generative Modeling, 2022.</a><br><a href="https://arxiv.org/abs/2302.00482">Tong A. et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023.</a></div>
 
 ---
-clicks: 1
+clicks: 2
 id: cfm-with-two-sided-conditioning-training-and-sampling
 class: theorems
 ---
 
 # CFM with Two-Sided Conditioning: Training and Sampling
 
-- This conditioning allows us to transport any distribution $p_0(\bx)$ to any distribution $p_1(\bx)$.
-- It's possible to apply this approach to paired tasks, e.g., style transfer.
+- One-sided rectified flow draws $\bx_0\sim\cN(0,\bI)$ independently of the data point $\bx_1$.
+- Two-sided conditioning can pair samples from any source $p_0$ and target $p_1$, as in style transfer.
 
 <div class="block" v-click="1">
 
 ## Training
 
-1. Sample $(\bx_0,\bx_1)\sim p(\bx_0,\bx_1)$, $t\sim U[0,1]$.
+1. Sample ${\color{teal}(\bx_0,\bx_1)\sim p(\bx_0,\bx_1)}$, $t\sim U[0,1]$.
 2. Compute noisy image $\bx_t=t\bx_1+(1-t)\bx_0$.
 3. Compute loss $\cL=\left\|(\bx_1-\bx_0)-\bv_{\btheta}(\bx_t,t)\right\|^2$.
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
-
----
-clicks: 0
-id: cfm-with-two-sided-conditioning-training-and-sampling-2
-class: theorems
----
-
-# CFM with Two-Sided Conditioning: Training and Sampling
-
-<div class="block">
+<div class="block" v-click="2">
 
 ## Sampling
 
-1. Sample $\bx_0\sim p_0(\bx)$.
+1. Sample $\bx_0\sim {\color{teal}p_0(\bx)}$.
 2. Solve the ODE to obtain $\bx_1$:
 
 $$
@@ -927,7 +563,7 @@ $$
 
 </div>
 
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a> · <a href="https://arxiv.org/abs/2302.00482">Tong A. et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023.</a></div>
 
 ---
 clicks: 3
@@ -983,12 +619,8 @@ section: "Link between Flow Matching and Score-Based Models"
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Two-Sided Conditioning</div></div>
-<div class="outline-item current"><span>02</span><div>Link between Flow Matching and Score-Based Models</div></div>
-<div class="outline-item "><span>03</span><div>Discrete Diffusion Models</div></div>
-<div class="outline-item "><span>04</span><div>Forward Discrete Process</div></div>
-<div class="outline-item "><span>05</span><div>Reverse Diffusion Process</div></div>
-<div class="outline-item "><span>06</span><div>From Token To Sequence</div></div>
+<div class="outline-item current"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br><strong>Link between Flow Matching and Score-Based Models</strong></div></div></div>
+<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
 
 </div>
 
@@ -1053,7 +685,7 @@ $$
 
 ## Tweedie's Formula
 
-Recall Lecture 6, now with a scaled signal: for $\alpha_t>0$, $\sigma_t>0$,
+For a Gaussian observation with signal scale $\alpha_t>0$ and noise scale $\sigma_t>0$,
 
 $$
 p_t(\bx_t|\bx_1)=\cN(\alpha_t\bx_1,\sigma_t^2\bI)
@@ -1183,19 +815,15 @@ class: theorems
 ---
 clicks: 0
 id: outline-4
-section: "Discrete Diffusion Models"
+section: "Discrete Diffusion"
 ---
 
 # Outline
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Two-Sided Conditioning</div></div>
-<div class="outline-item "><span>02</span><div>Link between Flow Matching and Score-Based Models</div></div>
-<div class="outline-item current"><span>03</span><div>Discrete Diffusion Models</div></div>
-<div class="outline-item "><span>04</span><div>Forward Discrete Process</div></div>
-<div class="outline-item "><span>05</span><div>Reverse Diffusion Process</div></div>
-<div class="outline-item "><span>06</span><div>From Token To Sequence</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
 
 </div>
 
@@ -1301,12 +929,8 @@ section: "Forward Discrete Process"
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Two-Sided Conditioning</div></div>
-<div class="outline-item "><span>02</span><div>Link between Flow Matching and Score-Based Models</div></div>
-<div class="outline-item "><span>03</span><div>Discrete Diffusion Models</div></div>
-<div class="outline-item current"><span>04</span><div>Forward Discrete Process</div></div>
-<div class="outline-item "><span>05</span><div>Reverse Diffusion Process</div></div>
-<div class="outline-item "><span>06</span><div>From Token To Sequence</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub"><strong>Forward Discrete Process</strong><br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
 
 </div>
 
@@ -1538,12 +1162,8 @@ section: "Reverse Diffusion Process"
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Two-Sided Conditioning</div></div>
-<div class="outline-item "><span>02</span><div>Link between Flow Matching and Score-Based Models</div></div>
-<div class="outline-item "><span>03</span><div>Discrete Diffusion Models</div></div>
-<div class="outline-item "><span>04</span><div>Forward Discrete Process</div></div>
-<div class="outline-item current"><span>05</span><div>Reverse Diffusion Process</div></div>
-<div class="outline-item "><span>06</span><div>From Token To Sequence</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br><strong>Reverse Diffusion Process</strong><br>From Token to Sequence</div></div></div>
 
 </div>
 
@@ -1689,19 +1309,15 @@ $$
 ---
 clicks: 0
 id: outline-7
-section: "From Token To Sequence"
+section: "From Token to Sequence"
 ---
 
 # Outline
 
 <div class="course-outline">
 
-<div class="outline-item "><span>01</span><div>Two-Sided Conditioning</div></div>
-<div class="outline-item "><span>02</span><div>Link between Flow Matching and Score-Based Models</div></div>
-<div class="outline-item "><span>03</span><div>Discrete Diffusion Models</div></div>
-<div class="outline-item "><span>04</span><div>Forward Discrete Process</div></div>
-<div class="outline-item "><span>05</span><div>Reverse Diffusion Process</div></div>
-<div class="outline-item current"><span>06</span><div>From Token To Sequence</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br><strong>From Token to Sequence</strong></div></div></div>
 
 </div>
 
@@ -1874,7 +1490,7 @@ Two-sided conditioning supports independent pairs, paired data and minibatch OT 
 
 <li>
 
-Diffusion and score-based models are special cases of the flow matching approach, but use curved trajectories.
+VE and VP diffusion correspond to particular Gaussian probability paths in flow matching.
 
 </li>
 

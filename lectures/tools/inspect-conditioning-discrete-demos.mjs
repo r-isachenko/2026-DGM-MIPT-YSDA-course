@@ -28,7 +28,9 @@ async function snap(name){
   assert.equal(await demo().evaluate(e=>/NaN|Infinity/.test(e.innerHTML)),false)
 }
 try{
-  for(const [n,max] of (process.argv.includes('--coupling-only') ? [[coupling,3]] : [[twoSided,2],[oneVsTwo,1],[coupling,3],[uniform,2],[absorbing,1]])) {
+  const demoSlides = process.argv.includes('--coupling-only') ? [coupling] : [twoSided, oneVsTwo, coupling, uniform, absorbing]
+  for (const n of demoSlides) {
+    const max = slides[n - 1].clicks
     for(let c=0;c<=max;c++){await go(n,c);await snap(`${n}-${c}`)}
     if(n!==coupling){await page.locator('.slidev-layout:visible h1').click();await page.keyboard.press('ArrowLeft');assert.equal(await demo().evaluate(e=>e.classList.contains('slidev-vclick-hidden')),true);await page.keyboard.press('ArrowRight');assert.equal(await demo().evaluate(e=>e.classList.contains('slidev-vclick-hidden')),false)}
     if(n===twoSided||n===oneVsTwo){
