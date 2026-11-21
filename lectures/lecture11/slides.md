@@ -881,52 +881,6 @@ $$
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
 
 ---
-clicks: 2
-id: marginal-to-conditional-scores-vs-velocities
-class: theorems
----
-
-# Marginal-to-Conditional: Scores vs Velocities
-
-<div class="block">
-
-## Denoising Score Matching
-
-$$
-\bbE_{\pd(\bx)}\bbE_{q(\bx_\sigma|\bx)}\left\|\bs_{\btheta,\sigma}(\bx_\sigma)-\nabla_{\bx_\sigma}\log q(\bx_\sigma|\bx)\right\|_2^2\rightarrow\min_{\btheta}
-$$
-
-</div>
-
-Optimal predictor over all functions:
-
-$$
-\bs^*_\sigma(\bx_\sigma)=\bbE_{q(\bx|\bx_\sigma)}\left[\nabla_{\bx_\sigma}\log q(\bx_\sigma|\bx)\right]=\nabla_{\bx_\sigma}\log q(\bx_\sigma)
-$$
-
-<div v-click="1">
-<div class="block">
-
-## Conditional Flow Matching
-
-$$
-\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
-$$
-
-</div>
-
-Optimal predictor over all functions: $\bv^*(\bx,t)=\bbE_{p_t(\bz|\bx)}\bv(\bx,\bz,t)=\bv(\bx,t)$.
-
-</div>
-<div v-click="2">
-
-In both cases, the optimal MSE predictor is the posterior mean of the **conditional** target, which equals the intractable **marginal** quantity (score or velocity).
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
-
----
 clicks: 0
 id: outline-4
 section: "Conditional Probability Paths"
@@ -943,7 +897,7 @@ section: "Conditional Probability Paths"
 </div>
 
 ---
-clicks: 3
+clicks: 1
 id: conditional-flow-matching-continuity-equations
 class: theorems
 ---
@@ -954,7 +908,7 @@ CFM gives us a training objective. We still need to choose conditional paths and
 
 <div class="block">
 
-## Continuity Equations
+## How are the probability path $p_t(\bx)$ and the velocity field $\bv(\bx,t)$ related?
 
 $$
 \begin{aligned}
@@ -965,23 +919,13 @@ $$
 
 </div>
 
-<ul>
-<li v-click="1">
+<div v-click="1">
 
-$\bv(\bx,t)$ (under regularity conditions) and initial condition $p_0(\bx)$ uniquely determine $p_t(\bx)$.
+- $\bv(\bx,t)$ (under regularity conditions) and initial condition $p_0(\bx)$ uniquely determine $p_t(\bx)$.
+- Given a field $\bv$ generating $p_t$, adding $\bw$ with $\diver(p_t\bw)=0$ preserves the same continuity equation.
+- Moreover, not every given path $p_t(\bx)$ can actually arise from particles moving under some velocity field $\bv(\bx,t)$.
 
-</li>
-<li v-click="2">
-
-Given a field $\bv$ generating $p_t$, adding $\bw$ with $\diver(p_t\bw)=0$ preserves the same continuity equation.
-
-</li>
-<li v-click="3">
-
-We need a velocity field that satisfies the continuity equation and defines a well-posed flow.
-
-</li>
-</ul>
+</div>
 
 <div class="source"><a href="https://arxiv.org/abs/2510.21890">Lai C. H. et al. The principles of diffusion models, 2025.</a></div>
 
@@ -997,7 +941,7 @@ class: theorems
 
 <div class="block">
 
-## Probability Paths
+## How are the conditional paths $p_t(\bx|\bz)$ and the marginal path $p_t(\bx)$ related?
 
 $$
 p_t(\bx)=\int p_t(\bx|\bz)p(\bz)d\bz
@@ -1006,13 +950,14 @@ $$
 </div>
 <div v-click="1">
 
-- $p_t(\bx|\bz)$ and $p(\bz)$ uniquely determine $p_t(\bx)$.
-- The reverse is not true: many different conditional families integrate to the same marginal.
+- At each time $t$, mixing the conditional densities $p_t(\bx|\bz)$ with the prior $p(\bz)$ fixes the marginal density $p_t(\bx)$.
+- With the same prior, distinct families can satisfy
+  $\int p_t(\bx|\bz)p(\bz)\,d\bz = \int \tilde p_t(\bx|\bz)p(\bz)\,d\bz = p_t(\bx)$.
 
 </div>
 <div class="block" v-click="2">
 
-## Vector fields
+## How are the conditional velocities $\bv(\bx,\bz,t)$ and the marginal velocity $\bv(\bx,t)$ related?
 
 $$
 \bv(\bx,t)=\bbE_{p_t(\bz|\bx)}\bv(\bx,\bz,t)=\int\bv(\bx,\bz,t)\frac{p_t(\bx|\bz)p(\bz)}{p_t(\bx)}d\bz
@@ -1021,8 +966,8 @@ $$
 </div>
 <div v-click="3">
 
-- $p(\bz)$, $p_t(\bx|\bz)$ and $\bv(\bx,\bz,t)$ uniquely determine $\bv(\bx,t)$.
-- Choosing conditional paths and compatible velocities constructs both marginal quantities.
+- Where $p_t(\bx)>0$, averaging $\bv(\bx,\bz,t)$ with posterior weights $p_t(\bz|\bx)$ gives $\bv(\bx,t)$.
+- If each $\bv(\bx,\bz,t)$ generates $p_t(\bx|\bz)$, then $\bv(\bx,t)$ generates their mixture $p_t(\bx)$.
 
 </div>
 
@@ -1040,26 +985,74 @@ class: theorems
 
 <div class="block" v-click="3">
 
-## Open Questions
+## Where we stand
 
-- **Q1** How should we choose the convenient conditioning latent variable $\bz$?
-- **Q2** How should we choose $p_t(\bx|\bz)$ so that its marginal satisfies the endpoint constraints?
+<ul>
+<li>
+
+Set up the MSE for fitting $\bv_{\btheta}(\bx,t)$ to the marginal velocity $\bv(\bx,t)$.
 
 $$
-\bbE_{p(\bz)}p_0(\bx|\bz)=\cN(0,\bI);\quad\bbE_{p(\bz)}p_1(\bx|\bz)=\pd(\bx).
+\bbE_{t\sim U[0,1]}\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
 $$
+
+</li>
+<li>
+
+Used the FM–CFM theorem to switch to the conditional MSE with the same minimizers.
+
+$$
+\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
+$$
+
+</li>
+</ul>
 
 </div>
 
-<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">Diagram adapted from A Visual Dive into Conditional Flow Matching</a></div>
+<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">Diagram adapted from A Visual Dive into Conditional Flow Matching</a><br><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
 
 ---
-clicks: 2
+clicks: 1
+id: building-a-cfm-training-example
+class: theorems
+---
+
+# How do we build one CFM training example?
+
+$$
+\underbrace{(\bx_t,t)}_{\text{network input}}
+\qquad\qquad
+\underbrace{\bv(\bx_t,\bz,t)}_{\text{velocity target}}
+$$
+
+<div class="block" v-click="1">
+
+## Next steps
+
+- **Step 1** Choose the conditional path $p_t(\bx|\bz)$ so that its mixture has the required endpoints.
+
+$$
+\bbE_{p(\bz)}p_0(\bx|\bz)=\cN(0,\bI),\qquad \bbE_{p(\bz)}p_1(\bx|\bz)=\pd(\bx).
+$$
+
+- **Step 2** Construct particle trajectories $\bx_t$ with conditional density $p_t(\bx|\bz)$ at each time $t$.
+- **Step 3** Derive the conditional velocity $\bv(\bx_t,\bz,t)=d\bx_t/dt$ along these trajectories.
+- **Step 4** Specify the conditioning variable $\bz$ and the law $p(\bz)$ used to sample it during training.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+
+---
+clicks: 1
 id: gaussian-conditional-probability-paths-q2
 class: theorems
 ---
 
-# Gaussian Conditional Probability Paths [Q2]
+# Gaussian Conditional Probability Paths
+
+## Step 1. Choose the conditional path
 
 On the interval considered, assume $\bmu_t(\bz)$ and $\bsigma_t(\bz)$ are differentiable in $t$, with $\bsigma_t(\bz)>0$ componentwise.
 
@@ -1067,20 +1060,13 @@ $$
 p_t(\bx|\bz)=\cN\left(\bmu_t(\bz),\bsigma_t^2(\bz)\right)
 $$
 
-<div v-click="1">
+Once we specify $\bz$ in step 4, we can choose $\bmu_t(\bz)$ and $\bsigma_t(\bz)$ to satisfy the endpoint constraints.
 
-The concrete $\bmu_t(\bz)$, $\bsigma_t(\bz)$ (which satisfy the boundary constraints) will be fixed once we choose $\bz$ [Q1].
+<div class="block" v-click="1">
 
-<div class="block">
+## Step 2. Construct the particle trajectories
 
-## Gaussian flow
-
-- We need a tractable velocity target for this Gaussian path.
-- Choose the affine flow: keep the same Gaussian noise along each trajectory and vary its mean and scale.
-
-<div v-click="2">
-
-- Use this fixed-noise construction:
+Choose an affine flow. Along each trajectory, keep the same Gaussian noise $\bepsilon$ and vary the mean and scale.
 
 $$
 \bx_t=\bpsi_t(\bx_0,\bz)=\bmu_t(\bz)+\bsigma_t(\bz)\odot\bepsilon,
@@ -1088,11 +1074,13 @@ $$
 
 where $\bepsilon$ is fixed by the condition: $\bx_0=\bmu_0(\bz)+\bsigma_0(\bz)\odot\bepsilon$.
 
-</div></div></div>
+</div>
 
 <div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
 
-<!-- The selected affine flow keeps epsilon fixed along each trajectory. Differentiability in time and componentwise positive sigma are assumed on the interval where the inverse map and velocity formula are used, including positive sigma_0 for the initial parametrization. A zero-variance endpoint requires separate limiting analysis; the later one-sided construction treats t=1 separately. We choose one compatible field rather than claim uniqueness from the density path alone. -->
+<!--
+The selected affine flow keeps epsilon fixed along each trajectory. Differentiability in time and componentwise positive sigma are assumed on the interval where the inverse map and velocity formula are used, including positive sigma_0 for the initial parametrization. A zero-variance endpoint requires separate limiting analysis; the later one-sided construction treats t=1 separately. We choose one compatible field rather than claim uniqueness from the density path alone.
+-->
 
 ---
 clicks: 4
@@ -1114,6 +1102,9 @@ p_t(\bx|\bz)&=\cN\left(\bmu_t(\bz),\bsigma_t^2(\bz)\right);\\
 $$
 
 </div>
+
+## Step 3. Derive the conditional velocity
+
 <div v-click="1">
 
 Differentiate the chosen affine flow in $t$, keeping $\bepsilon$ fixed. Assume differentiable $\bmu_t,\bsigma_t$ and componentwise $\bsigma_t>0$.
@@ -1144,6 +1135,40 @@ $$
 <div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
 
 ---
+clicks: 1
+id: cfm-training-example-progress
+class: theorems
+---
+
+# How do we build one CFM training example?
+
+$$
+\underbrace{(\bx_t,t)}_{\text{network input}}
+\qquad\qquad
+\underbrace{\bv(\bx_t,\bz,t)}_{\text{velocity target}}
+$$
+
+<div class="block" v-click="1">
+
+## Progress
+
+- **Step 1 ✓** Choose the conditional path $p_t(\bx|\bz)$ so that its mixture has the required endpoints.
+
+$$
+\bbE_{p(\bz)}p_0(\bx|\bz)=\cN(0,\bI),\qquad \bbE_{p(\bz)}p_1(\bx|\bz)=\pd(\bx).
+$$
+
+- **Step 2 ✓** Construct particle trajectories $\bx_t$ with conditional density $p_t(\bx|\bz)$ at each time $t$.
+- **Step 3 ✓** Derive the conditional velocity $\bv(\bx_t,\bz,t)=d\bx_t/dt$ along these trajectories.
+- **Step 4** Specify the conditioning variable $\bz$ and the law $p(\bz)$ used to sample it during training.
+
+Steps 1–3 give us a trajectory and its velocity for each fixed $\bz$. What should $\bz$ represent?
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+
+---
 clicks: 0
 id: outline-5
 section: "One-Sided Conditioning"
@@ -1160,12 +1185,14 @@ section: "One-Sided Conditioning"
 </div>
 
 ---
-clicks: 3
+clicks: 4
 id: endpoint-conditioning
 class: theorems
 ---
 
 # Endpoint Conditioning
+
+The path starts at a Gaussian noise sample $\bx_0\sim\cN(0,\bI)$ and ends at a data point $\bx_1\sim\pd$.
 
 <div class="block">
 
@@ -1177,11 +1204,9 @@ $$
 
 </div>
 
-Let's define our latent variable $\bz$.
-
 <div class="block" v-click="1">
 
-## Conditioning Latent Variable [Q1]
+## Step 4. Specify the conditioning variable
 
 Let us choose $\bz=\bx_1$. Then $p(\bz)=p_1(\bx_1)$.
 
@@ -1192,14 +1217,27 @@ $$
 </div>
 <div v-click="2">
 
-We need to ensure the boundary constraints:
-
-<div class="math-chain">
-
-$\displaystyle\begin{cases}\bbE_{p(\bz)}p_0(\bx|\bz)=\cN(0,\bI)\\\bbE_{p(\bz)}p_1(\bx|\bz)=\pd(\bx)\end{cases}$
-<span v-click="3">$\displaystyle\quad\Rightarrow\quad\begin{cases}p_0(\bx|\bx_1)=\cN(0,\bI);\\p_1(\bx|\bx_1)=\delta(\bx-\bx_1)\end{cases}$</span>
+What are the endpoint distributions $p_0(\bx|\bx_1)$ and $p_1(\bx|\bx_1)$ for a fixed data point $\bx_1$?
 
 </div>
+<div v-click="3">
+
+**At $t=0$**, draw the noise $\bx_0$ independently of $\bx_1$. Every conditional path starts from the same Gaussian.
+
+$$
+p_0(\bx|\bx_1)=\cN(0,\bI),\qquad
+p_0(\bx)=\bbE_{\bx_1\sim\pd}\!\left[p_0(\bx|\bx_1)\right]=\cN(0,\bI).
+$$
+
+</div>
+<div v-click="4">
+
+**At $t=1$**, every trajectory ends at its chosen $\bx_1$. Mixing these point masses recovers the data distribution.
+
+$$
+p_1(\bx|\bx_1)=\delta(\bx-\bx_1),\qquad
+p_1(\bx)=\int\delta(\bx-\bx_1)\pd(\bx_1)\,d\bx_1=\pd(\bx).
+$$
 
 </div>
 
@@ -1231,19 +1269,19 @@ $$
 </div>
 <div v-click="1">
 
-Let's consider straight conditional paths:
-
-<EndpointPathDemo />
-
-</div>
-<div v-click="2">
+**Steps 1–2.** Let's consider straight conditional paths:
 
 <div class="math-chain">
 
 $\displaystyle\begin{cases}\bmu_t(\bx_1)=t\bx_1\\\bsigma_t(\bx_1)=1-t\end{cases}$
-<span v-click="3">$\displaystyle\quad\Rightarrow\quad\begin{cases}p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\cdot\bI\right)\\\bx_t=t\bx_1+(1-t){\color{olive}\bx_0}\end{cases}$</span>
+<span v-click="2">$\displaystyle\quad\Rightarrow\quad\begin{cases}p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\cdot\bI\right)\\\bx_t=t\bx_1+(1-t){\color{olive}\bx_0}\end{cases}$</span>
 
 </div>
+</div>
+
+<div v-click="3">
+
+<EndpointPathDemo />
 
 </div>
 
@@ -1255,7 +1293,7 @@ id: one-sided-conditioning-conditional-vector-field
 class: theorems interactive-slide
 ---
 
-# One-Sided Conditioning: Conditional Vector Field
+# One-Sided Conditional Vector Field
 
 $$
 p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\bI\right);\quad{\color{teal}\bx_t=t\bx_1+(1-t)\bx_0}
@@ -1263,7 +1301,7 @@ $$
 
 <div class="block">
 
-## Conditional Vector Field
+## Step 3. Derive the conditional velocity
 
 $$
 \frac{d\bx_t}{dt}=\bv(\bx_t,\bx_1,t)=\bmu_t'(\bx_1)+\frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)}\odot(\bx_t-\bmu_t(\bx_1))
@@ -1331,7 +1369,29 @@ $$
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://arxiv.org/abs/2209.03003">Liu X., Gong C., Liu Q. Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow, 2022</a></div>
 
 
-<!-- The preceding slide derives the conditional target x1-x0. This slide substitutes it into CFM, names the resulting linear-interpolation regression Rectified Flow, and distinguishes conditional training paths from integral curves of the optimal marginal field. The following slide gives the unchanged Training/Sampling algorithms. The conditional-expectation identity assumes the population MSE optimum and sufficient model capacity; a fitted finite network approximates it. Rectified Flow does not require straight sampling trajectories or reflow. Reflow is deferred to the coupling discussion. -->
+<!-- The preceding slide derives the conditional target x1-x0. This slide substitutes it into CFM, names the resulting linear-interpolation regression Rectified Flow, and distinguishes conditional training paths from integral curves of the optimal marginal field. The next slide shows the conditional and marginal distributions at five times for a two-dimensional checkerboard example. The conditional-expectation identity assumes the population MSE optimum and sufficient model capacity; a fitted finite network approximates it. Rectified Flow does not require straight sampling trajectories or reflow. Reflow is deferred to the coupling discussion. -->
+
+---
+clicks: 1
+id: conditional-vs-marginal-paths
+class: theorems
+---
+
+# Conditional vs. Marginal Paths
+
+$$
+p_t(\bx)=\bbE_{\bx_1\sim\pd}\!\left[p_t(\bx|\bx_1)\right].
+$$
+
+<img src="/figs/cond_marg_paths.png" alt="A Gaussian cloud shrinks to one endpoint in the top row. The mixture over endpoints forms a checkerboard in the bottom row." style="width:100%;height:345px;object-fit:contain" />
+<div v-click="1">
+
+- **Top row.** Fix $\bz=\bx_1$. The Gaussian cloud shrinks to the data point marked by the red star.
+- **Bottom row.** Mixing over $\bx_1\sim\pd$ recovers the checkerboard distribution at $t=1$.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P. and Erives E., et al. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
 
 ---
 clicks: 1
@@ -1381,20 +1441,20 @@ For $\bx_t=(1-t)\bx_0+t\bx_1$, let $\ell_{\btheta}(t)=\bbE\|\bv_{\btheta}(\bx_t,
 
 <div v-click="1">
 
+Let $r(t)$ be the training-time density. Without importance correction, it weights the velocity MSE.
+
 $$
 \bbE_{t\sim r}\ell_{\btheta}(t)
 =\bbE_{t\sim U[0,1]}\left[r(t)\ell_{\btheta}(t)\right].
 $$
 
-**Without importance correction, more frequent times receive more weight.**
-
 </div>
 <div v-click="2">
 
+**SD3 example.** Choose a logit-normal density $r(t)$ by drawing a Gaussian logit $u$.
+
 $$
-u\sim\cN(\mu,s^2),\qquad t=\frac1{1+e^{-u}}
-\quad\Rightarrow\quad
-\log\SNR(t)=2\log\frac{t}{1-t}=2u.
+u\sim\cN(\mu,s^2),\qquad t=\operatorname{sigmoid}(u),\qquad \log\frac{t}{1-t}=u.
 $$
 
 <img src="/figs/logit-normal-training-times.svg" alt="Uniform and logit-normal training-time densities, with mu zero and s one" style="width:100%;height:185px;object-fit:contain" />
@@ -1402,14 +1462,17 @@ $$
 </div>
 <div v-click="3">
 
-Logit-normal time means Gaussian log-SNR. SD3 explores this reweighting.
-The probability path and the target $\bx_1-\bx_0$ stay fixed.
+$$
+\log\SNR(t)=\log\frac{t^2}{(1-t)^2}=2\log\frac{t}{1-t}=2u\sim\cN(2\mu,4s^2).
+$$
+
+Sampling more often near $t=1/2$ gives more examples with comparable signal and noise ($\log\SNR\approx0$).
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
 
-<!-- Narrative: the preceding Training/Sampling slide uses uniform time. Here vary only the training-time distribution, reuse the weighted-loss identity, and show logit-normal as a concrete example. The following CFG slide adds label/text conditioning at generation; the subsequent conditional/marginal-path slide returns to transport geometry. In this lecture t=0 is noise and t=1 is data, opposite to SD3 paper time. Thus positive mu favors data here; the symmetric mu=0,s=1 example needs no sign conversion. The Gaussian draws u and endpoint samples are independent. For the unshifted straight Gaussian path log-SNR=2u exactly. Resolution-dependent timestep shifting is a separate topic; the Gaussian log-SNR statement does not silently include it. Positive time-only weighting preserves the unrestricted pointwise conditional-mean optimum when expectations are finite; finite shared networks and finite optimization can behave differently. Restoring the uniform-time objective would require multiplying the sampled loss by 1/r(t). This concerns training times, not the ODE integration grid. -->
+<!-- Narrative: the preceding Training/Sampling slide uses uniform time. Here vary only the training-time distribution, reuse the weighted-loss identity, and show logit-normal as a concrete example. The following CFG slide adds label/text conditioning at generation. In this lecture t=0 is noise and t=1 is data, opposite to SD3 paper time. Thus positive mu favors data here; the symmetric mu=0,s=1 example needs no sign conversion. The Gaussian draws u and endpoint samples are independent. For the unshifted straight Gaussian path log-SNR=2u exactly. Resolution-dependent timestep shifting is a separate topic; the Gaussian log-SNR statement does not silently include it. Positive time-only weighting preserves the unrestricted pointwise conditional-mean optimum when expectations are finite; finite shared networks and finite optimization can behave differently. Restoring the uniform-time objective would require multiplying the sampled loss by 1/r(t). This concerns training times, not the ODE integration grid. -->
 
 ---
 clicks: 3
@@ -1469,25 +1532,7 @@ $$
 
 <div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a><br><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
 
-<!-- Narrative: first show the score-space CFG formula from the earlier diffusion lecture; the first click reveals the same combination for velocities. After varying rectified-flow training times, recall CFG to make generation conditional on a label or prompt. The following conditional/marginal-path slide moves from one-sided generation to two-sided transport. Here y is an observed condition, distinct from the auxiliary CFM latent z=x1; conditional and unconditional model velocities both average over training endpoints. Use the same noise law and interpolation for both branches; independently drop the condition, not the endpoint or regression target. x0 is independent Gaussian noise and t follows the previously chosen training distribution. The convention gamma=0 unconditional, gamma=1 conditional matches the score CFG slides. For shared Gaussian paths, the score-to-velocity map is affine with condition-independent coefficients, so an affine CFG combination transfers to velocities. This does not assert that gamma>1 exactly samples a tempered endpoint density. Standard CFG uses two predictions per field evaluation (which may be batched); gamma=0 or 1 can skip the unused branch. Guidance distillation is a separate construction. SD3 is the concrete example; no claim that every FLUX variant uses two-pass CFG. -->
-
----
-clicks: 1
-id: conditional-vs-marginal-paths
-class: theorems
----
-
-# Conditional vs. Marginal Paths
-
-<img src="/figs/cond_marg_paths.png" alt="Conditional and marginal probability paths" style="width:100%;height:345px;object-fit:contain" />
-<div v-click="1">
-
-- One-sided conditioning gives us the way to construct a generative model.
-- Now we extend it to image-to-image formulation (mapping between two distinct data distributions $p_0(\bx)$ and $p_1(\bx)$).
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P. and Erives E., et al. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
+<!-- Narrative: first show the score-space CFG formula from the earlier diffusion lecture; the first click reveals the same combination for velocities. After varying rectified-flow training times, recall CFG to make generation conditional on a label or prompt. Here y is an observed condition, distinct from the auxiliary CFM latent z=x1; conditional and unconditional model velocities both average over training endpoints. Use the same noise law and interpolation for both branches; independently drop the condition, not the endpoint or regression target. x0 is independent Gaussian noise and t follows the previously chosen training distribution. The convention gamma=0 unconditional, gamma=1 conditional matches the score CFG slides. For shared Gaussian paths, the score-to-velocity map is affine with condition-independent coefficients, so an affine CFG combination transfers to velocities. This does not assert that gamma>1 exactly samples a tempered endpoint density. Standard CFG uses two predictions per field evaluation (which may be batched); gamma=0 or 1 can skip the unused branch. Guidance distillation is a separate construction. SD3 is the concrete example; no claim that every FLUX variant uses two-pass CFG. -->
 
 ---
 clicks: 0

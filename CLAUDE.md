@@ -38,15 +38,18 @@ in `public/figs/sources.json`. Resources and fonts must work without network acc
   the problem it solves. Return to that problem when the result answers it.
   When continuing a derivation, start from the equation in the form students
   actually saw and show the change of form. Describe each step using terms
-  already defined for the audience. Choose examples students can
-  follow with the tools introduced so far. When proposing or
+  already defined for the audience. In a plan, name what will be chosen,
+  constructed or derived. Use the same step names in the derivation and
+  introduce each specific choice or result at its step. Choose examples
+  students can follow with the tools introduced so far. When proposing or
   reviewing a new slide, identify what leads into it, the step it contributes
   and what follows. Check the neighbors across Outline transitions too.
 - **Make the reasoning readable aloud.** Keep the precise statement and its
   assumptions visible. Group equations by mathematical operation and explain
-  the step a student would otherwise have to guess. When a question or
-  conclusion depends on a formula, show the formula first and keep it in
-  view as you pose the question or explain the result. Leave further
+  the step a student would otherwise have to guess. When a question,
+  conclusion or figure depends on a formula, show the formula first and
+  keep it in view while referring to it. When a list answers
+  the question, reveal the whole list on the next click. Leave further
   commentary to the lecturer.
   For a comparison, put the two expressions or diagrams in view together
   when possible. Align corresponding terms, identify what stays the same,
@@ -142,13 +145,25 @@ Refer unresolved choices of emphasis to the author.
 
 ## Validation and presentation
 
-Use `check`, `test:demos`, `build`, `export`, `finalize`, PDF rendering and browser
-inspectors as documented in the Slidev README. Successful builds do not establish
-mathematical correctness, semantic consistency, PDF freshness or visual quality.
-Review all pages of changed PDFs, dense pages at full size, and affected browser
-states. Shared theme/component/macro changes require checking affected consumers.
-Metadata-only or documentation changes do not require regenerating unchanged PDFs.
-Run build/export sequentially and avoid conflicting with another active server.
+Treat successive small edits to one lecture as one session across messages.
+For a wording fix, reread the changed passage in context. When a change can
+affect rendering (math, layout, figures or reveals), reuse the lecture’s Slidev
+dev server and inspect the affected slide and click states after hot reload.
+Resolve preview errors in the same iteration. Use `npm run check -- N` for
+changes to slide metadata, sections, asset references or shared macros. Test
+changed demo logic with its own tests. For shared changes, check the lectures
+that use the affected theme, component or macro.
+
+If the author asks for a PDF mid-session, run `npm run export -- N` and inspect
+the edited pages. When the author finishes the series, requests a final build,
+or asks to commit or push lecture changes, validate the accumulated edits once
+per affected lecture. `npm run finalize -- N` covers the source check, demo
+tests, web build and fully revealed PDF. If some stages already passed for the
+same inputs, run just the outstanding stages. Review all pages of the final
+PDF, dense pages at full size, and the affected browser states. Apply the
+semantic and artifact checks in `.codex/project-context.md` before commit and
+push. Regenerate PDFs when their inputs change the rendered lecture. Follow
+the [Slidev README](lectures/README.md) for server handling and build/export order.
 
 Keep the shared pen panel and room for annotations. Drawings belong to logical
 slides and preserve coordinates through reveals/navigation; exclude them from PDFs.

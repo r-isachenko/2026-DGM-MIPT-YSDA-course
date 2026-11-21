@@ -234,18 +234,32 @@ class: theorems
 
 <div class="block">
 
-## Open Questions
+## Where we stand
 
-- **Q1** How should we choose the convenient conditioning latent variable $\bz$?
-- **Q2** How should we choose $p_t(\bx|\bz)$ so that its marginal satisfies the endpoint constraints?
+<ul>
+<li>
+
+Set up the MSE for fitting $\bv_{\btheta}(\bx,t)$ to the marginal velocity $\bv(\bx,t)$.
 
 $$
-\bbE_{p(\bz)}p_0(\bx|\bz)=\cN(0,\bI);\quad\bbE_{p(\bz)}p_1(\bx|\bz)=\pd(\bx).
+\bbE_{t\sim U[0,1]}\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
 $$
+
+</li>
+<li>
+
+Used the FM–CFM theorem to switch to the conditional MSE with the same minimizers.
+
+$$
+\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2\rightarrow\min_{\btheta}
+$$
+
+</li>
+</ul>
 
 </div>
 
-<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">Diagram adapted from A Visual Dive into Conditional Flow Matching</a></div>
+<div class="source"><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">Diagram adapted from A Visual Dive into Conditional Flow Matching</a><br><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
 
 ---
 clicks: 0
@@ -314,7 +328,7 @@ class: theorems
 
 <div class="block">
 
-## Conditioning Latent Variable [Q1]
+## Endpoint Conditioning
 
 Let us choose $\bz=\bx_1$. Then $p(\bz)=p_1(\bx_1)$.
 
@@ -324,18 +338,18 @@ $$
 
 </div>
 
-We need to ensure the boundary constraints:
+**At $t=0$**, draw the noise $\bx_0$ independently of $\bx_1$. Every conditional path starts from the same Gaussian.
 
 $$
-\begin{cases}
-\bbE_{p(\bz)}p_0(\bx|\bz)=\cN(0,\bI)\\
-\bbE_{p(\bz)}p_1(\bx|\bz)=\pd(\bx)
-\end{cases}
-\quad\Rightarrow\quad
-\begin{cases}
-p_0(\bx|\bx_1)=\cN(0,\bI);\\
-p_1(\bx|\bx_1)=\delta(\bx-\bx_1)
-\end{cases}
+p_0(\bx|\bx_1)=\cN(0,\bI),\qquad
+p_0(\bx)=\bbE_{\bx_1\sim\pd}\!\left[p_0(\bx|\bx_1)\right]=\cN(0,\bI).
+$$
+
+**At $t=1$**, every trajectory ends at its chosen $\bx_1$. Mixing these point masses recovers the data distribution.
+
+$$
+p_1(\bx|\bx_1)=\delta(\bx-\bx_1),\qquad
+p_1(\bx)=\int\delta(\bx-\bx_1)\pd(\bx_1)\,d\bx_1=\pd(\bx).
 $$
 
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
@@ -439,6 +453,29 @@ class: theorems
 
 ---
 clicks: 0
+id: recap-of-previous-lecture-14
+class: theorems
+---
+
+# Recap of Previous Lecture
+
+$$
+p_t(\bx)=\bbE_{\bx_1\sim\pd}\!\left[p_t(\bx|\bx_1)\right].
+$$
+
+<img src="/figs/cond_marg_paths.png" alt="A Gaussian cloud shrinks to one endpoint in the top row. The mixture over endpoints forms a checkerboard in the bottom row." style="width:100%;height:315px;object-fit:contain" />
+
+<div>
+
+- **Top row.** Fix $\bz=\bx_1$. The Gaussian cloud shrinks to the data point marked by the red star.
+- **Bottom row.** Mixing over $\bx_1\sim\pd$ recovers the checkerboard distribution at $t=1$.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P. and Erives E., et al. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
+
+---
+clicks: 0
 id: recap-of-previous-lecture-13
 class: theorems
 ---
@@ -475,56 +512,42 @@ $$
 
 ---
 clicks: 0
-id: recap-of-previous-lecture-14
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<img src="/figs/cond_marg_paths.png" alt="Conditional and marginal probability paths" style="width:100%;height:315px;object-fit:contain" />
-
-<div>
-
-- One-sided conditioning gives us the way to construct a generative model.
-- Now we extend it to image-to-image formulation (mapping between two distinct data distributions $p_0(\bx)$ and $p_1(\bx)$).
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2506.02070">Holderrieth P. and Erives E., et al. An Introduction to Flow Matching and Diffusion Models, 2025</a></div>
-
----
-clicks: 0
 id: recap-rectified-flow-training-times
 class: theorems
 ---
 
 # Recap of Previous Lecture
 
-## Rectified Flow: Training-Time Distribution
+## Rectified Flow: Sampling Training Times
 
-Keep $\bx_t=(1-t)\bx_0+t\bx_1$ and the target $\bx_1-\bx_0$ fixed.
-Let $\ell_{\btheta}(t)$ be the expected velocity MSE at time $t$.
+For $\bx_t=(1-t)\bx_0+t\bx_1$, let $\ell_{\btheta}(t)=\bbE\|\bv_{\btheta}(\bx_t,t)-(\bx_1-\bx_0)\|^2$.
+
+Let $r(t)$ be the training-time density. Without importance correction, it weights the velocity MSE.
 
 $$
 \bbE_{t\sim r}\ell_{\btheta}(t)
 =\bbE_{t\sim U[0,1]}\left[r(t)\ell_{\btheta}(t)\right].
 $$
 
-Changing the time distribution without correction changes the objective.
-To preserve uniform-time training, use $\ell_{\btheta}(t)/r(t)$ with $t\sim r$.
-
-## Logit-Normal Example
+**SD3 example.** Choose a logit-normal density $r(t)$ by drawing a Gaussian logit $u$.
 
 $$
-u\sim\cN(\mu,s^2),\qquad t=\frac1{1+e^{-u}},\qquad
-\log\SNR(t)=2\log\frac{t}{1-t}=2u.
+u\sim\cN(\mu,s^2),\qquad t=\operatorname{sigmoid}(u),\qquad \log\frac{t}{1-t}=u.
 $$
 
-Time $t=0$ is noise and $t=1$ is data. This choice does not prescribe the ODE grid.
+$$
+\log\SNR(t)=\log\frac{t^2}{(1-t)^2}=2\log\frac{t}{1-t}=2u\sim\cN(2\mu,4s^2).
+$$
+
+Sampling more often near $t=1/2$ gives more examples with comparable signal and noise ($\log\SNR\approx0$).
 
 <div class="source"><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
 
-<!-- Coverage: a separate static recap follows the complete RF Training/Sampling slide, which has no room for the new objective identity and log-SNR relation. The density plot and parameter illustration are intentionally omitted. This recalls the unshifted straight-path example, not all SD3 training details. -->
+<!--
+To preserve uniform-time training, use $\ell_{\btheta}(t)/r(t)$ with $t\sim r$. Time $t=0$ is noise and $t=1$ is data. This choice does not prescribe the ODE grid.
+
+Coverage: a separate static recap follows the complete RF Training/Sampling slide, which has no room for the new objective identity and log-SNR relation. The density plot and parameter illustration are intentionally omitted. This recalls the unshifted straight-path example, not all SD3 training details.
+-->
 
 ---
 clicks: 0
@@ -627,6 +650,8 @@ class: theorems
 
 # Pair Conditioning
 
+In image-to-image transport, both the source $p_0$ and the target $p_1$ are image distributions.
+
 <div class="block">
 
 ## Conditional Flow Matching
@@ -638,7 +663,7 @@ $$
 </div>
 <div class="block">
 
-## Conditioning Latent Variable [Q1]
+## Conditioning on Both Endpoints
 
 Let us choose $\bz=(\bx_0,\bx_1)$. Start with independent endpoints: $p(\bz)=p_0(\bx_0)p_1(\bx_1)$.
 

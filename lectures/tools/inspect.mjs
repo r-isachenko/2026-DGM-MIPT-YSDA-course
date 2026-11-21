@@ -23,7 +23,7 @@ async function sample() {
   return page.evaluate(() => {
     const layout = [...document.querySelectorAll('.slidev-layout')].find(el=>el.getBoundingClientRect().width>0)
     function visible(el) { for(let a=el; a && a!==layout; a=a.parentElement) { const s=getComputedStyle(a); if(+s.opacity===0||s.display==='none'||s.visibility==='hidden') return false } return true }
-    const nodes=[...layout.querySelectorAll('h1,h2,p,li,img,table,.katex-display,.math-chain,.katex-html,.mord')]
+    const nodes=[...layout.querySelectorAll('h1,h2,p,li,img,svg[role="img"],table,.katex-display,.math-chain,.katex-html,.mord')]
     const rects=nodes.map(el=>{const r=el.getBoundingClientRect();return [r.x,r.y,r.width,r.height].map(v=>Math.round(v*100)/100)})
     const footer = layout.querySelector('.source')
     const contentBottom = Math.min(672, footer ? footer.getBoundingClientRect().top - 12 : 672)
