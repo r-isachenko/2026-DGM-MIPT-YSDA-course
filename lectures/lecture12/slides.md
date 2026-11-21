@@ -37,166 +37,6 @@ Roman Isachenko
 
 ---
 clicks: 0
-id: recap-denoiser-score-and-training
-class: theorems
----
-
-# Recap of Previous Lecture
-
-**Use the familiar additive-noise form:** $\bx=\bx_0+\sigma\bepsilon$, $\bepsilon\sim\cN(0,\bI)$.
-
-<div class="block">
-
-## Choose a denoiser using Tweedie's formula
-
-$$
-\bbE[\bx_0\mid\bx]=\bx+\sigma^2\nabla_{\bx}\log p_{\sigma}(\bx).
-$$
-
-$$
-D_{\btheta}(\bx,\sigma)\approx\bbE[\bx_0\mid\bx],\qquad
-\frac{d\bx}{d\sigma}=-\sigma\bs_{\btheta}(\bx,\sigma)
-=\frac{\bx-D_{\btheta}(\bx,\sigma)}{\sigma}.
-$$
-
-Decreasing $\sigma$ moves towards the denoiser prediction.
-
-</div>
-
-<div class="block">
-
-## Train the Denoiser
-
-$$
-\begin{aligned}
-\cL
-&=\left\|\frac{D_{\btheta}(\bx,\sigma)-\bx}{\sigma^2}
-+\frac{\bx-\bx_0}{\sigma^2}\right\|_2^2\\
-&=\frac{1}{\sigma^4}\left\|D_{\btheta}(\bx,\sigma)-\bx_0\right\|_2^2.
-\end{aligned}
-$$
-
-**Preserving the score objective requires the factor $1/\sigma^4$.** Plain denoiser MSE would reweight noise levels.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2206.00364">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022</a></div>
-
----
-clicks: 0
-id: recap-optimal-denoiser-and-euler
-class: theorems
----
-
-# Recap of Previous Lecture
-
-## What Does the Optimal Denoiser Predict?
-
-Use uniform empirical data $\{\bx_1,\ldots,\bx_N\}$. For fixed $\bx$ and $\sigma>0$, let
-$a_i=\cN(\bx;\bx_i,\sigma^2\bI)$ be the likelihood of the noisy observation.
-
-$$
-D^*(\bx,\sigma)
-=\frac{\sum_{i=1}^{N}\exp\!\left(-\frac{\|\bx-\bx_i\|_2^2}{2\sigma^2}\right)\bx_i}
-{\sum_{j=1}^{N}\exp\!\left(-\frac{\|\bx-\bx_j\|_2^2}{2\sigma^2}\right)}
-=\bbE[\bx_0\mid\bx].
-$$
-
-The exact formula scans **all $N$ training examples at every sampling step**.
-
-<div class="block">
-
-## Sampling (Euler)
-
-<ol>
-
-<li>
-
-Choose $\sigma_0>\sigma_1>\cdots>\sigma_N=0$ and sample $\bx^{(0)}\sim\cN(0,\sigma_0^2\bI)$.
-
-</li>
-
-<li>
-
-For $i=0,\ldots,N-1$, evaluate $D_{\btheta}(\bx^{(i)},\sigma_i)$ and update:
-
-$$
-\bx^{(i+1)}=\bx^{(i)}+(\sigma_{i+1}-\sigma_i)
-\frac{\bx^{(i)}-D_{\btheta}(\bx^{(i)},\sigma_i)}{\sigma_i}.
-$$
-
-</li>
-
-<li>
-
-Return $\bx^{(N)}$.
-
-</li>
-
-</ol>
-
-</div>
-
-<div class="source"><a href="https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=11">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022 — Appendix B.3, Eqs. (53–57)</a><br><a href="https://arxiv.org/abs/2206.00364">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022</a></div>
-
----
-clicks: 0
-id: recap-ddim-denoiser-euler
-class: theorems
----
-
-# Recap of Previous Lecture
-
-## DDIM Is Euler in Noise Coordinates
-
-**Recall deterministic DDIM** ($s<t$):
-
-$$
-\begin{aligned}
-\hat{\bepsilon}&=\bepsilon_{\btheta,t}(\bx_t),\qquad
-\hat{\bx}_0=\frac{\bx_t-\sqrt{1-\bar{\alpha}_t}\,\hat{\bepsilon}}{\sqrt{\bar{\alpha}_t}},\\
-\bx_s&=\sqrt{\bar{\alpha}_s}\,\hat{\bx}_0+\sqrt{1-\bar{\alpha}_s}\,\hat{\bepsilon}.
-\end{aligned}
-$$
-
-<div class="block">
-
-## Recall the DDPM / NCSN rescaling ($\sigma_s<\sigma_t$)
-
-$$
-\tilde{\bx}_u=\frac{\bx_u}{\sqrt{\bar{\alpha}_u}},\qquad
-\sigma_u=\sqrt{\frac{1-\bar{\alpha}_u}{\bar{\alpha}_u}},\qquad u\in\{s,t\}.
-$$
-
-$$
-D_{\btheta}(\tilde{\bx}_t,\sigma_t)=\hat{\bx}_0
-=\tilde{\bx}_t-\sigma_t\hat{\bepsilon}.
-$$
-
-</div>
-
-<div class="block">
-
-## Rewrite DDIM as the denoiser Euler step
-
-$$
-\begin{aligned}
-\tilde{\bx}_s
-&=\hat{\bx}_0+\sigma_s\hat{\bepsilon}
-=\tilde{\bx}_t+(\sigma_s-\sigma_t)\hat{\bepsilon}\\
-&=\tilde{\bx}_t+(\sigma_s-\sigma_t)
-\frac{\tilde{\bx}_t-D_{\btheta}(\tilde{\bx}_t,\sigma_t)}{\sigma_t}.
-\end{aligned}
-$$
-
-**DDIM implements this Euler step using the existing noise predictor.**
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a></div>
-
----
-clicks: 0
 id: recap-continuous-time-normalizing-flows
 class: theorems
 ---
@@ -211,7 +51,7 @@ $$
 \bx_0 \sim p_0(\bx) = p(\bx), \quad \bx_1 \sim p_1(\bx) =  \pd(\bx)
 $$
 
-**Time convention:** unlike the diffusion sections, here $t=0$ denotes noise and $t=1$ denotes data. Sampling runs forward in time.
+**Time convention:** unlike the diffusion sections, here $t=0$ denotes noise and $t=1$ denotes data.
 
 $$
 \frac{d \bx_t}{dt} = \bv (\bx_t, t),  \quad \text{with initial condition } \bx(0) = \bx_0.
@@ -286,24 +126,20 @@ class: theorems
 
 Many velocity fields connect the same endpoints.
 
-To build a tractable training target, introduce a latent variable $\bz$ and choose conditional paths whose mixture is the desired path:
+For each $\bz\sim p(\bz)$, choose a **conditional probability path** $p_t(\bx|\bz)$ with a known velocity field. Mixing the conditional densities gives the marginal density at time $t$.
 
 $$
-p_t(\bx)=\int p_t(\bx|\bz)p(\bz)d\bz
+p_t(\bx)=\int p_t(\bx|\bz)p(\bz)\,d\bz.
 $$
 
-Here, $p_t(\bx|\bz)$ is a **conditional probability path**.
-
-The conditional probability path $p_t(\bx|\bz)$ satisfies the KFP theorem:
+At fixed $\bz$, the particle ODE and the continuity equation use the same **conditional vector field** $\bv(\bx,\bz,t)$.
 
 $$
-\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right),
+\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right).
 $$
 
-where $\bv(\bx,\bz,t)$ is a **conditional vector field**:
-
 $$
-\frac{d\bx_t}{dt}=\bv(\bx_t,t)\quad\Rightarrow\quad\frac{d\bx_t}{dt}=\bv(\bx_t,\bz,t)
+\frac{d\bx_t}{dt}=\bv(\bx_t,t)\quad\Rightarrow\quad\frac{d\bx_t}{dt}=\bv(\bx_t,\bz,t).
 $$
 
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
@@ -320,10 +156,13 @@ class: theorems
 
 ## Theorem
 
-The following vector field generates the probability path $p_t(\bx)$:
+If $\bv(\bx,\bz,t)$ generates $p_t(\bx|\bz)$ for each $\bz$, its posterior mean generates the mixture $p_t(\bx)$.
 
 $$
-\bv(\bx,t)=\bbE_{p_t(\bz|\bx)}\bv(\bx,\bz,t)={\color{teal}\int\bv(\bx,\bz,t)}\frac{{\color{teal}p_t(\bx|\bz)p(\bz)}}{p_t(\bx)}{\color{teal}d\bz}
+{\color{#007f82}\bv(\bx,t)}
+=\bbE_{p_t(\bz|\bx)}\!\left[\bv(\bx,\bz,t)\right]
+=\int \bv(\bx,\bz,t)\,p_t(\bz|\bx)\,d\bz,\qquad
+p_t(\bz|\bx)=\frac{p_t(\bx|\bz)p(\bz)}{p_t(\bx)}\quad (p_t(\bx)>0).
 $$
 
 </div>

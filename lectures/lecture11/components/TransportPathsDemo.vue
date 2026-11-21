@@ -23,8 +23,6 @@ const ellipse=(time:number,mode:string)=>Array.from({length:81},(_,i)=>{const a=
 <circle :cx="px(transport(transportPoints[0],t,mode)[0])" :cy="py(transport(transportPoints[0],t,mode)[1])" r="5" fill="#b65b20"/>
 <text :x="px(-2)" y="275" text-anchor="middle">p₀ · noise</text><text :x="px(2)" y="275" text-anchor="middle">p₁ · data</text>
 </svg></div></div>
-<div class="demo-takeaway">Many velocity fields connect the same endpoints. Choose a path with a tractable training objective.</div>
-<div class="demo-note">Intermediate densities may differ. Purple: trajectories; arrows: velocities; orange: one shared particle.</div>
 </DemoPanel>
 </template>
 
@@ -37,6 +35,5 @@ output { min-width: 44px; font-variant-numeric: tabular-nums; }
 .mode-name { text-align: center; font-weight: 650; color: #17324d; margin-bottom: 6px; }
 .panels svg { display: block; width: 100%; height: 250px; }
 svg text { font: 18px Arial; fill: #587083; }
-.demo-note { text-align: center; margin-top: 10px; }
 .print-label { text-align: center; color: #587083; margin: 14px 0; }
 </style>

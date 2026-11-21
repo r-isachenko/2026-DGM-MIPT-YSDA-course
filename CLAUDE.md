@@ -44,8 +44,10 @@ in `public/figs/sources.json`. Resources and fonts must work without network acc
   and what follows. Check the neighbors across Outline transitions too.
 - **Make the reasoning readable aloud.** Keep the precise statement and its
   assumptions visible. Group equations by mathematical operation and explain
-  the step a student would otherwise have to guess. Give the result a brief
-  interpretation where it is used. Leave further commentary to the lecturer.
+  the step a student would otherwise have to guess. When a question or
+  conclusion depends on a formula, show the formula first and keep it in
+  view as you pose the question or explain the result. Leave further
+  commentary to the lecturer.
   For a comparison, put the two expressions or diagrams in view together
   when possible. Align corresponding terms, identify what stays the same,
   and say what the difference means in practice.
@@ -65,7 +67,8 @@ in `public/figs/sources.json`. Resources and fonts must work without network acc
 - **Give each idea the space it earns.** In a revision, preserve the parts
   of the existing explanation that already work. If adjacent slides lead to
   the same takeaway, combine them and keep the formula or figure that makes it clear.
-  If compression hides a necessary step, use the next slide and carry the
+  When combining consecutive steps of a proof on one slide, keep the original
+  equations, wording and order. If compression hides a necessary step, use the next slide and carry the
   starting equation or diagram across. A variant that adds one observation
   can often fit beside the method it qualifies. In a Recap, select the exact
   results students need to recall. In a Summary, synthesize related results.

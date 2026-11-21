@@ -169,26 +169,6 @@ where $dt<0$ and $\bar{\bw}(t)$ is a reverse-time Wiener process.
 
 ---
 clicks: 0
-id: recap-of-previous-lecture-4
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Proof Sketch
-
-- Convert the initial SDE to a probability flow ODE.
-- Reverse the probability flow ODE.
-- Convert the reversed probability flow ODE back to an SDE.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 0
 id: recap-of-previous-lecture-5
 class: theorems
 ---
@@ -315,7 +295,27 @@ $$
 
 Fix $\bx(0)$ and write $v(t)$ for the conditional variance per coordinate. Then $\bmu(0)=\bx(0)$ and $v(0)=0$.
 
-<div class="source"><a href="https://users.aalto.fi/~asolin/sde-book/sde-book.pdf">Särkkä S., Solin A. Applied stochastic differential equations, 2019</a></div>
+<div class="block">
+
+## NCSN
+
+$$
+q(\bx(t) | \bx(0)) = \cN\left(\bx(0), \left[\sigma^2(t) - \sigma^2(0)\right] \cdot \bI\right)
+$$
+
+</div>
+
+<div class="block">
+
+## DDPM
+
+$$
+q(\bx(t) | \bx(0)) = \cN\left(\bx(0) e^{-\frac{1}{2} \int_0^t\beta(s)ds}, \left(1 - e^{- \int_0^t\beta(s)ds}\right) \cdot \bI\right)
+$$
+
+</div>
+
+<div class="source"><a href="https://users.aalto.fi/~asolin/sde-book/sde-book.pdf">Särkkä S., Solin A. Applied stochastic differential equations, 2019</a> · <a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
 
 ---
 clicks: 0
@@ -353,45 +353,17 @@ Compute loss $\cL = \bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(
 
 </div>
 
-<div class="block">
-
-## NCSN
-
-$$
-q(\bx(t) | \bx(0)) = \cN\left(\bx(0), \left[\sigma^2(t) - \sigma^2(0)\right] \cdot \bI\right)
-$$
-
-</div>
-
-<div class="block">
-
-## DDPM
-
-$$
-q(\bx(t) | \bx(0)) = \cN\left(\bx(0) e^{-\frac{1}{2} \int_0^t\beta(s)ds}, \left(1 - e^{- \int_0^t\beta(s)ds}\right) \cdot \bI\right)
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-7
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
+<div class="columns items-center">
+<section>
 
 ## Sampling
 
 1. For the VP-SDE, sample $\bx(1) \sim \cN(0, \bI)$ from the approximate terminal distribution.
 2. Solve the reverse SDE from $T=1$ to $t=0$ using $\SDESolve$.
 
-<img src="/figs/sbgm.png" alt="Score-based generative model sampling" style="width:100%;height:240px;object-fit:contain" />
+</section>
 
+<img src="/figs/sbgm.png" alt="Score-based generative model sampling" style="width:100%;height:240px;object-fit:contain" />
 </div>
 
 - An Euler–Maruyama step of the reverse SDE adds fresh Gaussian noise.
@@ -408,338 +380,11 @@ id: outline
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>02</span><div>Flow Matching (FM)</div></div>
-<div class="outline-item"><span>03</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
-<div class="outline-item"><span>04</span><div>One-Sided Conditioning</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item"><span>02</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
+<div class="outline-item"><span>03</span><div>One-Sided Conditioning</div></div>
 
 </div>
-
----
-clicks: 0
-id: outline-denoiser-parameterization
-section: "Denoiser Parameterization and Sampling"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item current"><span>01</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>02</span><div>Flow Matching (FM)</div></div>
-<div class="outline-item"><span>03</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
-<div class="outline-item"><span>04</span><div>One-Sided Conditioning</div></div>
-
-</div>
-
----
-clicks: 2
-id: from-time-to-noise-level
-class: theorems
----
-
-# From Time to Noise Level
-
-**Use the familiar additive-noise form:** $\bx=\bx_0+\sigma\bepsilon$, $\bepsilon\sim\cN(0,\bI)$.
-
-$$
-\bff(\bx,t)=0,\qquad g^2(t)=\frac{d\sigma^2(t)}{dt}
-=2\sigma(t)\frac{d\sigma(t)}{dt}.
-$$
-
-<div class="block" v-click="1" style="margin-top:8px">
-
-## Rewrite the probability flow ODE using $\sigma$
-
-<div>
-
-$$
-\begin{aligned}
-\frac{d\bx(t)}{dt}
-&=\bff(\bx(t),t)-\frac12g^2(t)\bs_{\btheta}(\bx(t),\sigma(t))\\
-&=-\sigma(t)\frac{d\sigma(t)}{dt}\bs_{\btheta}(\bx(t),\sigma(t)).
-\end{aligned}
-$$
-
-$$
-\frac{d\bx}{d\sigma}
-=\left(\frac{d\sigma(t)}{dt}\right)^{-1}\frac{d\bx(t)}{dt}
-=-\sigma\bs_{\btheta}(\bx,\sigma).
-$$
-
-</div>
-
-</div>
-
-<div class="block" v-click="2">
-
-## Choose a denoiser using Tweedie's formula
-
-$$
-\bbE[\bx_0\mid\bx]=\bx+\sigma^2\nabla_{\bx}\log p_{\sigma}(\bx).
-$$
-
-$$
-D_{\btheta}(\bx,\sigma)\approx\bbE[\bx_0\mid\bx],\qquad
-\frac{d\bx}{d\sigma}=-\sigma\bs_{\btheta}(\bx,\sigma)
-=\frac{\bx-D_{\btheta}(\bx,\sigma)}{\sigma}.
-$$
-
-Decreasing $\sigma$ moves towards the denoiser prediction. **How do we train this denoiser?**
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2206.00364">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022</a></div>
-
-<!--
-Narrative: the opening recap recalls Gaussian perturbation kernels, score training and reverse sampling. After the agenda-only section transition, use the additive-noise form already motivated by the DDPM/NCSN rescaling and reuse the known PF-ODE. The block starts after the complete general algorithm, rather than interrupting its two halves. First substitute f and g, then apply the chain rule to use sigma as the independent variable. Only after obtaining the sigma-ODE, recall Tweedie's full identity and choose the familiar clean-data parameterization. The identity appears before its use to express the field through a denoiser. The denoiser form gives an interpretation of a negative-sigma step and motivates the next slide's training question.
-All arguments are retained: f(x,t), g(t), sigma(t), s_theta(x(t),sigma(t)). The score network is indexed by noise level here. After changing independent variable, x denotes the same trajectory expressed as a function of sigma; this is a time reparameterization, not an additional generative method.
-Assume sigma(t)>0 and d sigma(t)/dt>0 on the interval of the change of variables. The additive path is x = x_0 + sigma epsilon, so its forward SDE has zero drift and diffusion variance rate d sigma^2/dt. Sigma is the total additive-noise standard deviation; the earlier VE formula permits a nonzero initial sigma, which must be accounted for when identifying the clean initial state. VP's unscaled state is not this additive coordinate.
-The denoiser choice is convenient, not required by the change of time coordinate and not universally superior to noise/score/v prediction. D_theta estimates the conditional mean; its score conversion follows from Tweedie. A learned prediction approximates the true marginal score and probability flow. A negative Euler increment in sigma points towards the current denoiser prediction; that prediction is recomputed along the trajectory.
-The freedom to change samplers appeared with DDIM; the contribution here connects the familiar denoiser parameterization with the previously introduced general ODE solvers. Integrate at positive sigma, with an Euler denoising step to zero; do not evaluate the network or divide by sigma at zero. The preceding VP sampling example starts from a standard Gaussian. The additive-noise sampler below scales its initial noise by sigma_max.
--->
-
----
-clicks: 2
-id: train-the-denoiser
-class: theorems
----
-
-# Train the Denoiser
-
-**Use the existing score-training objective.** For a noisy-clean pair $(\bx,\bx_0)$ with $q(\bx\mid\bx_0)=\cN(\bx_0,\sigma^2\bI)$:
-
-$$
-\cL=\left\|\bs_{\btheta}(\bx,\sigma)-\nabla_{\bx}\log q(\bx\mid\bx_0)\right\|_2^2.
-$$
-
-<div class="block" v-click="1">
-
-## Compute the conditional Gaussian target
-
-$$
-\nabla_{\bx}\log q(\bx\mid\bx_0)=-\frac{\bx-\bx_0}{\sigma^2}.
-$$
-
-</div>
-
-<div class="block" v-click="2">
-
-## Substitute the denoiser representation
-
-$$
-\begin{aligned}
-\cL
-&=\left\|\frac{D_{\btheta}(\bx,\sigma)-\bx}{\sigma^2}
-+\frac{\bx-\bx_0}{\sigma^2}\right\|_2^2\\
-&=\frac{1}{\sigma^4}\left\|D_{\btheta}(\bx,\sigma)-\bx_0\right\|_2^2.
-\end{aligned}
-$$
-
-**Preserving the score objective requires the factor $1/\sigma^4$.**
-
-Plain denoiser MSE would reweight noise levels. The trained denoiser supplies the sampling field.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2206.00364">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022</a></div>
-
-<!--
-Narrative: the preceding slide rewrites the PF-ODE in sigma and chooses the familiar clean-data denoiser to represent its field. This slide answers how to train that denoiser. Start directly from the earlier per-pair DSM training loss, compute its conditional Gaussian target, and substitute the already established denoiser representation. Do not reintroduce Tweedie, the conditional-mean definition, or a standalone score conversion: those are inputs from the preceding slide, not new conclusions here. The conclusion is equivalence of that objective under a different network prediction target. The next slide makes the MSE optimum explicit for an empirical data distribution, before the trained denoiser is used in the sampling loop.
-The optimal MSE predictor is the conditional mean at each fixed sigma > 0, not the original individual clean sample. The arrow from Tweedie's formula motivates a parameterization; a learned D_theta and score are approximate. The conditional Gaussian target in training is distinct from the marginal score in Tweedie's identity.
-The loss equivalence is algebraic for every theta under the displayed substitution. The original score loss becomes sigma^-4 times clean-target MSE; this is not an arbitrary extra weight or the full EDM recipe. Preserve the same distribution over noise levels when calling the objectives equivalent.
-This additive path is a specialization of the previous Gaussian transition; it does not identify VP's unscaled state with x_0 + sigma epsilon. Sigma denotes the total additive-noise standard deviation.
--->
-
----
-clicks: 2
-id: what-does-the-optimal-denoiser-predict
-class: theorems
----
-
-# What Does the Optimal Denoiser Predict?
-
-Use uniform empirical data $\{\bx_1,\ldots,\bx_N\}$. For fixed $\bx$ and $\sigma>0$, let
-$a_i=\cN(\bx;\bx_i,\sigma^2\bI)$ be the likelihood of the noisy observation.
-
-<div class="block" v-click="1">
-
-## Minimize the conditional MSE at $\bx$
-
-$$
-D^*(\bx,\sigma)=\argmin_{\by}\sum_{i=1}^{N}a_i\|\by-\bx_i\|_2^2
-\quad\Longrightarrow\quad
-2\sum_{i=1}^{N}a_i(\by-\bx_i)=0.
-$$
-
-$$
-D^*(\bx,\sigma)
-=\frac{\sum_{i=1}^{N}\exp\!\left(-\frac{\|\bx-\bx_i\|_2^2}{2\sigma^2}\right)\bx_i}
-{\sum_{j=1}^{N}\exp\!\left(-\frac{\|\bx-\bx_j\|_2^2}{2\sigma^2}\right)}
-=\bbE[\bx_0\mid\bx].
-$$
-
-Set the gradient to zero: the optimum is a **posterior-weighted average**.
-
-</div>
-
-<div class="block" v-click="2">
-
-## Why train a network?
-
-- The exact formula scans **all $N$ training examples at every sampling step**.
-- It describes the empirical distribution; exact sampling only reproduces training examples.
-
-</div>
-
-<div class="source"><a href="https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=11">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022 — Appendix B.3, Eqs. (53–57)</a></div>
-
-<!--
-Narrative: the preceding slide expresses DSM as clean-target MSE. Here fix a noisy observation and sigma, and minimize the corresponding weighted least-squares problem. Under a uniform empirical prior, posterior weights are a_i/sum_j a_j, so the positive normalization constant can be dropped from the argmin. The sigma-only loss weight also does not change this unrestricted pointwise optimum. Differentiate with respect to the candidate vector y, set the gradient to zero, and solve for the weighted mean. Substitute the Gaussian likelihoods: the common normalization cancels, leaving the explicit normalized exponential formula. All a_i are positive for sigma>0, hence the objective is strictly convex and its unique minimizer is the conditional mean.
-The rationale then motivates the next slide's neural Euler sampler. Exact evaluation of this finite sum costs O(Nd) for d-dimensional data and requires the training set at every evaluation. The formula is for a discrete empirical distribution, not the unknown population distribution. Exact sampling means starting from its exact noisy marginal and reversing exactly to zero noise; the resulting law is supported on the training examples. Finite-step sampling, approximate initialization and stopping at positive sigma do not imply this exact endpoint statement. A neural denoiser avoids an explicit dataset scan and supplies an inductive bias; it can generalize but can also memorize, so generalization is not guaranteed by choosing a network. D_theta is learned from noisy-clean pairs, not necessarily distilled by explicitly evaluating this sum.
-The following Euler demo uses a smooth two-Gaussian population rather than the discrete empirical example. The conditional-mean definition and sampling field are unchanged. Noise-level asymptotics were removed at the author's request.
--->
-
----
-clicks: 1
-id: generate-samples-with-a-denoiser
-class: theorems
----
-
-# Generate Samples with a Denoiser
-
-**Use the trained denoiser in the ODE solver.** Start from strong noise and decrease $\sigma$.
-
-<div class="block" v-click="1">
-
-## Sampling (Euler)
-
-<ol>
-
-<li>
-
-Choose $\sigma_0>\sigma_1>\cdots>\sigma_N=0$ and sample $\bx^{(0)}\sim\cN(0,\sigma_0^2\bI)$.
-
-</li>
-
-<li>
-
-For $i=0,\ldots,N-1$, evaluate $D_{\btheta}(\bx^{(i)},\sigma_i)$ and update:
-
-$$
-\bx^{(i+1)}=\bx^{(i)}+(\sigma_{i+1}-\sigma_i)
-\frac{\bx^{(i)}-D_{\btheta}(\bx^{(i)},\sigma_i)}{\sigma_i}.
-$$
-
-</li>
-
-<li>
-
-Return $\bx^{(N)}$.
-
-</li>
-
-</ol>
-
-</div>
-
-<div v-click="1">
-
-**We now have an explicit Euler sampler in noise coordinates.**
-
-How does this relate to the deterministic DDIM update?
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2206.00364">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022</a></div>
-
-<!--
-Narrative: the noise-coordinate PF-ODE defines the denoiser field, and the preceding slides train its denoiser and interpret its conditional-mean prediction. This slide answers how to generate with the trained model: initialize strong Gaussian noise, repeatedly evaluate the network and apply an explicit Euler step, and return the final state. The conclusion asks how this explicit Euler sampler relates to the familiar deterministic DDIM update. The next slide recalls the original DDIM state and predictions, then normalizes the state and noise level to expose exactly this Euler step. The DDIM slide closes with the equivalence of the two updates; the next section motivates learning the velocity field at its own opening. Do not restart the conditional-mean explanation or branch into solver comparisons here; the model definition and solver options have already been established.
-Superscripts (i) index numerical sampling states, avoiding confusion with the clean training target x_0. Choose sigma_0 sufficiently large that N(0,sigma_0^2 I) approximates the noisy data marginal. Euler is an approximate numerical solver; this is not an exact sampler at arbitrary step sizes or sigma_0.
-The step follows x_next = x + delta_sigma * (x - D_theta)/sigma, with delta_sigma < 0. For a step ending at zero, x_next = D_theta(x,sigma); the network and denominator are evaluated at the positive current sigma, never at zero. Heun can integrate the same field; its final zero-noise step uses Euler to avoid evaluating the singular endpoint.
-The learned denoiser estimates E[x_0|x] at the current positive noise level. It does not identify which original clean point generated a noisy point; repeated predictions along the numerical trajectory are part of the generative process. This distinction also prevents confusing the denoiser with a consistency model that targets a trajectory endpoint.
-This extends the sampler-change idea introduced with DDIM, rather than claiming that denoiser prediction or changing the sampler is new. It is the explicit ODE/Euler realization of the denoiser parameterization.
--->
-
----
-clicks: 0
-id: one-denoiser-prediction-one-euler-step
-class: interactive-slide
----
-
-# One Denoiser Prediction, One Euler Step
-
-Decrease the noise level, then recompute the denoiser at the new state.
-
-<DenoiserStepDemo />
-
-<div class="source"><a href="https://arxiv.org/abs/2206.00364">Karras T., et al. Elucidating the Design Space of Diffusion-Based Generative Models, 2022</a></div>
-
-<!--
-The previous slide gives the complete Euler algorithm. This slide rewrites that update as interpolation towards the current denoiser prediction, then recomputes it at each accepted step. The next slide derives the identical update from deterministic DDIM in normalized coordinates. The analytic denoiser is the exact conditional mean for a two-component 2D Gaussian mixture with covariance 0.12 I. It need not lie in a high-density region. At sigma_next=0 stop; never evaluate an ODE quotient at sigma=0. Twelve accepted steps bound the live demonstration. No new training objective is introduced.
--->
-
----
-clicks: 2
-id: ddim-is-euler-in-noise-coordinates
-class: theorems
----
-
-# DDIM Is Euler in Noise Coordinates
-
-**Recall deterministic DDIM** ($s<t$):
-
-$$
-\begin{aligned}
-\hat{\bepsilon}&=\bepsilon_{\btheta,t}(\bx_t),\qquad
-\hat{\bx}_0=\frac{\bx_t-\sqrt{1-\bar{\alpha}_t}\,\hat{\bepsilon}}{\sqrt{\bar{\alpha}_t}},\\
-\bx_s&=\sqrt{\bar{\alpha}_s}\,\hat{\bx}_0+\sqrt{1-\bar{\alpha}_s}\,\hat{\bepsilon}.
-\end{aligned}
-$$
-
-<div class="block" v-click="1">
-
-## Recall the DDPM / NCSN rescaling ($\sigma_s<\sigma_t$)
-
-$$
-\tilde{\bx}_u=\frac{\bx_u}{\sqrt{\bar{\alpha}_u}},\qquad
-\sigma_u=\sqrt{\frac{1-\bar{\alpha}_u}{\bar{\alpha}_u}},\qquad u\in\{s,t\}.
-$$
-
-$$
-D_{\btheta}(\tilde{\bx}_t,\sigma_t)=\hat{\bx}_0
-=\tilde{\bx}_t-\sigma_t\hat{\bepsilon}.
-$$
-
-</div>
-
-<div class="block" v-click="2">
-
-## Rewrite DDIM as the denoiser Euler step
-
-$$
-\begin{aligned}
-\tilde{\bx}_s
-&=\hat{\bx}_0+\sigma_s\hat{\bepsilon}
-=\tilde{\bx}_t+(\sigma_s-\sigma_t)\hat{\bepsilon}\\
-&=\tilde{\bx}_t+(\sigma_s-\sigma_t)
-\frac{\tilde{\bx}_t-D_{\btheta}(\tilde{\bx}_t,\sigma_t)}{\sigma_t}.
-\end{aligned}
-$$
-
-**DDIM implements this Euler step using the existing noise predictor.**
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2010.02502">Song J., Meng C., Ermon S. Denoising Diffusion Implicit Models, 2021</a></div>
-
-<!--
-Narrative: the preceding slide gives an explicit Euler loop in additive-noise coordinates and asks how it relates to deterministic DDIM. Begin with the exact familiar DDIM formulas: the same epsilon_theta,t(x_t), clean estimate, original cumulative alpha_bar schedule, and decreasing index pair s<t. Then rescale both the state and the clock; define the induced denoiser before using it. Divide the DDIM update by sqrt(alpha_bar_s), substitute the current clean estimate, and recover the previous Euler step term for term. The conclusion closes the score/denoiser construction with the exact Euler interpretation of the existing noise predictor.
-This is an exact algebraic equality between discrete sampling updates with the same predictor and grid, not an assertion of exact ODE integration, exact sampled marginals, or finite-step inversion. Euler in original x_t/time coordinates would generally be a different finite step. Primary source: DDIM Section 4.3, equations (13)-(15); the paper's alpha_t is the course's cumulative alpha_bar_t.
-Recall the DDPM marginal x_t=sqrt(alpha_bar_t)x_0+sqrt(1-alpha_bar_t)epsilon. Dividing by sqrt(alpha_bar_t) gives tilde x_t=x_0+sigma_t epsilon: these are precisely the additive-noise coordinates used in the preceding ODE/denoiser block. The tilde distinguishes the normalized state from the original DDPM state; it is the x argument of that block. sigma_u is the standard deviation of additive noise in the normalized state, not the fresh transition-noise standard deviation sigma_{t->s}, which is zero for deterministic DDIM. For positive beta on the original schedule, s<t gives alpha_bar_s>alpha_bar_t and sigma_s<sigma_t. Assume 0<alpha_bar_t<1 and alpha_bar_s>0, permitting alpha_bar_0=1 at the final step.
-D_theta here is the denoiser induced by the already trained noise predictor, not a separately trained replacement: D_theta(tilde x_t,sigma_t)=tilde x_t-sigma_t epsilon_theta,t(sqrt(alpha_bar_t)tilde x_t). The displayed equality to xhat_0 defines this representation exactly; its approximation to the conditional mean depends on model quality. Keep epsilon_theta's original input x_t and timestep t. No retraining or equality between differently weighted training recipes is asserted. For a continuous ODE interpretation, interpolate the schedule and noise-conditioned predictor between training levels. With the exact score, the field is the corresponding PF-ODE; a learned predictor gives its learned approximation.
-All hats are recomputed at the current t for every step; they are held fixed only during the step t to s. At s=0, sigma_s=0 and tilde x_s=xhat_0, agreeing with the previous final Euler denoising step. The sigma_t denominator is positive. With the same initial DDPM latent, grid and induced denoiser, the two finite-step algorithms agree under rescaling. The original N(0,I) prior rescales to N(0,I/alpha_bar_T), which is N(0,(1+sigma_T^2)I); the preceding additive sampler's N(0,sigma_max^2 I) is a separate large-noise approximation. Do not claim exactly identical full samplers if their initializations differ.
--->
 
 ---
 clicks: 0
@@ -751,22 +396,30 @@ section: "Flow Matching (FM)"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item current"><span>02</span><div>Flow Matching (FM)</div></div>
-<div class="outline-item"><span>03</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
-<div class="outline-item"><span>04</span><div>One-Sided Conditioning</div></div>
+<div class="outline-item current"><span>01</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item"><span>02</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
+<div class="outline-item"><span>03</span><div>One-Sided Conditioning</div></div>
 
 </div>
 
 ---
-clicks: 2
+clicks: 0
+id: generative-models-taxonomy
+---
+
+# Generative Models Taxonomy
+
+<TaxonomyDiagram class="taxonomy" flow-matching />
+
+---
+clicks: 3
 id: continuous-time-normalizing-flows
 class: theorems
 ---
 
 # Continuous-Time Normalizing Flows
 
-**Now learn the velocity field itself.** Recall $\bx_t=\bx(t)$ for $t\in[0,1]$:
+Recall $\bx_t=\bx(t)$ for $t\in[0,1]$:
 
 <ul>
 
@@ -784,7 +437,7 @@ $\bx_1 \sim p_1(\bx)$, where $p_1(\bx)$ is the true data distribution $\pd(\bx)$
 
 </ul>
 
-**Time convention:** unlike the diffusion sections, here $t=0$ denotes noise and $t=1$ denotes data. Sampling runs forward in time.
+**Time convention:** unlike the diffusion sections, here $t=0$ denotes noise and $t=1$ denotes data.
 
 $$
 \frac{d \bx_t}{dt} = \bv (\bx_t, t),  \quad \text{with initial condition } \bx(0) = \bx_0.
@@ -792,11 +445,15 @@ $$
 
 The velocity $\bv$ determines a flow $\bpsi_t$: $\bx_t = \bpsi_t(\bx_0)$.
 
-<div class="block" v-click="1">
+<div v-click="1">
+
+<strong class="takeaway">We used the score to compute the probability flow velocity. Can we learn a velocity field directly?</strong>
+
+</div>
+
+<div class="block" v-click="2">
 
 ## KFP Theorem (Continuity Equation)
-
-<div v-click="1">
 
 $$
 \frac{\partial p_t(\bx)}{\partial t} = - \diver\left(\bv(\bx, t) p_t(\bx)\right) \Leftrightarrow \frac{d \log p_t(\bx(t))}{d t} = - \tr \left( \frac{\partial \bv(\bx(t), t)}{\partial \bx(t)} \right)
@@ -804,17 +461,15 @@ $$
 
 </div>
 
-</div>
-
 <ul>
 
-<li v-click="2">
+<li v-click="3">
 
 Likelihood-based CNF training requires ODE solves and Jacobian trace evaluations.
 
 </li>
 
-<li v-click="2">
+<li v-click="3">
 
 The adjoint method computes gradients through the ODE solution; repeated solves can be costly.
 
@@ -822,14 +477,14 @@ The adjoint method computes gradients through the ODE solution; repeated solves 
 
 </ul>
 
-<div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a></div>
+<div class="source"><a href="https://arxiv.org/abs/1806.07366">Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018</a> · <a href="https://arxiv.org/abs/2011.13456">Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020</a></div>
 
 <!--
-Narrative: the denoiser/DDIM section showed how to construct an ODE field from existing score/noise predictions. Open this section by explicitly making the velocity field itself the learning target. Recall the general CNF model and its continuity equation, then explain the cost of likelihood training. The next slide introduces Flow Matching as velocity regression. This motivation belongs here, where it is developed, rather than as an unanswered question at the end of DDIM. The established time convention switches to generation from base at t=0 to data at t=1.
+Introduce the noise-to-data trajectory and its velocity field. On the first click, recall how the probability flow ODE uses the score and ask whether we can learn the velocity field directly. Use the continuity equation to recall the cost of likelihood training before introducing velocity regression on the next slide.
 -->
 
 ---
-clicks: 2
+clicks: 3
 id: continuous-time-normalizing-flows-2
 class: theorems
 ---
@@ -846,27 +501,11 @@ $$
 
 </div>
 
-<ul>
-
-<li>
-
-Knowing the vector field $\bv (\bx, t)$, the KFP (or continuity) equation allows us to compute the density $p_t(\bx)$.
-
-</li>
-
-<li>
-
-Flow matching fits velocities by regression, without model ODE solves or trace evaluations during training.
-
-</li>
-
-</ul>
+Knowing the vector field $\bv (\bx, t)$, the KFP (or continuity) equation allows us to compute the density $p_t(\bx)$ and to sample.
 
 <div class="block" v-click="1">
 
 ## Flow Matching
-
-<div v-click="1">
 
 $$
 \bbE_{t \sim U[0, 1]} \bbE_{\bx \sim p_t(\bx)}\left\| \bv(\bx, t) - \bv_{\btheta}(\bx, t) \right\|^2 \rightarrow \min_{\btheta}
@@ -874,17 +513,21 @@ $$
 
 </div>
 
+<div class="takeaway" v-click="2" style="text-wrap: balance">
+
+Flow matching fits velocities by regression, without model ODE solves or trace evaluations during training.
+
 </div>
 
 <ul>
 
-<li v-click="2">
+<li v-click="3">
 
 Approximate the true vector field $\bv (\bx, t)$ using $\bv_{\btheta}(\bx, t)$.
 
 </li>
 
-<li v-click="2">
+<li v-click="3">
 
 Use the learned flow $\bpsi_t$ for deterministic sampling: $\bx_1 = \bpsi_1(\bx_0)$.
 
@@ -980,6 +623,9 @@ $$
 
 <TransportPathsDemo />
 
+- Different velocity fields $\bv(\bx, t)$ can transport the same initial density $p_0(\bx)$ to the same final density $p_1(\bx)$.
+- Choose a path with a tractable training objective.
+
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching">Original illustration: A Visual Dive into Conditional Flow Matching</a></div>
 
 <!--
@@ -996,36 +642,9 @@ section: "Conditional Flow Matching (CFM)"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>02</span><div>Flow Matching (FM)</div></div>
-<div class="outline-item current"><span>03</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
-<div class="outline-item"><span>04</span><div>One-Sided Conditioning</div></div>
-
-</div>
-
----
-clicks: 0
-id: generative-models-taxonomy
----
-
-# Generative Models Taxonomy
-
-<TaxonomyDiagram class="taxonomy" flow-matching />
-
----
-clicks: 0
-id: outline-3
-section: "CFM Objective"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item"><span>01</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>02</span><div>Flow Matching (FM)</div></div>
-<div class="outline-item current"><span>03</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
-<div class="outline-item"><span>04</span><div>One-Sided Conditioning</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item current"><span>02</span><div>Conditional Flow Matching (CFM)<div class="outline-sub"><strong>CFM Objective</strong><br>Conditional Probability Paths</div></div></div>
+<div class="outline-item"><span>03</span><div>One-Sided Conditioning</div></div>
 
 </div>
 
@@ -1037,29 +656,27 @@ class: theorems
 
 # From Marginal to Conditional Probability Paths
 
-To build a tractable training target, introduce a latent variable $\bz$ and choose conditional paths whose mixture is the desired path:
-
-$$
-p_t(\bx)=\int p_t(\bx|\bz)p(\bz)d\bz
-$$
-
-Here, $p_t(\bx|\bz)$ is a **conditional probability path**.
+Many paths connect the same two distributions. Can we build one from simpler paths whose velocities we already know?
 
 <div v-click="1">
 
-The conditional probability path $p_t(\bx|\bz)$ satisfies the KFP theorem:
+For each $\bz\sim p(\bz)$, choose a **conditional probability path** $p_t(\bx|\bz)$ with a known velocity field. Mixing the conditional densities gives the marginal density at time $t$.
 
 $$
-\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right),
+p_t(\bx)=\int p_t(\bx|\bz)p(\bz)\,d\bz.
 $$
-
-where $\bv(\bx,\bz,t)$ is a **conditional vector field**:
 
 </div>
 <div v-click="2">
 
+At fixed $\bz$, the particle ODE and the continuity equation use the same **conditional vector field** $\bv(\bx,\bz,t)$.
+
 $$
-\frac{d\bx_t}{dt}=\bv(\bx_t,t)\quad\Rightarrow\quad\frac{d\bx_t}{dt}=\bv(\bx_t,\bz,t)
+\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right).
+$$
+
+$$
+\frac{d\bx_t}{dt}=\bv(\bx_t,t)\quad\Rightarrow\quad\frac{d\bx_t}{dt}=\bv(\bx_t,\bz,t).
 $$
 
 </div>
@@ -1075,7 +692,7 @@ class: theorems interactive-slide
 # Conditional Vector Field
 
 $$
-{\color{#8854c0}\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right)},
+{\color{#8854c0}\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right)}.
 $$
 
 What's the relationship between $\bv(\bx,t)$ and $\bv(\bx,\bz,t)$?
@@ -1084,10 +701,13 @@ What's the relationship between $\bv(\bx,t)$ and $\bv(\bx,\bz,t)$?
 
 ## Theorem
 
-The following vector field generates the probability path $p_t(\bx)$:
+If $\bv(\bx,\bz,t)$ generates $p_t(\bx|\bz)$ for each $\bz$, its posterior mean generates the mixture $p_t(\bx)$.
 
 $$
-\bv(\bx,t)=\bbE_{p_t(\bz|\bx)}\bv(\bx,\bz,t)={\color{teal}\int\bv(\bx,\bz,t)}\frac{{\color{teal}p_t(\bx|\bz)p(\bz)}}{p_t(\bx)}{\color{teal}d\bz}
+{\color{#007f82}\bv(\bx,t)}
+=\bbE_{p_t(\bz|\bx)}\!\left[\bv(\bx,\bz,t)\right]
+=\int \bv(\bx,\bz,t)\,p_t(\bz|\bx)\,d\bz,\qquad
+p_t(\bz|\bx)=\frac{p_t(\bx|\bz)p(\bz)}{p_t(\bx)}\quad (p_t(\bx)>0).
 $$
 
 <PosteriorVelocityDemo v-click="2" />
@@ -1108,6 +728,18 @@ class: derivation
 
 <div class="block">
 
+## Theorem
+
+If $\bv(\bx,\bz,t)$ generates $p_t(\bx|\bz)$ for each $\bz$, its posterior mean generates the mixture $p_t(\bx)$.
+
+$$
+{\color{#8854c0}\frac{\partial p_t(\bx|\bz)}{\partial t}=-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right)},\qquad
+{\color{#007f82}\bv(\bx,t)}=\bbE_{p_t(\bz|\bx)}\!\left[\bv(\bx,\bz,t)\right],\quad p_t(\bx)>0.
+$$
+
+</div>
+<div class="block">
+
 ## Proof
 
 $$ {1|1-2|1-3|1-4|all} {at:1}
@@ -1115,8 +747,8 @@ $$ {1|1-2|1-3|1-4|all} {at:1}
 \frac{\partial p_t(\bx)}{\partial t}&=\frac{\partial}{\partial t}\int p_t(\bx|\bz)p(\bz)d\bz\\
 &=\int\left({\color{#8854c0}\frac{\partial p_t(\bx|\bz)}{\partial t}}\right)p(\bz)d\bz\\
 &=\int\left({\color{#8854c0}-\diver\left(\bv(\bx,\bz,t)p_t(\bx|\bz)\right)}\right)p(\bz)d\bz\\
-&=-\diver\left({\color{teal}\int\bv(\bx,\bz,t)p_t(\bx|\bz)p(\bz)d\bz}\right)\\
-&=-\diver\left(\bv(\bx,t)p_t(\bx)\right)
+&=-\diver\left(\int\bv(\bx,\bz,t)p_t(\bx|\bz)p(\bz)d\bz\right)\\
+&=-\diver\left({\color{#007f82}\bv(\bx,t)}p_t(\bx)\right)
 \end{aligned}
 $$
 
@@ -1168,7 +800,7 @@ This can be proved in a similar way as in the denoising score matching theorem.
 <div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
 
 ---
-clicks: 1
+clicks: 4
 id: conditional-flow-matching
 class: derivation
 ---
@@ -1180,10 +812,7 @@ class: derivation
 ## Theorem
 
 $$
-\begin{aligned}
-&\argmin_{\btheta}\bbE_{t\sim U[0,1]}\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2\\
-&\quad=\argmin_{\btheta}\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2
-\end{aligned}
+\argmin_{\btheta}\bbE_{t\sim U[0,1]}\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2=\argmin_{\btheta}\bbE_{t\sim U[0,1]}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}\left\|\bv(\bx,\bz,t)-\bv_{\btheta}(\bx,t)\right\|^2
 $$
 
 </div>
@@ -1192,39 +821,22 @@ $$
 ## Proof
 
 $$
-\begin{aligned}
-&\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2\\
-&\quad={\color{olive}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}}\left[\|\bv_{\btheta}(\bx,t)\|^2-2{\color{teal}\bv_{\btheta}^\top(\bx,t)\bv(\bx,t)}\right]+\text{const}
-\end{aligned}
+\bbE_{\bx\sim p_t(\bx)}\left\|\bv(\bx,t)-\bv_{\btheta}(\bx,t)\right\|^2={\color{olive}\bbE_{\bz\sim p(\bz)}\bbE_{\bx\sim p_t(\bx|\bz)}}\left[\|\bv_{\btheta}(\bx,t)\|^2-2{\color{teal}\bv_{\btheta}^\top(\bx,t)\bv(\bx,t)}\right]+\text{const}
 $$
 
 Here $\text{const}$ is independent of $\btheta$.
 
-</div>
+<div v-click="2">
 
-<div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
-
----
-clicks: 2
-id: conditional-flow-matching-2
-class: derivation
----
-
-# Conditional Flow Matching
-
-<div class="block">
-
-## Proof (continued)
-
-$$ {1-2|1-3|all} {at:1}
+$$ {1|1-2|all} {at:3}
 \begin{aligned}
-&\bbE_{p_t(\bx)}\left[{\color{teal}\bv_{\btheta}^\top(\bx,t)\bv(\bx,t)}\right]\\
-&\quad=\int p_t(\bx)\left[\bv_{\btheta}^\top(\bx,t)\left(\int p_t(\bz|\bx)\bv(\bx,\bz,t)d\bz\right)\right]d\bx\\
-&\quad=\int\!\int{\color{#8854c0}p_t(\bx)p_t(\bz|\bx)}\left[\bv_{\btheta}^\top(\bx,t)\bv(\bx,\bz,t)\right]d\bz d\bx\\
-&\quad={\color{#8854c0}\bbE_{p(\bz)}\bbE_{p_t(\bx|\bz)}}\left[\bv_{\btheta}^\top(\bx,t)\bv(\bx,\bz,t)\right]
+\bbE_{p_t(\bx)}\left[{\color{teal}\bv_{\btheta}^\top(\bx,t)\bv(\bx,t)}\right]&=\int p_t(\bx)\left[\bv_{\btheta}^\top(\bx,t)\left(\int p_t(\bz|\bx)\bv(\bx,\bz,t)d\bz\right)\right]d\bx\\
+&=\int\!\int{\color{#8854c0}p_t(\bx)p_t(\bz|\bx)}\left[\bv_{\btheta}^\top(\bx,t)\bv(\bx,\bz,t)\right]d\bz d\bx\\
+&={\color{#8854c0}\bbE_{p(\bz)}\bbE_{p_t(\bx|\bz)}}\left[\bv_{\btheta}^\top(\bx,t)\bv(\bx,\bz,t)\right]
 \end{aligned}
 $$
 
+</div>
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023</a></div>
@@ -1249,8 +861,8 @@ $$
 
 ## Training
 
-1. Sample $t\sim U[0,1]$, $\bz\sim p(\bz)$, $\bx_t\sim p_t(\bx|\bz)$.
-2. Compute loss $\cL=\left\|\bv(\bx_t,\bz,t)-\bv_{\btheta}(\bx_t,t)\right\|^2$.
+1. Sample $t\sim U[0,1]$, ${\color{teal}\bz\sim p(\bz)}$, $\bx_t\sim {\color{teal}p_t(\bx|\bz)}$.
+2. Compute loss $\cL=\left\|{\color{teal}\bv(\bx_t,\bz,t)}-\bv_{\btheta}(\bx_t,t)\right\|^2$.
 
 </div>
 <div class="block" v-click="2">
@@ -1324,10 +936,9 @@ section: "Conditional Probability Paths"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>02</span><div>Flow Matching (FM)</div></div>
-<div class="outline-item current"><span>03</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
-<div class="outline-item"><span>04</span><div>One-Sided Conditioning</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item current"><span>02</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br><strong>Conditional Probability Paths</strong></div></div></div>
+<div class="outline-item"><span>03</span><div>One-Sided Conditioning</div></div>
 
 </div>
 
@@ -1542,10 +1153,9 @@ section: "One-Sided Conditioning"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Denoiser Parameterization and Sampling</div></div>
-<div class="outline-item"><span>02</span><div>Flow Matching (FM)</div></div>
-<div class="outline-item"><span>03</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
-<div class="outline-item current"><span>04</span><div>One-Sided Conditioning</div></div>
+<div class="outline-item"><span>01</span><div>Flow Matching (FM)</div></div>
+<div class="outline-item"><span>02</span><div>Conditional Flow Matching (CFM)<div class="outline-sub">CFM Objective<br>Conditional Probability Paths</div></div></div>
+<div class="outline-item current"><span>03</span><div>One-Sided Conditioning</div></div>
 
 </div>
 
@@ -1887,7 +1497,6 @@ class: summary
 
 # Summary
 
-- A denoiser estimates the clean conditional mean under Gaussian noise. In noise coordinates, deterministic DDIM is an Euler step of the denoiser PF-ODE.
 - Many velocity fields connect the same endpoints. FM fits a chosen field by regression, without ODE solves or Jacobian traces during training.
 - CFM preserves the FM minimizers. The marginal velocity is the posterior mean $\bv(\bx,t)=\bbE_{p_t(\bz|\bx)}\bv(\bx,\bz,t)$.
 - Gaussian conditional paths admit a closed-form conditional velocity field.
