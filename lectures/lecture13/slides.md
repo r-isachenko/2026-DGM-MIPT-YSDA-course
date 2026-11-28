@@ -43,17 +43,15 @@ class: theorems
 
 # Recap of Previous Lecture
 
-Pair conditioning uses $\bz=(\bx_0,\bx_1)$ with a coupling $p(\bx_0,\bx_1)$ whose marginals are $p_0$ and $p_1$.
+Let us choose $\bz=(\bx_0,\bx_1)$. Start with independent endpoints: $p(\bz)=p_0(\bx_0)p_1(\bx_1)$.
 
-Choices: independent pairs ($p=p_0p_1$), paired data, or minibatch OT matching.
+A **coupling** $p(\bx_0,\bx_1)$ pairs endpoints while keeping marginals $p_0$ and $p_1$.
+Two-sided conditioning supports independent pairs, paired data and minibatch OT couplings.
 
 Desired conditional endpoints:
 
 $$
-\begin{aligned}
-p_0(\bx|\bx_0,\bx_1)&=\delta(\bx-\bx_0),\\
-p_1(\bx|\bx_0,\bx_1)&=\delta(\bx-\bx_1).
-\end{aligned}
+p_0(\bx|\bx_0,\bx_1)=\delta(\bx-\bx_0);\quad p_1(\bx|\bx_0,\bx_1)=\delta(\bx-\bx_1)
 $$
 
 <div class="block">
@@ -62,8 +60,8 @@ $$
 
 $$
 \begin{aligned}
-p_t(\bx|\bx_0,\bx_1)&=\cN\left(\bmu_t(\bx_0,\bx_1),\bsigma_t^2(\bx_0,\bx_1)\right),\\
-\bx_t&=\bmu_t(\bx_0,\bx_1)+\bsigma_t(\bx_0,\bx_1)\odot\bepsilon.
+p_t(\bx|\bx_0,\bx_1)&=\cN\left(\bmu_t(\bx_0,\bx_1),\bsigma_t^2(\bx_0,\bx_1)\right);\\
+\bx_t&=\bmu_t(\bx_0,\bx_1)+\bsigma_t(\bx_0,\bx_1)\odot\bepsilon
 \end{aligned}
 $$
 
@@ -88,13 +86,19 @@ $$
 \bmu_t=t\bx_1+(1-t)\bx_0,\qquad p_t^\sigma(\bx|\bx_0,\bx_1)=\cN(\bmu_t,\sigma^2\bI).
 $$
 
+Hold the sampled $\bepsilon\sim\cN(\bzero,\bI)$ fixed along the path.
+
 $$
-\bx_t=\bmu_t+\sigma\bepsilon,\qquad\bepsilon\sim\cN(\bzero,\bI),\qquad\frac{d\bx_t}{dt}=\bx_1-\bx_0.
+\bx_t=\bmu_t+\sigma\bepsilon,\qquad \bepsilon\sim\cN(\bzero,\bI).
+\qquad \bv(\bx_t,\bx_0,\bx_1,t)=\bx_1-\bx_0
 $$
 
-Hold $\bepsilon$ fixed along the path. For $i\in\{0,1\}$, $\cN(\bx_i,\sigma^2\bI)$ converges weakly to $\delta(\bx-\bx_i)$ as $\sigma\to0$.
+$$
+p_i^\sigma(\bx|\bx_0,\bx_1)=\cN(\bx_i,\sigma^2\bI)
+\xrightarrow[\sigma\to0]{\text{weakly}}\delta(\bx-\bx_i),\qquad i\in\{0,1\}.
+$$
 
-The deterministic training rule uses $\sigma=0$: $\bx_t=\bmu_t$, with the same target $\bx_1-\bx_0$.
+The resulting target also applies in the deterministic limit.
 
 <img src="/figs/linear_paths.png" alt="Straight conditional paths between paired endpoints" style="width:100%;height:230px;object-fit:contain" />
 
@@ -108,27 +112,41 @@ class: theorems
 
 # Recap of Previous Lecture
 
+## Training Objective
+
 $$
 \bbE_{\pd(\bx(0))}\bbE_{t\sim U[0,1]}\bbE_{q(\bx(t)|\bx(0))}
 \bigl\|\bs_{\btheta}(\bx(t),t)-{\color{teal}\nabla_{\bx(t)}\log q(\bx(t)|\bx(0))}\bigr\|_2^2
 $$
 
+Flow matching runs from noise to the same data point $\bx_1$, so its time $t$ corresponds to diffusion time $1-t$.
+
 $$
 p_t(\bx|\bx_1)=q_{1-t}(\bx|\bx_0=\bx_1)
 $$
 
-<div class="block">
+<div class="columns mt-4 mb-6 text-center">
+<section>
 
-## Variance Exploding SDE Probability Path
+## VE (NCSN)
 
 $$
-\begin{aligned}
-p_t(\bx|\bx_1)&=\cN\left(\bx_1,\sigma^2_{1-t}\bI\right)\\
-\Rightarrow\quad\bv(\bx_t,\bx_1,t)&=-\frac{\sigma'_{1-t}}{\sigma_{1-t}}(\bx_t-\bx_1)
-\end{aligned}
+p_t(\bx|\bx_1)=\cN\left(\bx_1,\sigma_{1-t}^2\bI\right)
 $$
 
+</section>
+<section>
+
+## VP (DDPM)
+
+$$
+p_t(\bx|\bx_1)=\cN\left(\alpha_{1-t}\bx_1,\left(1-\alpha_{1-t}^2\right)\bI\right)
+$$
+
+</section>
 </div>
+
+<img src="/figs/trajectories.png" alt="Flow matching, VE and VP trajectories" style="width:100%;height:215px;object-fit:contain" />
 
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
 
@@ -140,20 +158,20 @@ class: theorems
 
 # Recap of Previous Lecture
 
-<div class="block">
+Fix a data point $\bx_1$ and a noise draw $\bepsilon\sim\cN(\bzero,\bI)$. For $0\le t<1$,
 
-## Variance Preserving SDE Probability Path
+| Gaussian path | Trajectory $\bx_t$ | Conditional velocity $\bv(\bx_t,\bx_1,t)$ |
+|---|---|---|
+| VE | $\bx_1+\sigma_{1-t}\bepsilon$ | $-\dfrac{\sigma'_{1-t}}{\sigma_{1-t}}(\bx_t-\bx_1)=-\sigma'_{1-t}\bepsilon$ |
+| VP | $\alpha_{1-t}\bx_1+\sqrt{1-\alpha_{1-t}^2}\,\bepsilon$ | $\dfrac{\alpha'_{1-t}}{1-\alpha_{1-t}^2}(\alpha_{1-t}\bx_t-\bx_1)$ |
+| Straight FM | $(1-t)\bx_0+t\bx_1,\quad \bx_0=\bepsilon$ | $\dfrac{\bx_1-\bx_t}{1-t}=\bx_1-\bx_0$ |
 
-$$
-\begin{aligned}
-p_t(\bx|\bx_1)&=\cN\left(\alpha_{1-t}\bx_1,(1-\alpha^2_{1-t})\bI\right)\\
-\Rightarrow\quad\bv(\bx_t,\bx_1,t)&=\frac{\alpha'_{1-t}}{1-\alpha^2_{1-t}}\cdot\left(\alpha_{1-t}\bx_t-\bx_1\right)
-\end{aligned}
-$$
+<div class="takeaway">
+
+With the usual VE and VP schedules, $\bx_t$ is **nonlinear in $t$** and its velocity varies along the path.<br>
+Flow matching can use either Gaussian path or a **linear interpolation** with **constant velocity** $\bx_1-\bx_0$.
 
 </div>
-
-<img src="/figs/trajectories.png" alt="Variance exploding, variance preserving and optimal transport trajectories" style="width:100%;height:290px;object-fit:contain" />
 
 <div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
 
@@ -170,8 +188,8 @@ class: theorems
 
 ## Continuous state space
 
-- **Discrete time** $t\in\{0,1,\ldots,T\}$ $\Rightarrow$ **DDPM / NCSN**.
-- **Continuous time** $t\in[0,1]$ $\Rightarrow$ **Score-based SDE models**.
+- **Discrete time** $t\in\{0,1,\ldots,T\}$ $\;\Rightarrow\;$ **DDPM / NCSN**.
+- **Continuous time** $t\in[0,1]$ $\;\Rightarrow\;$ **Score-based SDE models**.
 
 </div>
 <div class="block">
@@ -185,7 +203,7 @@ class: theorems
 </div>
 <div class="block">
 
-## Potential advantages over left-to-right AR
+## Potential advantages over left-to-right autoregressive generation
 
 <div class="columns">
 <div>
@@ -198,7 +216,7 @@ class: theorems
 <div>
 
 - Infilling and controllability
-- Iterative refinement (with remasking or corrective updates)
+- **Iterative refinement:** revisit generated tokens when the sampler supports remasking or corrective updates.
 
 </div>
 </div>
@@ -219,11 +237,13 @@ class: theorems
 
 ## Discrete Diffusion Markov Chain
 
+We start with a single token (sequence length $m=1$) from a vocabulary of size $K$.
+
 $$
-q(\bx_t|\bx_{t-1})=\Cat(\bQ_t\bx_{t-1}),
+q(\bx_t|\bx_{t-1})=\Cat(\bQ_t\bx_{t-1}).
 $$
 
-Each $\bx_t\in\{0,1\}^K$ is a **one-hot vector** encoding the categorical state (it is just one token).
+Each $\bx_t\in\{0,1\}^K$ is a **one-hot vector** encoding the categorical state.
 
 </div>
 <div class="block">
@@ -231,7 +251,7 @@ Each $\bx_t\in\{0,1\}^K$ is a **one-hot vector** encoding the categorical state 
 ## Transition Matrix
 
 $$
-[\bQ_t]_{ij}=q(x_t=i| x_{t-1}=j),\qquad\sum_{i=1}^K[\bQ_t]_{ij}=1.
+[\bQ_t]_{ij}=q(x_t=i|x_{t-1}=j),\qquad\sum_{i=1}^K[\bQ_t]_{ij}=1.
 $$
 
 $$
@@ -242,6 +262,10 @@ $$
 
 - The choice of $\bQ_t$ determines how information is erased and what the stationary distribution becomes.
 - $\bQ_t$ and $\bQ_{1:t}$ should be easy to compute for each $t$.
+
+**Uniform diffusion.** With probability $\beta_t$, draw a symbol uniformly ($\bU_{ij}=1/K$).
+
+**Absorbing diffusion.** With probability $\beta_t$, replace the token by the mask $m$.
 
 <div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
 
@@ -257,20 +281,19 @@ class: theorems
 
 ## Uniform vs. Absorbing Transition Matrix
 
+Here $\bar\alpha_t=\prod_{s=1}^t(1-\beta_s)$ is the probability of no replacement in the first $t$ steps.
+
 | Aspect | Uniform Diffusion | Absorbing Diffusion |
 |---|---|---|
 | $\bQ_t$ | $(1-\beta_t)\bI+\beta_t\bU$ | $(1-\beta_t)\bI+\beta_t\be_m\bone^\top$ |
 | $\bQ_{1:t}$ | $\bar\alpha_t\bI+(1-\bar\alpha_t)\bU$ | $\bar\alpha_t\bI+(1-\bar\alpha_t)\be_m\bone^\top$ |
 | $\bQ_{1:\infty}$, $\bar\alpha_t\to0$ | $\bU$ | $\be_m\bone^\top$ |
+| Limiting token distribution | $\Cat(\bone/K)$, all $K$ tokens equally likely | $\Cat(\be_m)$, mask $m$ with probability $1$ |
 | Interpretation | Random replacement | Gradual masking of tokens |
 | Application | Image diffusion | Text diffusion $\approx$ Masked LM |
 
-For absorbing diffusion, the limiting token distribution is $\Cat(\be_m)$.
-
 </div>
 <div class="block">
-
-## Observation
 
 Both schemes gradually destroy information, but differ in their stationary limit. Absorbing diffusion bridges diffusion and masked-language-model objectives.
 
@@ -305,54 +328,26 @@ $$
 
 </div>
 
-- The reverse process $\pt(\bx_{t-1}|\bx_t)=\Cat\bigl(\bpi_{\btheta}(\bx_t,t)\bigr)$ is a learned categorical distribution.
-- Minimizing $\cL_t$ w.r.t. $\btheta$ is equivalent to minimizing the cross-entropy
+The reverse process $\pt(\bx_{t-1}|\bx_t)$ is a learned categorical distribution:
 
 $$
-\bbE_{q(\bx_t|\bx_0)}\Ent\Bigl(q(\bx_{t-1}|\bx_t,\bx_0),\,\pt(\bx_{t-1}|\bx_t)\Bigr).
+\pt(\bx_{t-1}|\bx_t)=\Cat\bigl(\bpi_{\btheta}(\bx_t,t)\bigr),
 $$
+
+where $\bpi_{\btheta}$ is a neural network.
+
+$$
+\cL_t=\bbE_{q(\bx_t|\bx_0)}\Ent\Bigl(q(\bx_{t-1}|\bx_t,\bx_0),\,\pt(\bx_{t-1}|\bx_t)\Bigr)+\text{const},
+\qquad t=2,\ldots,T.
+$$
+
+<div class="takeaway">
+
+In discrete diffusion, $\cL_t$ is the **expected cross-entropy** between the forward posterior and the reverse model's prediction for the token at step $t-1$, plus a constant independent of $\btheta$.
+
+</div>
 
 <div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
-
----
-clicks: 0
-id: recap-of-previous-lecture-9
-class: theorems
----
-
-# Recap of Previous Lecture
-
-<div class="block">
-
-## Independent Token-wise Forward Process
-
-$$
-q(\bX_t|\bX_{t-1})=\prod_{i=1}^m q(\bx_t^i|\bx_{t-1}^i)=\Cat(\bQ_t\bX_{t-1})
-$$
-
-</div>
-
-$$
-\pt(\bX_{t-1}|\bX_t)=\prod_{i=1}^m\pt(\bx_{t-1}^i|{\color{#8854c0}\bX_t}).
-$$
-
-- The forward process factorizes over positions.
-- Each reverse factor predicts a token using the whole corrupted sequence ${\color{#8854c0}\bX_t}$.
-
-<div class="block">
-
-## Simplified denoising objective
-
-$$
-\cL=\sum_{t=1}^T\sum_{i=1}^m\bbE_{q(\bX_t|\bX_0)}\Big[-\log\pt(\bx_0^i|\bX_t)\Big].
-$$
-
-Unweighted clean-token prediction (time conditioning is implicit), not the general discrete ELBO.
-The absorbing case uses a time-weighted loss over masked positions with a suitable reverse model.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin et al. Structured denoising diffusion models, 2021.</a> <a href="https://arxiv.org/abs/2406.07524">Sahoo et al. Simple and effective masked diffusion language models, 2024.</a></div>
 
 ---
 clicks: 0
@@ -363,7 +358,7 @@ id: outline
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Discrete Diffusion<div class="outline-sub">Absorbing Diffusion<br>Continuous Time Formulation</div></div></div>
+<div class="outline-item"><span>01</span><div>Discrete Diffusion<div class="outline-sub">From Token to Sequence<br>Absorbing Diffusion<br>Continuous Time Formulation</div></div></div>
 <div class="outline-item"><span>02</span><div>Course Overview</div></div>
 
 </div>
@@ -378,10 +373,175 @@ section: "Discrete Diffusion"
 
 <div class="course-outline">
 
-<div class="outline-item current"><span>01</span><div>Discrete Diffusion<div class="outline-sub">Absorbing Diffusion<br>Continuous Time Formulation</div></div></div>
+<div class="outline-item current"><span>01</span><div>Discrete Diffusion<div class="outline-sub">From Token to Sequence<br>Absorbing Diffusion<br>Continuous Time Formulation</div></div></div>
 <div class="outline-item"><span>02</span><div>Course Overview</div></div>
 
 </div>
+
+---
+clicks: 0
+id: outline-7
+section: "From Token to Sequence"
+---
+
+# Outline
+
+<div class="course-outline">
+
+<div class="outline-item current"><span>01</span><div>Discrete Diffusion<div class="outline-sub"><strong>From Token to Sequence</strong><br>Absorbing Diffusion<br>Continuous Time Formulation</div></div></div>
+<div class="outline-item"><span>02</span><div>Course Overview</div></div>
+
+</div>
+
+---
+clicks: 2
+id: from-token-to-sequence
+class: theorems
+---
+
+# From Token to Sequence
+
+<div class="block">
+
+## One-hot sequence representation
+
+$$
+\bX_t=[\bx_t^1,\ldots,\bx_t^m]\in\{0,1\}^{K\times m},\qquad \bone^\top\bx_t^i=1.
+$$
+
+Column $\bx_t^i$ is the one-hot vector for the token at position $i$ in a sequence of length $m$.
+
+</div>
+<div class="block" v-click="1">
+
+## Independent Token-wise Forward Process
+
+$$
+q(\bX_t|\bX_{t-1})=\prod_{i=1}^m q(\bx_t^i|\bx_{t-1}^i)=\Cat(\bQ_t\bX_{t-1})
+$$
+
+- Each position $i$ evolves according to its own Markov chain.
+- All positions share $\bQ_t$. With a matrix argument, $\Cat$ denotes a product of categorical distributions over columns.
+
+</div>
+<div class="block" v-click="2">
+
+## Continuous Diffusion Analogy
+
+Gaussian DDPMs with diagonal covariance add noise independently to each pixel. The reverse model learns dependencies across pixels.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
+
+---
+clicks: 3
+id: from-token-to-sequence-2
+class: theorems
+---
+
+# From Token to Sequence
+
+$$
+q(\bX_t|\bX_{t-1})=\prod_{i=1}^m q(\bx_t^i|\bx_{t-1}^i)=\Cat(\bQ_t\bX_{t-1})
+$$
+
+<div v-click="1">
+
+$$
+q(\bX_t|\bX_0)=\Cat(\bQ_{1:t}\bX_0)
+$$
+
+</div>
+<div class="block" v-click="2">
+
+## Conditioned Reverse Distribution
+
+$$
+q(\bx_{t-1}|\bx_t,\bx_0)=\Cat\left(\frac{\bQ_t^\top\bx_t\odot\bQ_{1:t-1}\bx_0}{\bx_t^\top\bQ_{1:t}\bx_0}\right).
+$$
+
+$$
+q(\bX_{t-1}|\bX_t,\bX_0)=\prod_{i=1}^m q(\bx_{t-1}^i|\bx_t^i,\bx_0^i).
+$$
+
+</div>
+<div v-click="3">
+
+- Both $q(\bX_t|\bX_0)$ and $q(\bX_{t-1}|\bX_t,\bX_0)$ factorize over positions.
+- The reverse model can condition each prediction on the entire noisy sequence $\bX_t$.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
+
+---
+clicks: 1
+id: reverse-model-for-sequence
+class: theorems
+---
+
+# Reverse Model for Sequence
+
+$$
+\pt(\bX_{t-1}|\bX_t)=\prod_{i=1}^m\pt(\bx_{t-1}^i|{\color{#8854c0}\bX_t}).
+$$
+
+- The output factorizes (parallel prediction across positions).
+- Each factor conditions on the entire noisy sequence ${\color{#8854c0}\bX_t}$.
+- This predicts tokens from a corrupted sequence; masking corruption connects it to **masked language modeling**.
+
+<div class="block" v-click="1">
+
+## Objective: $\cL_t$ term
+
+$$
+\begin{aligned}
+&\KL\left(q(\bX_{t-1}|\bX_t,\bX_0)\,\|\,\pt(\bX_{t-1}|\bX_t)\right)\\
+&=\sum_{i=1}^m\KL\left(q(\bx_{t-1}^i|\bx_t^i,\bx_0^i)\|\pt(\bx_{t-1}^i|\bX_t)\right).
+\end{aligned}
+$$
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
+
+---
+clicks: 2
+id: reverse-model-for-sequence-2
+class: theorems
+---
+
+# Reverse Model for Sequence
+
+<div class="block">
+
+## Simplified denoising objective
+
+Predict clean tokens from the corrupted sequence (time conditioning is implicit):
+
+$$
+\cL=\sum_{t=1}^T\sum_{i=1}^m\bbE_{q(\bX_t|\bX_0)}\Big[-\log\pt(\bx_0^i|\bX_t)\Big].
+$$
+
+</div>
+
+<div v-click="1">
+
+This unweighted clean-token cross-entropy is a simplified training objective;
+it is not the general discrete ELBO.
+
+</div>
+<div class="block" v-click="2">
+
+## Connection to absorbing diffusion
+
+With a reverse model that preserves visible tokens and uses the forward-posterior unmasking probability,
+the ELBO yields a time-weighted loss over masked positions. We derive this next.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin et al. Structured denoising diffusion models, 2021.</a> <a href="https://arxiv.org/abs/2406.07524">Sahoo et al. Simple and effective masked diffusion language models, 2024.</a></div>
 
 ---
 clicks: 0
@@ -393,7 +553,7 @@ section: "Absorbing Diffusion"
 
 <div class="course-outline">
 
-<div class="outline-item current"><span>01</span><div>Discrete Diffusion<div class="outline-sub"><strong>Absorbing Diffusion</strong><br>Continuous Time Formulation</div></div></div>
+<div class="outline-item current"><span>01</span><div>Discrete Diffusion<div class="outline-sub">From Token to Sequence<br><strong>Absorbing Diffusion</strong><br>Continuous Time Formulation</div></div></div>
 <div class="outline-item"><span>02</span><div>Course Overview</div></div>
 
 </div>
@@ -749,7 +909,7 @@ section: "Continuous Time Formulation"
 
 <div class="course-outline">
 
-<div class="outline-item current"><span>01</span><div>Discrete Diffusion<div class="outline-sub">Absorbing Diffusion<br><strong>Continuous Time Formulation</strong></div></div></div>
+<div class="outline-item current"><span>01</span><div>Discrete Diffusion<div class="outline-sub">From Token to Sequence<br>Absorbing Diffusion<br><strong>Continuous Time Formulation</strong></div></div></div>
 <div class="outline-item"><span>02</span><div>Course Overview</div></div>
 
 </div>
@@ -1065,7 +1225,7 @@ section: "Course Overview"
 
 <div class="course-outline">
 
-<div class="outline-item"><span>01</span><div>Discrete Diffusion<div class="outline-sub">Absorbing Diffusion<br>Continuous Time Formulation</div></div></div>
+<div class="outline-item"><span>01</span><div>Discrete Diffusion<div class="outline-sub">From Token to Sequence<br>Absorbing Diffusion<br>Continuous Time Formulation</div></div></div>
 <div class="outline-item current"><span>02</span><div>Course Overview</div></div>
 
 </div>
@@ -1427,6 +1587,7 @@ class: summary
 
 # Summary
 
+- For sequences, the forward process factorizes over tokens. Denoisers predict all positions from the whole corrupted sequence; clean-token cross-entropy is a simplified objective.
 - With a reverse model that copies visible tokens and matches the unmasking probability, the absorbing ELBO yields time-weighted losses over masked positions.
 - MDLM reveals tokens in stages so later predictions can use revealed context. Independent one-step sampling can miss token dependencies, even with correct marginals.
 - With independent masking and a time-independent predictor, the continuous masked-diffusion objective equals the average AR loss over uniformly random token orders.

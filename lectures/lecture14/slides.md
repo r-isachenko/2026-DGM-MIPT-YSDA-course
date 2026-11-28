@@ -110,9 +110,7 @@ $$
 ## Categorical KL
 
 $$
-\KL\bigl(\Cat(\bq)\,\|\,\Cat(\bp)\bigr)
-=\sum_{k=1}^Kq_k\log\frac{q_k}{p_k}
-=\Ent(\bq,\bp)-\Ent(\bq),
+\KL\bigl(\Cat(\bq)\,\|\,\Cat(\bp)\bigr)=\sum_{k=1}^Kq_k\log\frac{q_k}{p_k}=\Ent(\bq,\bp)-\Ent(\bq).
 $$
 
 - $\Ent\bigl(q(\bx_{t-1}|\bx_t,\bx_0)\bigr)$ is a constant w.r.t. $\btheta$.
@@ -120,13 +118,111 @@ $$
 
 </div>
 
-Therefore, minimizing $\cL_t$ w.r.t. $\btheta$ is equivalent to minimizing
+$$
+\cL_t=\bbE_{q(\bx_t|\bx_0)}\Ent\Bigl(q(\bx_{t-1}|\bx_t,\bx_0),\,\pt(\bx_{t-1}|\bx_t)\Bigr)+\text{const},
+\qquad t=2,\ldots,T.
+$$
 
-$$
-\bbE_{q(\bx_t|\bx_0)}\Ent\Bigl(q(\bx_{t-1}|\bx_t,\bx_0),\,\pt(\bx_{t-1}|\bx_t)\Bigr).
-$$
+<div class="takeaway">
+
+In discrete diffusion, $\cL_t$ is the **expected cross-entropy** between the forward posterior and the reverse model's prediction for the token at step $t-1$, plus a constant independent of $\btheta$.
+
+</div>
 
 <div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
+
+---
+clicks: 0
+id: recap-of-previous-lecture-9
+class: theorems
+---
+
+# Recap of Previous Lecture
+
+<div class="block">
+
+## Independent Token-wise Forward Process
+
+$$
+\bX_t=[\bx_t^1,\ldots,\bx_t^m]\in\{0,1\}^{K\times m},\qquad \bone^\top\bx_t^i=1.
+$$
+
+Column $\bx_t^i$ is the one-hot vector for the token at position $i$ in a sequence of length $m$.
+
+$$
+q(\bX_t|\bX_{t-1})=\prod_{i=1}^m q(\bx_t^i|\bx_{t-1}^i)=\Cat(\bQ_t\bX_{t-1})
+$$
+
+- All positions share $\bQ_t$. With a matrix argument, $\Cat$ denotes a product of categorical distributions over columns.
+
+</div>
+
+<div class="columns">
+<div>
+
+## Conditioned Reverse Distribution
+
+$$
+q(\bX_{t-1}|\bX_t,\bX_0)=\prod_{i=1}^m q(\bx_{t-1}^i|\bx_t^i,\bx_0^i).
+$$
+
+</div>
+
+<div>
+
+## Reverse Model for Sequence
+
+$$
+\pt(\bX_{t-1}|\bX_t)=\prod_{i=1}^m\pt(\bx_{t-1}^i|{\color{#8854c0}\bX_t}).
+$$
+
+- Each factor conditions on the entire noisy sequence ${\color{#8854c0}\bX_t}$.
+
+</div>
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
+
+---
+clicks: 0
+id: recap-sequence-denoising-objective
+class: theorems
+---
+
+# Recap of Previous Lecture
+
+<div class="block">
+
+## Objective: $\cL_t$ term
+
+$$
+\begin{aligned}
+&\KL\left(q(\bX_{t-1}|\bX_t,\bX_0)\,\|\,\pt(\bX_{t-1}|\bX_t)\right)\\
+&=\sum_{i=1}^m\KL\left(q(\bx_{t-1}^i|\bx_t^i,\bx_0^i)\|\pt(\bx_{t-1}^i|\bX_t)\right).
+\end{aligned}
+$$
+
+</div>
+
+<div class="block">
+
+## Simplified denoising objective
+
+Predict clean tokens from the corrupted sequence (time conditioning is implicit):
+
+$$
+\cL=\sum_{t=1}^T\sum_{i=1}^m\bbE_{q(\bX_t|\bX_0)}\Big[-\log\pt(\bx_0^i|\bX_t)\Big].
+$$
+
+This unweighted clean-token cross-entropy is a simplified training objective;
+it is not the general discrete ELBO.
+
+</div>
+
+With a reverse model that preserves visible tokens and uses the forward-posterior unmasking probability,
+the ELBO yields a time-weighted loss over masked positions.
+
+<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin et al. Structured denoising diffusion models, 2021.</a> <a href="https://arxiv.org/abs/2406.07524">Sahoo et al. Simple and effective masked diffusion language models, 2024.</a></div>
 
 ---
 clicks: 3

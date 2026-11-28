@@ -23,8 +23,8 @@ function reset() { state.t = 4; state.start = 0 }
   </div>
   <div v-else class="print-context">Clean token A · β = 0.25 · K = 4 · matrix at t = 4; distributions at t = 0, 4, 20.</div>
   <div class="plots">
-    <svg viewBox="0 0 480 225" role="img" aria-label="Cumulative transition matrix; columns are clean states, rows are current states">
-      <text x="238" y="20" text-anchor="middle">Q₁:ₜ · columns: initial state</text>
+    <svg viewBox="0 0 480 240" role="img" aria-label="Cumulative transition matrix; columns are clean states, rows are current states">
+      <text x="238" y="20" text-anchor="middle">Q<tspan baseline-shift="sub" font-size="70%">1:t</tspan> · columns: initial state</text>
       <g v-for="(row,i) in matrix" :key="i">
         <text x="88" :y="79+38*i" text-anchor="end">{{tokens[i]}}</text>
         <g v-for="(p,j) in row" :key="j">
@@ -35,7 +35,7 @@ function reset() { state.t = 4; state.start = 0 }
       <text v-for="(token,j) in tokens" :key="token" :x="139+70*j" y="46" text-anchor="middle">{{token}}</text>
       <text x="238" y="224" text-anchor="middle">Highlighted column = q(xₜ | x₀)</text>
     </svg>
-    <svg viewBox="0 0 590 225" role="img" aria-label="Exact categorical probabilities">
+    <svg viewBox="0 0 590 240" role="img" aria-label="Exact categorical probabilities">
       <text x="300" y="20" text-anchor="middle">{{isPrintMode?'Probability · 0 → 4 → 20 steps':`Exact probabilities · t = ${t}`}}</text>
       <g v-for="(token,i) in tokens" :key="token">
         <template v-if="!isPrintMode">
@@ -56,5 +56,5 @@ function reset() { state.t = 4; state.start = 0 }
 </DemoPanel>
 </template>
 <style scoped>
-.plots{display:grid;grid-template-columns:480px 1fr;gap:15px}.plots svg{width:100%;height:225px}.plots text{font:18px Arial;fill:#587083}.demo-controls{margin:0 0 5px;gap:10px}.demo-controls label{display:flex;gap:10px;align-items:center}.demo-controls input{width:210px}.demo-controls output{width:30px;font-variant-numeric:tabular-nums}.print-context{height:49px;padding-top:10px;color:#587083;font-size:18px}.demo-note{margin-top:4px}
+.plots{display:grid;grid-template-columns:480px 1fr;gap:15px}.plots svg{width:100%;height:240px}.plots text{font:18px Arial;fill:#587083}.demo-controls{margin:0 0 5px;gap:10px}.demo-controls label{display:flex;gap:10px;align-items:center}.demo-controls input{width:210px}.demo-controls output{width:30px;font-variant-numeric:tabular-nums}.print-context{height:49px;padding-top:10px;color:#587083;font-size:18px}.demo-note{margin-top:4px}
 </style>

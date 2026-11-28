@@ -272,7 +272,7 @@ id: outline
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
-<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
+<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process</div></div></div>
 
 </div>
 
@@ -287,7 +287,7 @@ section: "Flow Matching"
 <div class="course-outline">
 
 <div class="outline-item current"><span>01</span><div>Flow Matching<div class="outline-sub"><strong>Two-Sided Conditioning</strong><br>Link between Flow Matching and Score-Based Models</div></div></div>
-<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
+<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process</div></div></div>
 
 </div>
 
@@ -592,24 +592,6 @@ $S_B$: permutations of a batch of size $B$. Optimality is within each batch, not
 <div class="source"><a href="https://arxiv.org/abs/2302.00482">Tong A. et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023.</a></div>
 
 ---
-clicks: 3
-id: stable-diffusion-3-scalable-flow-matching
-class: figure-slide
----
-
-# Stable Diffusion 3: Scalable Flow Matching
-
-<img src="/figs/sd3.png" alt="Stable Diffusion 3: scalable rectified flow transformers" class="figure-bottom" style="height:320px" />
-
-<ul>
-<li v-click="1"><strong>Objective:</strong> rectified flow with straight conditional paths and a velocity target.</li>
-<li v-click="2"><strong>Training times:</strong> nonuniform sampling, including the logit-normal distribution.</li>
-<li v-click="3"><strong>Architecture:</strong> MMDiT uses separate weights for text and image tokens, with joint attention between the two modalities.</li>
-</ul>
-
-<div class="source"><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
-
----
 clicks: 0
 id: outline-3
 section: "Link between Flow Matching and Score-Based Models"
@@ -620,7 +602,7 @@ section: "Link between Flow Matching and Score-Based Models"
 <div class="course-outline">
 
 <div class="outline-item current"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br><strong>Link between Flow Matching and Score-Based Models</strong></div></div></div>
-<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
+<div class="outline-item"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process</div></div></div>
 
 </div>
 
@@ -663,90 +645,14 @@ q(\bx(t)|\bx(0))&=\cN\left(\bx(0)\alpha(t),\left(1-\alpha(t)^2\right)\cdot\bI\ri
 $$
 
 </div>
-</div>
 
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+Forward diffusion adds noise to a data point $\bx_0$ as $t$ increases from $0$ to $1$.
 
----
-clicks: 0
-id: score-based-generative-models-through-sdes-2
-class: theorems
----
-
-# Score-Based Generative Models through SDEs
-
-Flow matching uses reverse time direction:
+Flow matching runs from noise to the same data point $\bx_1$, so its time $t$ corresponds to diffusion time $1-t$.
 
 $$
 p_t(\bx|\bx_1)=q_{1-t}(\bx|\bx_0=\bx_1)
 $$
-
-<div class="block">
-
-## Tweedie's Formula
-
-For a Gaussian observation with signal scale $\alpha_t>0$ and noise scale $\sigma_t>0$,
-
-$$
-p_t(\bx_t|\bx_1)=\cN(\alpha_t\bx_1,\sigma_t^2\bI)
-\quad\Rightarrow\quad
-\bbE[\bx_1\mid\bx_t]=\frac{\bx_t+\sigma_t^2\nabla_{\bx_t}\log p_t(\bx_t)}{\alpha_t}.
-$$
-
-</div>
-
-When the conditional velocity is affine in $\bx_1$, averaging over $\bx_1\mid\bx_t$ expresses the marginal velocity through the score.
-
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a><br><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3325056/">Efron B. Tweedie's Formula and Selection Bias, 2011</a></div>
-
-<!-- Here alpha_t is the Gaussian path's signal coefficient, e.g. t for the straight path below. The added identity uses the marginal p_t, whereas the path above is conditioned on x_1. The positivity conditions exclude singular endpoints; no Gaussian assumption on the data distribution is required. -->
-
----
-clicks: 0
-id: score-based-generative-models-through-sdes-3
-class: theorems
----
-
-# Score-Based Generative Models through SDEs
-
-$$
-p_t(\bx|\bx_1)=q_{1-t}(\bx|\bx_0=\bx_1)
-$$
-
-$$
-\textbf{VE (NCSN): }p_t(\bx|\bx_1)=\cN\left(\bx_1,\sigma_{1-t}^2\cdot\bI\right)
-$$
-
-$$
-\textbf{VP (DDPM): }p_t(\bx|\bx_1)=\cN\left(\alpha_{1-t}\bx_1,\left(1-\alpha_{1-t}^2\right)\cdot\bI\right)
-$$
-
-<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
-
----
-clicks: 1
-id: score-based-generative-models-through-sdes-4
-class: theorems
----
-
-# Score-Based Generative Models through SDEs
-
-<div class="block">
-
-## Flow Matching Probability Path
-
-$$
-p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\bI\right);\quad\bv(\bx_t,\bx_1,t)=\frac{\bx_1-\bx_t}{1-t}
-$$
-
-$$
-\frac{d\bx_t}{dt}=\bv(\bx_t,\bx_1,t)=\bmu_t'(\bx_1)+\frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)}\odot(\bx_t-\bmu_t(\bx_1))
-$$
-
-</div>
-<div v-click="1">
-
-Let's derive the conditional vector fields for VE (NCSN) and VP (DDPM).
 
 </div>
 
@@ -754,40 +660,144 @@ Let's derive the conditional vector fields for VE (NCSN) and VP (DDPM).
 
 ---
 clicks: 2
+id: score-based-generative-models-through-sdes-3
+class: theorems
+---
+
+# From Gaussian Paths to Conditional Vector Fields
+
+Flow matching time $t$ corresponds to diffusion time $1-t$, so $p_t(\bx|\bx_1)=q_{1-t}(\bx|\bx_0=\bx_1)$.
+
+<div class="columns mt-4 mb-6 text-center">
+<section>
+
+## VE (NCSN)
+
+$$
+p_t(\bx|\bx_1)=\cN\left(\bx_1,\sigma_{1-t}^2\bI\right)
+$$
+
+</section>
+<section>
+
+## VP (DDPM)
+
+$$
+p_t(\bx|\bx_1)=\cN\left(\alpha_{1-t}\bx_1,\left(1-\alpha_{1-t}^2\right)\bI\right)
+$$
+
+</section>
+</div>
+
+<div v-click="1">
+<div class="block">
+
+## Straight Path in Flow Matching
+
+$$
+p_t(\bx|\bx_1)=\cN\left(t\bx_1,(1-t)^2\bI\right)
+\quad\Rightarrow\quad
+\bv(\bx_t,\bx_1,t)=\frac{\bx_1-\bx_t}{1-t}
+$$
+
+</div>
+<div class="block">
+
+## Vector Field from the Mean and Noise Scale
+
+$$
+\frac{d\bx_t}{dt}=\bv(\bx_t,\bx_1,t)=\bmu_t'(\bx_1)+\frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)}\odot(\bx_t-\bmu_t(\bx_1))
+$$
+
+</div>
+</div>
+<div v-click="2">
+
+- Both VE and VP have **Gaussian conditional paths**.
+- Use each path’s mean $\bmu_t$ and noise scale $\bsigma_t$ in the formula to obtain a conditional vector field $\bv$.
+- In both cases, $\bv$ is the velocity of the conditional probability flow ODE from noise to data.
+
+</div>
+
+<div class="source"><a href="https://arxiv.org/abs/2210.02747">Lipman Y., et al. Flow Matching for Generative Modeling, 2022</a></div>
+
+---
+clicks: 3
 id: flow-matching-vs-score-based-sde-models
 class: theorems
 ---
 
 # Flow Matching vs Score-Based SDE Models
 
+Fix a data point $\bx_1$ and a noise draw $\bepsilon\sim\cN(\bzero,\bI)$. For $0\le t<1$,
+
 $$
 \frac{d\bx_t}{dt}=\bv(\bx_t,\bx_1,t)=\bmu_t'(\bx_1)+\frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)}\odot(\bx_t-\bmu_t(\bx_1))
 $$
 
-<div class="block" v-click="1">
+<table>
+<thead>
+<tr>
+<th scope="col">Gaussian path</th>
+<th scope="col">
 
-## Variance Exploding SDE Probability Path
+Trajectory $\bx_t$
 
-$$
-p_t(\bx|\bx_1)=\cN\left(\bx_1,\sigma_{1-t}^2\bI\right)\quad\Rightarrow\quad\bv(\bx_t,\bx_1,t)=-\frac{\sigma'_{1-t}}{\sigma_{1-t}}(\bx_t-\bx_1)
-$$
+</th>
+<th scope="col">
 
-</div>
-<div v-click="2">
-<div class="block">
+Conditional velocity $\bv(\bx_t,\bx_1,t)$
 
-## Variance Preserving SDE Probability Path
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">VE</th>
+<td>
 
-$$
-\begin{aligned}
-p_t(\bx|\bx_1)&=\cN\left(\alpha_{1-t}\bx_1,(1-\alpha_{1-t}^2)\bI\right)\\
-\Rightarrow\quad\bv(\bx_t,\bx_1,t)&=\frac{\alpha'_{1-t}}{1-\alpha_{1-t}^2}\cdot\left(\alpha_{1-t}\bx_t-\bx_1\right)
-\end{aligned}
-$$
+$\bx_1+\sigma_{1-t}\bepsilon$
 
-</div>
+</td>
+<td>
 
-Thus, VE/VP SDE models correspond to particular choices of the Gaussian probability path within the flow matching framework.
+$-\dfrac{\sigma'_{1-t}}{\sigma_{1-t}}(\bx_t-\bx_1)=-\sigma'_{1-t}\bepsilon$
+
+</td>
+</tr>
+<tr v-click="1">
+<th scope="row">VP</th>
+<td>
+
+$\alpha_{1-t}\bx_1+\sqrt{1-\alpha_{1-t}^2}\,\bepsilon$
+
+</td>
+<td>
+
+$\dfrac{\alpha'_{1-t}}{1-\alpha_{1-t}^2}(\alpha_{1-t}\bx_t-\bx_1)$
+
+</td>
+</tr>
+<tr v-click="2">
+<th scope="row">Straight FM</th>
+<td>
+
+$(1-t)\bx_0+t\bx_1,\quad \bx_0=\bepsilon$
+
+</td>
+<td>
+
+$\dfrac{\bx_1-\bx_t}{1-t}=\bx_1-\bx_0$
+
+</td>
+</tr>
+</tbody>
+</table>
+
+<div class="takeaway" v-click="3">
+
+With the usual VE and VP schedules, $\bx_t$ is **nonlinear in $t$** and its velocity varies along the path.<br>
+Flow matching can use either Gaussian path or a **linear interpolation** with **constant velocity** $\bx_1-\bx_0$.
 
 </div>
 
@@ -823,7 +833,7 @@ section: "Discrete Diffusion"
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
-<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process</div></div></div>
 
 </div>
 
@@ -930,7 +940,7 @@ section: "Forward Discrete Process"
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
-<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub"><strong>Forward Discrete Process</strong><br>Reverse Diffusion Process<br>From Token to Sequence</div></div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub"><strong>Forward Discrete Process</strong><br>Reverse Diffusion Process</div></div></div>
 
 </div>
 
@@ -957,16 +967,17 @@ $$
 
 ## Discrete Diffusion Markov Chain
 
-For discrete data, we instead define a Markov chain over categorical states:
+We start with a single token (sequence length $m=1$) from a vocabulary of size $K$.
 
 $$
-q(\bx_t|\bx_{t-1})=\Cat(\bQ_t\bx_{t-1}),
+q(\bx_t|\bx_{t-1})=\Cat(\bQ_t\bx_{t-1}).
 $$
 
 </div>
 <div v-click="2">
 
-- Each $\bx_t\in\{0,1\}^K$ is a **one-hot vector** encoding the categorical state (it is just one token).
+- Each $\bx_t\in\{0,1\}^K$ is a **one-hot vector** encoding the categorical state.
+- The continuous chain approaches $\cN(\bzero,\bI)$. What distribution could the discrete chain approach?
 - What is the transition matrix $\bQ_t$?
 
 </div>
@@ -1018,7 +1029,7 @@ We design the transition matrices $\bQ_t$ to achieve this behavior.
 <div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
 
 ---
-clicks: 3
+clicks: 5
 id: transition-matrix
 class: theorems
 ---
@@ -1044,26 +1055,39 @@ $\bQ_t$ and $\bQ_{1:t}$ should be easy to compute for each $t$.
 <ul>
 <li>
 
-**Uniform diffusion**
+**Uniform diffusion.** With probability $\beta_t$, draw a symbol uniformly ($\bU_{ij}=1/K$).
 
 $$
-\bQ_t=(1-\beta_t)\bI+\beta_t\bU,\qquad\bU_{ij}=\tfrac{1}{K}.
+\bQ_t=(1-\beta_t)\bI+\beta_t\bU.
 $$
 
-Each token is replaced by a uniformly random symbol with probability $\beta_t$.
-The stationary distribution is uniform noise.
+<div v-click="3">
 
+$$
+\bQ_{1:t}\bx_0=\bar\alpha_t\bx_0+(1-\bar\alpha_t)\frac{\bone}{K}
+\xrightarrow{\bar\alpha_t\to0}\frac{\bone}{K}.
+$$
+
+Here $\bar\alpha_t=\prod_{s=1}^t(1-\beta_s)$ is the probability of no replacement in the first $t$ steps.
+
+</div>
 </li>
-<li v-click="3">
+<li v-click="4">
 
-**Absorbing diffusion**
+**Absorbing diffusion.** With probability $\beta_t$, replace the token by the mask $m$.
 
 $$
 \bQ_t=(1-\beta_t)\bI+\beta_t\,\be_m\bone^\top.
 $$
 
-Tokens are gradually replaced by a special mask $m$; the stationary distribution is fully masked.
+<div v-click="5">
 
+$$
+\bQ_{1:t}\bx_0=\bar\alpha_t\bx_0+(1-\bar\alpha_t)\be_m
+\xrightarrow{\bar\alpha_t\to0}\be_m.
+$$
+
+</div>
 </li>
 </ul>
 </div>
@@ -1136,10 +1160,9 @@ class: theorems
 | $\bQ_t$ | $(1-\beta_t)\bI+\beta_t\bU$ | $(1-\beta_t)\bI+\beta_t\be_m\bone^\top$ |
 | $\bQ_{1:t}$ | $\bar\alpha_t\bI+(1-\bar\alpha_t)\bU$ | $\bar\alpha_t\bI+(1-\bar\alpha_t)\be_m\bone^\top$ |
 | $\bQ_{1:\infty}$, $\bar\alpha_t\to0$ | $\bU$ | $\be_m\bone^\top$ |
+| Limiting token distribution | $\Cat(\bone/K)$, all $K$ tokens equally likely | $\Cat(\be_m)$, mask $m$ with probability $1$ |
 | Interpretation | Random replacement | Gradual masking of tokens |
 | Application | Image diffusion | Text diffusion $\approx$ Masked LM |
-
-For absorbing diffusion, the limiting token distribution is $\Cat(\be_m)$.
 
 <div class="block" v-click="1">
 
@@ -1163,12 +1186,12 @@ section: "Reverse Diffusion Process"
 <div class="course-outline">
 
 <div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
-<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br><strong>Reverse Diffusion Process</strong><br>From Token to Sequence</div></div></div>
+<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br><strong>Reverse Diffusion Process</strong></div></div></div>
 
 </div>
 
 ---
-clicks: 1
+clicks: 3
 id: posterior-of-the-forward-process
 class: theorems
 ---
@@ -1188,17 +1211,20 @@ $$
 $$
 
 </div>
-<div v-click="1">
+<ul>
+<li v-click="1">This ELBO derivation applies to discrete-time Markov chains with continuous or discrete states.</li>
+<li v-click="2">
 
-- Conditioned reverse distribution $q(\bx_{t-1}|\bx_t,\bx_0)$ played crucial role in the continuous-state diffusion model.
-- It shows the probability of a previous state given the noisy state $\bx_t$ and the original clean data $\bx_0$.
+As in continuous-state diffusion, the target in $\cL_t$ is the posterior $q(\bx_{t-1}|\bx_t,\bx_0)$ over the previous state given the noisy state $\bx_t$ and the clean input $\bx_0$.
 
-</div>
+</li>
+<li v-click="3">For discrete states, the forward transition matrices give this posterior in closed form.</li>
+</ul>
 
 <div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
 
 ---
-clicks: 0
+clicks: 4
 id: posterior-of-the-forward-process-2
 class: theorems
 ---
@@ -1209,36 +1235,24 @@ class: theorems
 
 ## Discrete conditioned reverse distribution
 
-$$
+$$ {1|all} {at:1}
 \begin{aligned}
 q(\bx_{t-1}|\bx_t,\bx_0)
 &=\frac{q(\bx_t|\bx_{t-1},\bx_0)\,q(\bx_{t-1}|\bx_0)}{q(\bx_t|\bx_0)}\\
-&=\frac{\Cat(\bQ_t)\cdot\Cat(\bQ_{1:t-1})}{\Cat(\bQ_{1:t})}.
+&=\frac{(\bx_t^\top\bQ_t\bx_{t-1})(\bx_{t-1}^\top\bQ_{1:t-1}\bx_0)}
+        {\bx_t^\top\bQ_{1:t}\bx_0}.
 \end{aligned}
 $$
 
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
-
----
-clicks: 2
-id: posterior-of-the-forward-process-3
-class: theorems
----
-
-# Posterior of the Forward Process
-
-<div class="block">
-
-## Discrete conditioned reverse distribution
+<div v-click="2">
 
 $$
 q(\bx_{t-1}|\bx_t,\bx_0)=\Cat\left(\frac{\bQ_t^\top\bx_t\odot\bQ_{1:t-1}\bx_0}{\bx_t^\top\bQ_{1:t}\bx_0}\right).
 $$
 
 </div>
-<div v-click="1">
+</div>
+<div v-click="3">
 
 Recall the ELBO term
 
@@ -1247,7 +1261,7 @@ $$
 $$
 
 </div>
-<div v-click="2">
+<div v-click="4">
 
 - Both $q(\bx_{t-1}|\bx_t,\bx_0)$ and $q(\bx_t|\bx_0)$ are known analytically from the forward process.
 - The reverse process $\pt(\bx_{t-1}|\bx_t)$ is a learned categorical distribution:
@@ -1263,7 +1277,7 @@ where $\bpi_{\btheta}$ is a neural network.
 <div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
 
 ---
-clicks: 3
+clicks: 4
 id: discrete-time-elbo-for-discrete-diffusion
 class: theorems
 ---
@@ -1284,7 +1298,7 @@ $$
 ## Categorical KL
 
 $$
-\KL\bigl(\Cat(\bq)\,\|\,\Cat(\bp)\bigr)=\sum_{k=1}^Kq_k\log\frac{q_k}{p_k}=\Ent(\bq,\bp)-\Ent(\bq),
+\KL\bigl(\Cat(\bq)\,\|\,\Cat(\bp)\bigr)=\sum_{k=1}^Kq_k\log\frac{q_k}{p_k}=\Ent(\bq,\bp)-\Ent(\bq).
 $$
 
 <div v-click="2">
@@ -1296,181 +1310,19 @@ $$
 </div>
 <div v-click="3">
 
-Therefore, minimizing $\cL_t$ w.r.t. $\btheta$ is equivalent to minimizing
+$$
+\cL_t=\bbE_{q(\bx_t|\bx_0)}\Ent\Bigl(q(\bx_{t-1}|\bx_t,\bx_0),\,\pt(\bx_{t-1}|\bx_t)\Bigr)+\text{const},
+\qquad t=2,\ldots,T.
+$$
 
-$$
-\bbE_{q(\bx_t|\bx_0)}\Ent\Bigl(q(\bx_{t-1}|\bx_t,\bx_0),\,\pt(\bx_{t-1}|\bx_t)\Bigr).
-$$
+</div>
+<div class="takeaway" v-click="4">
+
+In discrete diffusion, $\cL_t$ is the **expected cross-entropy** between the forward posterior and the reverse model's prediction for the token at step $t-1$, plus a constant independent of $\btheta$.
 
 </div>
 
 <div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
-
----
-clicks: 0
-id: outline-7
-section: "From Token to Sequence"
----
-
-# Outline
-
-<div class="course-outline">
-
-<div class="outline-item"><span>01</span><div>Flow Matching<div class="outline-sub">Two-Sided Conditioning<br>Link between Flow Matching and Score-Based Models</div></div></div>
-<div class="outline-item current"><span>02</span><div>Discrete Diffusion<div class="outline-sub">Forward Discrete Process<br>Reverse Diffusion Process<br><strong>From Token to Sequence</strong></div></div></div>
-
-</div>
-
----
-clicks: 2
-id: from-token-to-sequence
-class: theorems
----
-
-# From Token to Sequence
-
-<div class="block">
-
-## One-hot sequence representation
-
-$$
-\bx_t\in\{0,1\}^K\quad\Leftrightarrow\quad\bX_t\in\{0,1\}^{K\times m}
-$$
-
-Here $\bX_t$ is a one-hot representation of a sequence of tokens.
-
-</div>
-<div class="block" v-click="1">
-
-## Independent Token-wise Forward Process
-
-$$
-q(\bX_t|\bX_{t-1})=\prod_{i=1}^m q(\bx_t^i|\bx_{t-1}^i)=\Cat(\bQ_t\bX_{t-1})
-$$
-
-- Each position $i$ evolves according to its own Markov chain.
-- Often the same transition matrix $\bQ_t$ is shared across $i$.
-
-</div>
-<div class="block" v-click="2">
-
-## Continuous Diffusion Analogy
-
-- In Gaussian DDPMs with diagonal covariance, noise is independent per pixel.
-- Structure is not in the noise; it is learned by the reverse model.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
-
----
-clicks: 3
-id: from-token-to-sequence-2
-class: theorems
----
-
-# From Token to Sequence
-
-$$
-q(\bX_t|\bX_{t-1})=\prod_{i=1}^m q(\bx_t^i|\bx_{t-1}^i)=\Cat(\bQ_t\bX_{t-1})
-$$
-
-<div v-click="1">
-
-$$
-q(\bX_t|\bX_0)=\Cat(\bQ_{1:t}\bX_0)
-$$
-
-</div>
-<div class="block" v-click="2">
-
-## Conditioned Reverse Distribution
-
-$$
-q(\bx_{t-1}|\bx_t,\bx_0)=\Cat\left(\frac{\bQ_t^\top\bx_t\odot\bQ_{1:t-1}\bx_0}{\bx_t^\top\bQ_{1:t}\bx_0}\right).
-$$
-
-$$
-q(\bX_{t-1}|\bX_t,\bX_0)=\prod_{i=1}^m q(\bx_{t-1}^i|\bx_t^i,\bx_0^i).
-$$
-
-</div>
-<div v-click="3">
-
-- All distributions defined by the forward process are factorized.
-- Dependence appears in the learned reverse model.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
-
----
-clicks: 1
-id: reverse-model-for-sequence
-class: theorems
----
-
-# Reverse Model for Sequence
-
-$$
-\pt(\bX_{t-1}|\bX_t)=\prod_{i=1}^m\pt(\bx_{t-1}^i|{\color{#8854c0}\bX_t}).
-$$
-
-- The output factorizes (parallel prediction across positions).
-- Each factor conditions on the entire noisy sequence ${\color{#8854c0}\bX_t}$.
-- This predicts tokens from a corrupted sequence; masking corruption connects it to **masked language modeling**.
-
-<div class="block" v-click="1">
-
-## Objective: $\cL_t$ term
-
-$$
-\begin{aligned}
-&\KL\left(q(\bX_{t-1}|\bX_t,\bX_0)\,\|\,\pt(\bX_{t-1}|\bX_t)\right)\\
-&=\sum_{i=1}^m\KL\left(q(\bx_{t-1}^i|\bx_t^i,\bx_0^i)\|\pt(\bx_{t-1}^i|\bX_t)\right).
-\end{aligned}
-$$
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin J. et al. Structured denoising diffusion models in discrete state-spaces, 2021.</a></div>
-
----
-clicks: 2
-id: reverse-model-for-sequence-2
-class: theorems
----
-
-# Reverse Model for Sequence
-
-<div class="block">
-
-## Simplified denoising objective
-
-Predict clean tokens from the corrupted sequence (time conditioning is implicit):
-
-$$
-\cL=\sum_{t=1}^T\sum_{i=1}^m\bbE_{q(\bX_t|\bX_0)}\Big[-\log\pt(\bx_0^i|\bX_t)\Big].
-$$
-
-</div>
-
-<div v-click="1">
-
-This unweighted clean-token cross-entropy is a simplified training objective;
-it is not the general discrete ELBO.
-
-</div>
-<div class="block" v-click="2">
-
-## Connection to absorbing diffusion
-
-With a reverse model that preserves visible tokens and uses the forward-posterior unmasking probability,
-the ELBO yields a time-weighted loss over masked positions. We derive this next.
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2107.03006">Austin et al. Structured denoising diffusion models, 2021.</a> <a href="https://arxiv.org/abs/2406.07524">Sahoo et al. Simple and effective masked diffusion language models, 2024.</a></div>
 
 ---
 clicks: 0
@@ -1509,12 +1361,6 @@ Forward discrete diffusion process defines a Markov chain with discrete states; 
 <li>
 
 The discrete ELBO contains categorical KL terms; their parameter-dependent parts are cross-entropies against the forward posterior.
-
-</li>
-
-<li>
-
-For sequences, the forward process factorizes over tokens. Denoisers predict all positions from the whole corrupted sequence; clean-token cross-entropy is a simplified objective.
 
 </li>
 
