@@ -1431,51 +1431,6 @@ $$
 
 ---
 clicks: 3
-id: rectified-flow-training-time-distribution
-class: theorems
----
-
-# Rectified Flow: Sampling Training Times
-
-For $\bx_t=(1-t)\bx_0+t\bx_1$, let $\ell_{\btheta}(t)=\bbE\|\bv_{\btheta}(\bx_t,t)-(\bx_1-\bx_0)\|^2$.
-
-<div v-click="1">
-
-Let $r(t)$ be the training-time density. Without importance correction, it weights the velocity MSE.
-
-$$
-\bbE_{t\sim r}\ell_{\btheta}(t)
-=\bbE_{t\sim U[0,1]}\left[r(t)\ell_{\btheta}(t)\right].
-$$
-
-</div>
-<div v-click="2">
-
-**SD3 example.** Choose a logit-normal density $r(t)$ by drawing a Gaussian logit $u$.
-
-$$
-u\sim\cN(\mu,s^2),\qquad t=\operatorname{sigmoid}(u),\qquad \log\frac{t}{1-t}=u.
-$$
-
-<img src="/figs/logit-normal-training-times.svg" alt="Uniform and logit-normal training-time densities, with mu zero and s one" style="width:100%;height:185px;object-fit:contain" />
-
-</div>
-<div v-click="3">
-
-$$
-\log\SNR(t)=\log\frac{t^2}{(1-t)^2}=2\log\frac{t}{1-t}=2u\sim\cN(2\mu,4s^2).
-$$
-
-Sampling more often near $t=1/2$ gives more examples with comparable signal and noise ($\log\SNR\approx0$).
-
-</div>
-
-<div class="source"><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
-
-<!-- Narrative: the preceding Training/Sampling slide uses uniform time. Here vary only the training-time distribution, reuse the weighted-loss identity, and show logit-normal as a concrete example. The following CFG slide adds label/text conditioning at generation. In this lecture t=0 is noise and t=1 is data, opposite to SD3 paper time. Thus positive mu favors data here; the symmetric mu=0,s=1 example needs no sign conversion. The Gaussian draws u and endpoint samples are independent. For the unshifted straight Gaussian path log-SNR=2u exactly. Resolution-dependent timestep shifting is a separate topic; the Gaussian log-SNR statement does not silently include it. Positive time-only weighting preserves the unrestricted pointwise conditional-mean optimum when expectations are finite; finite shared networks and finite optimization can behave differently. Restoring the uniform-time objective would require multiplying the sampled loss by 1/r(t). This concerns training times, not the ODE integration grid. -->
-
----
-clicks: 3
 id: classifier-free-guidance-velocity
 class: theorems
 ---
@@ -1532,7 +1487,7 @@ $$
 
 <div class="source"><a href="https://arxiv.org/abs/2207.12598">Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022</a><br><a href="https://arxiv.org/abs/2403.03206">Esser P., et al. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis, 2024</a></div>
 
-<!-- Narrative: first show the score-space CFG formula from the earlier diffusion lecture; the first click reveals the same combination for velocities. After varying rectified-flow training times, recall CFG to make generation conditional on a label or prompt. Here y is an observed condition, distinct from the auxiliary CFM latent z=x1; conditional and unconditional model velocities both average over training endpoints. Use the same noise law and interpolation for both branches; independently drop the condition, not the endpoint or regression target. x0 is independent Gaussian noise and t follows the previously chosen training distribution. The convention gamma=0 unconditional, gamma=1 conditional matches the score CFG slides. For shared Gaussian paths, the score-to-velocity map is affine with condition-independent coefficients, so an affine CFG combination transfers to velocities. This does not assert that gamma>1 exactly samples a tempered endpoint density. Standard CFG uses two predictions per field evaluation (which may be batched); gamma=0 or 1 can skip the unused branch. Guidance distillation is a separate construction. SD3 is the concrete example; no claim that every FLUX variant uses two-pass CFG. -->
+<!-- Narrative: start from the unconditional rectified-flow sampler on the preceding slide. Recall score-space CFG for a label or prompt. The first click reveals the same combination for velocities. Here y is an observed condition, distinct from the auxiliary CFM latent z=x1; conditional and unconditional model velocities both average over training endpoints. Use the same noise law and interpolation for both branches; independently drop the condition, not the endpoint or regression target. Sample x0 from independent Gaussian noise and t uniformly as in rectified-flow training. The convention gamma=0 unconditional, gamma=1 conditional matches the score CFG slides. For shared Gaussian paths, the score-to-velocity map is affine with condition-independent coefficients, so an affine CFG combination transfers to velocities. This does not assert that gamma>1 exactly samples a tempered endpoint density. Standard CFG uses two predictions per field evaluation (which may be batched); gamma=0 or 1 can skip the unused branch. Guidance distillation is a separate construction. SD3 is the concrete example; no claim that every FLUX variant uses two-pass CFG. -->
 
 ---
 clicks: 0
@@ -1543,8 +1498,7 @@ class: summary
 # Summary
 
 - Many velocity fields connect the same endpoints. FM fits a chosen field by regression, without ODE solves or Jacobian traces during training.
-- CFM preserves the FM minimizers. The marginal velocity is the posterior mean $\bv(\bx,t)=\bbE_{p_t(\bz|\bx)}\bv(\bx,\bz,t)$.
-- Gaussian conditional paths admit a closed-form conditional velocity field.
-- Changing the training-time distribution without importance correction reweights the loss; logit-normal time gives Gaussian log-SNR on the straight noise-to-data path.
-- For straight paths conditioned on $\bx_1$, **rectified flow** regresses on the displacement $\bx_1-\bx_0$.
-- Condition dropout trains both velocity predictions used in classifier-free guidance.
+- Choose conditional paths with known velocities so that their mixture under $p(\bz)$ starts at the noise distribution and ends at the data distribution.
+- The posterior mean of the conditional velocities under $p_t(\bz|\bx)$ transports this mixture. CFM can therefore fit $\bv_{\btheta}(\bx,t)$ to conditional velocities with the same minimizers as FM.
+- For **rectified flow**, condition on a data point $\bz=\bx_1$ and draw independent Gaussian noise $\bx_0$. On the straight path $\bx_t=(1-t)\bx_0+t\bx_1$, the training target is $\bx_1-\bx_0$.
+- To sample, start from fresh noise and solve $d\bx_t/dt=\bv_{\btheta}(\bx_t,t)$ from $t=0$ to $t=1$. The sampling trajectories can curve even when the training paths are straight.

@@ -74,7 +74,9 @@ in `public/figs/sources.json`. Resources and fonts must work without network acc
   equations, wording and order. If compression hides a necessary step, use the next slide and carry the
   starting equation or diagram across. A variant that adds one observation
   can often fit beside the method it qualifies. In a Recap, select the exact
-  results students need to recall. In a Summary, synthesize related results.
+  results students need to recall. Build the Summary around the lecture's main
+  ideas and the steps that connect them. Use formulas or examples to make those
+  steps concrete.
 
 ## Course structure and terminology
 
